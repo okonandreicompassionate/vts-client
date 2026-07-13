@@ -3,11 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:user": "npm run dev -w @zora/user",
+    "dev:admin": "npm run dev -w @zora/admin",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^2.1.2",
