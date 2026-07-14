@@ -8,8 +8,19 @@
     "dev:user": "pnpm --filter @zora/user dev",
     "dev:admin": "pnpm --filter @zora/admin dev",
     "build": "pnpm -r --if-present run build",
-    "lint": "pnpm -r --if-present run lint",
+    "lint": "eslint .",
     "preview:user": "pnpm --filter @zora/user preview",
-    "preview:admin": "pnpm --filter @zora/admin preview"
+    "preview:admin": "pnpm --filter @zora/admin preview",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.7.0",
+    "husky": "^9.1.7",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.62.0"
   }
 }
