@@ -16,7 +16,11 @@
     outline-offset: 2px;
   }
 }
-
+.visitor-table {
+  .ant-table-thead > tr > th {
+    background-color: #F5FBFE !important;
+  }
+}
 .hero {
   position: relative;
 
