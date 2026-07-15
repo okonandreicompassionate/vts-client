@@ -1,12 +1,8 @@
 @layer theme, base, antd, components, utilities;
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "Raleway Variable", sans-serif;
+body {
+  font-family: "Raleway Variable", sans-serif;
 }
 
-html,
-body,
-#root {
-  font-family: var(--font-sans);
-}
+
