@@ -3,14 +3,8 @@ import { Table, Select, ConfigProvider } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
   AppstoreOutlined,
-  TeamOutlined,
   SettingOutlined,
-  LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   EyeOutlined,
-  CheckCircleOutlined,
-  ExportOutlined,
   ClockCircleOutlined,
   WarningOutlined,
 } from "@ant-design/icons";

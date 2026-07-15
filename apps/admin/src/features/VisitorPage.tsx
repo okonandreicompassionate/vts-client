@@ -3,11 +3,7 @@ import { Table, ConfigProvider } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
   AppstoreOutlined,
-  TeamOutlined,
   SettingOutlined,
-  LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   EyeOutlined,
   SearchOutlined,
   FilterOutlined,

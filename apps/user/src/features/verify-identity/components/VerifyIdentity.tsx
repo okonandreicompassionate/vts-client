@@ -33,7 +33,7 @@ export default function VerifyIdentity() {
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col mb-5">
           <Form.Item
             name="email"
-            label="Email"
+            label="Email/Phone Number"
             rules={[
               { required: true, message: "Please enter your email" },
               { type: "email", message: "Please enter a valid email address" },
@@ -42,7 +42,7 @@ export default function VerifyIdentity() {
             <Input
               type="email"
               size="large"
-              placeholder="e.g. example@gmail.com"
+              placeholder=""
               className="rounded-xl"
             />
           </Form.Item>
