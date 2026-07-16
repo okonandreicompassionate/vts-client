@@ -15,26 +15,23 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row bg-white">
       {/* Left panel */}
-      <div className="relative w-full md:w-1/2 bg-gradient-to-br from-sky-50 to-white flex flex-col justify-between px-8 py-10 md:px-16 md:py-12 overflow-hidden">
+      <div className="relative w-full md:w-1/2 bg-[#EFF7FB] from-sky-50 to-white flex flex-col justify-between px-4 py-8 sm:px-6 md:px-16 md:py-12 overflow-hidden">
         {/* soft top shadow accent like the reference */}
         <div className="pointer-events-none absolute -top-10 left-0 right-0 h-24 " />
 
         {/* Logo */}
         <div>
-         <img src="/logo.svg" alt="" className="w-[125px] lg:-mt-[20px] lg:ml-[200px]" />
+          <img
+            src="/logo.svg"
+            alt=""
+            className="w-[125px] lg:-mb-[200px] lg:mt-[00px] lg:ml-[200px]"
+          />
         </div>
 
         {/* Illustration card */}
         <div className="flex-1 flex items-center justify-center py-10">
           <img src="loginimage.svg" alt="" className="w-[295px] lg:mt-[60px]" />
         </div>
-
-
-        
-
-        
-            
-            
 
         {/* Title + subtitle */}
         <div className="text-center md:text-left mb-10 lg:ml-[100px]">
@@ -48,15 +45,15 @@ export default function AdminLogin() {
 
         {/* Footer */}
         <div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 mt-8">
             © 2026 Zoracom. All Rights Reserved.
           </p>
         </div>
       </div>
 
       {/* Right panel */}
-      <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-16 bg-white">
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg shadow-slate-200/60 border border-slate-100 p-8">
+      <div className="w-full md:w-1/2 flex items-center justify-center px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-16 bg-white">
+        <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg shadow-slate-200/60 border border-slate-100 p-5 sm:p-8">
           <h2 className="text-2xl font-bold text-slate-900">Admin Login</h2>
           <p className="text-sm text-slate-400 mt-1 mb-6">
             Enter your credentials to manage the portal

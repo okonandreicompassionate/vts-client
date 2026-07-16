@@ -2,12 +2,11 @@ import { useState } from "react";
 import { Table, Select, ConfigProvider } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
-  AppstoreOutlined,
-  SettingOutlined,
-  EyeOutlined,
   ClockCircleOutlined,
   WarningOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
+import Sidebar from "../components/Sidebar.tsx";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -117,21 +116,31 @@ const statCards = [
   {
     label: "Total Visitors",
     value: "1,248",
-    icon: <img src="visitors2.svg" alt="Total Visitors"  className="color-[#3B82F6]" />,
+    icon: (
+      <img
+        src="visitors2.svg"
+        alt="Total Visitors"
+        className="color-[#3B82F6]"
+      />
+    ),
     iconBg: "bg-blue-50",
     iconColor: "text-blue-500",
   },
   {
     label: "Currently Signed In",
     value: "42",
-    icon: <img src="check.svg" alt="Total Visitors"  className="color-[#3B82F6]" />,
+    icon: (
+      <img src="check.svg" alt="Total Visitors" className="color-[#3B82F6]" />
+    ),
     iconBg: "bg-emerald-50",
     iconColor: "text-emerald-500",
   },
   {
     label: "Signed Off",
     value: "1,180",
-    icon: <img src="back.svg" alt="Total Visitors"  className="color-[#3B82F6]" />,
+    icon: (
+      <img src="back.svg" alt="Total Visitors" className="color-[#3B82F6]" />
+    ),
     iconBg: "bg-slate-100",
     iconColor: "text-slate-500",
   },
@@ -149,12 +158,6 @@ const statCards = [
     iconBg: "bg-rose-50",
     iconColor: "text-rose-400",
   },
-];
-
-const navItems = [
-  { key: "dashboard", label: "Dashboard", icon: <AppstoreOutlined /> },
-  { key: "visitors", label: "Visitors", icon: <img src="visitors.svg" alt="Visitors" /> },
-  { key: "settings", label: "Settings", icon: <SettingOutlined /> },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -198,9 +201,7 @@ const columns: ColumnsType<VisitorRecord> = [
           <p className="text-sm font-medium text-slate-800 leading-tight">
             {record.name}
           </p>
-          <p className="text-xs text-slate-400 leading-tight">
-            {record.email}
-          </p>
+          <p className="text-xs text-slate-400 leading-tight">{record.email}</p>
         </div>
       </div>
     ),
@@ -252,8 +253,6 @@ const columns: ColumnsType<VisitorRecord> = [
 /* ------------------------------------------------------------------ */
 
 export default function Dashboard() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [activeNav, setActiveNav] = useState("dashboard");
   const [page, setPage] = useState(1);
 
   return (
@@ -266,74 +265,19 @@ export default function Dashboard() {
         },
       }}
     >
-      <div className="min-h-screen flex bg-[#E4E9F0]">
+      <div className="min-h-screen flex flex-col md:flex-row bg-[#E4E9F0]">
         {/* Sidebar */}
-        <aside
-          className={`${
-            collapsed ? "w-20" : "w-60"
-          } shrink bg-[#E4E9F0] border-r border-slate-100 flex flex-col justify-between transition-all duration-200`}
-        >
-          <div>
-            <div className="h-16 flex items-center justify-between px-5">
-              {!collapsed && (
-             <img src="logo.svg" alt="" className="w-[110px] h-[130px]" />
-              )}
-              <button
-  type="button"
-  onClick={() => setCollapsed((c) => !c)}
-  className="w-7 h-7 flex items-center justify-center rounded-md bg-[#E4E9F0] text-slate-500 hover:bg-slate-200 transition"
-  aria-label="Toggle sidebar"
->
-  <img
-    src="collapse.svg"
-    alt=""
-    className="w-4 h-4 bg-[#E4E9F0]"
-  />
-</button>
-            </div>
-
-            <nav className="mt-4 px-3 space-y-1">
-              {navItems.map((item) => {
-                const isActive = activeNav === item.key;
-                return (
-                  <button
-                    key={item.key}
-                    type="button"
-                    onClick={() => setActiveNav(item.key)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
-                      isActive
-                        ? "bg-sky-500 text-white shadow-sm shadow-sky-200"
-                        : "text-slate-500 hover:bg-slate-50"
-                    } ${collapsed ? "justify-center" : ""}`}
-                  >
-                    <span className="text-base">{item.icon}</span>
-                    {!collapsed && <span>{item.label}</span>}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          <div className="p-3">
-            <button
-              type="button"
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50 transition ${
-                collapsed ? "justify-center" : ""
-              }`}
-            >
-              <img src="back.svg" />
-              {!collapsed && <span>Logout</span>}
-            </button>
-          </div>
-        </aside>
+        <Sidebar />
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0 w-full">
           {/* Topbar */}
-          <header className="h-16 bg-[#E4E9F0] border-b border-slate-100 flex items-center justify-between px-8">
-            <h2 className="text-lg font-bold text-slate-800">Dashboard</h2>
-            <div className="flex items-center gap-3">
-              <div className="text-right leading-tight">
+          <header className="min-h-16 bg-[#FFFFFF] border-b border-slate-100 flex items-center justify-between px-4 pt-3 pb-2.5 md:px-8 md:py-0">
+            <h2 className="text-base md:text-lg font-bold text-slate-800">
+              Dashboard
+            </h2>
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="hidden sm:block text-right leading-tight">
                 <p className="text-sm font-semibold text-slate-800">
                   Admin User
                 </p>
@@ -342,18 +286,18 @@ export default function Dashboard() {
               <img
                 src="https://i.pravatar.cc/40?img=68"
                 alt="Admin User"
-                className="w-9 h-9 rounded-full object-cover"
+                className="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover"
               />
             </div>
           </header>
 
-          <main className="flex-1 px-8 py-6">
+          <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
             {/* Stat cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+            <div className="grid grid-cols-1 gap-3 xs:grid-cols-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5 mb-6">
               {statCards.map((card) => (
                 <div
                   key={card.label}
-                  className="bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100 p-4"
+                  className="bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100 p-3 sm:p-4"
                 >
                   <div
                     className={`w-9 h-9 rounded-lg flex items-center justify-center mb-4 ${card.iconBg} ${card.iconColor}`}
@@ -363,24 +307,23 @@ export default function Dashboard() {
                   <p className="text-xl font-bold text-slate-800">
                     {card.value}
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    {card.label}
-                  </p>
+                  <p className="text-xs text-slate-400 mt-0.5">{card.label}</p>
                 </div>
               ))}
             </div>
 
             {/* Recent Visitors table */}
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100">
-              <div className="flex items-center justify-between px-6 py-5">
+              <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
                 <h3 className="text-base font-bold text-slate-800">
                   Recent Visitors
                 </h3>
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:flex sm:flex-nowrap sm:items-center sm:gap-2">
                   <Select
                     defaultValue="Status"
                     size="middle"
-                    className="w-32 bg-[#F5FBFE]"
+                    className="w-full sm:w-32 bg-[#F5FBFE]"
+                    popupMatchSelectWidth={false}
                     options={[
                       { value: "Status", label: "Status" },
                       { value: "Signed In", label: "Signed In" },
@@ -392,7 +335,8 @@ export default function Dashboard() {
                   <Select
                     defaultValue="Time"
                     size="middle"
-                    className="w-28 bg-[#F5FBFE]"
+                    className="w-full sm:w-28 bg-[#F5FBFE]"
+                    popupMatchSelectWidth={false}
                     options={[
                       { value: "Time", label: "Time" },
                       { value: "Today", label: "Today" },
@@ -403,7 +347,8 @@ export default function Dashboard() {
                   <Select
                     defaultValue="Host Visited"
                     size="middle"
-                    className="w-36 bg-[#F5FBFE]"
+                    className="w-full sm:col-span-1 sm:w-36 bg-[#F5FBFE]"
+                    popupMatchSelectWidth={false}
                     options={[
                       { value: "Host Visited", label: "Host Visited" },
                       { value: "Sarah Smith", label: "Sarah Smith" },
@@ -415,20 +360,26 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <Table<VisitorRecord>
-                columns={columns}
-                dataSource={visitorData}
-                pagination={false}
-                rowKey="key"
-                className="visitor-table "
-              />
+              {/* Horizontal scroll wrapper — bleeds edge-to-edge on mobile so
+                  the table scrolls cleanly instead of squishing columns.
+                  No effect on desktop (sm:mx-0 restores original layout). */}
+              <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                <Table<VisitorRecord>
+                  columns={columns}
+                  dataSource={visitorData}
+                  pagination={false}
+                  rowKey="key"
+                  scroll={{ x: 700 }}
+                  className="visitor-table "
+                />
+              </div>
 
               {/* Footer / pagination */}
-              <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100">
-                <p className="text-sm text-slate-400">
+              <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 border-t border-slate-100">
+                <p className="text-sm text-slate-400 text-center sm:text-left">
                   Showing 1 to 8 of 24 entries
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
                   <button
                     type="button"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}

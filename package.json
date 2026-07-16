@@ -22,5 +22,8 @@
     "husky": "^9.1.7",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.62.0"
+  },
+  "dependencies": {
+    "tailwind-merge": "^3.6.0"
   }
 }
