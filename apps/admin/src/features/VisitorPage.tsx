@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { Table, ConfigProvider } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import {
-  AppstoreOutlined,
-  SettingOutlined,
-  EyeOutlined,
-  SearchOutlined,
-  FilterOutlined,
-} from "@ant-design/icons";
+import { EyeOutlined, SearchOutlined, FilterOutlined } from "@ant-design/icons";
+import Sidebar from "../components/Sidebar.tsx";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
 /* ------------------------------------------------------------------ */
 
 type VisitorStatus = "Signed In" | "Pending" | "Signed Off" | "Rejected";
-type FilterTab = "All" | "Signed In" | "Signed Off" | "Pending Approval" | "Rejected";
+type FilterTab =
+  | "All"
+  | "Signed In"
+  | "Signed Off"
+  | "Pending Approval"
+  | "Rejected";
 
 interface VisitorRecord {
   key: string;
@@ -114,12 +114,6 @@ const visitorData: VisitorRecord[] = [
   },
 ];
 
-const navItems = [
-  { key: "dashboard", label: "Dashboard", icon: <AppstoreOutlined /> },
-  { key: "visitors", label: "Visitors", icon: <img src="visitors.svg" /> },
-  { key: "settings", label: "Settings", icon: <SettingOutlined /> },
-];
-
 const filterTabs: FilterTab[] = [
   "All",
   "Signed In",
@@ -195,7 +189,9 @@ const columns: ColumnsType<VisitorRecord> = [
     title: "Check-In",
     dataIndex: "checkIn",
     key: "checkIn",
-    render: (checkIn) => <span className="text-sm text-slate-500">{checkIn}</span>,
+    render: (checkIn) => (
+      <span className="text-sm text-slate-500">{checkIn}</span>
+    ),
   },
   {
     title: "Status",
@@ -224,8 +220,6 @@ const columns: ColumnsType<VisitorRecord> = [
 /* ------------------------------------------------------------------ */
 
 export default function Visitors() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [activeNav, setActiveNav] = useState("visitors");
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -243,71 +237,14 @@ export default function Visitors() {
         },
       }}
     >
-      <div className="min-h-screen flex bg-[#EEF2F7]">
+      <div className="min-h-screen flex flex-col md:flex-row bg-[#EEF2F7]">
         {/* Sidebar */}
-        <aside
-          className={`${
-            collapsed ? "w-20" : "w-60"
-          } shrink-0 bg-white border-r border-slate-100 flex flex-col justify-between transition-all duration-200`}
-        >
-          <div>
-            <div className="h-16 flex items-center justify-between px-5">
-              {!collapsed && (
-              <img src="/logo.svg" alt="Logo" className="h-3" />
-              )}
-              <button
-                type="button"
-                onClick={() => setCollapsed((c) => !c)}
-                className="w-7 h-7 flex items-center justify-center rounded-md text-slate-400 hover:bg-slate-50 transition"
-                aria-label="Toggle sidebar"
-              >
-                 <img
-    src="collapse.svg"
-    alt=""
-    className="w-4 h-4 "
-  />
-              </button>
-            </div>
-
-            <nav className="mt-4 px-3 space-y-1">
-              {navItems.map((item) => {
-                const isActive = activeNav === item.key;
-                return (
-                  <button
-                    key={item.key}
-                    type="button"
-                    onClick={() => setActiveNav(item.key)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
-                      isActive
-                        ? "bg-sky-500 text-white shadow-sm shadow-sky-200"
-                        : "text-slate-500 hover:bg-slate-50"
-                    } ${collapsed ? "justify-center" : ""}`}
-                  >
-                    <span className="text-base">{item.icon}</span>
-                    {!collapsed && <span>{item.label}</span>}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          <div className="p-3">
-            <button
-              type="button"
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50 transition ${
-                collapsed ? "justify-center" : ""
-              }`}
-            >
-              <img src="back.svg" />
-              {!collapsed && <span>Logout</span>}
-            </button>
-          </div>
-        </aside>
+        <Sidebar />
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0 w-full">
           {/* Topbar */}
-          <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-8">
+          <header className="min-h-16 bg-white border-b border-slate-100 flex items-center justify-between px-4 pt-3 pb-2.5 md:px-8 md:py-0">
             <h2 className="text-lg font-bold text-slate-800">Visitors</h2>
             <div className="flex items-center gap-3">
               <div className="text-right leading-tight">
@@ -324,34 +261,36 @@ export default function Visitors() {
             </div>
           </header>
 
-          <main className="flex-1 px-8 py-6">
+          <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
             {/* Visitors table card */}
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100">
               {/* Filter tabs + search row */}
-              <div className="flex items-center justify-between px-6 py-5">
+              <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
                 {/* Tabs, contained in their own light pill wrapper */}
-                <div className="h-11 bg-[#FAFAFA] rounded-lg border border-[#E6EAE8] flex items-center gap-1 px-1.5">
-                  {filterTabs.map((tab) => {
-                    const isActive = activeTab === tab;
-                    return (
-                      <button
-                        key={tab}
-                        type="button"
-                        onClick={() => setActiveTab(tab)}
-                        className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition ${
-                          isActive
-                            ? "bg-emerald-50 text-emerald-500 border border-emerald-200"
-                            : "text-slate-400 hover:text-slate-600 border border-transparent"
-                        }`}
-                      >
-                        {tab}
-                      </button>
-                    );
-                  })}
+                <div className="w-full overflow-x-auto rounded-lg border border-[#E6EAE8] bg-[#FAFAFA] p-1.5 sm:w-auto">
+                  <div className="flex min-w-max items-center gap-1">
+                    {filterTabs.map((tab) => {
+                      const isActive = activeTab === tab;
+                      return (
+                        <button
+                          key={tab}
+                          type="button"
+                          onClick={() => setActiveTab(tab)}
+                          className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition ${
+                            isActive
+                              ? "bg-emerald-50 text-emerald-500 border border-emerald-200"
+                              : "text-slate-400 hover:text-slate-600 border border-transparent"
+                          }`}
+                        >
+                          {tab}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Search + filter, pinned to the right edge */}
-                <div className="flex items-center gap-2">
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                   <div className="relative">
                     <SearchOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-sm" />
                     <input
@@ -359,7 +298,7 @@ export default function Visitors() {
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder="Search visitors..."
-                      className="pl-9 pr-3 py-2 w-56 rounded-lg border border-slate-200 text-sm text-slate-600 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-100 focus:border-sky-300"
+                      className="pl-9 pr-3 py-2 w-full sm:w-56 rounded-lg border border-slate-200 text-sm text-slate-600 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-100 focus:border-sky-300"
                     />
                   </div>
                   <button
@@ -372,20 +311,23 @@ export default function Visitors() {
                 </div>
               </div>
 
-              <Table<VisitorRecord>
-                columns={columns}
-                dataSource={visitorData}
-                pagination={false}
-                rowKey="key"
-                className="visitor-table"
-              />
+              <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+                <Table<VisitorRecord>
+                  columns={columns}
+                  dataSource={visitorData}
+                  pagination={false}
+                  rowKey="key"
+                  scroll={{ x: 900 }}
+                  className="visitor-table"
+                />
+              </div>
 
               {/* Footer / pagination */}
-              <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100">
-                <p className="text-sm text-slate-400">
+              <div className="flex flex-col gap-3 px-3 py-4 border-t border-slate-100 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <p className="text-sm text-slate-400 text-center sm:text-left">
                   Showing 1 to 8 of 1,248 entries
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
                   <button
                     type="button"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}

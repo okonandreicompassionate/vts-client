@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { ConfigProvider } from "antd";
 import {
-  AppstoreOutlined,
-  SettingOutlined,
   ArrowLeftOutlined,
+  CheckOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
+import { useState } from "react";
+import Sidebar from "../components/Sidebar.tsx";
+import Header from "../components/layout/Header.tsx";
 
 /* ------------------------------------------------------------------ */
 /* Hard-coded data (swap this out for your API response later)        */
@@ -33,109 +34,30 @@ const detailRows: { label: string; value: string }[] = [
   { label: "Check-In Time", value: visitor.checkIn },
 ];
 
-const navItems = [
-  { key: "dashboard", label: "Dashboard", icon: <AppstoreOutlined /> },
-  { key: "visitors", label: "Visitors", icon: <img src="visitors.svg" alt="" /> },
-  { key: "settings", label: "Settings", icon: <SettingOutlined /> },
+/* ------------------------------------------------------------------ */
+/* Access Approved data (swap for your API response)                  */
+/* ------------------------------------------------------------------ */
+
+const accessDetails = [
+  { label: "Access Level", value: "Standard Visitor" },
+  { label: "Valid Until", value: "Oct 24, 2022 - 5:00 PM" },
+  { label: "Entry Point", value: "Main Lobby - Gate A" },
 ];
 
-/* ------------------------------------------------------------------ */
-/* Page                                                                 */
-/* ------------------------------------------------------------------ */
-
 export default function ReviewVisitor() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [activeNav, setActiveNav] = useState("visitors");
   const [notes, setNotes] = useState("");
+  const [showApproved, setShowApproved] = useState(false);
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#38bdf8",
-          borderRadius: 8,
-          fontFamily: "inherit",
-        },
-      }}
-    >
-      <div className="min-h-screen flex bg-[#EEF2F7]">
+    <>
+      <div className="min-h-screen flex flex-col md:flex-row bg-[#EEF2F7]">
         {/* Sidebar */}
-        <aside
-          className={`${
-            collapsed ? "w-20" : "w-60"
-          } shrink-0 bg-white border-r border-slate-100 flex flex-col justify-between transition-all duration-200`}
-        >
-          <div>
-            <div className="h-16 flex items-center justify-between px-5">
-              {!collapsed && (
-                <img src="/logo.svg" alt="Logo" className="h-3" />
-              )}
-              <button
-                type="button"
-                onClick={() => setCollapsed((c) => !c)}
-                className="w-7 h-7 flex items-center justify-center rounded-md text-slate-400 hover:bg-slate-50 transition"
-                aria-label="Toggle sidebar"
-              >
-                <img src="collapse.svg" alt="" className="w-4 h-4" />
-              </button>
-            </div>
-
-            <nav className="mt-4 px-3 space-y-1">
-              {navItems.map((item) => {
-                const isActive = activeNav === item.key;
-                return (
-                  <button
-                    key={item.key}
-                    type="button"
-                    onClick={() => setActiveNav(item.key)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
-                      isActive
-                        ? "bg-sky-500 text-white shadow-sm shadow-sky-200"
-                        : "text-slate-500 hover:bg-slate-50"
-                    } ${collapsed ? "justify-center" : ""}`}
-                  >
-                    <span className="text-base">{item.icon}</span>
-                    {!collapsed && <span>{item.label}</span>}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          <div className="p-3">
-            <button
-              type="button"
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50 transition ${
-                collapsed ? "justify-center" : ""
-              }`}
-            >
-              <img src="back.svg" alt="" />
-              {!collapsed && <span>Logout</span>}
-            </button>
-          </div>
-        </aside>
-
+        <Sidebar />
         {/* Main content */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0 w-full">
           {/* Topbar */}
-          <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-8">
-            <h2 className="text-lg font-bold text-slate-800">Review Visitor</h2>
-            <div className="flex items-center gap-3">
-              <div className="text-right leading-tight">
-                <p className="text-sm font-semibold text-slate-800">
-                  Admin User
-                </p>
-                <p className="text-xs text-slate-400">Super Admin</p>
-              </div>
-              <img
-                src="https://i.pravatar.cc/40?img=68"
-                alt="Admin User"
-                className="w-9 h-9 rounded-full object-cover"
-              />
-            </div>
-          </header>
-
-          <main className="flex-1 px-8 py-6">
+          <Header title={"Review Visitor"} />
+          <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
             {/* Back link */}
             <button
               type="button"
@@ -145,9 +67,9 @@ export default function ReviewVisitor() {
               Back to List
             </button>
 
-            <div className="flex items-start gap-6">
+            <div className="flex flex-col gap-6 xl:flex-row xl:items-start">
               {/* Visitor details card */}
-              <div className="flex-1 bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100 px-7 py-7">
+              <div className="w-full xl:flex-1 bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100 px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7">
                 <div className="flex items-center gap-4 mb-6">
                   <img
                     src={visitor.avatar}
@@ -168,13 +90,13 @@ export default function ReviewVisitor() {
                   {detailRows.map((row, idx) => (
                     <div
                       key={row.label}
-                      className={`flex items-center px-5 py-3.5 ${
+                      className={`flex flex-col gap-1 px-4 py-3.5 sm:flex-row sm:items-center sm:px-5 ${
                         idx !== detailRows.length - 1
                           ? "border-b border-slate-100"
                           : ""
                       }`}
                     >
-                      <span className="w-40 shrink-0 text-sm text-slate-400">
+                      <span className="w-full shrink-0 text-sm text-slate-400 sm:w-40">
                         {row.label}
                       </span>
                       <span className="text-sm text-slate-700">
@@ -186,14 +108,14 @@ export default function ReviewVisitor() {
               </div>
 
               {/* Review and approve card */}
-              <div className="w-96 shrink-0 bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100 px-6 py-6">
+              <div className="w-full xl:w-96 xl:shrink-0 bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100 px-4 py-5 sm:px-6 sm:py-6">
                 <h3 className="text-base font-bold text-slate-800 mb-2">
                   Review and Approve
                 </h3>
                 <p className="text-sm text-slate-400 leading-relaxed mb-5">
-                  Please verify the visitor information before granting
-                  access to the building. You can add internal notes below
-                  for audit purposes.
+                  Please verify the visitor information before granting access
+                  to the building. You can add internal notes below for audit
+                  purposes.
                 </p>
 
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -209,6 +131,7 @@ export default function ReviewVisitor() {
 
                 <button
                   type="button"
+                  onClick={() => setShowApproved(true)}
                   className="w-full py-3 rounded-lg bg-emerald-500 text-white text-sm font-semibold hover:bg-emerald-600 transition mb-3"
                 >
                   Approve Access
@@ -224,6 +147,60 @@ export default function ReviewVisitor() {
           </main>
         </div>
       </div>
-    </ConfigProvider>
+
+      {showApproved && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          onClick={() => setShowApproved(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative rounded-2xl bg-white px-8 pt-8 pb-7 text-center shadow-xl w-[40%]"
+          >
+            <button
+              type="button"
+              onClick={() => setShowApproved(false)}
+              aria-label="Close"
+              className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition"
+            >
+              <CloseOutlined className="text-sm" />
+            </button>
+
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-emerald-500">
+                <CheckOutlined className="text-lg text-emerald-500" />
+              </div>
+            </div>
+
+            <h3 className="text-xl font-bold text-slate-800">
+              Access Approved
+            </h3>
+            <p className="mt-1.5 text-sm text-slate-400">
+              Visitor access has been successfully approved.
+            </p>
+
+            <div className="mt-6 space-y-3 rounded-xl bg-[#D1FAE5] px-3   py-4 text-left w-">
+              {accessDetails.map((row) => (
+                <div
+                  key={row.label}
+                  className="flex items-center justify-between gap-4"
+                >
+                  <span className="text-sm text-[#065F46]">{row.label}</span>
+                  <span className="text-sm font-bold text-[#065F46]">
+                    {row.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="w-full h-10 mt-10 py-3 rounded-lg border border-[#B3DEEF] text-[#0A96CC] text-sm font-semibold hover:bg-emerald-50 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
