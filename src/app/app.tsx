@@ -1,4 +1,4 @@
-import { PopupProvider } from "../features/admin/contexts/PopupProvider";
+import { PopupProvider } from "../contexts/PopupProvider";
 import { AppProvider } from "./provider";
 import { AppRouter } from "./router";
 

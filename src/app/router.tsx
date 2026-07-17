@@ -13,7 +13,7 @@ import VisitorDetails from "../features/admin/components/VisitorDetails";
 import VisitorReview from "../features/admin/components/VisitorReview";
 import AdminSettings from "../features/admin/components/AdminSettings";
 
-import { PopupProvider } from "../features/admin/contexts/PopupProvider";
+import { PopupProvider } from "../contexts/PopupProvider";
 
 
 export function AppRouter() {

@@ -37,9 +37,7 @@ const navItems = [
   },
 ];
 
-/* ------------------------------------------------------------------ */
-/* Sidebar                                                              */
-/* ------------------------------------------------------------------ */
+
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -54,9 +52,6 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* -------------------------------------------------------- */}
-      {/* Mobile top bar — hidden on desktop                        */}
-      {/* -------------------------------------------------------- */}
       <div className="md:hidden h-14 flex items-center justify-between px-4 bg-white border-b border-slate-100">
         <img src="/logo.svg" alt="Logo" className="h-3" />
         <button
@@ -69,9 +64,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* -------------------------------------------------------- */}
-      {/* Mobile overlay backdrop                                   */}
-      {/* -------------------------------------------------------- */}
+
       {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black/40 z-40"
