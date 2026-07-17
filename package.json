@@ -1,29 +1,45 @@
 {
-  "name": "vms",
+  "name": "vts",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@11.13.1+sha512.b2fc7683b8a6525414e7d13e1ba28caaddde96bf66ec540bfaeb7e702b81f3e0be4d1f295edf7f9fe0396740a8dce4509c582ddf79891f4543fea32d37645f25",
   "scripts": {
-    "dev:user": "pnpm --filter @zora/user dev",
-    "dev:admin": "pnpm --filter @zora/admin dev",
-    "build": "pnpm -r --if-present run build",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview:user": "pnpm --filter @zora/user preview",
-    "preview:admin": "pnpm --filter @zora/admin preview",
+    "preview": "vite preview",
     "prepare": "husky"
+  },
+  "dependencies": {
+    "@ant-design/cssinjs": "^2.1.2",
+    "@ant-design/icons": "^6.3.2",
+    "@fontsource-variable/raleway": "^5.2.8",
+    "@fontsource/raleway": "^5.2.8",
+    "@reduxjs/toolkit": "^2.12.0",
+    "antd": "^6.5.1",
+    "lucide-react": "^1.24.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-redux": "^9.3.0",
+    "react-router-dom": "^7.18.1",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.2",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^10.6.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
     "husky": "^9.1.7",
+    "tailwindcss": "^4.3.2",
     "typescript": "~6.0.2",
-    "typescript-eslint": "^8.62.0"
-  },
-  "dependencies": {
-    "tailwind-merge": "^3.6.0"
+    "typescript-eslint": "^8.62.0",
+    "vite": "^8.1.1"
   }
 }
