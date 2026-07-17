@@ -11,12 +11,22 @@ const theme = {
     borderRadius: 12,
     fontFamily: "'Raleway Variable', sans-serif",
   },
+  components: {
+    Input: {
+      borderRadius: 0,
+    },
+    Form: {
+      labelFontSize: 13,
+      verticalLabelPadding: "0 0 4px",
+      itemMarginBottom: 16,
+    },
+  },
 };
 
-export function AppProvider({children}: {children: ReactNode}){
-    return (
-        <StyleProvider layer>
-            <ConfigProvider theme={theme}>{children}</ConfigProvider>
-        </StyleProvider>
-    )
+export function AppProvider({ children }: { children: ReactNode }) {
+  return (
+    <StyleProvider layer>
+      <ConfigProvider theme={theme}>{children}</ConfigProvider>
+    </StyleProvider>
+  );
 }
