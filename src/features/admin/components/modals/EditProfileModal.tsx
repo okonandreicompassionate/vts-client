@@ -1,7 +1,7 @@
 import { Input } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
-import CustomModal from "../../global/CustomModal";
+import CustomModal from "../../../../global/CustomModal";
 
 function EditProfileModal() {
   const [form] = useForm();
