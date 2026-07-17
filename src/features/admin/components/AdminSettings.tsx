@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ConfigProvider, Switch } from "antd";
+import { Switch } from "antd";
 import { SettingOutlined, CloseOutlined } from "@ant-design/icons";
 import Sidebar from "../components/Sidebar.tsx";
 import { usePopup } from "../hooks/usePopup.tsx";
