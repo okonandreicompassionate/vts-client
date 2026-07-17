@@ -378,15 +378,7 @@ export default function AdminSettings() {
 
   const { openModal } = usePopup();
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#38bdf8",
-          borderRadius: 8,
-          fontFamily: "inherit",
-        },
-      }}
-    >
+    
       <div className="min-h-screen flex flex-col md:flex-row bg-[#EEF2F7]">
         {/* Sidebar */}
         <Sidebar />
@@ -444,22 +436,22 @@ export default function AdminSettings() {
             </div>
           </main>
         </div>
+        <ManageSecurityModal
+          open={manageSecurityOpen}
+          onClose={() => setManageSecurityOpen(false)}
+        />
+  
+        <NotificationPreferencesModal
+          open={notificationPrefsOpen}
+          onClose={() => setNotificationPrefsOpen(false)}
+        />
+  
+        <SystemSettingsModal
+          open={systemSettingsOpen}
+          onClose={() => setSystemSettingsOpen(false)}
+        />
       </div>
 
-      <ManageSecurityModal
-        open={manageSecurityOpen}
-        onClose={() => setManageSecurityOpen(false)}
-      />
-
-      <NotificationPreferencesModal
-        open={notificationPrefsOpen}
-        onClose={() => setNotificationPrefsOpen(false)}
-      />
-
-      <SystemSettingsModal
-        open={systemSettingsOpen}
-        onClose={() => setSystemSettingsOpen(false)}
-      />
-    </ConfigProvider>
+   
   );
 }
