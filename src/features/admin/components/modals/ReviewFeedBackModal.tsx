@@ -1,4 +1,4 @@
-import CustomModal from "../../../../global/CustomModal";
+import CustomModal from "../../../../components/CustomModal";
 
 const ReviewFeedBackModal = () => {
   return (
