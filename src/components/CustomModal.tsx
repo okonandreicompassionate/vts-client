@@ -2,7 +2,13 @@ import { Button, Checkbox, Modal, Spin } from "antd";
 import { useState, type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { usePopup } from "../hooks/usePopup";
-import { ModalTheme } from "../types/modal.theme";
+
+
+enum ModalTheme {
+  WARNING = "WARNING",
+  DEFAULT = "DEFAULT",
+}
+
 
 interface Props {
   title: string;

@@ -1,6 +1,7 @@
 import { StyleProvider } from "@ant-design/cssinjs";
 import { ConfigProvider } from "antd";
 import type { ReactNode } from "react";
+import { PopupProvider } from "../lib/contexts/PopupProvider";
 
 const theme = {
   token: {
@@ -26,7 +27,9 @@ const theme = {
 export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <StyleProvider layer>
-      <ConfigProvider theme={theme}>{children}</ConfigProvider>
+      <ConfigProvider theme={theme}>
+        <PopupProvider>{children}</PopupProvider>
+      </ConfigProvider>
     </StyleProvider>
   );
 }
