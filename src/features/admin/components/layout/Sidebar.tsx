@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "antd";
 import { AppstoreOutlined, SettingOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
+import { paths } from "../../../../config/paths"; // adjust depth to your structure
 
 const navItems = [
-  { key: "dashboard", label: "Dashboard", path: "/admindashboard", icon: <img src="dashboard.svg" alt="" />, fallbackIcon: <AppstoreOutlined /> },
-  { key: "visitors", label: "Visitors", path: "/visitorpage", icon: <img src="visitors.svg" alt="" />, fallbackIcon: <AppstoreOutlined /> },
-  { key: "settings", label: "Settings", path: "/adminsettings", icon: <SettingOutlined />, fallbackIcon: <SettingOutlined /> },
+  { key: "dashboard", label: "Dashboard", path: paths.admin.dashboard.path, getHref: paths.admin.dashboard.getHref, icon: <img src="dashboard.svg" alt="" />, fallbackIcon: <AppstoreOutlined /> },
+  { key: "visitors", label: "Visitors", path: paths.admin.visitors.path, getHref: paths.admin.visitors.getHref, icon: <img src="visitors.svg" alt="" />, fallbackIcon: <AppstoreOutlined /> },
+  { key: "settings", label: "Settings", path: paths.admin.settings.path, getHref: paths.admin.settings.getHref, icon: <SettingOutlined />, fallbackIcon: <SettingOutlined /> },
 ];
 
 export default function Sidebar() {
@@ -15,8 +16,8 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const go = (path: string) => {
-    navigate(path);
+  const go = (href: string) => {
+    navigate(href);
     setMobileOpen(false);
   };
 
@@ -58,7 +59,7 @@ export default function Sidebar() {
                 <Button
                   key={item.key}
                   type="text"
-                  onClick={() => go(item.path)}
+                  onClick={() => go(item.getHref())}
                   className={`w-full! h-auto! flex! items-center! gap-3 px-3! py-2.5! rounded-lg! text-sm! font-medium! ${
                     isActive ? "bg-sky-500! text-white! shadow-sm shadow-sky-200" : "text-slate-500! hover:bg-slate-50!"
                   } ${collapsed ? "md:justify-center!" : "justify-start!"}`}
@@ -74,7 +75,7 @@ export default function Sidebar() {
         <div className="p-3">
           <Button
             type="text"
-            onClick={() => go("/")}
+            onClick={() => go(paths.home.getHref())}
             className={`w-full! h-auto! flex! items-center! gap-3 px-3! py-2.5! rounded-lg! text-sm! font-medium! text-slate-500! hover:bg-slate-50! ${
               collapsed ? "md:justify-center!" : "justify-start!"
             }`}

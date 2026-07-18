@@ -7,10 +7,10 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-dvh w-full flex-col bg-white px-6 pb-8 pt-12">
+    <div className="flex min-h-dvh w-full flex-col bg-white px-6 pb-4 pt-12">
       
       <header className="flex flex-col items-center text-center">
-        <img src="/logo.svg" alt="Zoracom" className="mb-8 h-6 w-auto" />
+        <img src="/logo.png" alt="Zoracom" className="mb-8 h-6 w-auto" />
 
         <p className="text-[15px] text-[#262626]">Welcome to</p>
         <h1 className="mt-1 text-[28px] font-bold text-[#00AFEF]">

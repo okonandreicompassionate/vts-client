@@ -11,7 +11,7 @@ enum ModalTheme {
 
 
 interface Props {
-  title: string;
+  title?: string;
   children: ReactNode;
   okText?: string;
   onCancel?: () => void;
