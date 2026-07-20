@@ -5,8 +5,8 @@ import { AppstoreOutlined, SettingOutlined, MenuOutlined, CloseOutlined } from "
 import { paths } from "../../../../config/paths"; // adjust depth to your structure
 
 const navItems = [
-  { key: "dashboard", label: "Dashboard", path: paths.admin.dashboard.path, getHref: paths.admin.dashboard.getHref, icon: <img src="dashboard.svg" alt="" />, fallbackIcon: <AppstoreOutlined /> },
-  { key: "visitors", label: "Visitors", path: paths.admin.visitors.path, getHref: paths.admin.visitors.getHref, icon: <img src="visitors.svg" alt="" />, fallbackIcon: <AppstoreOutlined /> },
+  { key: "dashboard", label: "Dashboard", path: paths.admin.dashboard.path, getHref: paths.admin.dashboard.getHref, icon: <img src="/dashboard.svg" alt="" />, fallbackIcon: <AppstoreOutlined /> },
+  { key: "visitors", label: "Visitors", path: paths.admin.visitors.path, getHref: paths.admin.visitors.getHref, icon: <img src="/visitors.svg" alt="" />, fallbackIcon: <AppstoreOutlined /> },
   { key: "settings", label: "Settings", path: paths.admin.settings.path, getHref: paths.admin.settings.getHref, icon: <SettingOutlined />, fallbackIcon: <SettingOutlined /> },
 ];
 
@@ -47,7 +47,7 @@ export default function Sidebar() {
           <div className="h-16 flex items-center justify-between px-5">
             {!collapsed && <img src="/logo.svg" alt="Logo" className="h-3 md:block" />}
             <Button type="text" onClick={() => setCollapsed((c) => !c)} aria-label="Toggle sidebar"
-              icon={<img src="collapse.svg" alt="" className="w-4 h-4" />} className="hidden! md:inline-flex! w-7! h-7! text-slate-400!" />
+              icon={<img src="/collapse.svg" alt="" className="w-4 h-4" />} className="hidden! md:inline-flex! w-7! h-7! text-slate-400!" />
             <Button type="text" onClick={() => setMobileOpen(false)} aria-label="Close menu"
               icon={<CloseOutlined className="text-base" />} className="md:hidden! w-7! h-7! text-slate-400!" />
           </div>
@@ -80,7 +80,7 @@ export default function Sidebar() {
               collapsed ? "md:justify-center!" : "justify-start!"
             }`}
           >
-            <img src="back.svg" alt="" />
+            <img src="/back.svg" alt="" />
             <span className={collapsed ? "md:hidden" : ""}>Logout</span>
           </Button>
         </div>

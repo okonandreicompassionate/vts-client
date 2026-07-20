@@ -13,12 +13,12 @@ export default function VerifyIdentity() {
   };
 
   return (
-    <div className="flex min-h-dvh w-full flex-col items-center bg-white pt-18">
+    <div className="flex  w-full flex-col items-center bg-white max-md:pt-18">
       <Form
         layout="vertical"
         requiredMark={false}
         onFinish={handleFinish}
-        className="flex w-full gap-8 max-w-md flex-1 flex-col px-7"
+        className="flex w-full max-w-md flex-1 flex-col gap-8 px-7"
       >
         <div>
           <div className="flex justify-center">
@@ -33,7 +33,7 @@ export default function VerifyIdentity() {
           </div>
         </div>
 
-        <div className="mx-auto flex w-full max-w-sm flex-1 flex-col mb-5">
+        <div className="mx-auto mb-5 flex justify-center w-full max-w-sm flex-1 flex-col">
           <Form.Item
             name="emailOrPhone"
             label="Email/Phone Number"
@@ -54,14 +54,12 @@ export default function VerifyIdentity() {
             <Input size="large" placeholder="" className="rounded-xl" />
           </Form.Item>
 
-          <div className="flex-1" />
-
           <Button
             type="primary"
             htmlType="submit"
             size="large"
             block
-            className="rounded-md text-[15px] font-semibold"
+            className="md:-mt[800px] rounded-md text-[15px] font-semibold"
             icon={<ArrowRightOutlined />}
             iconPlacement="end"
           >

@@ -28,9 +28,9 @@ const visitorData: VisitorRecord[] = [
 ];
 
 const statCards = [
-  { label: "Total Visitors", value: "1,248", icon: <img src="visitors2.svg" alt="Total Visitors" />, iconBg: "bg-blue-50", iconColor: "text-blue-500" },
-  { label: "Currently Signed In", value: "42", icon: <img src="check.svg" alt="Signed In" />, iconBg: "bg-emerald-50", iconColor: "text-emerald-500" },
-  { label: "Signed Off", value: "1,180", icon: <img src="back.svg" alt="Signed Off" />, iconBg: "bg-slate-100", iconColor: "text-slate-500" },
+  { label: "Total Visitors", value: "1,248", icon: <img src="/visitors2.svg" alt="Total Visitors" />, iconBg: "bg-blue-50", iconColor: "text-blue-500" },
+  { label: "Currently Signed In", value: "42", icon: <img src="/check.svg" alt="Signed In" />, iconBg: "bg-emerald-50", iconColor: "text-emerald-500" },
+  { label: "Signed Off", value: "1,180", icon: <img src="/back.svg" alt="Signed Off" />, iconBg: "bg-slate-100", iconColor: "text-slate-500" },
   { label: "Pending Approval", value: "18", icon: <ClockCircleOutlined />, iconBg: "bg-orange-50", iconColor: "text-orange-400" },
   { label: "Rejected", value: "8", icon: <WarningOutlined />, iconBg: "bg-rose-50", iconColor: "text-rose-400" },
 ];

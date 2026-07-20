@@ -1,0 +1,76 @@
+import { CloseOutlined, WarningOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import CustomModal from "../../../../components/CustomModal";
+
+type ApproveAccessModalProps = {
+  visible: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+  visitorName?: string;
+  accessLevel?: string;
+  validUntil?: string;
+  entryPoint?: string;
+};
+
+export default function ApproveAccessModal({
+  visible,
+  onConfirm,
+  onCancel,
+  visitorName = "Alice Mary John",
+  accessLevel = "Standard Visitor",
+  validUntil = "Oct 24, 2022 - 5:00 PM",
+  entryPoint = "Main Lobby - Gate A",
+}: ApproveAccessModalProps) {
+  const details = [
+    { label: "Visitor Name", value: visitorName },
+    { label: "Access Level", value: accessLevel },
+    { label: "Valid Until", value: validUntil },
+    { label: "Entry Point", value: entryPoint },
+  ];
+
+  return (
+    <CustomModal hideFooter closable={false} center width={480} open={visible} onCancel={onCancel}>
+      <div className="relative py-2 text-center">
+        <Button
+          onClick={onCancel}
+          type="text"
+          shape="circle"
+          icon={<CloseOutlined className="text-sm text-slate-500" />}
+          className="absolute top-0 right-0 flex h-9 w-9 items-center justify-center bg-slate-100"
+        />
+
+        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-orange-400 bg-orange-50">
+          <WarningOutlined className="text-2xl text-orange-500" />
+        </div>
+
+        <h3 className="text-xl font-bold text-slate-900">Confirm Approval</h3>
+        <p className="mx-auto mt-3 max-w-sm text-sm text-slate-500">
+          You are about to grant access to the following visitor. Please review the details
+          before confirming.
+        </p>
+
+        <div className="mt-6 rounded-xl bg-emerald-50 px-5 py-4 text-left">
+          {details.map((row) => (
+            <div key={row.label} className="flex items-center justify-between py-1.5">
+              <span className="text-sm text-emerald-700">{row.label}</span>
+              <span className="text-sm font-semibold text-emerald-800">{row.value}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 flex items-center gap-3">
+          <Button onClick={onCancel} className="h-11! w-full font-medium text-slate-700!">
+            Cancel
+          </Button>
+          <Button
+            onClick={onConfirm}
+            type="primary"
+            className="h-11! w-full bg-emerald-500! font-semibold hover:bg-emerald-600!"
+          >
+            Approve Access
+          </Button>
+        </div>
+      </div>
+    </CustomModal>
+  );
+}

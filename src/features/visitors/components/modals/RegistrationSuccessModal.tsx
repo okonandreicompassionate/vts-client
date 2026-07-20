@@ -4,24 +4,40 @@ import { usePopup } from "../../../../hooks/usePopup";
 
 type RegistrationSuccessModalProps = {
   onOk?: () => void;
+  visible?: boolean;
+  onClose?: () => void;
 };
 
-export default function RegistrationSuccessModal({ onOk }: RegistrationSuccessModalProps) {
+export default function RegistrationSuccessModal({
+  onOk,
+  visible,
+  onClose,
+}: RegistrationSuccessModalProps) {
   const { closeModal } = usePopup();
 
   const handleOk = () => {
     onOk?.();
-    closeModal();
+    onClose?.();
+    if (!onClose) closeModal();
   };
 
   return (
-    <CustomModal hideFooter closable={false} center width={340}>
-      <div className="flex flex-col items-center text-center pt-2 pb-1">
-        <img src="/warning-icon.svg" alt="" className="w-16 h-16 mb-5" />
-        <h3 className="text-base font-semibold text-slate-800">Submitted Successfully</h3>
+    <CustomModal hideFooter closable={false} center width={340} open={visible}>
+      <div className="flex flex-col items-center pt-6 pb-2 text-center">
+        <svg
+          className="mb-4 h-10 w-10 text-sky-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 12.5l2.5 2.5L16 9.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <h3 className="text-[15px] font-medium text-slate-700">Submitted Successfully</h3>
       </div>
-      <div className="mt-6 border-t border-slate-100">
-        <Button type="link" block onClick={handleOk} className="h-12! text-sky-500! font-medium">
+      <div className="mt-5">
+        <Button type="link" block onClick={handleOk} className="h-11! font-normal text-sky-500!">
           Ok
         </Button>
       </div>
