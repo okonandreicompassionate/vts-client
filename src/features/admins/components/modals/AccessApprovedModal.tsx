@@ -1,0 +1,61 @@
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import CustomModal from "../../../../components/CustomModal";
+
+type AccessDetail = {
+  label: string;
+  value: string;
+};
+
+type AccessApprovedModalProps = {
+  visible: boolean;
+  onClose: () => void;
+  accessDetails: AccessDetail[];
+};
+
+export default function AccessApprovedModal({
+  visible,
+  onClose,
+  accessDetails,
+}: AccessApprovedModalProps) {
+  return (
+    <CustomModal hideFooter closable={false} center width={480} open={visible} onCancel={onClose}>
+      <div className="relative pt-2 text-center">
+        <Button
+          onClick={onClose}
+          type="text"
+          shape="circle"
+          icon={<CloseOutlined className="text-sm text-slate-500" />}
+          className="absolute top-0 right-0 flex h-9 w-9 items-center justify-center bg-slate-100"
+        />
+
+        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-emerald-500">
+            <CheckOutlined className="text-lg text-emerald-500" />
+          </div>
+        </div>
+        <h3 className="text-xl font-bold text-slate-900">Access Approved</h3>
+        <p className="mt-1.5 text-sm text-slate-400">
+          Visitor access has been successfully approved.
+        </p>
+
+        <div className="mt-6 space-y-3 rounded-xl bg-[#D1FAE5] px-5 py-4 text-left">
+          {accessDetails.map((row) => (
+            <div key={row.label} className="flex items-center justify-between gap-4">
+              <span className="text-sm text-[#065F46]">{row.label}</span>
+              <span className="text-sm font-bold text-[#065F46]">{row.value}</span>
+            </div>
+          ))}
+        </div>
+
+        <Button
+          block
+          onClick={onClose}
+          className="mt-6 h-11! border-[#B3DEEF]! font-semibold text-[#0A96CC]!"
+        >
+          Cancel
+        </Button>
+      </div>
+    </CustomModal>
+  );
+}

@@ -21,24 +21,24 @@ export const paths = {
         `/admin${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`,
     },
     dashboard: {
-      path: "/admindashboard",
-      getHref: () => "/admindashboard",
+      path: "/admin/dashboard",
+      getHref: () => "/admin/dashboard",
     },
     visitors: {
-      path: "/visitorpage",
-      getHref: () => "/visitorpage",
+      path: "/admin/visitors",
+      getHref: () => "/admin/visitors",
     },
     visitorDetails: {
-      path: "/visitordetails",
-      getHref: (id?: string) => (id ? `/visitordetails?id=${id}` : "/visitordetails"),
+      path: "/admin/visitors/:id",
+      getHref: (id?: string) => (id ? `/admin/visitors/${id}` : "/admin/visitors"),
     },
     visitorReview: {
-      path: "/visitorreview",
-      getHref: (id?: string) => (id ? `/visitorreview?id=${id}` : "/visitorreview"),
+      path: "/admin/visitors/:id/review",
+      getHref: (id?: string) => (id ? `/admin/visitors/${id}/review` : "/admin/visitors"),
     },
     settings: {
-      path: "/adminsettings",
-      getHref: () => "/adminsettings",
+      path: "/admin/settings",
+      getHref: () => "/admin/settings",
     },
   },
 } as const;

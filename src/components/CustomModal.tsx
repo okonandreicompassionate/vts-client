@@ -3,12 +3,10 @@ import { useState, type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { usePopup } from "../hooks/usePopup";
 
-
 enum ModalTheme {
   WARNING = "WARNING",
   DEFAULT = "DEFAULT",
 }
-
 
 interface Props {
   title?: string;
@@ -31,6 +29,7 @@ interface Props {
   hideFooter?: boolean;
   maxHeight?: boolean;
   hideCancelButton?: boolean;
+  open?: boolean;
 }
 
 export const CustomModal = ({
@@ -51,6 +50,8 @@ export const CustomModal = ({
   hideFooter = false,
   maxHeight = true,
   hideCancelButton = false,
+  closable = true,
+  open,
 }: Props) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const { closeModal, isModalOpen } = usePopup();
@@ -62,8 +63,8 @@ export const CustomModal = ({
       okText={okText || "Submit"}
       onOk={onOk}
       okButtonProps={{ danger: isDanger, disabled }}
-      open={isModalOpen}
-      onCancel={closeModal}
+      open={open !== undefined ? open : isModalOpen}
+      onCancel={onCancel ?? closeModal}
       confirmLoading={loading}
       closable={false}
       footer={false}
@@ -73,40 +74,38 @@ export const CustomModal = ({
     >
       <div className="flex flex-col items-center">
         {/* //Modal Header */}
-        <div className="w-full flex items-center justify-between border-b pb-2 border-gray-300 ">
+        <div className="flex w-full items-center justify-between  pb-2">
           <div className="text-left">
             <p
               className={twMerge(
-                "font-semibold capitalize text-lg!",
+                "text-lg! font-semibold capitalize",
                 !modalSubtitle && "text-base!",
               )}
             >
               {title}
             </p>
-            {modalSubtitle && (
-              <p className="text-gray-600 text-sm! leading-5">
-                {modalSubtitle}
-              </p>
-            )}
+            {modalSubtitle && <p className="text-sm! leading-5 text-gray-600">{modalSubtitle}</p>}
           </div>
 
-          <Button
-            onClick={closeModal}
-            type="text"
-            className="flex items-center justify-center bg-green-50 p-1 rounded-full h-7 w-7"
-          >
-            X
-          </Button>
+          {closable && (
+            <Button
+              onClick={closeModal}
+              type="text"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-green-50 p-1"
+            >
+              X
+            </Button>
+          )}
         </div>
 
         <div
           className={twMerge(
-            "w-full h-full overflow-y-auto overflow-x-hidden",
+            "h-full w-full overflow-x-hidden overflow-y-auto",
             !maxHeight ? "" : "max-h-125",
           )}
         >
           {loading ? (
-            <div className="h-full flex flex-col justify-center items-center py-10">
+            <div className="flex h-full flex-col items-center justify-center py-10">
               <Spin className="" />
             </div>
           ) : (
@@ -122,21 +121,16 @@ export const CustomModal = ({
               className="custom-checkbox"
               // style={{ color: "red" }}
             >
-              <p className="text-sm text-gray-600">
-                {confirmationText ?? "I confirm this action"}
-              </p>
+              <p className="text-sm text-gray-600">{confirmationText ?? "I confirm this action"}</p>
             </Checkbox>
           </div>
         )}
 
         {!hideFooter && (
-          <div className="space-x-4 w-full mt-2">
+          <div className="mt-2 w-full space-x-4">
             <div className="flex items-center justify-center gap-3">
               {!hideCancelButton && (
-                <Button
-                  className="text-sm! px-6! w-full h-9"
-                  onClick={onCancel ?? closeModal}
-                >
+                <Button className="h-9 w-full px-6! text-sm!" onClick={onCancel ?? closeModal}>
                   Cancel
                 </Button>
               )}
@@ -145,7 +139,7 @@ export const CustomModal = ({
                 loading={loading}
                 type="primary"
                 className={twMerge(
-                  "text-sm! px-6! w-full h-9",
+                  "h-9 w-full px-6! text-sm!",
                   warning && "bg-red-400! text-white!",
                 )}
                 disabled={disabled || (showConfirmation ? !isConfirmed : false)}
