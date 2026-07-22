@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // use the paths in path.ts file to link or navigate files
@@ -11,32 +12,51 @@ import VisitorReview from "../features/admins/components/VisitorReview";
 import LandingPage from "../features/visitors/components/LandingPage";
 import Registration from "../features/visitors/components/Registration";
 import VerifyIdentity from "../features/visitors/components/VerifyIdentity";
+import VisitorProfile from "../features/visitors/components/VisitorProfile";
 import AuthLayout from "../features/visitors/components/layout/AuthLayout";
 import Layout from "../features/admins/components/layout/Layout";
+
+const LazyAdminDashboard = lazy(() => import("../features/admins/components/AdminDashboard"));
+const LazyAdminLogin = lazy(() => import("../features/admins/components/AdminLogin"));
+const LazyAdminSettings = lazy(() => import("../features/admins/components/AdminSettings"));
+const LazyVisitorDetails = lazy(() => import("../features/admins/components/VisitorDetails"));
+const LazyVisitorPage = lazy(() => import("../features/admins/components/VisitorPage"));
+const LazyVisitorReview = lazy(() => import("../features/admins/components/VisitorReview"));
+const LazyLandingPage = lazy(() => import("../features/visitors/components/LandingPage"));
+const LazyRegistration = lazy(() => import("../features/visitors/components/Registration"));
+const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/VerifyIdentity"));
+const LazyVisitorProfile = lazy(() => import("../features/visitors/components/VisitorProfile"));
+const LazyAuthLayout = lazy(() => import("../features/visitors/components/layout/AuthLayout"));
+const LazyLayout = lazy(() => import("../features/admins/components/layout/Layout"));
+
+const fallback = <div className="min-h-screen bg-white" />;
 
 export function AppRouter() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* visitor side */}
-        <Route path={paths.home.path} element={<LandingPage />} />
-        <Route element={<AuthLayout />}>
-          <Route path={paths.register.path} element={<Registration />} />
-          <Route path={paths.verify.path} element={<VerifyIdentity />} />
-        </Route>
+      <Suspense fallback={fallback}>
+        <Routes>
+          {/* visitor side */}
+          <Route path={paths.home.path} element={<LazyLandingPage />} />
+          <Route element={<LazyAuthLayout />}>
+            <Route path={paths.register.path} element={<LazyRegistration />} />
+            <Route path={paths.verify.path} element={<LazyVerifyIdentity />} />
+            <Route path={paths.visitorProfile.path} element={<LazyVisitorProfile />} />
+          </Route>
 
-        {/* admin login*/}
-        <Route path={paths.admin.login.path} element={<AdminLogin />} />
+          {/* admin login*/}
+          <Route path={paths.admin.login.path} element={<LazyAdminLogin />} />
 
-        {/* admin app which has shared layout: sidebar + outlet) */}
-        <Route element={<Layout />}>
-          <Route path={paths.admin.dashboard.path} element={<AdminDashboard />} />
-          <Route path={paths.admin.visitors.path} element={<VisitorPage />} />
-          <Route path={paths.admin.visitorDetails.path} element={<VisitorDetails />} />
-          <Route path={paths.admin.visitorReview.path} element={<VisitorReview />} />
-          <Route path={paths.admin.settings.path} element={<AdminSettings />} />
-        </Route>
-      </Routes>
+          {/* admin app which has shared layout: sidebar + outlet) */}
+          <Route element={<LazyLayout />}>
+            <Route path={paths.admin.dashboard.path} element={<LazyAdminDashboard />} />
+            <Route path={paths.admin.visitors.path} element={<LazyVisitorPage />} />
+            <Route path={paths.admin.visitorDetails.path} element={<LazyVisitorDetails />} />
+            <Route path={paths.admin.visitorReview.path} element={<LazyVisitorReview />} />
+            <Route path={paths.admin.settings.path} element={<LazyAdminSettings />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

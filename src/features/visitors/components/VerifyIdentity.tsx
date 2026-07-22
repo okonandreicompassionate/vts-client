@@ -22,7 +22,7 @@ export default function VerifyIdentity() {
       >
         <div>
           <div className="flex justify-center">
-            <img src="/padlock.svg" alt="" />
+            <img src="/padlock.svg" alt="" loading="lazy" />
           </div>
           <div className="mt-1 text-center">
             <h1 className="text-xl font-bold text-slate-900">Verify Identity</h1>
