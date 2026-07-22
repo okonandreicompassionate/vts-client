@@ -3,18 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // use the paths in path.ts file to link or navigate files
 import { paths } from "../config/paths";
-import AdminDashboard from "../features/admins/components/AdminDashboard";
-import AdminLogin from "../features/admins/components/AdminLogin";
-import AdminSettings from "../features/admins/components/AdminSettings";
-import VisitorDetails from "../features/admins/components/VisitorDetails";
-import VisitorPage from "../features/admins/components/VisitorPage";
-import VisitorReview from "../features/admins/components/VisitorReview";
-import LandingPage from "../features/visitors/components/LandingPage";
-import Registration from "../features/visitors/components/Registration";
-import VerifyIdentity from "../features/visitors/components/VerifyIdentity";
-import VisitorProfile from "../features/visitors/components/VisitorProfile";
-import AuthLayout from "../features/visitors/components/layout/AuthLayout";
-import Layout from "../features/admins/components/layout/Layout";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/AdminDashboard"));
 const LazyAdminLogin = lazy(() => import("../features/admins/components/AdminLogin"));

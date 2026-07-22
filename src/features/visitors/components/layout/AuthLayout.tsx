@@ -5,7 +5,7 @@ const AuthLayout = () => {
     <div className="flex min-h-screen flex-col bg-[#EEF2F7] md:grid md:grid-cols-2">
       <div className="hidden items-center justify-center bg-linear-to-br from-[#dbe9dd] via-[#f4f6f5] to-[#dce8ef] p-10 text-slate-700 md:flex">
         <div className="text-center max-md:max-w-md">
-          <div className="mb-10 justify-center flex">
+          <div className="mb-10 flex justify-center">
             <img
               src="/loginimage.svg"
               alt="Secure visitor registration"

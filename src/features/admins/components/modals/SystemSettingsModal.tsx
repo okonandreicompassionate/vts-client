@@ -28,14 +28,24 @@ function SystemSettingsModal() {
     <CustomModal
       title="System Settings"
       okText="Save Settings"
+      cancelText="Cancel"
       onOk={handleSaveSettings}
       onCancel={handleCancel}
       width={400}
+      okButtonProps={{
+        className:
+          "!rounded-full !h-11 !px-8 !bg-sky-500 hover:!bg-sky-600 !border-none !font-semibold !flex-1",
+      }}
+      cancelButtonProps={{
+        className:
+          "!rounded-full !h-11 !px-8 !bg-white !text-slate-500 !border-slate-200 hover:!bg-slate-50 hover:!text-slate-600 !font-medium !flex-1",
+      }}
     >
       <Form
         form={form}
-        className="space-y-2 mt-4"
+        className="space-y-1 mt-4"
         layout="vertical"
+        requiredMark={false}
         initialValues={{
           companyName: "Zoracom",
           badgePrefix: "ZOR-",
@@ -43,27 +53,45 @@ function SystemSettingsModal() {
         }}
       >
         <FormItem
-          label="Company Name"
+          label={<span className="text-slate-800 font-semibold text-[14px]">Company Name</span>}
           name="companyName"
           rules={[{ required: true, message: "Please enter the company name" }]}
         >
-          <Input type="text" className="rounded-lg" placeholder="Enter company name" />
+          <Input
+            type="text"
+            className="!rounded-lg !bg-slate-50 !border-slate-100 !h-11 !px-4 !text-[14px] placeholder:!text-slate-400"
+            placeholder="Enter company name"
+          />
         </FormItem>
 
         <FormItem
-          label="Visitor Badge Prefix"
+          label={
+            <span className="text-slate-800 font-semibold text-[14px]">Visitor Badge Prefix</span>
+          }
           name="badgePrefix"
           rules={[{ required: true, message: "Please enter a badge prefix" }]}
         >
-          <Input type="text" className="rounded-lg" placeholder="e.g. ZOR-" />
+          <Input
+            type="text"
+            className="!rounded-lg !bg-slate-50 !border-slate-100 !h-11 !px-4 !text-[14px] placeholder:!text-slate-400"
+            placeholder="e.g. ZOR-"
+          />
         </FormItem>
 
         <FormItem
-          label="Max Visitor Capacity Per Day"
+          label={
+            <span className="text-slate-800 font-semibold text-[14px]">
+              Max Visitor Capacity Per Day
+            </span>
+          }
           name="maxCapacity"
           rules={[{ required: true, message: "Please enter the max capacity" }]}
         >
-          <Input type="text" className="rounded-lg" placeholder="Enter max capacity" />
+          <Input
+            type="text"
+            className="!rounded-lg !bg-slate-50 !border-slate-100 !h-11 !px-4 !text-[14px] placeholder:!text-slate-400"
+            placeholder="Enter max capacity"
+          />
         </FormItem>
       </Form>
     </CustomModal>

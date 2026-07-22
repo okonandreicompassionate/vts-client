@@ -13,7 +13,7 @@ export default function VerifyIdentity() {
   };
 
   return (
-    <div className="flex  w-full flex-col items-center bg-white max-md:pt-18">
+    <div className="flex w-full flex-col items-center bg-white max-md:pt-18">
       <Form
         layout="vertical"
         requiredMark={false}
@@ -33,7 +33,7 @@ export default function VerifyIdentity() {
           </div>
         </div>
 
-        <div className="mx-auto mb-5 flex justify-center w-full max-w-sm flex-1 flex-col">
+        <div className="mx-auto mb-5 flex w-full max-w-sm flex-1 flex-col justify-center">
           <Form.Item
             name="emailOrPhone"
             label="Email/Phone Number"
