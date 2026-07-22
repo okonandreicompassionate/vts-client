@@ -16,8 +16,15 @@ export default function Registration() {
           // todo: send registration to API
           // e.g await api.register(values);
           console.log("submitting registration:", values);
+          window.localStorage.setItem("visitorRegistration", JSON.stringify(values));
           form.resetFields();
-          openModal(<RegistrationSuccessModal />);
+          openModal(
+            <RegistrationSuccessModal
+              onOk={() =>
+                window.location.assign(`${paths.visitorProfile.getHref()}?status=pending`)
+              }
+            />,
+          );
         }}
       />,
     );
@@ -77,7 +84,6 @@ export default function Registration() {
         >
           <Input size="large" className="rounded-xl" />
         </Form.Item>
-
 
         <Form.Item
           name="phoneNo"

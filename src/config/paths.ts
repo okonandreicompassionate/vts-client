@@ -12,6 +12,10 @@ export const paths = {
     path: "/verify",
     getHref: () => "/verify",
   },
+  visitorProfile: {
+    path: "/profile",
+    getHref: () => "/profile",
+  },
 
   // Admin side
   admin: {
