@@ -86,7 +86,7 @@ const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     bannerBg: "bg-rose-50/70 border-rose-100",
     iconWrapBg: "bg-white",
     icon: <img src="/rejected.svg" alt="Rejected" className="h-26 w-26" />,
-    desktopIcon: <img src="/rejected.svg" alt="Rejected" className="h-16 w-16 " />,
+    desktopIcon: <img src="/rejected.svg" alt="Rejected" className="h-16 w-16" />,
     actionLabel: "Register Again",
     actionPath: paths.register.getHref(),
     secondaryLabel: "Contact Reception",
@@ -127,7 +127,10 @@ export default function VisitorProfile() {
   const meta = statusMeta[status];
   const isPending = status === "pending";
 
-  const requestId = useMemo(() => `#VT-${Math.floor(Math.random() * 900000 + 100000)}`, []);
+  const requestId = useMemo(
+    () => `#VT-${status === "approved" ? "A1001" : status === "rejected" ? "R1002" : "P1003"}`,
+    [status],
+  );
 
   return (
     <>
@@ -225,7 +228,7 @@ export default function VisitorProfile() {
           )}
         </div>
 
-        <div className="flex-1 -mt-[690px]" />
+        <div className="-mt-[690px] flex-1" />
 
         <div className="mt-8 space-y-3">
           <Button
@@ -302,9 +305,7 @@ export default function VisitorProfile() {
                   <span className="text-base font-bold">{registration.name.charAt(0)}</span>
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-base font-bold text-slate-900">
-                    {registration.name}
-                  </p>
+                  <p className="truncate text-base font-bold text-slate-900">{registration.name}</p>
                   <p className="mt-0.5 text-xs text-slate-400">Request {requestId}</p>
                 </div>
               </div>

@@ -91,9 +91,9 @@ export const CustomModal = ({
             <Button
               onClick={closeModal}
               type="text"
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-green-50 p-1"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F5FBFE] p-1"
             >
-              X
+              <img src="/close.svg" alt="Close" className="h-3 w-3" />
             </Button>
           )}
         </div>
@@ -130,7 +130,7 @@ export const CustomModal = ({
           <div className="mt-2 w-full space-x-4">
             <div className="flex items-center justify-center gap-3">
               {!hideCancelButton && (
-                <Button className="h-9 w-full px-6! text-sm!" onClick={onCancel ?? closeModal}>
+                <Button className="!bg-[#F5FBFE] h-9 w-full px-6! text-sm!" onClick={onCancel ?? closeModal}>
                   Cancel
                 </Button>
               )}
