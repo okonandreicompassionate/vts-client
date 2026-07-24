@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Spinner } from "../components/Spinner";
 
 // use the paths in path.ts file to link or navigate files
 import { paths } from "../config/paths";
@@ -17,7 +18,7 @@ const LazyVisitorProfile = lazy(() => import("../features/visitors/components/Vi
 const LazyAuthLayout = lazy(() => import("../features/visitors/components/layout/AuthLayout"));
 const LazyLayout = lazy(() => import("../features/admins/components/layout/Layout"));
 
-const fallback = <div className="min-h-screen bg-white" />;
+const fallback = <Spinner />;
 
 export function AppRouter() {
   return (
