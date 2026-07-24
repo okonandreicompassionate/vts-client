@@ -1,9 +1,9 @@
-import { Spin } from 'antd'
+import { Spin } from "antd";
 
 export const Spinner = () => {
   return (
-    <div className="flex items-center justify-center w-full h-full">
+    <div className="flex min-h-screen w-full items-center justify-center">
       <Spin />
     </div>
-  )
-}
+  );
+};
