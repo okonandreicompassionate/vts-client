@@ -1,5 +1,5 @@
 import { Info } from "lucide-react";
-import type { VisitorRegistration } from "./types";
+import type { VisitorRegistration } from "../types/visitor-profile";
 
 type Props = {
   registration: VisitorRegistration;

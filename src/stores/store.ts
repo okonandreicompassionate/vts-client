@@ -1,13 +1,14 @@
+
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-
-import { api } from "../lib/api";
+import { baseApi } from "../lib/rtk-query"; // ← now from lib
 
 export const store = configureStore({
   reducer: {
-    [api.reducerPath]: api.reducer,
+    [baseApi.reducerPath]: baseApi.reducer,
+    // auth: authReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+  middleware: (getDefault) => getDefault().concat(baseApi.middleware),
 });
 
 setupListeners(store.dispatch);

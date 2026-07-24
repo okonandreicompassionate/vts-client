@@ -1,6 +1,7 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { Button, Input } from "antd";
+import { usePopup } from "../../../hooks/usePopup";
 import Header from "../components/layout/Header.tsx";
 import ApproveAccessModal from "../components/modals/ApproveAccessModal";
 import AccessApprovedModal from "../components/modals/AccessApprovedModal";
@@ -39,21 +40,18 @@ const accessDetails = [
 
 export default function ReviewVisitor() {
   const [notes, setNotes] = useState("");
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showRejectSuccess, setShowRejectSuccess] = useState(false);
+  const { openModal } = usePopup();
 
   const handleApprove = () => {
-    setShowConfirm(true);
+    openModal(<ApproveAccessModal onConfirm={handleConfirmApprove} />);
   };
 
   const handleConfirmApprove = () => {
-    setShowConfirm(false);
-    setShowSuccess(true);
+    openModal(<AccessApprovedModal accessDetails={accessDetails} />);
   };
 
   const handleReject = () => {
-    setShowRejectSuccess(true);
+    openModal(<AccessRejectedModal />);
   };
 
   return (
@@ -136,22 +134,6 @@ export default function ReviewVisitor() {
         </div>
       </main>
 
-      <ApproveAccessModal
-        visible={showConfirm}
-        onConfirm={handleConfirmApprove}
-        onCancel={() => setShowConfirm(false)}
-      />
-
-      <AccessApprovedModal
-        visible={showSuccess}
-        onClose={() => setShowSuccess(false)}
-        accessDetails={accessDetails}
-      />
-
-      <AccessRejectedModal
-        visible={showRejectSuccess}
-        onClose={() => setShowRejectSuccess(false)}
-      />
     </>
   );
 }
