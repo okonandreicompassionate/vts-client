@@ -6,6 +6,7 @@
   "packageManager": "pnpm@11.14.0+sha512.66c1ac4c7d4762d6d7dde44c7f3e5a73591ed0a0806e751d4ed32d4f004f25b2285a906b1fd8a9e3e621df3b4e2858bf88e50e0cf626bedbe977fe434a5caf85",
   "scripts": {
     "dev": "vite",
+    "commit:generate": "git diff --cached | your-agent-cli --prompt \"Analyze the staged Git diff and generate ONE Conventional Commit message. Respond with only the commit message, no markdown, no explanation.\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -27,6 +28,8 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.2",
     "@types/node": "^24.13.2",

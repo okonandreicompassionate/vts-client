@@ -34,7 +34,7 @@ src/
 ├── app/              # Application layer (routes, providers, router)
 ├── components/       # Shared UI components
 ├── config/          # Global configurations and env variables
-├── features/        # Feature-based modules (auth, discussions, comments, etc.)
+├── features/        # Feature-based modules (admins, visitors, etc.)
 ├── hooks/           # Shared React hooks
 ├── lib/             # Preconfigured libraries (react-query, auth, etc.)
 ├── types/           # Shared TypeScript types
@@ -346,3 +346,80 @@ This architecture prioritizes developer experience, maintainability, and scalabi
 ## ALL CONTEXTS GO IN src/lib/contexts
 
 ## navigate() and link() react-router functions, should use href
+
+## Commit Message Guidelines
+
+After completing any task that modifies the codebase, always generate a Git commit message summarizing the changes.
+
+### Requirements
+
+* Follow the **Conventional Commits** specification.
+* Analyze the complete set of changes before deciding on the commit type.
+* Choose the commit type that best represents the primary purpose of the changes.
+* Use the imperative mood (e.g. "add", "fix", "refactor", "update").
+* Keep the subject concise (preferably under 72 characters).
+* Include an optional scope when it improves clarity.
+* Return **only** the commit message unless explicitly asked to perform the commit.
+
+### Commit Types
+
+Use the most appropriate type:
+
+* `feat` – New functionality or user-facing feature.
+* `fix` – Bug fixes or incorrect behavior.
+* `refactor` – Internal code improvements without changing functionality.
+* `perf` – Performance improvements.
+* `docs` – Documentation changes only.
+* `style` – Formatting or stylistic changes that do not affect behavior.
+* `test` – Adding or updating tests.
+* `build` – Build system, tooling, or dependency changes.
+* `ci` – Continuous integration or deployment workflow changes.
+* `chore` – Maintenance tasks that do not fit another category.
+* `revert` – Reverts a previous commit.
+
+### Scope
+
+Include a scope when it makes the change easier to understand.
+
+Examples:
+
+```text
+feat(auth): add password reset flow
+fix(api): handle expired access tokens
+refactor(modal): simplify confirmation state
+perf(table): virtualize large datasets
+docs: update installation guide
+```
+
+### Multiple Changes
+
+When multiple files or components are modified:
+
+1. Analyze the complete diff.
+2. Determine the primary purpose of the overall change.
+3. Generate a single commit message that best represents the work.
+4. Do not list every individual modification in the subject line.
+
+### Accuracy
+
+* Base the commit message solely on the actual changes.
+* Do not invent features, fixes, or refactors that are not present in the diff.
+* Avoid vague messages such as:
+
+  * `update`
+  * `misc changes`
+  * `fix stuff`
+  * `changes`
+  * `work in progress`
+
+### Output Format
+
+Output exactly one Conventional Commit message.
+
+Example:
+
+```text
+feat(vendor): add vendor registration workflow
+```
+
+Do not include explanations, Markdown formatting, bullet points, or additional text outside the commit message unless explicitly requested.
