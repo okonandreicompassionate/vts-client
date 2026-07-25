@@ -55,15 +55,7 @@ chore: configure commitlint
   * `fix(auth): handle expired token`
   * `refactor(table): extract pagination hook`
 
-* One commit should represent one logical change.
 
-* Avoid vague commit messages such as:
-
-  * `update`
-  * `fix stuff`
-  * `misc changes`
-  * `work`
-  * `changes`
 
 ### Pre-Commit Checks
 
@@ -74,21 +66,3 @@ pnpm lint
 pnpm build
 ```
 
-If either command fails, the commit will be blocked until the issues are resolved.
-
-### Commit Validation
-
-After the pre-commit checks pass, Commitlint validates the commit message. Commits that do not follow the Conventional Commits specification or exceed the configured header length will be rejected.
-
-### Generating Commit Messages with AI Agents
-
-When using an AI coding agent (e.g. Codex, Claude Code, Gemini CLI), have the agent analyze the staged changes and generate a Conventional Commit message that accurately reflects the primary purpose of the changes.
-
-The generated message should:
-
-* Follow the Conventional Commits specification.
-* Reflect the dominant change in the staged diff.
-* Be concise and descriptive.
-* Use the imperative mood.
-* Remain under the configured header length.
-* Return only the commit message without additional explanation.
