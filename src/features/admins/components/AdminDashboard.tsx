@@ -1,38 +1,45 @@
 import { useState } from "react";
-import { Table, Select, Button, Pagination } from "antd";
+import { useNavigate } from "react-router-dom";
+import { Select, Button, Pagination } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { ClockCircleOutlined, WarningOutlined, EyeOutlined } from "@ant-design/icons";
 import Header from "../components/layout/Header.tsx";
-import StatusPill, { type VisitorStatus } from "../components/StatusPill.tsx";
-
-interface VisitorRecord {
-  key: string;
-  name: string;
-  email: string;
-  avatar: string;
-  host: string;
-  purpose: string;
-  status: VisitorStatus;
-  time: string;
-}
-
-const visitorData: VisitorRecord[] = [
-  { key: "1", name: "John Doe", email: "john@example.com", avatar: "https://i.pravatar.cc/40?img=12", host: "Sarah Smith", purpose: "Business Meeting", status: "Signed In", time: "09:45 AM" },
-  { key: "2", name: "Alice Johnson", email: "alice.j@corp.com", avatar: "https://i.pravatar.cc/40?img=47", host: "Robert Brown", purpose: "Interview", status: "Pending", time: "10:15 AM" },
-  { key: "3", name: "Mark Wilson", email: "mw@tech.io", avatar: "https://i.pravatar.cc/40?img=33", host: "Emma Davis", purpose: "Maintenance", status: "Signed Off", time: "08:30 AM" },
-  { key: "4", name: "Lisa Brown", email: "lisa@design.co", avatar: "https://i.pravatar.cc/40?img=25", host: "Chris Lee", purpose: "Delivery", status: "Rejected", time: "11:00 AM" },
-  { key: "5", name: "Kevin Hart", email: "kevin@media.net", avatar: "https://i.pravatar.cc/40?img=51", host: "Sarah Smith", purpose: "Personal Visit", status: "Signed In", time: "11:20 AM" },
-  { key: "6", name: "Eva Green", email: "eva@films.com", avatar: "https://i.pravatar.cc/40?img=29", host: "Emma Davis", purpose: "VIP Guest", status: "Signed In", time: "11:30 AM" },
-  { key: "7", name: "Tom Cruise", email: "tom@mission.com", avatar: "https://i.pravatar.cc/40?img=14", host: "Robert Brown", purpose: "Consultation", status: "Pending", time: "11:45 AM" },
-  { key: "8", name: "Dana Scully", email: "scully@fbi.gov", avatar: "https://i.pravatar.cc/40?img=44", host: "Chris Lee", purpose: "Audit", status: "Signed Off", time: "07:15 AM" },
-];
+import StatusPill from "../components/StatusPill.tsx";
+import TableComponent from "../../../components/TableComponent.tsx";
+import { dummyVisitors, getVisitorSummary, type VisitorRecord } from "../../../dummyAppData.tsx";
+import { paths } from "../../../config/paths";
 
 const statCards = [
-  { label: "Total Visitors", value: "1,248", icon: <img src="/visitors2.svg" alt="Total Visitors" />, iconBg: "bg-blue-50", iconColor: "text-blue-500" },
-  { label: "Currently Signed In", value: "42", icon: <img src="/check.svg" alt="Signed In" />, iconBg: "bg-emerald-50", iconColor: "text-emerald-500" },
-  { label: "Signed Off", value: "1,180", icon: <img src="/back.svg" alt="Signed Off" />, iconBg: "bg-slate-100", iconColor: "text-slate-500" },
-  { label: "Pending Approval", value: "18", icon: <ClockCircleOutlined />, iconBg: "bg-orange-50", iconColor: "text-orange-400" },
-  { label: "Rejected", value: "8", icon: <WarningOutlined />, iconBg: "bg-rose-50", iconColor: "text-rose-400" },
+  {
+    label: "Total Visitors",
+    icon: <img src="/visitors2.svg" alt="Total Visitors" />,
+    iconBg: "bg-blue-50",
+    iconColor: "text-blue-500",
+  },
+  {
+    label: "Currently Signed In",
+    icon: <img src="/check.svg" alt="Signed In" />,
+    iconBg: "bg-emerald-50",
+    iconColor: "text-emerald-500",
+  },
+  {
+    label: "Signed Off",
+    icon: <img src="/back.svg" alt="Signed Off" />,
+    iconBg: "bg-slate-100",
+    iconColor: "text-slate-500",
+  },
+  {
+    label: "Pending Approval",
+    icon: <ClockCircleOutlined />,
+    iconBg: "bg-orange-50",
+    iconColor: "text-orange-400",
+  },
+  {
+    label: "Rejected",
+    icon: <WarningOutlined />,
+    iconBg: "bg-rose-50",
+    iconColor: "text-rose-400",
+  },
 ];
 
 const columns: ColumnsType<VisitorRecord> = [
@@ -42,18 +49,44 @@ const columns: ColumnsType<VisitorRecord> = [
     key: "name",
     render: (_, record) => (
       <div className="flex items-center gap-3">
-        <img src={record.avatar} alt={record.name} className="w-9 h-9 rounded-full object-cover" />
+        <img src={record.avatar} alt={record.name} className="h-9 w-9 rounded-full object-cover" />
         <div>
-          <p className="text-sm font-medium text-slate-800 leading-tight">{record.name}</p>
-          <p className="text-xs text-slate-400 leading-tight">{record.email}</p>
+          <p className="text-sm leading-tight font-medium text-slate-800">{record.name}</p>
+          <p className="text-xs leading-tight text-slate-400">{record.email}</p>
         </div>
       </div>
     ),
   },
-  { title: "Host", dataIndex: "host", key: "host", render: (host) => <span className="text-sm text-slate-600">{host}</span> },
-  { title: "Purpose", dataIndex: "purpose", key: "purpose", render: (purpose) => <span className="text-sm text-slate-600">{purpose}</span> },
-  { title: "Status", dataIndex: "status", key: "status", render: (status: VisitorStatus) => <StatusPill status={status} /> },
-  { title: "Time", dataIndex: "time", key: "time", render: (time) => <span className="text-sm text-slate-600">{time}</span> },
+  {
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
+    render: (id) => <span className="text-sm text-slate-500">{id}</span>,
+  },
+  {
+    title: "Host",
+    dataIndex: "host",
+    key: "host",
+    render: (host) => <span className="text-sm text-slate-600">{host}</span>,
+  },
+  {
+    title: "Purpose",
+    dataIndex: "purpose",
+    key: "purpose",
+    render: (purpose) => <span className="text-sm text-slate-600">{purpose}</span>,
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (status) => <StatusPill status={status} />,
+  },
+  {
+    title: "Time",
+    dataIndex: "time",
+    key: "time",
+    render: (time) => <span className="text-sm text-slate-600">{time}</span>,
+  },
   {
     title: "Action",
     key: "action",
@@ -72,31 +105,87 @@ const columns: ColumnsType<VisitorRecord> = [
 
 export default function Dashboard() {
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
+  const summary = getVisitorSummary(dummyVisitors);
+  const pageSize = 8;
+  const paginatedVisitors = dummyVisitors.slice((page - 1) * pageSize, page * pageSize);
+
+  const handleRowClick = (record: VisitorRecord) => ({
+    onClick: () => navigate(paths.admin.visitorDetails.getHref(record.id)),
+    style: { cursor: "pointer" },
+  });
+
+  const cards = [
+    {
+      value: summary.total.toLocaleString(),
+      ...statCards[0],
+      icon: statCards[0].icon,
+      iconBg: statCards[0].iconBg,
+      iconColor: statCards[0].iconColor,
+    },
+    {
+      value: summary.signedIn.toString(),
+      ...statCards[1],
+      icon: statCards[1].icon,
+      iconBg: statCards[1].iconBg,
+      iconColor: statCards[1].iconColor,
+    },
+    {
+      value: summary.signedOff.toString(),
+      ...statCards[2],
+      icon: statCards[2].icon,
+      iconBg: statCards[2].iconBg,
+      iconColor: statCards[2].iconColor,
+    },
+    {
+      value: summary.pending.toString(),
+      ...statCards[3],
+      icon: statCards[3].icon,
+      iconBg: statCards[3].iconBg,
+      iconColor: statCards[3].iconColor,
+    },
+    {
+      value: summary.rejected.toString(),
+      ...statCards[4],
+      icon: statCards[4].icon,
+      iconBg: statCards[4].iconBg,
+      iconColor: statCards[4].iconColor,
+    },
+  ];
 
   return (
     <>
       <Header title="Dashboard" />
 
       <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
-        {/* Stat cards */}
-        <div className="grid grid-cols-1 gap-3 xs:grid-cols-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5 mb-6">
-          {statCards.map((card) => (
-            <div key={card.label} className="bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100 p-3 sm:p-4">
-              <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-4 ${card.iconBg} ${card.iconColor}`}>
+        <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+          {cards.map((card) => (
+            <div
+              key={card.label}
+              className="flex items-center gap-2 rounded-md border border-slate-100 bg-white px-2.5 py-2 shadow-sm shadow-slate-100"
+            >
+              <div
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${card.iconBg} ${card.iconColor}`}
+              >
                 {card.icon}
               </div>
-              <p className="text-xl font-bold text-slate-800">{card.value}</p>
-              <p className="text-xs text-slate-400 mt-0.5">{card.label}</p>
+              <div className="min-w-0">
+                <p className="text-sm leading-none font-semibold text-slate-800">{card.value}</p>
+                <p className="mt-0.5 text-[10px] leading-none text-slate-400">{card.label}</p>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Recent Visitors table */}
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm shadow-slate-100">
+        <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100">
           <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
             <h3 className="text-base font-bold text-slate-800">Recent Visitors</h3>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:flex sm:flex-nowrap sm:items-center sm:gap-2">
-              <Select defaultValue="Status" size="middle" className="w-full sm:w-32 bg-[#F5FBFE]" popupMatchSelectWidth={false}
+            <div className="grid grid-cols-1 gap-2 sm:flex sm:grid-cols-2 sm:flex-nowrap sm:items-center sm:gap-2">
+              <Select
+                defaultValue="Status"
+                size="middle"
+                className="w-full bg-[#F5FBFE] sm:w-32"
+                popupMatchSelectWidth={false}
                 options={[
                   { value: "Status", label: "Status" },
                   { value: "Signed In", label: "Signed In" },
@@ -105,7 +194,11 @@ export default function Dashboard() {
                   { value: "Rejected", label: "Rejected" },
                 ]}
               />
-              <Select defaultValue="Time" size="middle" className="w-full sm:w-28 bg-[#F5FBFE]" popupMatchSelectWidth={false}
+              <Select
+                defaultValue="Time"
+                size="middle"
+                className="w-full bg-[#F5FBFE] sm:w-28"
+                popupMatchSelectWidth={false}
                 options={[
                   { value: "Time", label: "Time" },
                   { value: "Today", label: "Today" },
@@ -113,7 +206,11 @@ export default function Dashboard() {
                   { value: "This Month", label: "This Month" },
                 ]}
               />
-              <Select defaultValue="Host Visited" size="middle" className="w-full sm:col-span-1 sm:w-36 bg-[#F5FBFE]" popupMatchSelectWidth={false}
+              <Select
+                defaultValue="Host Visited"
+                size="middle"
+                className="w-full bg-[#F5FBFE] sm:col-span-1 sm:w-36"
+                popupMatchSelectWidth={false}
                 options={[
                   { value: "Host Visited", label: "Host Visited" },
                   { value: "Sarah Smith", label: "Sarah Smith" },
@@ -125,13 +222,33 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-            <Table<VisitorRecord> columns={columns} dataSource={visitorData} pagination={false} rowKey="key" scroll={{ x: 700 }} className="visitor-table" />
+          <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+            <TableComponent<VisitorRecord>
+              columns={columns}
+              dataSource={paginatedVisitors}
+              rowKey="id"
+              scroll={{ x: 900 }}
+              className="visitor-table"
+              size="small"
+              showSerialNumber
+              startIndex={(page - 1) * pageSize + 1}
+              onRow={handleRowClick}
+            />
           </div>
 
-          <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 border-t border-slate-100">
-            <p className="text-sm text-slate-400 text-center sm:text-left">Showing 1 to 8 of 24 entries</p>
-            <Pagination current={page} pageSize={8} total={24} onChange={setPage} showSizeChanger={false} className="text-center sm:text-right" />
+          <div className="flex flex-col gap-3 border-t border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <p className="text-center text-sm text-slate-400 sm:text-left">
+              Showing {Math.min((page - 1) * pageSize + 1, dummyVisitors.length)} to{" "}
+              {Math.min(page * pageSize, dummyVisitors.length)} of {dummyVisitors.length} entries
+            </p>
+            <Pagination
+              current={page}
+              pageSize={pageSize}
+              total={dummyVisitors.length}
+              onChange={setPage}
+              showSizeChanger={false}
+              className="text-center sm:text-right"
+            />
           </div>
         </div>
       </main>
