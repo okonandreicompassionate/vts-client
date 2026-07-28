@@ -6,10 +6,15 @@ import { ClockCircleOutlined, WarningOutlined, EyeOutlined } from "@ant-design/i
 import Header from "../components/layout/Header.tsx";
 import StatusPill from "../components/StatusPill.tsx";
 import TableComponent from "../../../components/TableComponent.tsx";
-import { getVisitorSummary, type VisitorRecord } from "../../../dummyAppData.tsx";
 import { paths } from "../../../config/paths";
 import { useGetVisitsQuery } from "../../../lib/api";
 import type { VisitorStatus } from "./StatusPill";
+import {
+  getVisitorSummary,
+  toApiVisitStatus,
+  toVisitorRow,
+  type VisitorRow,
+} from "../utils/visits";
 
 const statCards = [
   {
@@ -44,7 +49,9 @@ const statCards = [
   },
 ];
 
-const columns: ColumnsType<VisitorRecord> = [
+type StatusFilter = "All" | VisitorStatus;
+
+const columns: ColumnsType<VisitorRow> = [
   {
     title: "Visitor Name",
     dataIndex: "name",
@@ -107,39 +114,32 @@ const columns: ColumnsType<VisitorRecord> = [
 
 export default function Dashboard() {
   const [page, setPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const navigate = useNavigate();
-  const { data: visits = [] } = useGetVisitsQuery();
   const pageSize = 8;
+  const { data: visitsData } = useGetVisitsQuery({
+    page,
+    limit: pageSize,
+    status: statusFilter === "All" ? undefined : toApiVisitStatus(statusFilter),
+  });
 
-  const visitorRecords = useMemo<VisitorRecord[]>(() => {
-    return visits.map((visit, index) => ({
-      id: visit.id ?? `${visit.email ?? "visit"}-${index}`,
-      name: visit.fullName ?? visit.name ?? "Unknown visitor",
-      email: visit.email ?? "N/A",
-      phone: visit.phoneNumber ?? visit.phone ?? "N/A",
-      avatar: `https://i.pravatar.cc/40?img=${(index % 70) + 1}`,
-      host: visit.hostName ?? visit.host ?? "Unassigned",
-      purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
-      status: (visit.status?.toLowerCase() === "signed in"
-        ? "Signed In"
-        : visit.status?.toLowerCase() === "signed off"
-          ? "Signed Off"
-          : visit.status?.toLowerCase() === "rejected"
-            ? "Rejected"
-            : "Pending") as VisitorStatus,
-      time: visit.time ?? visit.createdAt ?? "Pending",
-      checkIn: visit.checkIn ?? visit.checkInTime ?? "Pending",
-      department: visit.department ?? "N/A",
-    }));
-  }, [visits]);
+  const visitorRecords = useMemo<VisitorRow[]>(
+    () => visitsData?.records.map(toVisitorRow) ?? [],
+    [visitsData?.records],
+  );
 
   const summary = getVisitorSummary(visitorRecords);
-  const paginatedVisitors = visitorRecords.slice((page - 1) * pageSize, page * pageSize);
+  const totalEntries = visitsData?.total ?? 0;
 
-  const handleRowClick = (record: VisitorRecord) => ({
+  const handleRowClick = (record: VisitorRow) => ({
     onClick: () => navigate(paths.admin.visitorDetails.getHref(record.id)),
     style: { cursor: "pointer" },
   });
+
+  const handleStatusChange = (value: StatusFilter) => {
+    setStatusFilter(value);
+    setPage(1);
+  };
 
   const cards = [
     {
@@ -208,12 +208,13 @@ export default function Dashboard() {
             <h3 className="text-base font-bold text-slate-800">Recent Visitors</h3>
             <div className="grid grid-cols-1 gap-2 sm:flex sm:grid-cols-2 sm:flex-nowrap sm:items-center sm:gap-2">
               <Select
-                defaultValue="Status"
+                value={statusFilter}
+                onChange={handleStatusChange}
                 size="middle"
                 className="w-full bg-[#F5FBFE] sm:w-32"
                 popupMatchSelectWidth={false}
                 options={[
-                  { value: "Status", label: "Status" },
+                  { value: "All", label: "Status" },
                   { value: "Signed In", label: "Signed In" },
                   { value: "Pending", label: "Pending" },
                   { value: "Signed Off", label: "Signed Off" },
@@ -249,9 +250,9 @@ export default function Dashboard() {
           </div>
 
           <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-            <TableComponent<VisitorRecord>
+            <TableComponent<VisitorRow>
               columns={columns}
-              dataSource={paginatedVisitors}
+              dataSource={visitorRecords}
               rowKey="id"
               scroll={{ x: 900 }}
               className="visitor-table"
@@ -264,13 +265,13 @@ export default function Dashboard() {
 
           <div className="flex flex-col gap-3 border-t border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <p className="text-center text-sm text-slate-400 sm:text-left">
-              Showing {Math.min((page - 1) * pageSize + 1, visitorRecords.length)} to{" "}
-              {Math.min(page * pageSize, visitorRecords.length)} of {visitorRecords.length} entries
+              Showing {totalEntries === 0 ? 0 : Math.min((page - 1) * pageSize + 1, totalEntries)}{" "}
+              to {Math.min(page * pageSize, totalEntries)} of {totalEntries} entries
             </p>
             <Pagination
               current={page}
               pageSize={pageSize}
-              total={visitorRecords.length}
+              total={totalEntries}
               onChange={setPage}
               showSizeChanger={false}
               className="text-center sm:text-right"

@@ -1,6 +1,5 @@
 import { Button, Form, Input, message } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { paths } from "../../../config/paths";
 import { usePopup } from "../../../hooks/usePopup";
 import { ORG_SLUG, useCreateVisitMutation } from "../../../lib/api";
 import RegistrationModal from "../components/modals/RegistrationModal";

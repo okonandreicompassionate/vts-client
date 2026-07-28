@@ -1,10 +1,65 @@
-import { Form, Input, Button } from "antd";
+
+import { Form, Input, Button, message } from "antd";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { paths } from "../../../config/paths";
+import {
+  getAuthToken,
+  ORG_SLUG,
+  useAdminLoginMutation,
+  useMicrosoftLoginMutation,
+} from "../../../lib/api";
+import { useMsalAuth } from "../../../lib/api/msal";
 
 export default function AdminLogin() {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<{ email: string; password: string }>();
+  const [isMicrosoftPopupOpen, setIsMicrosoftPopupOpen] = useState(false);
+  const navigate = useNavigate();
+  const msal = useMsalAuth();
+  const [adminLogin, { isLoading: isAdminLoggingIn }] = useAdminLoginMutation();
+  const [microsoftLogin, { isLoading: isMicrosoftLoggingIn }] = useMicrosoftLoginMutation();
 
-  const handleFinish = (values: { email: string; password: string }) => {
-    console.log(values);
+  const completeLogin = (token: string) => {
+    if (!token) {
+      message.error("Login succeeded but no token was returned.");
+      return;
+    }
+
+    window.localStorage.setItem("token", token);
+    navigate(paths.admin.dashboard.getHref());
+  };
+
+  const handleFinish = async (values: { email: string; password: string }) => {
+    try {
+      const response = await adminLogin({
+        orgSlug: ORG_SLUG,
+        email: values.email,
+        password: values.password,
+      }).unwrap();
+
+      completeLogin(getAuthToken(response));
+      message.success("Login successful");
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to login, please check your credentials.");
+    }
+  };
+
+  const handleMicrosoftLogin = async () => {
+    try {
+      setIsMicrosoftPopupOpen(true);
+      const msalResult = await msal.login();
+      const response = await microsoftLogin({ accessToken: msalResult.accessToken }).unwrap();
+
+      completeLogin(getAuthToken(response));
+      message.success("Microsoft login successful");
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to login with Microsoft, please try again");
+    } finally {
+      setIsMicrosoftPopupOpen(false);
+    }
   };
 
   return (
@@ -62,8 +117,33 @@ export default function AdminLogin() {
             </Form.Item>
 
             <Form.Item className="mb-2">
-              <Button type="primary" htmlType="submit" block size="large" className="bg-sky-400! hover:bg-sky-500! font-semibold rounded-lg">
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                size="large"
+                loading={isAdminLoggingIn}
+                className="bg-sky-400! hover:bg-sky-500! font-semibold rounded-lg"
+              >
                 Login
+              </Button>
+            </Form.Item>
+
+            <div className="relative flex items-center justify-center py-3">
+              <div className="absolute left-0 right-0 border-t border-slate-200" />
+              <span className="relative bg-white px-3 text-xs font-medium text-slate-400">or</span>
+            </div>
+
+            <Form.Item className="mb-2">
+              <Button
+                block
+                size="large"
+                icon={<img src="/microsoft.png" className="w-4 h-4" />}
+                loading={isMicrosoftPopupOpen || isMicrosoftLoggingIn}
+                onClick={handleMicrosoftLogin}
+                className="font-semibold rounded-lg"
+              >
+                Sign in with Microsoft
               </Button>
             </Form.Item>
 
