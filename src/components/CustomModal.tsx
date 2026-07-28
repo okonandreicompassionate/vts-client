@@ -1,4 +1,5 @@
 import { Button, Checkbox, Modal, Spin } from "antd";
+import type { ButtonProps } from "antd";
 import { useState, type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { usePopup } from "../hooks/usePopup";
@@ -12,8 +13,11 @@ interface Props {
   title?: string;
   children: ReactNode;
   okText?: string;
+  cancelText?: string;
   onCancel?: () => void;
   onOk?: () => void;
+  okButtonProps?: ButtonProps;
+  cancelButtonProps?: ButtonProps;
   modalSubtitle?: string;
   icon?: ReactNode;
   loading?: boolean;
@@ -38,6 +42,9 @@ export const CustomModal = ({
   onCancel,
   modalSubtitle,
   okText,
+  cancelText,
+  okButtonProps,
+  cancelButtonProps,
   showConfirmation,
   confirmationText,
   onOk,
@@ -130,19 +137,30 @@ export const CustomModal = ({
           <div className="mt-2 w-full space-x-4">
             <div className="flex items-center justify-center gap-3">
               {!hideCancelButton && (
-                <Button className="!bg-[#F5FBFE] h-9 w-full px-6! text-sm!" onClick={onCancel ?? closeModal}>
-                  Cancel
+                <Button
+                  {...cancelButtonProps}
+                  className={twMerge(
+                    "!bg-[#F5FBFE] h-9 w-full px-6! text-sm!",
+                    cancelButtonProps?.className,
+                  )}
+                  onClick={cancelButtonProps?.onClick ?? onCancel ?? closeModal}
+                >
+                  {cancelText ?? "Cancel"}
                 </Button>
               )}
               <Button
+                {...okButtonProps}
                 onClick={onOk}
                 loading={loading}
                 type="primary"
                 className={twMerge(
                   "h-9 w-full px-6! text-sm!",
                   warning && "bg-red-400! text-white!",
+                  okButtonProps?.className,
                 )}
-                disabled={disabled || (showConfirmation ? !isConfirmed : false)}
+                disabled={
+                  disabled || okButtonProps?.disabled || (showConfirmation ? !isConfirmed : false)
+                }
               >
                 {okText ?? "Submit"}
               </Button>

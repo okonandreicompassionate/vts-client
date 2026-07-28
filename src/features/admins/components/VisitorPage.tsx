@@ -6,16 +6,16 @@ import { EyeOutlined, SearchOutlined, FilterOutlined } from "@ant-design/icons";
 import Header from "../components/layout/Header.tsx";
 import StatusPill from "../components/StatusPill.tsx";
 import TableComponent from "../../../components/TableComponent.tsx";
-import { type VisitorRecord } from "../../../dummyAppData.tsx";
 import { paths } from "../../../config/paths";
 import { useGetVisitsQuery } from "../../../lib/api";
 import type { VisitorStatus } from "./StatusPill";
+import { toApiVisitStatus, toVisitorRow, type VisitorRow } from "../utils/visits";
 
-type FilterTab = "All" | "Signed In" | "Signed Off" | "Pending" | "Rejected";
+type FilterTab = "All" | VisitorStatus;
 
 const filterTabs: FilterTab[] = ["All", "Signed In", "Signed Off", "Pending", "Rejected"];
 
-const columns: ColumnsType<VisitorRecord> = [
+const columns: ColumnsType<VisitorRow> = [
   {
     title: "Name",
     dataIndex: "name",
@@ -88,48 +88,21 @@ export default function Visitors() {
   const [search, setSearch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
-  const { data: visits = [] } = useGetVisitsQuery();
   const pageSize = 8;
-
-  const visitorRecords = useMemo<VisitorRecord[]>(() => {
-    return visits.map((visit, index) => ({
-      id: visit.id ?? `${visit.email ?? "visit"}-${index}`,
-      name: visit.fullName ?? visit.name ?? "Unknown visitor",
-      email: visit.email ?? "N/A",
-      phone: visit.phoneNumber ?? visit.phone ?? "N/A",
-      avatar: `https://i.pravatar.cc/40?img=${(index % 70) + 1}`,
-      host: visit.hostName ?? visit.host ?? "Unassigned",
-      purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
-      status: (visit.status?.toLowerCase() === "signed in"
-        ? "Signed In"
-        : visit.status?.toLowerCase() === "signed off"
-          ? "Signed Off"
-          : visit.status?.toLowerCase() === "rejected"
-            ? "Rejected"
-            : "Pending") as VisitorStatus,
-      time: visit.time ?? visit.createdAt ?? "Pending",
-      checkIn: visit.checkIn ?? visit.checkInTime ?? "Pending",
-      department: visit.department ?? "N/A",
-    }));
-  }, [visits]);
-
-  const filteredVisitors = visitorRecords.filter((visitor) => {
-    const matchesTab = activeTab === "All" || visitor.status === activeTab;
-    const query = search.trim().toLowerCase();
-    const matchesSearch =
-      query.length === 0 ||
-      visitor.name.toLowerCase().includes(query) ||
-      visitor.host.toLowerCase().includes(query) ||
-      visitor.purpose.toLowerCase().includes(query) ||
-      visitor.department.toLowerCase().includes(query);
-
-    return matchesTab && matchesSearch;
+  const { data: visitsData } = useGetVisitsQuery({
+    page,
+    limit: pageSize,
+    status: activeTab === "All" ? undefined : toApiVisitStatus(activeTab),
+    search: search.trim() || undefined,
   });
 
-  const paginatedVisitors = filteredVisitors.slice((page - 1) * pageSize, page * pageSize);
-  const totalEntries = filteredVisitors.length;
+  const visitorRecords = useMemo<VisitorRow[]>(
+    () => visitsData?.records.map(toVisitorRow) ?? [],
+    [visitsData?.records],
+  );
+  const totalEntries = visitsData?.total ?? 0;
 
-  const handleRowClick = (record: VisitorRecord) => ({
+  const handleRowClick = (record: VisitorRow) => ({
     onClick: () => navigate(paths.admin.visitorDetails.getHref(record.id)),
     style: { cursor: "pointer" },
   });
@@ -196,9 +169,9 @@ export default function Visitors() {
           </div>
 
           <div className="-mx-3 overflow-x-auto px-3 sm:mx-0 sm:px-0">
-            <TableComponent<VisitorRecord>
+            <TableComponent<VisitorRow>
               columns={columns}
-              dataSource={paginatedVisitors}
+              dataSource={visitorRecords}
               rowKey="id"
               scroll={{ x: 900 }}
               className="visitor-table"

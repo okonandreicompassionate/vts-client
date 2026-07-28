@@ -3,10 +3,9 @@ import { Button } from "antd";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
-import { type VisitorRecord } from "../../../dummyAppData.tsx";
 import { paths } from "../../../config/paths";
 import { useGetVisitsQuery } from "../../../lib/api";
-import type { VisitorStatus } from "./StatusPill";
+import { toVisitorRow, type VisitorRow } from "../utils/visits";
 
 type TimelineStatus = "done-blue" | "done-orange" | "done-green";
 
@@ -36,28 +35,14 @@ function TimelineDot({ status }: { status: TimelineStatus }) {
 export default function VisitorDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data: visits = [] } = useGetVisitsQuery();
+  const { data: visitsData } = useGetVisitsQuery({
+    page: 1,
+    limit: 20,
+    search: id,
+  });
 
-  const visitor = useMemo<VisitorRecord>(() => {
-    const visitorRecords: VisitorRecord[] = visits.map((visit, index) => ({
-      id: visit.id ?? `${visit.email ?? "visit"}-${index}`,
-      name: visit.fullName ?? visit.name ?? "Unknown visitor",
-      email: visit.email ?? "N/A",
-      phone: visit.phoneNumber ?? visit.phone ?? "N/A",
-      avatar: `https://i.pravatar.cc/40?img=${(index % 70) + 1}`,
-      host: visit.hostName ?? visit.host ?? "Unassigned",
-      purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
-      status: (visit.status?.toLowerCase() === "signed in"
-        ? "Signed In"
-        : visit.status?.toLowerCase() === "signed off"
-          ? "Signed Off"
-          : visit.status?.toLowerCase() === "rejected"
-            ? "Rejected"
-            : "Pending") as VisitorStatus,
-      time: visit.time ?? visit.createdAt ?? "Pending",
-      checkIn: visit.checkIn ?? visit.checkInTime ?? "Pending",
-      department: visit.department ?? "N/A",
-    }));
+  const visitor = useMemo<VisitorRow>(() => {
+    const visitorRecords: VisitorRow[] = visitsData?.records.map(toVisitorRow) ?? [];
 
     return (
       visitorRecords.find((item) => item.id === id) ??
@@ -72,10 +57,11 @@ export default function VisitorDetails() {
         status: "Pending",
         time: "Pending",
         checkIn: "Pending",
+        checkOut: "Pending",
         department: "N/A",
       }
     );
-  }, [id, visits]);
+  }, [id, visitsData?.records]);
 
   const statusStyles: Record<string, string> = {
     "Signed In": "bg-emerald-50 text-emerald-500 border border-emerald-200",
@@ -186,12 +172,17 @@ export default function VisitorDetails() {
             </div>
 
             <Button
-              danger
+              danger={visitor.status !== "Pending"}
               type="primary"
               shape="round"
               className="mt-6 h-10! w-full bg-[#EF4444]! px-5! font-semibold sm:w-auto"
+              onClick={() => {
+                if (visitor.status === "Pending") {
+                  navigate(paths.admin.visitorReview.getHref(visitor.id));
+                }
+              }}
             >
-              Sign Off Visitor
+              {visitor.status === "Pending" ? "Review Visitor" : "Sign Off Visitor"}
             </Button>
           </div>
 

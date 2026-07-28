@@ -1,55 +1,83 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import { Button, Input } from "antd";
+import { useMemo, useState } from "react";
+import { Button, Input, message } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
 import ApproveAccessModal from "../components/modals/ApproveAccessModal";
 import AccessApprovedModal from "../components/modals/AccessApprovedModal";
 import AccessRejectedModal from "../components/modals/AccessRejectedModal";
+import { paths } from "../../../config/paths";
+import { useApproveVisitMutation, useGetVisitsQuery } from "../../../lib/api";
+import { toVisitorRow, type VisitorRow } from "../utils/visits";
 
 const { TextArea } = Input;
 
-const visitor = {
-  name: "Alice Mary Johnson",
-  avatar: "https://i.pravatar.cc/160?img=47",
+const fallbackVisitor = (id?: string): VisitorRow => ({
+  id: id ?? "unknown",
+  name: "Visitor unavailable",
+  email: "N/A",
+  phone: "N/A",
+  avatar: "https://i.pravatar.cc/40?u=unknown",
+  host: "N/A",
+  purpose: "N/A",
   status: "Pending",
-  visitorName: "Alice Mary Johnson",
-  email: "alice.j@partnercorp.com",
-  phone: "+234 901 234 5678",
-  host: "Robert Brown",
-  department: "IT Infrastructure",
-  purpose: "Network Hardware Delivery",
-  checkIn: "Oct 24, 2024 · 10:15 AM (Requested)",
-};
-
-const detailRows: { label: string; value: string }[] = [
-  { label: "Visitor Name", value: visitor.visitorName },
-  { label: "Email Address", value: visitor.email },
-  { label: "Phone Number", value: visitor.phone },
-  { label: "Host Name", value: visitor.host },
-  { label: "Department", value: visitor.department },
-  { label: "Purpose of Visit", value: visitor.purpose },
-  { label: "Check-In Time", value: visitor.checkIn },
-];
-
-const accessDetails = [
-  { label: "Access Level", value: "Standard Visitor" },
-  { label: "Valid Until", value: "Oct 24, 2022 - 5:00 PM" },
-  { label: "Entry Point", value: "Main Lobby - Gate A" },
-];
+  time: "Pending",
+  checkIn: "Pending",
+  checkOut: "Pending",
+  department: "N/A",
+});
 
 export default function ReviewVisitor() {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [notes, setNotes] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showRejectSuccess, setShowRejectSuccess] = useState(false);
+  const { data: visitsData } = useGetVisitsQuery({
+    page: 1,
+    limit: 20,
+    search: id,
+  });
+  const [approveVisit, { isLoading: isApproving }] = useApproveVisitMutation();
+
+  const visitor = useMemo<VisitorRow>(() => {
+    const visitorRecords = visitsData?.records.map(toVisitorRow) ?? [];
+
+    return (
+      visitorRecords.find((item) => item.id === id) ?? visitorRecords[0] ?? fallbackVisitor(id)
+    );
+  }, [id, visitsData?.records]);
+
+  const detailRows: { label: string; value: string }[] = [
+    { label: "Visitor Name", value: visitor.name },
+    { label: "Email Address", value: visitor.email },
+    { label: "Phone Number", value: visitor.phone },
+    { label: "Host Name", value: visitor.host },
+    { label: "Department", value: visitor.department },
+    { label: "Purpose of Visit", value: visitor.purpose },
+    { label: "Check-In Time", value: visitor.checkIn },
+  ];
+
+  const accessDetails = [
+    { label: "Access Level", value: "Standard Visitor" },
+    { label: "Valid Until", value: "End of visit" },
+    { label: "Entry Point", value: "Main Lobby - Gate A" },
+  ];
 
   const handleApprove = () => {
     setShowConfirm(true);
   };
 
-  const handleConfirmApprove = () => {
-    setShowConfirm(false);
-    setShowSuccess(true);
+  const handleConfirmApprove = async () => {
+    try {
+      await approveVisit(visitor.id).unwrap();
+      setShowConfirm(false);
+      setShowSuccess(true);
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to approve visitor. Please try again.");
+    }
   };
 
   const handleReject = () => {
@@ -65,12 +93,12 @@ export default function ReviewVisitor() {
           type="link"
           icon={<ArrowLeftOutlined className="text-xs" />}
           className="mb-4 px-0! font-medium text-sky-500!"
+          onClick={() => navigate(paths.admin.visitors.getHref())}
         >
           Back to List
         </Button>
 
         <div className="flex flex-col gap-6 xl:flex-row xl:items-start">
-          {/* Visitor details card */}
           <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-7 md:py-7 xl:flex-1">
             <div className="mb-6 flex items-center gap-4">
               <img
@@ -79,7 +107,9 @@ export default function ReviewVisitor() {
                 className="h-14 w-14 rounded-full object-cover"
               />
               <div>
-                <h3 className="text-base leading-tight font-bold text-slate-800">{visitor.name}</h3>
+                <h3 className="text-base leading-tight font-bold text-slate-800">
+                  {visitor.name}
+                </h3>
                 <span className="mt-1.5 inline-flex items-center rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-400">
                   {visitor.status}
                 </span>
@@ -101,7 +131,6 @@ export default function ReviewVisitor() {
             </div>
           </div>
 
-          {/* Review and approve card */}
           <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 xl:w-96 xl:shrink-0">
             <h3 className="mb-2 text-base font-bold text-slate-800">Review and Approve</h3>
             <p className="mb-5 text-sm leading-relaxed text-slate-400">
@@ -127,6 +156,7 @@ export default function ReviewVisitor() {
                 type="primary"
                 block
                 onClick={handleApprove}
+                loading={isApproving}
                 className="h-11! bg-emerald-500! font-semibold hover:bg-emerald-600!"
               >
                 Approve Access
@@ -140,6 +170,7 @@ export default function ReviewVisitor() {
         visible={showConfirm}
         onConfirm={handleConfirmApprove}
         onCancel={() => setShowConfirm(false)}
+        visitorName={visitor.name}
       />
 
       <AccessApprovedModal

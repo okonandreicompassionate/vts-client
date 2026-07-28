@@ -37,7 +37,7 @@ export const paths = {
       getHref: (id?: string) => (id ? `/admin/visitors/${id}` : "/admin/visitors"),
     },
     visitorReview: {
-      path: "/admin/visitors/review",
+      path: "/admin/visitors/:id/review",
       getHref: (id?: string) => (id ? `/admin/visitors/${id}/review` : "/admin/visitors"),
     },
     settings: {
