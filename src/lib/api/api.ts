@@ -182,8 +182,13 @@ export const api = createApi({
     }),
     getProfile: builder.query<UserProfile, void>({
       query: () => "auth/profile",
-      transformResponse: (response: UserProfile | { data?: UserProfile; user?: UserProfile }) =>
-        ("data" in response && response.data) || ("user" in response && response.user) || response,
+      transformResponse: (
+        response: UserProfile | { data?: UserProfile; user?: UserProfile },
+      ): UserProfile => {
+        if ("data" in response && response.data) return response.data;
+        if ("user" in response && response.user) return response.user;
+        return response as UserProfile;
+      },
       providesTags: ["Admins"],
     }),
     verifyVisitIdentity: builder.mutation<

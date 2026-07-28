@@ -1,4 +1,4 @@
-import { baseApi } from "../../../lib/rtk-query";
+import { baseApi } from "../../../lib/api/rtk-query";
 
 // follow api integration pattern for other integrations in admin and visitor features
 // this is just a mock boilerplate

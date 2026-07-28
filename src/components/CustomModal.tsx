@@ -1,5 +1,5 @@
 import { Button, Checkbox, Modal, Spin } from "antd";
-import { useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { usePopup } from "../hooks/usePopup";
 
@@ -18,48 +18,13 @@ const UseModalCtx = () => {
 
 interface RootProps {
   children: ReactNode;
-  okText?: string;
-  onCancel?: () => void;
-  onOk?: () => void;
-  modalSubtitle?: string;
-  icon?: ReactNode;
-  loading?: boolean;
-  closable?: boolean;
-  isDanger?: boolean;
-  width?: number;
-  center?: boolean;
-  disabled?: boolean;
-  step?: boolean;
-  showConfirmation?: boolean; // Controls checkbox visibility
-  confirmationText?: string;
-  modalTheme?: ModalTheme;
-  hideFooter?: boolean;
-  maxHeight?: boolean;
-  hideCancelButton?: boolean;
   open?: boolean;
+  width?: number;
+  onCancel?: () => void;
 }
 
-export const CustomModal = ({
-  children,
-  loading,
-  onCancel,
-  modalSubtitle,
-  okText,
-  showConfirmation,
-  confirmationText,
-  onOk,
-  title,
-  isDanger = false,
-  width = 680,
-  // center = false,
-  disabled = false,
-  modalTheme = ModalTheme.DEFAULT,
-  hideFooter = false,
-  maxHeight = true,
-  hideCancelButton = false,
-  closable = true,
-  open,
-}: Props) => {
+export const CustomModal = ({ children, open, width = 680, onCancel }: RootProps) => {
+  const { closeModal, isModalOpen } = usePopup();
   const [isConfirmed, setIsConfirmed] = useState(false);
   const close = () => {
     closeModal();
@@ -142,44 +107,60 @@ CustomModal.Body = ({
   </div>
 );
 
-        {/* Confirmation Checkbox */}
-        {showConfirmation && !loading && (
-          <div className="w-full p-6 pt-2">
-            <Checkbox
-              onChange={(e) => setIsConfirmed(e.target.checked)}
-              className="custom-checkbox"
-              // style={{ color: "red" }}
-            >
-              <p className="text-sm text-gray-600">{confirmationText ?? "I confirm this action"}</p>
-            </Checkbox>
-          </div>
-        )}
+CustomModal.Confirmation = ({ text }: { text?: string }) => {
+  const { setIsConfirmed } = UseModalCtx();
+  return (
+    <div className="w-full p-6 pt-2">
+      <Checkbox onChange={(e) => setIsConfirmed(e.target.checked)} className="custom-checkbox">
+        <p className="text-sm text-gray-600">{text ?? "I confirm this action"}</p>
+      </Checkbox>
+    </div>
+  );
+};
 
-        {!hideFooter && (
-          <div className="mt-2 w-full space-x-4">
-            <div className="flex items-center justify-center gap-3">
-              {!hideCancelButton && (
-                <Button className="!bg-[#F5FBFE] h-9 w-full px-6! text-sm!" onClick={onCancel ?? closeModal}>
-                  Cancel
-                </Button>
-              )}
-              <Button
-                onClick={onOk}
-                loading={loading}
-                type="primary"
-                className={twMerge(
-                  "h-9 w-full px-6! text-sm!",
-                  warning && "bg-red-400! text-white!",
-                )}
-                disabled={disabled || (showConfirmation ? !isConfirmed : false)}
-              >
-                {okText ?? "Submit"}
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-    </Modal>
+CustomModal.Footer = ({
+  okText = "Submit",
+  onOk,
+  onCancel,
+  loading,
+  disabled,
+  danger,
+  requireConfirmation,
+  hideCancel,
+  children,
+}: {
+  okText?: string;
+  onOk?: () => void;
+  onCancel?: () => void;
+  loading?: boolean;
+  disabled?: boolean;
+  danger?: boolean;
+  requireConfirmation?: boolean;
+  hideCancel?: boolean;
+  children?: ReactNode; // escape hatch: pass fully custom footer JSX
+}) => {
+  const { close, isConfirmed } = UseModalCtx();
+
+  if (children) {
+    return <div className="mt-2 flex w-full items-center justify-center gap-3">{children}</div>;
+  }
+  return (
+    <div className="mt-2 flex w-full items-center justify-center gap-3">
+      {!hideCancel && (
+        <Button className="h-9 w-full !bg-[#F5FBFE] px-6! text-sm!" onClick={onCancel ?? close}>
+          Cancel
+        </Button>
+      )}
+      <Button
+        onClick={onOk}
+        loading={loading}
+        type="primary"
+        className={twMerge("h-9 w-full px-6! text-sm!", danger && "bg-red-400! text-white!")}
+        disabled={disabled || (requireConfirmation ? !isConfirmed : false)}
+      >
+        {okText}
+      </Button>
+    </div>
   );
 };
 
