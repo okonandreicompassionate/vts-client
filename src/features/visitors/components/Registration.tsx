@@ -1,31 +1,48 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { paths } from "../../../config/paths";
 import { usePopup } from "../../../hooks/usePopup";
+import { ORG_SLUG, useCreateVisitMutation } from "../../../lib/api";
 import RegistrationModal from "../components/modals/RegistrationModal";
 import RegistrationSuccessModal from "../components/modals/RegistrationSuccessModal";
 import type { RegistrationValues } from "../types/registration-values";
+import { paths } from "../../../config/paths";
 
 export default function Registration() {
   const [form] = Form.useForm<RegistrationValues>();
   const { openModal } = usePopup();
+  const [createVisit] = useCreateVisitMutation();
 
   const handleFinish = async (values: RegistrationValues) => {
     openModal(
       <RegistrationModal
         onSubmit={async () => {
-          // todo: send registration to API
-          // e.g await api.register(values);
-          console.log("submitting registration:", values);
-          window.localStorage.setItem("visitorRegistration", JSON.stringify(values));
-          form.resetFields();
-          openModal(
-            <RegistrationSuccessModal
-              onOk={() =>
-                window.location.assign(`${paths.visitorProfile.getHref()}?status=pending`)
-              }
-            />,
-          );
+          try {
+            await createVisit({
+              orgSlug: ORG_SLUG,
+              fullName: values.name,
+              email: values.email,
+              phoneNumber: values.phoneNo,
+              hostName: values.hostName,
+              department: values.department,
+              purposeOfVisit: values.purposeOfVisit,
+            }).unwrap();
+
+            window.localStorage.setItem(
+              "visitorRegistration",
+              JSON.stringify({ ...values, email: values.email, department: values.department }),
+            );
+            form.resetFields();
+            openModal(
+              <RegistrationSuccessModal
+                onOk={() =>
+                  window.location.assign(`${paths.visitorProfile.getHref()}?status=pending`)
+                }
+              />,
+            );
+          } catch {
+            message.error("Registration could not be submitted. Please try again.");
+          }
         }}
       />,
     );
@@ -64,6 +81,25 @@ export default function Registration() {
           name="hostName"
           label="Host Name"
           rules={[{ required: true, message: "Please enter the host name" }]}
+        >
+          <Input size="large" className="rounded-xl" />
+        </Form.Item>
+
+        <Form.Item
+          name="email"
+          label="Email Address"
+          rules={[
+            { required: true, message: "Please enter your email address" },
+            { type: "email", message: "Please enter a valid email address" },
+          ]}
+        >
+          <Input size="large" type="email" className="rounded-xl" />
+        </Form.Item>
+
+        <Form.Item
+          name="department"
+          label="Department"
+          rules={[{ required: true, message: "Please enter your department" }]}
         >
           <Input size="large" className="rounded-xl" />
         </Form.Item>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Select, Button, Pagination } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -6,8 +6,10 @@ import { ClockCircleOutlined, WarningOutlined, EyeOutlined } from "@ant-design/i
 import Header from "../components/layout/Header.tsx";
 import StatusPill from "../components/StatusPill.tsx";
 import TableComponent from "../../../components/TableComponent.tsx";
-import { dummyVisitors, getVisitorSummary, type VisitorRecord } from "../../../dummyAppData.tsx";
+import { getVisitorSummary, type VisitorRecord } from "../../../dummyAppData.tsx";
 import { paths } from "../../../config/paths";
+import { useGetVisitsQuery } from "../../../lib/api";
+import type { VisitorStatus } from "./StatusPill";
 
 const statCards = [
   {
@@ -106,9 +108,33 @@ const columns: ColumnsType<VisitorRecord> = [
 export default function Dashboard() {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
-  const summary = getVisitorSummary(dummyVisitors);
+  const { data: visits = [] } = useGetVisitsQuery();
   const pageSize = 8;
-  const paginatedVisitors = dummyVisitors.slice((page - 1) * pageSize, page * pageSize);
+
+  const visitorRecords = useMemo<VisitorRecord[]>(() => {
+    return visits.map((visit, index) => ({
+      id: visit.id ?? `${visit.email ?? "visit"}-${index}`,
+      name: visit.fullName ?? visit.name ?? "Unknown visitor",
+      email: visit.email ?? "N/A",
+      phone: visit.phoneNumber ?? visit.phone ?? "N/A",
+      avatar: `https://i.pravatar.cc/40?img=${(index % 70) + 1}`,
+      host: visit.hostName ?? visit.host ?? "Unassigned",
+      purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
+      status: (visit.status?.toLowerCase() === "signed in"
+        ? "Signed In"
+        : visit.status?.toLowerCase() === "signed off"
+          ? "Signed Off"
+          : visit.status?.toLowerCase() === "rejected"
+            ? "Rejected"
+            : "Pending") as VisitorStatus,
+      time: visit.time ?? visit.createdAt ?? "Pending",
+      checkIn: visit.checkIn ?? visit.checkInTime ?? "Pending",
+      department: visit.department ?? "N/A",
+    }));
+  }, [visits]);
+
+  const summary = getVisitorSummary(visitorRecords);
+  const paginatedVisitors = visitorRecords.slice((page - 1) * pageSize, page * pageSize);
 
   const handleRowClick = (record: VisitorRecord) => ({
     onClick: () => navigate(paths.admin.visitorDetails.getHref(record.id)),
@@ -238,13 +264,13 @@ export default function Dashboard() {
 
           <div className="flex flex-col gap-3 border-t border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <p className="text-center text-sm text-slate-400 sm:text-left">
-              Showing {Math.min((page - 1) * pageSize + 1, dummyVisitors.length)} to{" "}
-              {Math.min(page * pageSize, dummyVisitors.length)} of {dummyVisitors.length} entries
+              Showing {Math.min((page - 1) * pageSize + 1, visitorRecords.length)} to{" "}
+              {Math.min(page * pageSize, visitorRecords.length)} of {visitorRecords.length} entries
             </p>
             <Pagination
               current={page}
               pageSize={pageSize}
-              total={dummyVisitors.length}
+              total={visitorRecords.length}
               onChange={setPage}
               showSizeChanger={false}
               className="text-center sm:text-right"
