@@ -1,15 +1,28 @@
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../../config/paths";
+import { ORG_SLUG, useVerifyVisitIdentityMutation } from "../../../lib/api";
 
 export default function VerifyIdentity() {
   const navigate = useNavigate();
+  const [verifyVisitIdentity] = useVerifyVisitIdentityMutation();
 
-  const handleFinish = () => {
-    // api call
-    // only runs after validation passes:
-    navigate(paths.register.getHref());
+  const handleFinish = async (values: { emailOrPhone: string }) => {
+    const rawValue = values.emailOrPhone.trim();
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawValue);
+
+    try {
+      await verifyVisitIdentity({
+        orgSlug: ORG_SLUG,
+        email: isEmail ? rawValue : "",
+        phoneNumber: isEmail ? "" : rawValue,
+      }).unwrap();
+
+      navigate(paths.register.getHref());
+    } catch {
+      message.error("We couldn't verify your identity. Please try again.");
+    }
   };
 
   return (

@@ -10,7 +10,12 @@ export default function LandingPage() {
       <div className="flex w-full max-w-xl flex-col rounded-xl max-md:p-4">
         <header className="-mt-32 mb-20 flex flex-col items-center text-center md:mt-4">
           <div className="flex flex-col items-center gap-2">
-            <img src="/logo.png" alt="Zoracom" loading="lazy" className="mb-2 h-8 w-auto" />
+            <img
+              src="/logo.png"
+              alt="Zoracom"
+              loading="lazy"
+              className="mb-2 hidden h-8 w-auto md:block"
+            />
             <h1 className="text-xl font-semibold text-gray-600 md:text-2xl">
               Visitor Tracking System
             </h1>

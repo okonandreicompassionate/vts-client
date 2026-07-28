@@ -3,5 +3,6 @@ export type RegistrationValues = {
   purposeOfVisit: string;
   hostName: string;
   department: string;
+  email: string;
   phoneNo: string;
 };

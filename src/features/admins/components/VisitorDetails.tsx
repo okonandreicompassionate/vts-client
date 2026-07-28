@@ -1,9 +1,12 @@
 import { ArrowLeftOutlined, CheckOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
-import { dummyVisitors } from "../../../dummyAppData.tsx";
+import { type VisitorRecord } from "../../../dummyAppData.tsx";
 import { paths } from "../../../config/paths";
+import { useGetVisitsQuery } from "../../../lib/api";
+import type { VisitorStatus } from "./StatusPill";
 
 type TimelineStatus = "done-blue" | "done-orange" | "done-green";
 
@@ -33,7 +36,46 @@ function TimelineDot({ status }: { status: TimelineStatus }) {
 export default function VisitorDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const visitor = dummyVisitors.find((item) => item.id === id) ?? dummyVisitors[0];
+  const { data: visits = [] } = useGetVisitsQuery();
+
+  const visitor = useMemo<VisitorRecord>(() => {
+    const visitorRecords: VisitorRecord[] = visits.map((visit, index) => ({
+      id: visit.id ?? `${visit.email ?? "visit"}-${index}`,
+      name: visit.fullName ?? visit.name ?? "Unknown visitor",
+      email: visit.email ?? "N/A",
+      phone: visit.phoneNumber ?? visit.phone ?? "N/A",
+      avatar: `https://i.pravatar.cc/40?img=${(index % 70) + 1}`,
+      host: visit.hostName ?? visit.host ?? "Unassigned",
+      purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
+      status: (visit.status?.toLowerCase() === "signed in"
+        ? "Signed In"
+        : visit.status?.toLowerCase() === "signed off"
+          ? "Signed Off"
+          : visit.status?.toLowerCase() === "rejected"
+            ? "Rejected"
+            : "Pending") as VisitorStatus,
+      time: visit.time ?? visit.createdAt ?? "Pending",
+      checkIn: visit.checkIn ?? visit.checkInTime ?? "Pending",
+      department: visit.department ?? "N/A",
+    }));
+
+    return (
+      visitorRecords.find((item) => item.id === id) ??
+      visitorRecords[0] ?? {
+        id: id ?? "unknown",
+        name: "Visitor unavailable",
+        email: "N/A",
+        phone: "N/A",
+        avatar: "https://i.pravatar.cc/40?img=1",
+        host: "N/A",
+        purpose: "N/A",
+        status: "Pending",
+        time: "Pending",
+        checkIn: "Pending",
+        department: "N/A",
+      }
+    );
+  }, [id, visits]);
 
   const statusStyles: Record<string, string> = {
     "Signed In": "bg-emerald-50 text-emerald-500 border border-emerald-200",

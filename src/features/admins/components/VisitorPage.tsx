@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, Pagination } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -6,8 +6,10 @@ import { EyeOutlined, SearchOutlined, FilterOutlined } from "@ant-design/icons";
 import Header from "../components/layout/Header.tsx";
 import StatusPill from "../components/StatusPill.tsx";
 import TableComponent from "../../../components/TableComponent.tsx";
-import { dummyVisitors, type VisitorRecord } from "../../../dummyAppData.tsx";
+import { type VisitorRecord } from "../../../dummyAppData.tsx";
 import { paths } from "../../../config/paths";
+import { useGetVisitsQuery } from "../../../lib/api";
+import type { VisitorStatus } from "./StatusPill";
 
 type FilterTab = "All" | "Signed In" | "Signed Off" | "Pending" | "Rejected";
 
@@ -84,10 +86,34 @@ export default function Visitors() {
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
+  const { data: visits = [] } = useGetVisitsQuery();
   const pageSize = 8;
 
-  const filteredVisitors = dummyVisitors.filter((visitor) => {
+  const visitorRecords = useMemo<VisitorRecord[]>(() => {
+    return visits.map((visit, index) => ({
+      id: visit.id ?? `${visit.email ?? "visit"}-${index}`,
+      name: visit.fullName ?? visit.name ?? "Unknown visitor",
+      email: visit.email ?? "N/A",
+      phone: visit.phoneNumber ?? visit.phone ?? "N/A",
+      avatar: `https://i.pravatar.cc/40?img=${(index % 70) + 1}`,
+      host: visit.hostName ?? visit.host ?? "Unassigned",
+      purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
+      status: (visit.status?.toLowerCase() === "signed in"
+        ? "Signed In"
+        : visit.status?.toLowerCase() === "signed off"
+          ? "Signed Off"
+          : visit.status?.toLowerCase() === "rejected"
+            ? "Rejected"
+            : "Pending") as VisitorStatus,
+      time: visit.time ?? visit.createdAt ?? "Pending",
+      checkIn: visit.checkIn ?? visit.checkInTime ?? "Pending",
+      department: visit.department ?? "N/A",
+    }));
+  }, [visits]);
+
+  const filteredVisitors = visitorRecords.filter((visitor) => {
     const matchesTab = activeTab === "All" || visitor.status === activeTab;
     const query = search.trim().toLowerCase();
     const matchesSearch =
@@ -124,44 +150,49 @@ export default function Visitors() {
 
       <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100">
-          <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
-            <div className="w-full overflow-x-auto rounded-lg border border-[#E6EAE8] bg-[#FAFAFA] p-1.5 sm:w-auto">
-              <div className="flex min-w-max items-center gap-1">
-                {filterTabs.map((tab) => {
-                  const isActive = activeTab === tab;
-                  return (
-                    <Button
-                      key={tab}
-                      type="text"
-                      onClick={() => handleTabChange(tab)}
-                      className={`rounded-md! text-sm! font-medium! whitespace-nowrap ${
-                        isActive
-                          ? "border! border-emerald-200! bg-emerald-50! text-emerald-500!"
-                          : "text-slate-400! hover:text-slate-600!"
-                      }`}
-                    >
-                      {tab}
-                    </Button>
-                  );
-                })}
+          <div className="flex flex-col gap-3 px-3 py-4 sm:px-6 sm:py-5">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+                <Input
+                  value={search}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  placeholder="Search visitors..."
+                  allowClear
+                  prefix={<SearchOutlined className="text-slate-300" />}
+                  className="w-full rounded-lg sm:w-56"
+                />
+                <Button
+                  icon={<FilterOutlined />}
+                  aria-label="Toggle filters"
+                  onClick={() => setShowFilters((prev) => !prev)}
+                  className={`h-9! w-9! ${showFilters ? "bg-emerald-50! text-emerald-500!" : "text-slate-400!"}`}
+                />
               </div>
             </div>
 
-            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-              <Input
-                value={search}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Search visitors..."
-                allowClear
-                prefix={<SearchOutlined className="text-slate-300" />}
-                className="w-full rounded-lg sm:w-56"
-              />
-              <Button
-                icon={<FilterOutlined />}
-                aria-label="Filter"
-                className="h-9! w-9! text-slate-400!"
-              />
-            </div>
+            {showFilters && (
+              <div className="overflow-x-auto rounded-lg border border-[#E6EAE8] bg-[#FAFAFA] p-1.5">
+                <div className="flex min-w-max items-center gap-1">
+                  {filterTabs.map((tab) => {
+                    const isActive = activeTab === tab;
+                    return (
+                      <Button
+                        key={tab}
+                        type="text"
+                        onClick={() => handleTabChange(tab)}
+                        className={`rounded-md! text-sm! font-medium! whitespace-nowrap ${
+                          isActive
+                            ? "border! border-emerald-200! bg-emerald-50! text-emerald-500!"
+                            : "text-slate-400! hover:text-slate-600!"
+                        }`}
+                      >
+                        {tab}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="-mx-3 overflow-x-auto px-3 sm:mx-0 sm:px-0">
