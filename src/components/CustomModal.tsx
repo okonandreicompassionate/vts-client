@@ -1,23 +1,26 @@
 import { Button, Checkbox, Modal, Spin } from "antd";
-import type { ButtonProps } from "antd";
 import { useState, type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { usePopup } from "../hooks/usePopup";
 
-enum ModalTheme {
-  WARNING = "WARNING",
-  DEFAULT = "DEFAULT",
+// shared state so Confirmation + Footer can talk without prop threading
+interface ModalCtx {
+  close: () => void;
+  isConfirmed: boolean;
+  setIsConfirmed: (v: boolean) => void;
 }
+const ModalContext = createContext<ModalCtx | null>(null);
+const UseModalCtx = () => {
+  const ctx = useContext(ModalContext);
+  if (!ctx) throw new Error("CustomModal.* must be used inside <CustomModal>");
+  return ctx;
+};
 
-interface Props {
-  title?: string;
+interface RootProps {
   children: ReactNode;
   okText?: string;
-  cancelText?: string;
   onCancel?: () => void;
   onOk?: () => void;
-  okButtonProps?: ButtonProps;
-  cancelButtonProps?: ButtonProps;
   modalSubtitle?: string;
   icon?: ReactNode;
   loading?: boolean;
@@ -42,9 +45,6 @@ export const CustomModal = ({
   onCancel,
   modalSubtitle,
   okText,
-  cancelText,
-  okButtonProps,
-  cancelButtonProps,
   showConfirmation,
   confirmationText,
   onOk,
@@ -61,64 +61,86 @@ export const CustomModal = ({
   open,
 }: Props) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
-  const { closeModal, isModalOpen } = usePopup();
-
-  const warning = modalTheme === ModalTheme.WARNING;
+  const close = () => {
+    closeModal();
+    onCancel?.();
+  };
 
   return (
-    <Modal
-      okText={okText || "Submit"}
-      onOk={onOk}
-      okButtonProps={{ danger: isDanger, disabled }}
-      open={open !== undefined ? open : isModalOpen}
-      onCancel={onCancel ?? closeModal}
-      confirmLoading={loading}
-      closable={false}
-      footer={false}
-      width={width}
-      centered
-      closeIcon={false}
-    >
-      <div className="flex flex-col items-center">
-        {/* //Modal Header */}
-        <div className="flex w-full items-center justify-between  pb-2">
-          <div className="text-left">
-            <p
-              className={twMerge(
-                "text-lg! font-semibold capitalize",
-                !modalSubtitle && "text-base!",
-              )}
-            >
+    <ModalContext.Provider value={{ close, isConfirmed, setIsConfirmed }}>
+      <Modal
+        open={open !== undefined ? open : isModalOpen}
+        onCancel={close}
+        footer={false}
+        closable={false}
+        closeIcon={false}
+        width={width}
+        centered
+      >
+        <div className="flex flex-col items-center">{children}</div>
+      </Modal>
+    </ModalContext.Provider>
+  );
+};
+
+CustomModal.Header = ({
+  title,
+  subtitle,
+  closable = true,
+  children,
+}: {
+  title?: string;
+  subtitle?: string;
+  closable?: boolean;
+  children?: ReactNode; // escape hatch: pass fully custom header JSX
+}) => {
+  const { close } = UseModalCtx();
+  return (
+    <div className="flex w-full items-center justify-between pb-2">
+      <div className="text-left">
+        {children ?? (
+          <>
+            <p className={twMerge("text-lg! font-semibold capitalize", !subtitle && "text-base!")}>
               {title}
             </p>
-            {modalSubtitle && <p className="text-sm! leading-5 text-gray-600">{modalSubtitle}</p>}
-          </div>
-
-          {closable && (
-            <Button
-              onClick={closeModal}
-              type="text"
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F5FBFE] p-1"
-            >
-              <img src="/close.svg" alt="Close" className="h-3 w-3" />
-            </Button>
-          )}
-        </div>
-
-        <div
-          className={twMerge(
-            "h-full w-full overflow-x-hidden overflow-y-auto",
-            !maxHeight ? "" : "max-h-125",
-          )}
+            {subtitle && <p className="text-sm! leading-5 text-gray-600">{subtitle}</p>}
+          </>
+        )}
+      </div>
+      {closable && (
+        <Button
+          onClick={close}
+          type="text"
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F5FBFE] p-1"
         >
-          {loading ? (
-            <div className="flex h-full flex-col items-center justify-center py-10">
-              <Spin className="" />
-            </div>
-          ) : (
-            children
-          )}
-        </div>
+          <img src="/close.svg" alt="Close" className="h-3 w-3" />
+        </Button>
+      )}
+    </div>
+  );
+};
+
+CustomModal.Body = ({
+  children,
+  loading,
+  maxHeight = true,
+}: {
+  children: ReactNode;
+  loading?: boolean;
+  maxHeight?: boolean;
+}) => (
+  <div
+    className={twMerge("h-full w-full overflow-x-hidden overflow-y-auto", maxHeight && "max-h-125")}
+  >
+    {loading ? (
+      <div className="flex h-full flex-col items-center justify-center py-10">
+        <Spin />
+      </div>
+    ) : (
+      children
+    )}
+  </div>
+);
 
         {/* Confirmation Checkbox */}
         {showConfirmation && !loading && (
@@ -137,30 +159,19 @@ export const CustomModal = ({
           <div className="mt-2 w-full space-x-4">
             <div className="flex items-center justify-center gap-3">
               {!hideCancelButton && (
-                <Button
-                  {...cancelButtonProps}
-                  className={twMerge(
-                    "!bg-[#F5FBFE] h-9 w-full px-6! text-sm!",
-                    cancelButtonProps?.className,
-                  )}
-                  onClick={cancelButtonProps?.onClick ?? onCancel ?? closeModal}
-                >
-                  {cancelText ?? "Cancel"}
+                <Button className="!bg-[#F5FBFE] h-9 w-full px-6! text-sm!" onClick={onCancel ?? closeModal}>
+                  Cancel
                 </Button>
               )}
               <Button
-                {...okButtonProps}
                 onClick={onOk}
                 loading={loading}
                 type="primary"
                 className={twMerge(
                   "h-9 w-full px-6! text-sm!",
                   warning && "bg-red-400! text-white!",
-                  okButtonProps?.className,
                 )}
-                disabled={
-                  disabled || okButtonProps?.disabled || (showConfirmation ? !isConfirmed : false)
-                }
+                disabled={disabled || (showConfirmation ? !isConfirmed : false)}
               >
                 {okText ?? "Submit"}
               </Button>

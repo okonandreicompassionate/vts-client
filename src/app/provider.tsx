@@ -4,9 +4,8 @@ import { MsalProvider } from "@azure/msal-react";
 import { ConfigProvider } from "antd";
 import type { ReactNode } from "react";
 import { Provider } from "react-redux";
-
+import { store } from "../stores/store";            // ← now from stores
 import { PopupProvider } from "../lib/contexts/PopupProvider";
-import { msalConfig } from "../lib/api/msal";
 import { store } from "./store";
 
 const theme = {
@@ -29,8 +28,6 @@ const theme = {
     },
   },
 };
-
-const msalInstance = new PublicClientApplication(msalConfig);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   return (

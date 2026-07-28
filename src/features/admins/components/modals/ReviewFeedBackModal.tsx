@@ -1,11 +1,24 @@
 import CustomModal from "../../../../components/CustomModal";
+import { usePopup } from "../../../../hooks/usePopup";
 
-const ReviewFeedBackModal = () => {
+type ReviewFeedBackModalProps = {
+  onClose?: () => void;
+};
+
+const ReviewFeedBackModal = ({ onClose }: ReviewFeedBackModalProps) => {
+  const { closeModal } = usePopup();
+
+  const handleClose = () => {
+    onClose?.();
+    closeModal();
+  };
+
   return (
-    <CustomModal title="Review Feedback" onCancel={() => {}} onOk={() => {}}>
-      <div className="px-2 py-3 text-sm text-slate-600">
-        Feedback content goes here.
-      </div>
+    <CustomModal onCancel={handleClose}>
+      <CustomModal.Header title="Review Feedback" />
+      <CustomModal.Body>
+        <div className="px-2 py-3 text-sm text-slate-600">Feedback content goes here.</div>
+      </CustomModal.Body>
     </CustomModal>
   );
 };

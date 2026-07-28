@@ -1,4 +1,4 @@
-import { Input } from "antd";
+import { Input, Button } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import CustomModal from "../../../../components/CustomModal";
@@ -26,22 +26,12 @@ function SystemSettingsModal() {
 
   return (
     <CustomModal
-      title="System Settings"
-      okText="Save Settings"
-      cancelText="Cancel"
-      onOk={handleSaveSettings}
       onCancel={handleCancel}
       width={400}
-      okButtonProps={{
-        className:
-          "!rounded-full !h-11 !px-8 !bg-sky-500 hover:!bg-sky-600 !border-none !font-semibold !flex-1",
-      }}
-      cancelButtonProps={{
-        className:
-          "!rounded-full !h-11 !px-8 !bg-white !text-slate-500 !border-slate-200 hover:!bg-slate-50 hover:!text-slate-600 !font-medium !flex-1",
-      }}
     >
-      <Form
+      <CustomModal.Header title="System Settings" />
+      <CustomModal.Body>
+        <Form
         form={form}
         className="space-y-1 mt-4"
         layout="vertical"
@@ -94,6 +84,24 @@ function SystemSettingsModal() {
           />
         </FormItem>
       </Form>
+      </CustomModal.Body>
+      <CustomModal.Footer>
+        <div className="mt-4 flex w-full items-center gap-3">
+          <Button
+            onClick={handleCancel}
+            className="!rounded-full !h-11 !px-8 !bg-white !text-slate-500 !border-slate-200 hover:!bg-slate-50 hover:!text-slate-600 !font-medium !flex-1"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="primary"
+            onClick={handleSaveSettings}
+            className="!rounded-full !h-11 !px-8 !bg-sky-500 hover:!bg-sky-600 !border-none !font-semibold !flex-1"
+          >
+            Save Settings
+          </Button>
+        </div>
+      </CustomModal.Footer>
     </CustomModal>
   );
 }

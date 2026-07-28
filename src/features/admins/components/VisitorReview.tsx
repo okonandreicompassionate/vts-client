@@ -1,7 +1,6 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useMemo, useState } from "react";
-import { Button, Input, message } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { Button, Input } from "antd";
 import Header from "../components/layout/Header.tsx";
 import ApproveAccessModal from "../components/modals/ApproveAccessModal";
 import AccessApprovedModal from "../components/modals/AccessApprovedModal";
@@ -59,29 +58,29 @@ export default function ReviewVisitor() {
     { label: "Check-In Time", value: visitor.checkIn },
   ];
 
-  const accessDetails = [
-    { label: "Access Level", value: "Standard Visitor" },
-    { label: "Valid Until", value: "End of visit" },
-    { label: "Entry Point", value: "Main Lobby - Gate A" },
-  ];
+const accessDetails = [
+  { label: "Access Level", value: "Standard Visitor" },
+  { label: "Valid Until", value: "Oct 24, 2022 - 5:00 PM" },
+  { label: "Entry Point", value: "Main Lobby - Gate A" },
+];
+
+export default function ReviewVisitor() {
+  const [notes, setNotes] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showRejectSuccess, setShowRejectSuccess] = useState(false);
 
   const handleApprove = () => {
-    setShowConfirm(true);
+    openModal(<ApproveAccessModal onConfirm={handleConfirmApprove} />);
   };
 
-  const handleConfirmApprove = async () => {
-    try {
-      await approveVisit(visitor.id).unwrap();
-      setShowConfirm(false);
-      setShowSuccess(true);
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to approve visitor. Please try again.");
-    }
+  const handleConfirmApprove = () => {
+    setShowConfirm(false);
+    setShowSuccess(true);
   };
 
   const handleReject = () => {
-    setShowRejectSuccess(true);
+    openModal(<AccessRejectedModal />);
   };
 
   return (
@@ -170,7 +169,6 @@ export default function ReviewVisitor() {
         visible={showConfirm}
         onConfirm={handleConfirmApprove}
         onCancel={() => setShowConfirm(false)}
-        visitorName={visitor.name}
       />
 
       <AccessApprovedModal

@@ -1,5 +1,6 @@
 import { Button, Form, Input, message } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
+import { paths } from "../../../config/paths";
 import { usePopup } from "../../../hooks/usePopup";
 import { ORG_SLUG, useCreateVisitMutation } from "../../../lib/api";
 import RegistrationModal from "../components/modals/RegistrationModal";
@@ -51,12 +52,6 @@ export default function Registration() {
     <div className="flex w-full flex-col bg-white">
       <header className="jusify-between flex items-center border-b border-slate-200 px-5 py-4">
         <h1 className="text-lg font-bold text-slate-900">Registration</h1>
-        {/* <Button
-          type="text"
-          aria-label="Notifications"
-          icon={<BellOutlined className="text-lg" />}
-          className="text-slate-500! hover:text-slate-700!"
-        /> */}
       </header>
 
       <Form
@@ -79,18 +74,6 @@ export default function Registration() {
           label="Purpose of Visit"
           rules={[{ required: true, message: "Please select a purpose" }]}
         >
-          {/* <Select
-            size="large"
-            placeholder="Select a purpose"
-            className="rounded-xl"
-            options={[
-              { value: "enquiry", label: "Enquiry" },
-              { value: "meeting", label: "Meeting" },
-              { value: "delivery", label: "Delivery" },
-              { value: "interview", label: "Interview" },
-              { value: "other", label: "Other" },
-            ]}
-          /> */}
           <Input size="large" placeholder="" className="rounded-xl" />
         </Form.Item>
 

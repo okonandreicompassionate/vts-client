@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "antd";
-import type { StatusMeta } from "./statusMeta";
+import type { StatusMeta } from "../types/statusMeta";
 
 type Props = {
   meta: StatusMeta;
