@@ -11,11 +11,14 @@ import {
 import { useAdminLoginMutation, useMicrosoftLoginMutation } from "../api/auth-api";
 import { getAuthToken } from "../utils/get-auth-token";
 import { useMsalAuth } from "../../../lib/api/msal";
+import { useAppDispatch } from "../../../lib/stores/hooks";
+import { setAdminToken } from "../auth-slice";
 
 export default function AdminLogin() {
   const [form] = Form.useForm<{ email: string; password: string }>();
   const [isMicrosoftPopupOpen, setIsMicrosoftPopupOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const msal = useMsalAuth();
   const [adminLogin, { isLoading: isAdminLoggingIn }] = useAdminLoginMutation();
   const [microsoftLogin, { isLoading: isMicrosoftLoggingIn }] = useMicrosoftLoginMutation();
@@ -26,7 +29,7 @@ export default function AdminLogin() {
       return;
     }
 
-    window.localStorage.setItem("token", token);
+    dispatch(setAdminToken(token));
     navigate(paths.admin.dashboard.getHref());
   };
 
