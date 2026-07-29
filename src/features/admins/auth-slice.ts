@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-interface AdminAuthState {
+export interface AdminAuthState {
   token: string | null;
   isAuthenticated: boolean;
 }

@@ -8,8 +8,7 @@ export const store = configureStore({
     [api.reducerPath]: api.reducer,
     adminAuth: adminAuthReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
 });
 
 setupListeners(store.dispatch);

@@ -7,12 +7,8 @@ interface ProtectedRouteProps {
   requiredAuth?: "admin" | "visitor";
 }
 
-export function ProtectedRoute({
-  children,
-  requiredAuth = "admin",
-}: ProtectedRouteProps) {
+export function ProtectedRoute({ children, requiredAuth = "admin" }: ProtectedRouteProps) {
   const adminAuth = useAppSelector((state) => state.adminAuth);
-
   // Admin protection
   if (requiredAuth === "admin") {
     if (!adminAuth.isAuthenticated || !adminAuth.token) {
