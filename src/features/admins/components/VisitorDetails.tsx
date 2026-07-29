@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
 import { paths } from "../../../config/paths";
-import { useGetVisitsQuery } from "../../../lib/api";
+import { useGetVisitsQuery } from "../api/auth-api";
 import { toVisitorRow, type VisitorRow } from "../utils/visits";
 
 type TimelineStatus = "done-blue" | "done-orange" | "done-green";

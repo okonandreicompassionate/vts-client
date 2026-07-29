@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 import { paths } from "../../../config/paths";
 import {
-  getAuthToken,
+
   ORG_SLUG,
-  useAdminLoginMutation,
-  useMicrosoftLoginMutation,
 } from "../../../lib/api";
+import { useAdminLoginMutation, useMicrosoftLoginMutation } from "../api/auth-api";
+import { getAuthToken } from "../utils/get-auth-token";
 import { useMsalAuth } from "../../../lib/api/msal";
 
 export default function AdminLogin() {

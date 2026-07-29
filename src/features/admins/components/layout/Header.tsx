@@ -1,7 +1,7 @@
-import { useGetProfileQuery } from "../../../../lib/api";
+import { useGetProfileQuery } from "../../api/auth-api";
 
 const Header = ({ title }: { title: string }) => {
-  const { data: profile } = useGetProfileQuery();
+  const { data: profile } = useGetProfileQuery(undefined);
   const displayName = profile?.fullName ?? profile?.name ?? profile?.email ?? "Admin User";
   const role = profile?.role ?? "Admin";
   const avatar = profile?.avatar ?? `https://i.pravatar.cc/40?u=${encodeURIComponent(displayName)}`;

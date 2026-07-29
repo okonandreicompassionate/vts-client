@@ -1,7 +1,8 @@
 import { Button, Form, Input, message } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { usePopup } from "../../../hooks/usePopup";
-import { ORG_SLUG, useCreateVisitMutation } from "../../../lib/api";
+import { ORG_SLUG } from "../../../lib/api";
+import { useCreateVisitMutation } from "../api/create-visit-api";
 import RegistrationModal from "../components/modals/RegistrationModal";
 import RegistrationSuccessModal from "../components/modals/RegistrationSuccessModal";
 import type { RegistrationValues } from "../types/registration-values";
