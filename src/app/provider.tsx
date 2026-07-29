@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import { theme } from "./theme";
 import { PopupProvider } from "../lib/contexts/PopupProvider";
 import { msalConfig } from "../lib/api/msal";
-import { store } from "../stores/store";
+import { store } from "../lib/stores/store";
 
 
 
