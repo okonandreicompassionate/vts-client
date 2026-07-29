@@ -7,7 +7,6 @@ export const ORG_SLUG = "zoracom";
 export interface VerifyIdentityPayload {
   orgSlug: string;
   email: string;
-  phoneNumber: string;
 }
 
 export interface CreateVisitPayload {
