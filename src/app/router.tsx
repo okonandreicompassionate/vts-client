@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Spinner } from "../components/Spinner";
+import { ProtectedRoute } from "./protected-route";
 
 // use the paths in path.ts file to link or navigate files
 import { paths } from "../config/paths";
@@ -25,19 +26,33 @@ export function AppRouter() {
     <BrowserRouter>
       <Suspense fallback={fallback}>
         <Routes>
-          {/* visitor side */}
+          {/* visitor side - public routes */}
           <Route path={paths.home.path} element={<LazyLandingPage />} />
           <Route element={<LazyAuthLayout />}>
             <Route path={paths.register.path} element={<LazyRegistration />} />
             <Route path={paths.verify.path} element={<LazyVerifyIdentity />} />
-            <Route path={paths.visitorProfile.path} element={<LazyVisitorProfile />} />
+            {/* Protect visitor profile - needs registration data */}
+            <Route
+              path={paths.visitorProfile.path}
+              element={
+                <ProtectedRoute requiredAuth="visitor">
+                  <LazyVisitorProfile />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
-          {/* admin login*/}
+          {/* admin login - public */}
           <Route path={paths.admin.login.path} element={<LazyAdminLogin />} />
 
-          {/* admin app which has shared layout: sidebar + outlet) */}
-          <Route element={<LazyLayout />}>
+          {/* admin app which has shared layout: sidebar + outlet - protected routes */}
+          <Route
+            element={
+              <ProtectedRoute requiredAuth="admin">
+                <LazyLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path={paths.admin.dashboard.path} element={<LazyAdminDashboard />} />
             <Route path={paths.admin.visitors.path} element={<LazyVisitorPage />} />
             <Route path={paths.admin.visitorDetails.path} element={<LazyVisitorDetails />} />
