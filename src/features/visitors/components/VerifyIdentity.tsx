@@ -2,7 +2,8 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../../config/paths";
-import { ORG_SLUG, useVerifyVisitIdentityMutation } from "../../../lib/api";
+import { ORG_SLUG}  from "../../../lib/api";
+import { useVerifyVisitIdentityMutation } from "../api/create-visit-api";
 
 export default function VerifyIdentity() {
   const navigate = useNavigate();
