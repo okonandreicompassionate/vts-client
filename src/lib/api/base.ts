@@ -1,119 +1,25 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type {
+  AdminLoginPayload,
+  AuthResponse,
+  CreateVisitPayload,
+  HealthResponse,
+  MicrosoftLoginPayload,
+  UserProfile,
+  VerifyIdentityPayload,
+  VisitListParams,
+  VisitListResponse,
+  VisitListResult,
+  VisitRecord,
+} from "./types";
 
-export interface HealthResponse {
-  status: string;
-}
-
-export const ORG_SLUG = "zoracom";
-
-export interface VerifyIdentityPayload {
-  orgSlug: string;
-  email: string;
-  phoneNumber: string;
-}
-
-export interface CreateVisitPayload {
-  orgSlug: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  hostName: string;
-  department: string;
-  purposeOfVisit: string;
-}
-
-export interface VisitRecord {
-  id?: string;
-  fullName?: string;
-  name?: string;
-  email?: string;
-  phoneNumber?: string;
-  phone?: string;
-  hostName?: string;
-  host?: string;
-  department?: string;
-  purposeOfVisit?: string;
-  purpose?: string;
-  status?: string;
-  time?: string;
-  checkIn?: string;
-  checkInTime?: string;
-  checkOut?: string;
-  checkOutTime?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface VisitListResponse {
-  data?: VisitRecord[];
-  visits?: VisitRecord[];
-  total?: number;
-  totalItems?: number;
-  count?: number;
-  page?: number;
-  limit?: number;
-  meta?: {
-    total?: number;
-    totalItems?: number;
-    count?: number;
-    page?: number;
-    limit?: number;
-  };
-  pagination?: {
-    total?: number;
-    totalItems?: number;
-    count?: number;
-    page?: number;
-    limit?: number;
-  };
-}
-
-export interface VisitListParams {
-  page: number;
-  limit: number;
-  status?: string;
-  search?: string;
-}
-
-export interface VisitListResult {
-  records: VisitRecord[];
-  total: number;
-  page: number;
-  limit: number;
-}
-
-export interface AdminLoginPayload {
-  orgSlug: string;
-  email: string;
-  password: string;
-}
-
-export interface MicrosoftLoginPayload {
-  accessToken: string;
-}
-
-export interface AuthResponse {
-  token?: string;
-  accessToken?: string;
-  data?: {
-    token?: string;
-    accessToken?: string;
-    user?: UserProfile;
-  };
-  user?: UserProfile;
-}
-
-export interface UserProfile {
-  id?: string;
-  fullName?: string;
-  name?: string;
-  email?: string;
-  role?: string;
-  avatar?: string;
-}
 
 export const getAuthToken = (response: AuthResponse) =>
-  response.token ?? response.accessToken ?? response.data?.token ?? response.data?.accessToken ?? "";
+  response.token ??
+  response.accessToken ??
+  response.data?.token ??
+  response.data?.accessToken ??
+  "";
 
 const getVisitsFromResponse = (response: VisitListResponse | VisitRecord[] | undefined) => {
   if (Array.isArray(response)) {
@@ -145,10 +51,15 @@ const getTotalFromResponse = (
   );
 };
 
-export const api = createApi({
+const fallbackBaseUrl = "http://localhost:3000";
+const configuredBaseUrl = (import.meta.env.VITE_API_URL ?? fallbackBaseUrl).replace(/\/$/, "");
+export const baseUrl = import.meta.env.VITE_API_URL ? "" : configuredBaseUrl;
+
+export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL || "/api",
+    baseUrl,
+    credentials: "include",
     prepareHeaders: (headers) => {
       if (typeof window !== "undefined") {
         const token = window.localStorage.getItem("token");
@@ -168,20 +79,20 @@ export const api = createApi({
     }),
     adminLogin: builder.mutation<AuthResponse, AdminLoginPayload>({
       query: (body) => ({
-        url: "auth/login",
+        url: "/auth/login",
         method: "POST",
         body,
       }),
     }),
     microsoftLogin: builder.mutation<AuthResponse, MicrosoftLoginPayload>({
       query: (body) => ({
-        url: "auth/microsoft",
+        url: "/auth/microsoft",
         method: "POST",
         body,
       }),
     }),
     getProfile: builder.query<UserProfile, void>({
-      query: () => "auth/profile",
+      query: () => "/auth/profile",
       transformResponse: (
         response: UserProfile | { data?: UserProfile; user?: UserProfile },
       ): UserProfile => {
@@ -196,14 +107,14 @@ export const api = createApi({
       VerifyIdentityPayload
     >({
       query: (body) => ({
-        url: "visits/verify-identity",
+        url: "/visits/verify-identity",
         method: "POST",
         body,
       }),
     }),
     createVisit: builder.mutation<{ success?: boolean; message?: string }, CreateVisitPayload>({
       query: (body) => ({
-        url: "visits",
+        url: "/visits",
         method: "POST",
         body,
       }),
@@ -211,7 +122,7 @@ export const api = createApi({
     }),
     getVisits: builder.query<VisitListResult, VisitListParams>({
       query: ({ page, limit, status, search }) => ({
-        url: "visits",
+        url: "/visits",
         params: {
           page,
           limit,
@@ -251,7 +162,7 @@ export const api = createApi({
     }),
     approveVisit: builder.mutation<VisitRecord | { success?: boolean; message?: string }, string>({
       query: (id) => ({
-        url: `visits/${id}/approve`,
+        url: `/visits/${id}/approve`,
         method: "PATCH",
       }),
       invalidatesTags: ["Visits"],
@@ -268,4 +179,4 @@ export const {
   useCreateVisitMutation,
   useGetVisitsQuery,
   useApproveVisitMutation,
-} = api;
+} = baseApi;
