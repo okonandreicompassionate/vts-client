@@ -8,6 +8,7 @@ import { paths } from "../config/paths";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/AdminDashboard"));
 const LazyAdminLogin = lazy(() => import("../features/admins/components/AdminLogin"));
+const LazyAdminSignup = lazy(() => import("../features/admins/components/AdminSignup"));
 const LazyAdminSettings = lazy(() => import("../features/admins/components/AdminSettings"));
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/VisitorDetails"));
 const LazyVisitorPage = lazy(() => import("../features/admins/components/VisitorPage"));
@@ -44,6 +45,7 @@ export function AppRouter() {
 
           {/* admin login - public */}
           <Route path={paths.admin.login.path} element={<LazyAdminLogin />} />
+          <Route path={paths.admin.signup.path} element={<LazyAdminSignup />} />
 
           {/* admin app which has shared layout: sidebar + outlet - protected routes */}
           <Route
