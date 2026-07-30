@@ -1,4 +1,4 @@
-import { useGetProfileQuery } from "../../api/auth-api";
+import { useGetProfileQuery } from "../../api/admin-api";
 
 const Header = ({ title }: { title: string }) => {
   const { data: profile } = useGetProfileQuery(undefined);

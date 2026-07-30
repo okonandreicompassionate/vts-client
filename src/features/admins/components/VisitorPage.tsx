@@ -7,7 +7,7 @@ import Header from "../components/layout/Header.tsx";
 import StatusPill from "../components/StatusPill.tsx";
 import TableComponent from "./Table.tsx";
 import { paths } from "../../../config/paths";
-import { useGetVisitsQuery } from "../api/auth-api";
+import { useGetVisitsQuery } from "../api/admin-api.ts";
 import type { VisitorStatus } from "./StatusPill";
 import { toApiVisitStatus, toVisitorRow, type VisitorRow } from "../utils/visits";
 

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { paths } from "../../../config/paths";
 import { ORG_SLUG } from "../../../lib/api";
-import { useAdminLoginMutation, useMicrosoftLoginMutation } from "../api/auth-api";
+import { useAdminLoginMutation, useMicrosoftLoginMutation } from "../api/admin-api";
 import { getAuthToken } from "../utils/get-auth-token";
 import { useMsalAuth } from "../../../lib/api/msal";
 import { useAppDispatch } from "../../../lib/stores/hooks";
