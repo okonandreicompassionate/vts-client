@@ -423,3 +423,15 @@ feat(vendor): add vendor registration workflow
 ```
 
 Do not include explanations, Markdown formatting, bullet points, or additional text outside the commit message unless explicitly requested.
+
+
+## MORE IMPORTANT INSTRUCTIONS
+
+Keep explanations short: when an explanation is needed, limit it to a single line.
+Feature state: store each feature’s global state inside that feature’s stores folder.
+Root store: keep the root store in lib/stores/store and register feature slices there (for example, place the admin auth slice in src/features/admin/stores).
+
+
+If any code or project structure deviates from these standards, refactor it to conform.
+Before implementing changes, research current best practices—consult React and React-Redux docs, Bulletproof React, well-maintained GitHub repos, and recent authoritative articles—and verify recommendations (do not rely solely on model training data).
+Present a concise plan and a detailed summary of the exact changes you will make before you implement them.

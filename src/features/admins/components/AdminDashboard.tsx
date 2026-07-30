@@ -5,7 +5,7 @@ import type { ColumnsType } from "antd/es/table";
 import { ClockCircleOutlined, WarningOutlined, EyeOutlined } from "@ant-design/icons";
 import Header from "../components/layout/Header.tsx";
 import StatusPill from "../components/StatusPill.tsx";
-import TableComponent from "../../../features/admins/components/TableComponent.tsx";
+import TableComponent from "./Table.tsx";
 import { paths } from "../../../config/paths";
 import { useGetVisitsQuery } from "../api/auth-api.ts";
 import type { VisitorStatus } from "./StatusPill";

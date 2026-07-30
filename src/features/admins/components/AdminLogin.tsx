@@ -8,7 +8,7 @@ import { useAdminLoginMutation, useMicrosoftLoginMutation } from "../api/auth-ap
 import { getAuthToken } from "../utils/get-auth-token";
 import { useMsalAuth } from "../../../lib/api/msal";
 import { useAppDispatch } from "../../../lib/stores/hooks";
-import { setAdminToken } from "../auth-slice";
+import { setAdminToken } from "../stores/auth-slice";
 
 export default function AdminLogin() {
   const [form] = Form.useForm<{ email: string; password: string }>();
