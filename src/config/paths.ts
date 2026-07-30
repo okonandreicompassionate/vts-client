@@ -24,6 +24,10 @@ export const paths = {
       getHref: (redirectTo?: string | null) =>
         `/admin${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`,
     },
+    signup: {
+      path: "/admin/signup",
+      getHref: () => "/admin/signup",
+    },
     dashboard: {
       path: "/admin/dashboard",
       getHref: () => "/admin/dashboard",
