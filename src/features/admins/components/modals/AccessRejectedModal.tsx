@@ -14,9 +14,9 @@ type AccessRejectedModalProps = {
 export default function AccessRejectedModal({
   onClose,
   onNotify,
-  reason = "Unauthorized purpose of visit - requires additional clearance",
-  rejectedBy = "Admin User",
-  date = "Oct 24, 2022 - 10:45 AM",
+  reason = "Unauthorized purpose of visit",
+  rejectedBy = "Admin",
+  date = new Date().toLocaleString(),
 }: AccessRejectedModalProps) {
   const { closeModal } = usePopup();
 

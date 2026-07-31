@@ -1,58 +1,83 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import { Button, Input } from "antd";
+import { useMemo, useState } from "react";
+import { Button, Input, Spin } from "antd";
+import { useParams, useNavigate } from "react-router-dom";
 import { usePopup } from "../../../hooks/usePopup";
 import Header from "../components/layout/Header.tsx";
 import ApproveAccessModal from "../components/modals/ApproveAccessModal";
 import AccessApprovedModal from "../components/modals/AccessApprovedModal";
 import AccessRejectedModal from "../components/modals/AccessRejectedModal";
+import { VisitorAvatar } from "../components/visitor-avatar.tsx";
+import { useVisitorTableData } from "../hooks/use-visitor-table-data";
+import type { VisitorRow } from "../utils/visits";
 
 const { TextArea } = Input;
 
-const visitor = {
-  name: "Alice Mary Johnson",
-  avatar: "https://i.pravatar.cc/160?img=47",
-  status: "Pending",
-  visitorName: "Alice Mary Johnson",
-  email: "alice.j@partnercorp.com",
-  phone: "+234 901 234 5678",
-  host: "Robert Brown",
-  department: "IT Infrastructure",
-  purpose: "Network Hardware Delivery",
-  checkIn: "Oct 24, 2024 · 10:15 AM (Requested)",
-};
-
-const detailRows: { label: string; value: string }[] = [
-  { label: "Visitor Name", value: visitor.visitorName },
-  { label: "Email Address", value: visitor.email },
-  { label: "Phone Number", value: visitor.phone },
-  { label: "Host Name", value: visitor.host },
-  { label: "Department", value: visitor.department },
-  { label: "Purpose of Visit", value: visitor.purpose },
-  { label: "Check-In Time", value: visitor.checkIn },
-];
-
-const accessDetails = [
-  { label: "Access Level", value: "Standard Visitor" },
-  { label: "Valid Until", value: "Oct 24, 2022 - 5:00 PM" },
-  { label: "Entry Point", value: "Main Lobby - Gate A" },
-];
-
 export default function ReviewVisitor() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [notes, setNotes] = useState("");
   const { openModal } = usePopup();
 
+  const { visitorRecords } = useVisitorTableData({
+    page: 1,
+    limit: 100,
+  });
+
+  const visitor = useMemo<VisitorRow | undefined>(() => {
+    return visitorRecords.find((item) => item.id === id);
+  }, [id, visitorRecords]);
+
+  const detailRows: { label: string; value: string }[] = visitor
+    ? [
+        { label: "Visitor Name", value: visitor.name },
+        { label: "Email Address", value: visitor.email },
+        { label: "Phone Number", value: visitor.phone },
+        { label: "Host Name", value: visitor.host },
+        { label: "Department", value: visitor.department },
+        { label: "Purpose of Visit", value: visitor.purpose },
+        { label: "Check-In Time", value: visitor.time },
+      ]
+    : [];
+
   const handleApprove = () => {
-    openModal(<ApproveAccessModal onConfirm={handleConfirmApprove} />);
+    openModal(<ApproveAccessModal visitorName={visitor?.name} onConfirm={handleConfirmApprove} />);
   };
 
   const handleConfirmApprove = () => {
-    openModal(<AccessApprovedModal accessDetails={accessDetails} />);
+    openModal(
+      <AccessApprovedModal
+        accessDetails={[
+          { label: "Access Level", value: "Standard Visitor" },
+          {
+            label: "Valid Until",
+            value: new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleString(),
+          },
+          { label: "Entry Point", value: "Main Entrance" },
+        ]}
+      />,
+    );
   };
 
   const handleReject = () => {
-    openModal(<AccessRejectedModal />);
+    openModal(
+      <AccessRejectedModal
+        rejectedBy={visitor?.host || "Admin"}
+        date={new Date().toLocaleString()}
+      />,
+    );
   };
+
+  if (!visitor) {
+    return (
+      <>
+        <Header title="Review Visitor" />
+        <main className="flex flex-1 items-center justify-center px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+          <Spin size="large" />
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
@@ -62,6 +87,7 @@ export default function ReviewVisitor() {
         <Button
           type="link"
           icon={<ArrowLeftOutlined className="text-xs" />}
+          onClick={() => navigate(-1)}
           className="mb-4 px-0! font-medium text-sky-500!"
         >
           Back to List
@@ -71,14 +97,20 @@ export default function ReviewVisitor() {
           {/* Visitor details card */}
           <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-7 md:py-7 xl:flex-1">
             <div className="mb-6 flex items-center gap-4">
-              <img
-                src={visitor.avatar}
-                alt={visitor.name}
-                className="h-14 w-14 rounded-full object-cover"
-              />
+              <VisitorAvatar name={visitor.name} size="lg" />
               <div>
                 <h3 className="text-base leading-tight font-bold text-slate-800">{visitor.name}</h3>
-                <span className="mt-1.5 inline-flex items-center rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-400">
+                <span
+                  className={`mt-1.5 inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                    visitor.status === "Signed In"
+                      ? "bg-emerald-50 text-emerald-500"
+                      : visitor.status === "Pending"
+                        ? "bg-orange-50 text-orange-400"
+                        : visitor.status === "Signed Off"
+                          ? "bg-slate-100 text-slate-500"
+                          : "bg-rose-50 text-rose-500"
+                  }`}
+                >
                   {visitor.status}
                 </span>
               </div>
@@ -133,7 +165,6 @@ export default function ReviewVisitor() {
           </div>
         </div>
       </main>
-
     </>
   );
 }

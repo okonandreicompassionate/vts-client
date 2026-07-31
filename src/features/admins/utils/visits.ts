@@ -6,7 +6,6 @@ export interface VisitorRow {
   name: string;
   email: string;
   phone: string;
-  avatar: string;
   host: string;
   purpose: string;
   status: VisitorStatus;
@@ -66,7 +65,6 @@ export function toVisitorRow(visit: VisitRecord, index: number): VisitorRow {
     name: visit.fullName ?? visit.name ?? "Unknown visitor",
     email: visit.email ?? "N/A",
     phone: visit.phoneNumber ?? visit.phone ?? "N/A",
-    avatar: `https://i.pravatar.cc/40?u=${encodeURIComponent(id)}`,
     host: visit.hostName ?? visit.host ?? "Unassigned",
     purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
     status,

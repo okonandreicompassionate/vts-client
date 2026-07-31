@@ -6,6 +6,7 @@ import Header from "../components/layout/Header.tsx";
 import StatusPill from "../components/StatusPill.tsx";
 import TableComponent from "./Table.tsx";
 import { TablePaginationFooter } from "./table-pagination-footer.tsx";
+import { VisitorAvatar } from "./visitor-avatar.tsx";
 import type { VisitorStatus } from "./StatusPill";
 import { getVisitorSummary, toApiVisitStatus, type VisitorRow } from "../utils/visits";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
@@ -53,7 +54,7 @@ const columns: ColumnsType<VisitorRow> = [
     key: "name",
     render: (_, record) => (
       <div className="flex items-center gap-3">
-        <img src={record.avatar} alt={record.name} className="h-9 w-9 rounded-full object-cover" />
+        <VisitorAvatar name={record.name} size="md" />
         <div>
           <p className="text-sm leading-tight font-medium text-slate-800">{record.name}</p>
         </div>
@@ -165,47 +166,20 @@ export default function Dashboard() {
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100">
           <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
             <h3 className="text-base font-bold text-slate-800">Recent Visitors</h3>
-            <div className="grid grid-cols-1 gap-2 sm:flex sm:grid-cols-2 sm:flex-nowrap sm:items-center sm:gap-2">
-              <Select
-                value={statusFilter}
-                onChange={handleStatusChange}
-                size="middle"
-                className="w-full bg-[#F5FBFE] sm:w-32"
-                popupMatchSelectWidth={false}
-                options={[
-                  { value: "All", label: "Status" },
-                  { value: "Signed In", label: "Signed In" },
-                  { value: "Pending", label: "Pending" },
-                  { value: "Signed Off", label: "Signed Off" },
-                  { value: "Rejected", label: "Rejected" },
-                ]}
-              />
-              <Select
-                defaultValue="Time"
-                size="middle"
-                className="w-full bg-[#F5FBFE] sm:w-28"
-                popupMatchSelectWidth={false}
-                options={[
-                  { value: "Time", label: "Time" },
-                  { value: "Today", label: "Today" },
-                  { value: "This Week", label: "This Week" },
-                  { value: "This Month", label: "This Month" },
-                ]}
-              />
-              <Select
-                defaultValue="Host Visited"
-                size="middle"
-                className="w-full bg-[#F5FBFE] sm:col-span-1 sm:w-36"
-                popupMatchSelectWidth={false}
-                options={[
-                  { value: "Host Visited", label: "Host Visited" },
-                  { value: "Sarah Smith", label: "Sarah Smith" },
-                  { value: "Robert Brown", label: "Robert Brown" },
-                  { value: "Emma Davis", label: "Emma Davis" },
-                  { value: "Chris Lee", label: "Chris Lee" },
-                ]}
-              />
-            </div>
+            <Select
+              value={statusFilter}
+              onChange={handleStatusChange}
+              size="middle"
+              className="w-full bg-[#F5FBFE] sm:w-32"
+              popupMatchSelectWidth={false}
+              options={[
+                { value: "All", label: "Status" },
+                { value: "Signed In", label: "Signed In" },
+                { value: "Pending", label: "Pending" },
+                { value: "Signed Off", label: "Signed Off" },
+                { value: "Rejected", label: "Rejected" },
+              ]}
+            />
           </div>
 
           <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
