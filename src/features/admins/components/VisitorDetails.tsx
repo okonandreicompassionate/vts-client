@@ -5,8 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
 import { VisitorAvatar } from "./visitor-avatar.tsx";
 import { paths } from "../../../config/paths";
-import { useGetVisitsQuery } from "../api/admin-api.ts";
-import { toVisitorRow, type VisitorRow } from "../utils/visits";
+import { useVisitorTableData } from "../hooks/use-visitor-table-data";
+import type { VisitorRow } from "../utils/visits";
 
 type TimelineStatus = "done-blue" | "done-orange" | "done-green";
 
@@ -36,15 +36,14 @@ function TimelineDot({ status }: { status: TimelineStatus }) {
 export default function VisitorDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data: visitsData } = useGetVisitsQuery({
+
+  // Fetch with large limit to find visitor across all pages
+  const { visitorRecords } = useVisitorTableData({
     page: 1,
-    limit: 20,
+    limit: 100,
   });
 
   const visitor = useMemo<VisitorRow>(() => {
-    const visitorRecords: VisitorRow[] =
-      visitsData?.data?.map((visit, index) => toVisitorRow(visit, index)) ?? [];
-
     return (
       visitorRecords.find((item) => item.id === id) ??
       visitorRecords[0] ?? {
@@ -61,7 +60,7 @@ export default function VisitorDetails() {
         department: "N/A",
       }
     );
-  }, [id, visitsData?.data]);
+  }, [id, visitorRecords]);
 
   const statusStyles: Record<string, string> = {
     "Signed In": "bg-emerald-50 text-emerald-500 border border-emerald-200",

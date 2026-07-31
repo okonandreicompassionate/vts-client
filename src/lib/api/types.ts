@@ -21,6 +21,7 @@ export interface CreateVisitPayload {
 
 export interface VisitRecord {
   id?: string;
+  referenceId?: string;
   fullName?: string;
   name?: string;
   email?: string;
