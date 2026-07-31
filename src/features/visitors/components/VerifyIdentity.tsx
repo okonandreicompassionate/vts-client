@@ -26,27 +26,27 @@ export default function VerifyIdentity() {
   };
 
   return (
-    <div className="flex w-full flex-col items-center bg-white max-md:pt-18">
+    <div className="flex max-h-screen w-full flex-col items-center bg-white max-md:pt-18">
       <Form
         layout="vertical"
         requiredMark={false}
         onFinish={handleFinish}
-        className="flex w-full max-w-md flex-1 flex-col gap-8 px-7"
+        className="flex w-full max-w-md flex-col gap-0 overflow-hidden px-7 max-md:flex-1"
       >
-        <div>
-          <div className="flex justify-center">
-            <img src="/padlock.svg" alt="" loading="lazy" />
+        <div className="flex w-full flex-col gap-10 max-md:flex-1 max-md:justify-start md:justify-center">
+          <div>
+            <div className="flex justify-center">
+              <img src="/padlock.svg" alt="" loading="lazy" />
+            </div>
+            <div className="mt-1 text-center">
+              <h1 className="text-xl font-bold text-slate-900">Verify Identity</h1>
+              <p className="mt-2 px-2 text-sm leading-snug text-slate-500">
+                Enter your email address or phone number to
+                <br /> continue with registration.
+              </p>
+            </div>
           </div>
-          <div className="mt-1 text-center">
-            <h1 className="text-xl font-bold text-slate-900">Verify Identity</h1>
-            <p className="mt-2 px-2 text-sm leading-snug text-slate-500">
-              Enter your email address or phone number to
-              <br /> continue with registration.
-            </p>
-          </div>
-        </div>
 
-        <div className="mx-auto mb-5 flex w-full max-w-sm flex-1 flex-col justify-center">
           <Form.Item
             name="emailOrPhone"
             label="Email/Phone Number"
@@ -66,7 +66,9 @@ export default function VerifyIdentity() {
           >
             <Input size="large" placeholder="" className="rounded-xl" />
           </Form.Item>
+        </div>
 
+        <div className="mx-auto mt-100 mb-5 flex w-full max-w-sm flex-col justify-end sm:mt-0">
           <Button
             type="primary"
             htmlType="submit"
