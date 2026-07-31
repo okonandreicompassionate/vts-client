@@ -15,10 +15,10 @@ type ApproveAccessModalProps = {
 export default function ApproveAccessModal({
   onConfirm,
   onCancel,
-  visitorName = "Alice Mary John",
+  visitorName = "Visitor",
   accessLevel = "Standard Visitor",
-  validUntil = "Oct 24, 2022 - 5:00 PM",
-  entryPoint = "Main Lobby - Gate A",
+  validUntil = "N/A",
+  entryPoint = "Main Entrance",
 }: ApproveAccessModalProps) {
   const { closeModal } = usePopup();
   const details = [

@@ -6,6 +6,7 @@ import Header from "../components/layout/Header.tsx";
 import StatusPill from "../components/StatusPill.tsx";
 import TableComponent from "./Table.tsx";
 import { TablePaginationFooter } from "./table-pagination-footer.tsx";
+import { VisitorAvatar } from "./visitor-avatar.tsx";
 import type { VisitorStatus } from "./StatusPill";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
@@ -22,7 +23,7 @@ const columns: ColumnsType<VisitorRow> = [
     key: "name",
     render: (_, record) => (
       <div className="flex items-center gap-3">
-        <img src={record.avatar} alt={record.name} className="h-9 w-9 rounded-full object-cover" />
+        <VisitorAvatar name={record.name} size="md" />
         <div>
           <span className="text-sm font-medium text-slate-800">{record.name}</span>
         </div>

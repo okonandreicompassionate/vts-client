@@ -3,6 +3,7 @@ import { Button } from "antd";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
+import { VisitorAvatar } from "./visitor-avatar.tsx";
 import { paths } from "../../../config/paths";
 import { useGetVisitsQuery } from "../api/admin-api.ts";
 import { toVisitorRow, type VisitorRow } from "../utils/visits";
@@ -51,7 +52,6 @@ export default function VisitorDetails() {
         name: "Visitor unavailable",
         email: "N/A",
         phone: "N/A",
-        avatar: "https://i.pravatar.cc/40?img=1",
         host: "N/A",
         purpose: "N/A",
         status: "Pending",
@@ -144,11 +144,9 @@ export default function VisitorDetails() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
           <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1">
             <div className="mb-6 flex flex-col items-center text-center">
-              <img
-                src={visitor.avatar}
-                alt={visitor.name}
-                className="mb-4 h-20 w-20 rounded-full object-cover"
-              />
+              <div className="mb-4">
+                <VisitorAvatar name={visitor.name} size="lg" />
+              </div>
               <h3 className="text-xl font-bold text-slate-800">{visitor.name}</h3>
               <span
                 className={`mt-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusStyles[visitor.status]}`}
