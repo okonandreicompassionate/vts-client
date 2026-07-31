@@ -1,4 +1,5 @@
 import { api } from "../../../lib/api/base";
+import type { VisitListResponse } from "../../../lib/api/types";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -22,10 +23,10 @@ export const authApi = api.injectEndpoints({
       query: () => "/auth/profile",
     }),
 
-     getVisits: builder.query({
-      query: ({ page, limit }) => ({
+    getVisits: builder.query<VisitListResponse, { page: number; limit: number; status?: string }>({
+      query: ({ page, limit, status }) => ({
         url: "/visits",
-        params: { page, limit },
+        params: { page, limit, ...(status && { status }) },
       }),
       providesTags: ["Visits"],
     }),

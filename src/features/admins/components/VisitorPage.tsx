@@ -1,15 +1,15 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Input, Pagination } from "antd";
+import { useState } from "react";
+import { Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { EyeOutlined, SearchOutlined, FilterOutlined } from "@ant-design/icons";
+import { EyeOutlined, FilterOutlined } from "@ant-design/icons";
 import Header from "../components/layout/Header.tsx";
 import StatusPill from "../components/StatusPill.tsx";
 import TableComponent from "./Table.tsx";
-import { paths } from "../../../config/paths";
-import { useGetVisitsQuery } from "../api/admin-api.ts";
+import { TablePaginationFooter } from "./table-pagination-footer.tsx";
 import type { VisitorStatus } from "./StatusPill";
-import { toApiVisitStatus, toVisitorRow, type VisitorRow } from "../utils/visits";
+import { toApiVisitStatus, type VisitorRow } from "../utils/visits";
+import { useVisitorTableData } from "../hooks/use-visitor-table-data";
+import { useVisitorRowClick } from "../hooks/use-visitor-row-click";
 
 type FilterTab = "All" | VisitorStatus;
 
@@ -25,17 +25,11 @@ const columns: ColumnsType<VisitorRow> = [
         <img src={record.avatar} alt={record.name} className="h-9 w-9 rounded-full object-cover" />
         <div>
           <span className="text-sm font-medium text-slate-800">{record.name}</span>
-          <p className="text-xs text-slate-400">{record.email}</p>
         </div>
       </div>
     ),
   },
-  {
-    title: "ID",
-    dataIndex: "id",
-    key: "id",
-    render: (id) => <span className="text-sm text-slate-500">{id}</span>,
-  },
+
   {
     title: "Phone No.",
     dataIndex: "phone",
@@ -85,35 +79,18 @@ const columns: ColumnsType<VisitorRow> = [
 export default function Visitors() {
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const navigate = useNavigate();
   const pageSize = 8;
-  const { data: visitsData } = useGetVisitsQuery({
+  const { visitorRecords, totalEntries } = useVisitorTableData({
     page,
     limit: pageSize,
     status: activeTab === "All" ? undefined : toApiVisitStatus(activeTab),
-    search: search.trim() || undefined,
   });
 
-  const visitorRecords = useMemo<VisitorRow[]>(
-    () => visitsData?.records.map(toVisitorRow) ?? [],
-    [visitsData?.records],
-  );
-  const totalEntries = visitsData?.total ?? 0;
-
-  const handleRowClick = (record: VisitorRow) => ({
-    onClick: () => navigate(paths.admin.visitorDetails.getHref(record.id)),
-    style: { cursor: "pointer" },
-  });
+  const handleRowClick = useVisitorRowClick();
 
   const handleTabChange = (tab: FilterTab) => {
     setActiveTab(tab);
-    setPage(1);
-  };
-
-  const handleSearch = (value: string) => {
-    setSearch(value);
     setPage(1);
   };
 
@@ -126,14 +103,6 @@ export default function Visitors() {
           <div className="flex flex-col gap-3 px-3 py-4 sm:px-6 sm:py-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-                <Input
-                  value={search}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  placeholder="Search visitors..."
-                  allowClear
-                  prefix={<SearchOutlined className="text-slate-300" />}
-                  className="w-full rounded-lg sm:w-56"
-                />
                 <Button
                   icon={<FilterOutlined />}
                   aria-label="Toggle filters"
@@ -182,20 +151,12 @@ export default function Visitors() {
             />
           </div>
 
-          <div className="flex flex-col gap-3 border-t border-slate-100 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <p className="text-center text-sm text-slate-400 sm:text-left">
-              Showing {totalEntries === 0 ? 0 : Math.min((page - 1) * pageSize + 1, totalEntries)}{" "}
-              to {Math.min(page * pageSize, totalEntries)} of {totalEntries} entries
-            </p>
-            <Pagination
-              current={page}
-              pageSize={pageSize}
-              total={totalEntries}
-              onChange={setPage}
-              showSizeChanger={false}
-              className="text-center sm:text-right"
-            />
-          </div>
+          <TablePaginationFooter
+            page={page}
+            pageSize={pageSize}
+            totalEntries={totalEntries}
+            onPageChange={setPage}
+          />
         </div>
       </main>
     </>

@@ -435,3 +435,6 @@ Root store: keep the root store in lib/stores/store and register feature slices 
 If any code or project structure deviates from these standards, refactor it to conform.
 Before implementing changes, research current best practices—consult React and React-Redux docs, Bulletproof React, well-maintained GitHub repos, and recent authoritative articles—and verify recommendations (do not rely solely on model training data).
 Present a concise plan and a detailed summary of the exact changes you will make before you implement them.
+
+### NOTE
+ALWAYS WRITE DRY CODE, AND MAINTAIN DRY PRINCIPLES THROUGHOUT THE ENTIRE CODEBASE

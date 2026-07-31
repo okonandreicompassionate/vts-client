@@ -38,11 +38,11 @@ export default function VisitorDetails() {
   const { data: visitsData } = useGetVisitsQuery({
     page: 1,
     limit: 20,
-    search: id,
   });
 
   const visitor = useMemo<VisitorRow>(() => {
-    const visitorRecords: VisitorRow[] = visitsData?.records.map(toVisitorRow) ?? [];
+    const visitorRecords: VisitorRow[] =
+      visitsData?.data?.map((visit, index) => toVisitorRow(visit, index)) ?? [];
 
     return (
       visitorRecords.find((item) => item.id === id) ??
@@ -61,7 +61,7 @@ export default function VisitorDetails() {
         department: "N/A",
       }
     );
-  }, [id, visitsData?.records]);
+  }, [id, visitsData?.data]);
 
   const statusStyles: Record<string, string> = {
     "Signed In": "bg-emerald-50 text-emerald-500 border border-emerald-200",
