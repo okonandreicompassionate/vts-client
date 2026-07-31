@@ -70,7 +70,7 @@ export function toVisitorRow(visit: VisitRecord, index: number): VisitorRow {
     host: visit.hostName ?? visit.host ?? "Unassigned",
     purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
     status,
-    time: formatVisitTime(visit.time ?? visit.createdAt),
+    time: formatVisitTime(visit.checkInTime ?? visit.time ?? visit.createdAt),
     checkIn:
       visit.checkIn ??
       visit.checkInTime ??
