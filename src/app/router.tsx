@@ -2,12 +2,10 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Spinner } from "../components/Spinner";
 import { ProtectedRoute } from "./protected-route";
-
-// use the paths in path.ts file to link or navigate files
 import { paths } from "../config/paths";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/AdminDashboard"));
-const LazyAdminAuthForm = lazy(() => import("../features/admins/components/AdminAuthForm"));
+const LazyAdminAuthPage = lazy(() => import("../features/admins/components/AdminAuth"));
 const LazyAdminSettings = lazy(() => import("../features/admins/components/AdminSettings"));
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/VisitorDetails"));
 const LazyVisitorPage = lazy(() => import("../features/admins/components/VisitorPage"));
@@ -31,7 +29,6 @@ export function AppRouter() {
           <Route element={<LazyAuthLayout />}>
             <Route path={paths.register.path} element={<LazyRegistration />} />
             <Route path={paths.verify.path} element={<LazyVerifyIdentity />} />
-            {/* Protect visitor profile - needs registration data */}
             <Route
               path={paths.visitorProfile.path}
               element={
@@ -42,9 +39,9 @@ export function AppRouter() {
             />
           </Route>
 
-          {/* admin auth - public */}
-          <Route path={paths.admin.login.path} element={<LazyAdminAuthForm />} />
-          <Route path={paths.admin.signup.path} element={<LazyAdminAuthForm />} />
+          {/* admin auth - public - now using the new component */}
+          <Route path={paths.admin.login.path} element={<LazyAdminAuthPage />} />
+          <Route path={paths.admin.signup.path} element={<LazyAdminAuthPage />} />
 
           {/* admin app which has shared layout: sidebar + outlet - protected routes */}
           <Route

@@ -1,30 +1,26 @@
-import { Outlet } from "react-router-dom";
+import React from "react";
+import LoginLeft from "../../components/layout/LoginLeft";
 
-const AuthLayout = () => {
+interface AuthLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-[#EEF2F7] md:grid md:grid-cols-2">
-      <div className="hidden items-center justify-center bg-linear-to-br from-[#dbe9dd] via-[#f4f6f5] to-[#dce8ef] p-10 text-slate-700 md:flex">
-        <div className="text-center max-md:max-w-md">
-          <div className="mb-10 justify-center flex">
-            <img
-              src="/loginimage.svg"
-              alt="Secure visitor registration"
-              loading="lazy"
-              //   className="mx-auto h-80 w-auto"
-            />
-          </div>
-          <h2 className="text-3xl font-semibold tracking-tight">Secure access made simple</h2>
-          <p className="mt-4 text-slate-700">
-            Verify your identity and complete registration faster with a secure, easy flow.
-          </p>
-        </div>
-      </div>
+    <div className="flex h-full min-h-screen w-full flex-col justify-center bg-white md:flex-row">
+      {/* Left panel */}
+      <LoginLeft />
 
-      <div className="flex flex-1 flex-col justify-center bg-white px-4 py-10 sm:px-6 md:px-10 lg:px-14">
-        <Outlet />
+      {/* Header visible only on small screens */}
+      <header className="sm:hidden flex flex-col items-center justify-center gap-4 px-4 py-8 sm:px-6 md:px-16 md:py-12">
+        <img src="/logo.svg" alt="" className="w-32 object-cover lg:mt-0 lg:-mb-40 lg:ml-40" />
+        <h2 className="text-2xl font-bold text-slate-800 md:text-3xl lg:ml-3">Visitor Tracker</h2>
+      </header>
+
+      {/* Right panel – card container */}
+      <div className="flex h-full w-full items-center justify-center bg-slate-50 px-4 py-8 sm:px-6 sm:py-10 md:w-1/2 md:px-8 md:py-16">
+        {children}
       </div>
     </div>
   );
-};
-
-export default AuthLayout;
+}
