@@ -10,7 +10,6 @@ import { getAuthToken } from "../utils/get-auth-token";
 import { useMsalAuth } from "../../../lib/api/msal";
 import { useAppDispatch } from "../../../lib/stores/hooks";
 import { setAdminToken } from "../stores/auth-slice";
-import MobileHeader from "../components/MobileHeader";
 
 type AuthMode = "login" | "signup";
 
@@ -90,16 +89,19 @@ export default function AdminAuthForm() {
   };
 
   return (
-    <div className="flex min-h-screen h-full justify-center w-full flex-col bg-white md:flex-row">
+    <div className="flex h-full min-h-screen w-full flex-col justify-center bg-white md:flex-row">
       {/* Left panel */}
       <LoginLeft />
 
-        <MobileHeader />
-
+      
+        <header className="sm:hidden flex flex-col items-center justify-center gap-4 px-4 py-8 sm:px-6 md:px-16 md:py-12">
+          <img src="/logo.svg" alt="" className="w-32 object-cover lg:mt-0 lg:-mb-40 lg:ml-40" />
+          <h2 className="text-2xl font-bold text-slate-800 md:text-3xl lg:ml-3">Visitor Tracker</h2>
+        </header>
       
 
       {/* Right panel */}
-      <div className="flex w-full h-full items-center justify-center bg-slate-50 px-4 py-8 sm:px-6 sm:py-10 md:w-1/2 md:px-8 md:py-16">
+      <div className="flex h-full w-full items-center justify-center bg-slate-50 px-4 py-8 sm:px-6 sm:py-10 md:w-1/2 md:px-8 md:py-16">
         <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-300/30 sm:p-8">
           {/* Header */}
           <div className="mb-8">

@@ -31,7 +31,7 @@ export default function VerifyIdentity() {
         layout="vertical"
         requiredMark={false}
         onFinish={handleFinish}
-        className="flex w-full max-w-md flex-col gap-5 px-7 max-md:flex-1 md:gap-4"
+        className="flex w-full max-w-md flex-col gap-0 overflow-hidden px-7 max-md:flex-1"
       >
         <div className="flex w-full flex-col gap-10 max-md:flex-1 max-md:justify-start md:justify-center">
           <div>
@@ -68,7 +68,7 @@ export default function VerifyIdentity() {
           </Form.Item>
         </div>
 
-        <div className="mx-auto mb-5 flex w-full max-w-sm flex-col justify-end mt-100 sm:mt-0">
+        <div className="mx-auto mt-100 mb-5 flex w-full max-w-sm flex-col justify-end sm:mt-0">
           <Button
             type="primary"
             htmlType="submit"
