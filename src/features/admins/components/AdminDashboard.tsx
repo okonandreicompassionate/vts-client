@@ -182,7 +182,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+          <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
             <TableComponent<VisitorRow>
               columns={columns}
               dataSource={visitorRecords}

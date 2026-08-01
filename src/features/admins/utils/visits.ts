@@ -34,9 +34,10 @@ export function toVisitorStatus(status?: string): VisitorStatus {
 }
 
 export function toApiVisitStatus(status: VisitorStatus) {
-  if (status === "Signed In") return "approved";
-  if (status === "Signed Off") return "signed_off";
-  return status.toLowerCase();
+  if (status === "Signed In") return "SIGNED_IN";
+  if (status === "Signed Off") return "SIGNED_OFF";
+  if (status === "Rejected") return "REJECTED";
+  return "PENDING";
 }
 
 export function formatVisitTime(value?: string) {

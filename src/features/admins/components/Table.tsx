@@ -44,16 +44,18 @@ function TableComponent<T extends object>({
     : columns;
 
   return (
-    <Table<T>
-      columns={finalColumns}
-      dataSource={dataSource}
-      size={size}
-      pagination={pagination === true ? undefined : pagination}
-      rowKey={rowKey}
-      scroll={scroll}
-      className={className}
-      onRow={onRow}
-    />
+    <div className="overflow-x-auto">
+      <Table<T>
+        columns={finalColumns}
+        dataSource={dataSource}
+        size={size}
+        pagination={pagination === true ? undefined : pagination}
+        rowKey={rowKey}
+        scroll={scroll}
+        className={className}
+        onRow={onRow}
+      />
+    </div>
   );
 }
 

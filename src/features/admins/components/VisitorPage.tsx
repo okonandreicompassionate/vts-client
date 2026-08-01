@@ -138,7 +138,7 @@ export default function Visitors() {
             )}
           </div>
 
-          <div className="-mx-3 overflow-x-auto px-3 sm:mx-0 sm:px-0">
+          <div className="-mx-3 px-3 sm:mx-0 sm:px-0">
             <TableComponent<VisitorRow>
               columns={columns}
               dataSource={visitorRecords}

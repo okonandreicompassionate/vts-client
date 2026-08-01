@@ -47,7 +47,6 @@ export default function VisitorDetails() {
     return (
       visitorRecords.find((item) => item.id === id) ??
       visitorRecords[0] ?? {
-        id: id ?? "unknown",
         name: "Visitor unavailable",
         email: "N/A",
         phone: "N/A",
@@ -115,7 +114,6 @@ export default function VisitorDetails() {
   ];
 
   const detailRows: { label: string; value: string }[] = [
-    { label: "Visitor ID", value: visitor.id },
     { label: "Full Name", value: visitor.name },
     { label: "Email Address", value: visitor.email },
     { label: "Phone Number", value: visitor.phone },
