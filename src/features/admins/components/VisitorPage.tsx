@@ -106,10 +106,13 @@ export default function Visitors() {
               <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                 <Button
                   icon={<FilterOutlined />}
+                  iconPlacement="end"
                   aria-label="Toggle filters"
                   onClick={() => setShowFilters((prev) => !prev)}
-                  className={`h-9! w-9! ${showFilters ? "bg-emerald-50! text-emerald-500!" : "text-slate-400!"}`}
-                />
+                  className={`h-9! ${showFilters ? "bg-emerald-50! text-emerald-500!" : "text-slate-400!"}`}
+                >
+                  Filter
+                </Button>
               </div>
             </div>
 

@@ -48,18 +48,27 @@ export function formatVisitTime(value?: string) {
     return value;
   }
 
-  return date.toLocaleString(undefined, {
+  const datePart = new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "numeric",
     year: "numeric",
+  }).format(date);
+
+  const timePart = new Intl.DateTimeFormat(undefined, {
     hour: "numeric",
     minute: "2-digit",
-  });
+    hour12: true,
+  }).format(date);
+
+  return `${datePart} • ${timePart}`;
 }
 
 export function toVisitorRow(visit: VisitRecord, index: number): VisitorRow {
   const id = visit.id ?? `${visit.email ?? "visit"}-${index}`;
   const status = toVisitorStatus(visit.status);
+  const fallbackCheckIn = status === "Pending" || status === "Rejected" ? undefined : visit.updatedAt;
+  const resolvedCheckIn = visit.checkIn ?? visit.checkInTime ?? fallbackCheckIn;
+  const resolvedCheckOut = visit.checkOut ?? visit.checkOutTime;
 
   return {
     id,
@@ -70,11 +79,8 @@ export function toVisitorRow(visit: VisitRecord, index: number): VisitorRow {
     purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
     status,
     time: formatVisitTime(visit.checkInTime ?? visit.time ?? visit.createdAt),
-    checkIn:
-      visit.checkIn ??
-      visit.checkInTime ??
-      (status === "Pending" || status === "Rejected" ? status : formatVisitTime(visit.updatedAt)),
-    checkOut: visit.checkOut ?? visit.checkOutTime ?? "Pending",
+    checkIn: resolvedCheckIn ? formatVisitTime(resolvedCheckIn) : "Pending",
+    checkOut: resolvedCheckOut ? formatVisitTime(resolvedCheckOut) : "Pending",
     department: visit.department ?? "N/A",
   };
 }
