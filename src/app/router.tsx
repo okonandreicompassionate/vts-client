@@ -27,7 +27,14 @@ export function AppRouter() {
           {/* visitor side - public routes */}
           <Route path={paths.home.path} element={<LazyLandingPage />} />
           <Route element={<LazyAuthLayout />}>
-            <Route path={paths.register.path} element={<LazyRegistration />} />
+            <Route
+              path={paths.register.path}
+              element={
+                <ProtectedRoute requiredAuth="visitor-verified">
+                  <LazyRegistration />
+                </ProtectedRoute>
+              }
+            />
             <Route path={paths.verify.path} element={<LazyVerifyIdentity />} />
             <Route
               path={paths.visitorProfile.path}

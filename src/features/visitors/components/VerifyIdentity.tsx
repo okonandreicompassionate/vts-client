@@ -19,6 +19,7 @@ export default function VerifyIdentity() {
         email: isEmail ? rawValue : "",
       }).unwrap();
 
+      window.localStorage.setItem("visitorVerified", "true");
       navigate(paths.register.getHref());
     } catch {
       message.error("We couldn't verify your identity. Please try again.");
