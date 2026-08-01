@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useGetVisitsQuery } from "../api/admin-api";
 import { toVisitorRow, type VisitorRow } from "../utils/visits";
-import type { VisitRecord } from "../../../lib/api/types";
+import type { VisitRecord } from "../types/api-types";
 
 interface UseVisitorTableDataParams {
   page: number;

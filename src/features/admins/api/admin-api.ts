@@ -1,5 +1,5 @@
 import { api } from "../../../lib/api/base";
-import type { VisitListResponse } from "../../../lib/api/types";
+import type { VisitListResponse } from "../types/api-types";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({

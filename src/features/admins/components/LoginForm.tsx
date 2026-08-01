@@ -1,5 +1,5 @@
 import { Form, Input, Button, message } from "antd";
-import { ORG_SLUG } from "../../../lib/api";
+import { ORG_SLUG } from "../../../config/constants";
 import { useAdminLoginMutation } from "../api/admin-api";
 import { getAuthToken } from "../utils/get-auth-token";
 import { useCompleteLogin } from "../hooks/use-complete-login";

@@ -2,7 +2,7 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../../config/paths";
-import { ORG_SLUG } from "../../../lib/api";
+import { ORG_SLUG } from "../../../config/constants";
 import { useVerifyVisitIdentityMutation } from "../api/visit-api";
 
 export default function VerifyIdentity() {

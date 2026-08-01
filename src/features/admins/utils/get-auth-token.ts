@@ -1,4 +1,4 @@
-import type { AuthResponse } from "../../../lib/api/types";
+import type { AuthResponse } from "../types/api-types";
 
 export const getAuthToken = (response: AuthResponse) =>
   response.token ??

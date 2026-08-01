@@ -166,20 +166,23 @@ export default function Dashboard() {
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100">
           <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
             <h3 className="text-base font-bold text-slate-800">Recent Visitors</h3>
-            <Select
+            <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
+              <p>Filter:</p>
+              <Select
               value={statusFilter}
               onChange={handleStatusChange}
               size="middle"
               className="w-full bg-[#F5FBFE] sm:w-32"
               popupMatchSelectWidth={false}
               options={[
-                { value: "All", label: "Status" },
+                { value: "All", label: "All" },
                 { value: "Signed In", label: "Signed In" },
                 { value: "Pending", label: "Pending" },
                 { value: "Signed Off", label: "Signed Off" },
                 { value: "Rejected", label: "Rejected" },
               ]}
             />
+            </div>
           </div>
 
           <div className="-mx-4 px-4 sm:mx-0 sm:px-0">

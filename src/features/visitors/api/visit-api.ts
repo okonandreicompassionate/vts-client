@@ -1,5 +1,5 @@
 import { api } from "../../../lib/api/base";
-import type { VerifyIdentityPayload } from "../../../lib/api/types";
+import type { VerifyIdentityPayload } from "../types/api-types";
 
 export const visitsApi = api.injectEndpoints({
   endpoints: (builder) => ({

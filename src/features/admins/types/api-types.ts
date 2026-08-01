@@ -1,24 +1,3 @@
-export interface HealthResponse {
-  status: string;
-}
-
-export const ORG_SLUG = "zoracom";
-
-export interface VerifyIdentityPayload {
-  orgSlug: string;
-  email: string;
-}
-
-export interface CreateVisitPayload {
-  orgSlug: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  hostName: string;
-  department: string;
-  purposeOfVisit: string;
-}
-
 export interface VisitRecord {
   id?: string;
   referenceId?: string;
