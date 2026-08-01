@@ -1,10 +1,10 @@
 import { CloseOutlined, WarningOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import CustomModal from "../../../../components/CustomModal";
 import { usePopup } from "../../../../hooks/usePopup";
 
 type ApproveAccessModalProps = {
-  onConfirm?: () => void;
+  onConfirm?: () => void | Promise<void>;
   onCancel?: () => void;
   visitorName?: string;
   accessLevel?: string;
@@ -33,9 +33,13 @@ export default function ApproveAccessModal({
     closeModal();
   };
 
-  const handleConfirm = () => {
-    onConfirm?.();
-    closeModal();
+  const handleConfirm = async () => {
+    try {
+      await onConfirm?.();
+      closeModal();
+    } catch {
+      message.error("Approval could not be completed. Please try again.");
+    }
   };
 
   return (

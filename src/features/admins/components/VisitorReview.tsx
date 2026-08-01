@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useMemo, useState } from "react";
-import { Button, Input, Spin } from "antd";
+import { Button, Input, Spin, message } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePopup } from "../../../hooks/usePopup";
 import Header from "../components/layout/Header.tsx";
@@ -9,6 +9,7 @@ import AccessApprovedModal from "../components/modals/AccessApprovedModal";
 import AccessRejectedModal from "../components/modals/AccessRejectedModal";
 import { VisitorAvatar } from "../components/visitor-avatar.tsx";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
+import { useApproveVisitMutation } from "../api/admin-api";
 import type { VisitorRow } from "../utils/visits";
 
 const { TextArea } = Input;
@@ -18,6 +19,7 @@ export default function ReviewVisitor() {
   const navigate = useNavigate();
   const [notes, setNotes] = useState("");
   const { openModal } = usePopup();
+  const [approveVisit] = useApproveVisitMutation();
 
   const { visitorRecords } = useVisitorTableData({
     page: 1,
@@ -44,19 +46,29 @@ export default function ReviewVisitor() {
     openModal(<ApproveAccessModal visitorName={visitor?.name} onConfirm={handleConfirmApprove} />);
   };
 
-  const handleConfirmApprove = () => {
-    openModal(
-      <AccessApprovedModal
-        accessDetails={[
-          { label: "Access Level", value: "Standard Visitor" },
-          {
-            label: "Valid Until",
-            value: new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleString(),
-          },
-          { label: "Entry Point", value: "Main Entrance" },
-        ]}
-      />,
-    );
+  const handleConfirmApprove = async () => {
+    if (!id) {
+      message.error("Visitor ID is missing.");
+      return;
+    }
+
+    try {
+      await approveVisit(id).unwrap();
+      openModal(
+        <AccessApprovedModal
+          accessDetails={[
+            { label: "Access Level", value: "Standard Visitor" },
+            {
+              label: "Valid Until",
+              value: new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleString(),
+            },
+            { label: "Entry Point", value: "Main Entrance" },
+          ]}
+        />,
+      );
+    } catch {
+      message.error("Approval could not be completed. Please try again.");
+    }
   };
 
   const handleReject = () => {

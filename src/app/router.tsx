@@ -5,7 +5,7 @@ import { ProtectedRoute } from "./protected-route";
 import { paths } from "../config/paths";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/AdminDashboard"));
-const LazyAdminAuthPage = lazy(() => import("../features/admins/components/AdminAuth"));
+const LazyAdminAuthPage = lazy(() => import("../features/admins/components/AuthPage"));
 const LazyAdminSettings = lazy(() => import("../features/admins/components/AdminSettings"));
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/VisitorDetails"));
 const LazyVisitorPage = lazy(() => import("../features/admins/components/VisitorPage"));
