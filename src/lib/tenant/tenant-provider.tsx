@@ -1,9 +1,8 @@
-// lib/tenant/tenant-provider.tsx
-
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { TenantContext } from "./tenant-context";
+import { setCurrentOrgSlug } from "./current";
 
 export function TenantProvider({
   children,
@@ -18,6 +17,10 @@ export function TenantProvider({
     }),
     [orgSlug],
   );
+
+  useEffect(() => {
+    setCurrentOrgSlug(value.orgSlug);
+  }, [value.orgSlug]);
 
   return (
     <TenantContext.Provider value={value}>
