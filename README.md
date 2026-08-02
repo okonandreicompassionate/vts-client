@@ -1,3 +1,7 @@
+## Zoracom’s Visitor Tracking System 
+Streamlines visitor access and management for effortless logging
+
+
 ## Commit Guidelines
 
 This project uses **Husky** and **Commitlint** to enforce the [Conventional Commits](https://www.conventionalcommits.org/) specification.
