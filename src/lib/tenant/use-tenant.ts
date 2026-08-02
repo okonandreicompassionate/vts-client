@@ -1,15 +1,12 @@
-import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useContext } from "react";
+import { TenantContext } from "./tenant-context";
 
-import type { TenantContext } from "./types";
+export function useTenant() {
+  const tenant = useContext(TenantContext);
 
-export function useTenant(): TenantContext {
-  const { orgSlug } = useParams<{ orgSlug: string }>();
+  if (!tenant) {
+    throw new Error("useTenant must be used inside TenantProvider.");
+  }
 
-  return useMemo(
-    () => ({
-      orgSlug: orgSlug?.trim().toLowerCase() ?? "",
-    }),
-    [orgSlug],
-  );
+  return tenant;
 }
