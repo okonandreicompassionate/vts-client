@@ -1,8 +1,11 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 import { Spinner } from "../components/Spinner";
-import { ProtectedRoute } from "./protected-route";
 import { paths } from "../config/paths";
+import { ProtectedRoute } from "./protected-route";
+
+import { TenantProvider } from "../lib/tenant";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/AdminDashboard"));
 const LazyAdminAuthPage = lazy(() => import("../features/admins/components/AdminAuth"));
@@ -10,10 +13,12 @@ const LazyAdminSettings = lazy(() => import("../features/admins/components/Admin
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/VisitorDetails"));
 const LazyVisitorPage = lazy(() => import("../features/admins/components/VisitorPage"));
 const LazyVisitorReview = lazy(() => import("../features/admins/components/VisitorReview"));
+
 const LazyLandingPage = lazy(() => import("../features/visitors/components/LandingPage"));
 const LazyRegistration = lazy(() => import("../features/visitors/components/Registration"));
 const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/VerifyIdentity"));
 const LazyVisitorProfile = lazy(() => import("../features/visitors/components/VisitorProfile"));
+
 const LazyAuthLayout = lazy(() => import("../features/visitors/components/layout/AuthLayout"));
 const LazyLayout = lazy(() => import("../features/admins/components/layout/Layout"));
 
@@ -24,45 +29,58 @@ export function AppRouter() {
     <BrowserRouter>
       <Suspense fallback={fallback}>
         <Routes>
-          {/* visitor side - public routes */}
-          <Route path={paths.home.path} element={<LazyLandingPage />} />
-          <Route element={<LazyAuthLayout />}>
-            <Route
-              path={paths.register.path}
-              element={
-                <ProtectedRoute requiredAuth="visitor-verified">
-                  <LazyRegistration />
-                </ProtectedRoute>
-              }
-            />
-            <Route path={paths.verify.path} element={<LazyVerifyIdentity />} />
-            <Route
-              path={paths.visitorProfile.path}
-              element={
-                <ProtectedRoute requiredAuth="visitor">
-                  <LazyVisitorProfile />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-
-          {/* admin auth - public - now using the new component */}
-          <Route path={paths.admin.login.path} element={<LazyAdminAuthPage />} />
-          <Route path={paths.admin.signup.path} element={<LazyAdminAuthPage />} />
-
-          {/* admin app which has shared layout: sidebar + outlet - protected routes */}
+          {/* All tenant routes */}
           <Route
+            path=":orgSlug"
             element={
-              <ProtectedRoute requiredAuth="admin">
-                <LazyLayout />
-              </ProtectedRoute>
+              <TenantProvider>
+                <RoutesPlaceholder />
+              </TenantProvider>
             }
           >
-            <Route path={paths.admin.dashboard.path} element={<LazyAdminDashboard />} />
-            <Route path={paths.admin.visitors.path} element={<LazyVisitorPage />} />
-            <Route path={paths.admin.visitorDetails.path} element={<LazyVisitorDetails />} />
-            <Route path={paths.admin.visitorReview.path} element={<LazyVisitorReview />} />
-            <Route path={paths.admin.settings.path} element={<LazyAdminSettings />} />
+            {/* Visitor */}
+            <Route index element={<LazyLandingPage />} />
+
+            <Route element={<LazyAuthLayout />}>
+              <Route
+                path="register"
+                element={
+                  <ProtectedRoute requiredAuth="visitor-verified">
+                    <LazyRegistration />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route path="verify" element={<LazyVerifyIdentity />} />
+
+              <Route
+                path="profile"
+                element={
+                  <ProtectedRoute requiredAuth="visitor">
+                    <LazyVisitorProfile />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+
+            {/* Admin auth */}
+            <Route path="admin" element={<LazyAdminAuthPage />} />
+            <Route path="admin/signup" element={<LazyAdminAuthPage />} />
+
+            {/* Admin application */}
+            <Route
+              element={
+                <ProtectedRoute requiredAuth="admin">
+                  <LazyLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="admin/dashboard" element={<LazyAdminDashboard />} />
+              <Route path="admin/visitors" element={<LazyVisitorPage />} />
+              <Route path="admin/visitors/:id" element={<LazyVisitorDetails />} />
+              <Route path="admin/visitors/:id/review" element={<LazyVisitorReview />} />
+              <Route path="admin/settings" element={<LazyAdminSettings />} />
+            </Route>
           </Route>
         </Routes>
       </Suspense>
