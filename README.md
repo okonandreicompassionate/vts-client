@@ -22,12 +22,4 @@ chore: configure commitlint
 
 See [commitlint.js.org](https://commitlint.js.org/) for the full spec, or check `commitlint.config.js` in this repo for our exact rules.
 
-### Pre-Commit Checks
-
-Husky automatically runs on every commit:
-
-\```bash
-pnpm lint
-pnpm build
-\```
 
