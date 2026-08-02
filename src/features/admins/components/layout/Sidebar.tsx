@@ -3,39 +3,38 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "antd";
 import { AppstoreOutlined, SettingOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import { paths } from "../../../../config/paths"; // adjust depth to your structure
-
-const navItems = [
-  {
-    key: "dashboard",
-    label: "Dashboard",
-    path: paths.admin.dashboard.path,
-    getHref: paths.admin.dashboard.getHref,
-    icon: <img src="/dashboard.svg" alt="" />,
-    fallbackIcon: <AppstoreOutlined />,
-  },
-  {
-    key: "visitors",
-    label: "Visitors",
-    path: paths.admin.visitors.path,
-    getHref: paths.admin.visitors.getHref,
-    icon: <img src="/visitors.svg" alt="" />,
-    fallbackIcon: <AppstoreOutlined />,
-  },
-  {
-    key: "settings",
-    label: "Settings",
-    path: paths.admin.settings.path,
-    getHref: paths.admin.settings.getHref,
-    icon: <SettingOutlined />,
-    fallbackIcon: <SettingOutlined />,
-  },
-];
+import { useTenant } from "@/lib/tenant";
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { orgSlug } = useTenant();
+
+  const navItems = [
+    {
+      key: "dashboard",
+      label: "Dashboard",
+      href: paths.admin.dashboard.getHref(orgSlug),
+      icon: <img src="/dashboard.svg" alt="" />,
+      fallbackIcon: <AppstoreOutlined />,
+    },
+    {
+      key: "visitors",
+      label: "Visitors",
+      href: paths.admin.visitors.getHref(orgSlug),
+      icon: <img src="/visitors.svg" alt="" />,
+      fallbackIcon: <AppstoreOutlined />,
+    },
+    {
+      key: "settings",
+      label: "Settings",
+      href: paths.admin.settings.getHref(orgSlug),
+      icon: <SettingOutlined />,
+      fallbackIcon: <SettingOutlined />,
+    },
+  ];
 
   const go = (href: string) => {
     navigate(href);
@@ -87,12 +86,12 @@ export default function Sidebar() {
 
           <nav className="mt-4 space-y-1 px-3">
             {navItems.map((item) => {
-              const isActive = location.pathname.startsWith(item.path);
+              const isActive = location.pathname.startsWith(item.href);
               return (
                 <Button
                   key={item.key}
                   type="text"
-                  onClick={() => go(item.getHref())}
+                  onClick={() => go(item.href)}
                   className={`flex! h-auto! w-full! items-center! gap-3 rounded-lg! px-3! py-2.5! text-sm! font-medium! ${
                     isActive
                       ? "bg-sky-500! text-white! shadow-sm shadow-sky-200"
@@ -123,3 +122,4 @@ export default function Sidebar() {
     </>
   );
 }
+
