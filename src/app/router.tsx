@@ -31,12 +31,8 @@ export function AppRouter() {
         <Routes>
           {/* All tenant routes */}
           <Route
-            path=":orgSlug"
-            element={
-              <TenantProvider>
-                <RoutesPlaceholder />
-              </TenantProvider>
-            }
+            path=":orgSlug" element={<TenantLayout />}
+            
           >
             {/* Visitor */}
             <Route index element={<LazyLandingPage />} />
