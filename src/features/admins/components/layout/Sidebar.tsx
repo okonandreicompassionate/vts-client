@@ -109,7 +109,7 @@ export default function Sidebar() {
         <div className="p-3">
           <Button
             type="text"
-            onClick={() => go(paths.home.getHref())}
+            onClick={() => go(paths.home.getHref(orgSlug))}
             className={`flex! h-auto! w-full! items-center! gap-3 rounded-lg! px-3! py-2.5! text-sm! font-medium! text-slate-500! hover:bg-slate-50! ${
               collapsed ? "md:justify-center!" : "justify-start!"
             }`}

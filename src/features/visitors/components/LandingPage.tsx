@@ -2,8 +2,12 @@ import { Button } from "antd";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import { paths } from "../../../config/paths";
+import { useTenant } from "../../../lib/tenant";
+
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { orgSlug } = useTenant();
 
   return (
     <div className="flex h-screen w-full items-center justify-center">
@@ -22,13 +26,6 @@ export default function LandingPage() {
           </div>
         </header>
 
-        {/* <div className="text-center mb-2">
-          <p className="text-2xl font-semibold text-[#262626]">Welcome to</p>
-          <p className="mt-2 text-[14px] leading-relaxed text-[#262626]">
-            Secure visitor check-in and approval made simple
-          </p>
-        </div> */}
-
         <div className="space-y-4 rounded-xl bg-white/20 p-3 backdrop-blur-sm md:p-6 md:shadow-xl">
           <img
             src="/nsoc-building.png"
@@ -41,7 +38,7 @@ export default function LandingPage() {
             type="primary"
             size="large"
             block
-            onClick={() => navigate("/verify")}
+            onClick={() => navigate(paths.verify.getHref(orgSlug))}
             className="h-12 rounded-lg font-semibold"
             icon={<ArrowRight size={18} />}
             iconPlacement="end"
@@ -51,7 +48,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 -z-10 w-screen rounded-t-[50px] bg-green-500/20 max-md:h-[50vh] md:h-[40vh] md:rounded-t-full"></div>
+      <div className="fixed bottom-0 -z-10 w-screen rounded-t-[50px] bg-green-500/20 max-md:h-[50vh] md:h-[40vh] md:rounded-t-full" />
     </div>
   );
 }

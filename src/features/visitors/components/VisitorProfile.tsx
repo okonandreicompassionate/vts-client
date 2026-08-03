@@ -3,6 +3,7 @@ import { Button, Tag } from "antd";
 import { useMemo, useState, type JSX } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { paths } from "../../../config/paths";
+import { useTenant } from "../../../lib/tenant";
 
 type VisitorProfileStatus = "pending" | "approved" | "rejected";
 
@@ -35,7 +36,6 @@ type StatusMeta = {
   icon: JSX.Element;
   desktopIcon: JSX.Element;
   actionLabel: string;
-  actionPath: string;
   secondaryLabel: string;
 };
 
@@ -54,7 +54,6 @@ const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     icon: <img src="/pending.svg" alt="Pending" loading="lazy" className="h-26 w-26" />,
     desktopIcon: <img src="/pending.svg" alt="Pending" loading="lazy" className="h-16 w-16" />,
     actionLabel: "Proceed to Check-In",
-    actionPath: paths.home.getHref(),
     secondaryLabel: "Download Pass",
   },
   approved: {
@@ -71,7 +70,6 @@ const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     icon: <img src="/approved.svg" alt="Approved" className="h-26 w-26" />,
     desktopIcon: <img src="/approved.svg" alt="Approved" className="h-16 w-16" />,
     actionLabel: "Proceed to Check-In",
-    actionPath: paths.home.getHref(),
     secondaryLabel: "Download Pass",
   },
   rejected: {
@@ -88,19 +86,19 @@ const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     icon: <img src="/rejected.svg" alt="Rejected" className="h-26 w-26" />,
     desktopIcon: <img src="/rejected.svg" alt="Rejected" className="h-16 w-16" />,
     actionLabel: "Register Again",
-    actionPath: paths.register.getHref(),
     secondaryLabel: "Contact Reception",
   },
 };
 
 export default function VisitorProfile() {
+  const { orgSlug } = useTenant();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
   const [statusOverride, setStatusOverride] = useState<VisitorProfileStatus | null>(null);
   const isDev = Boolean(import.meta.env?.DEV);
 
   const statusParam = searchParams.get("status") as VisitorProfileStatus | null;
+
   const status = useMemo<VisitorProfileStatus>(() => {
     if (statusOverride) return statusOverride;
     if (statusParam === "approved" || statusParam === "rejected") return statusParam;
@@ -108,15 +106,9 @@ export default function VisitorProfile() {
   }, [statusOverride, statusParam]);
 
   const registration = useMemo<VisitorRegistration>(() => {
-    if (typeof window === "undefined") {
-      return defaultRegistration;
-    }
-
+    if (typeof window === "undefined") return defaultRegistration;
     const stored = window.localStorage.getItem("visitorRegistration");
-    if (!stored) {
-      return defaultRegistration;
-    }
-
+    if (!stored) return defaultRegistration;
     try {
       return JSON.parse(stored) as VisitorRegistration;
     } catch {
@@ -127,10 +119,18 @@ export default function VisitorProfile() {
   const meta = statusMeta[status];
   const isPending = status === "pending";
 
-  const requestId = useMemo(
-    () => `#VT-${status === "approved" ? "A1001" : status === "rejected" ? "R1002" : "P1003"}`,
-    [status],
-  );
+  const requestId = `#VT-${status === "approved" ? "A1001" : status === "rejected" ? "R1002" : "P1003"}`;
+
+  const actionPath = (() => {
+    switch (status) {
+      case "approved":
+        return paths.home.getHref(orgSlug);
+      case "rejected":
+        return paths.register.getHref(orgSlug);
+      default:
+        return paths.home.getHref(orgSlug);
+    }
+  })();
 
   return (
     <>
@@ -237,7 +237,7 @@ export default function VisitorProfile() {
             size="large"
             disabled={isPending}
             className="h-12! rounded-xl! bg-sky-400! text-[15px]! font-semibold hover:bg-sky-500! disabled:opacity-50!"
-            onClick={() => navigate(meta.actionPath)}
+            onClick={() => navigate(actionPath)}
           >
             {meta.actionLabel}
           </Button>
@@ -252,7 +252,7 @@ export default function VisitorProfile() {
         </div>
       </div>
 
-      {/* ===================== DESKTOP LAYOUT (right column of AuthLayout) ===================== */}
+ 
       <div className="relative hidden min-h-screen flex-col justify-center bg-white px-6 py-6 md:flex lg:px-10">
         {isPending && <div className="absolute inset-0 z-10 bg-white/70" />}
 
@@ -361,7 +361,7 @@ export default function VisitorProfile() {
               </div>
             </div>
 
-            {/* Next steps card */}
+            
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <p className="mb-3 text-sm font-bold text-slate-900">Next steps</p>
               <Button
@@ -371,8 +371,8 @@ export default function VisitorProfile() {
                 disabled={isPending}
                 className="h-10! rounded-xl! font-semibold disabled:opacity-50!"
                 icon={<ArrowRight size={18} />}
-                iconPosition="end"
-                onClick={() => navigate(meta.actionPath)}
+                iconPlacement="end"
+                onClick={() => navigate(actionPath)}
               >
                 {meta.actionLabel}
               </Button>

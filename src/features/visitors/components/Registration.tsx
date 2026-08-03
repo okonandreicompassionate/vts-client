@@ -1,14 +1,15 @@
 import { Button, Form, Input, message } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { usePopup } from "../../../hooks/usePopup";
-import { ORG_SLUG } from "../../../config/constants";
 import { useCreateVisitMutation } from "../api/visit-api";
 import RegistrationModal from "../components/modals/RegistrationModal";
 import RegistrationSuccessModal from "../components/modals/RegistrationSuccessModal";
 import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
+import {useTenant} from '../../../lib/tenant'
 
 export default function Registration() {
+   const { orgSlug } = useTenant();
   const [form] = Form.useForm<RegistrationValues>();
   const { openModal } = usePopup();
   const [createVisit] = useCreateVisitMutation();
@@ -19,7 +20,6 @@ export default function Registration() {
         onSubmit={async () => {
           try {
             await createVisit({
-              orgSlug: ORG_SLUG,
               fullName: values.name,
               email: values.email,
               phoneNumber: values.phoneNo,
@@ -36,7 +36,7 @@ export default function Registration() {
             openModal(
               <RegistrationSuccessModal
                 onOk={() =>
-                  window.location.assign(`${paths.visitorProfile.getHref()}?status=pending`)
+                  window.location.assign(`${paths.visitorProfile.getHref(orgSlug)}?status=pending`)
                 }
               />,
             );

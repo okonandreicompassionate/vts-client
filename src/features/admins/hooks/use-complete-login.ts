@@ -3,8 +3,11 @@ import { message } from "antd";
 import { useAppDispatch } from "../../../lib/stores/hooks";
 import { setAdminToken } from "../stores/auth-slice";
 import { paths } from "../../../config/paths";
+import {useTenant} from '../../../lib/tenant'
+
 
 export const useCompleteLogin = () => {
+  const { orgSlug } = useTenant();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -15,7 +18,7 @@ export const useCompleteLogin = () => {
     }
 
     dispatch(setAdminToken(token));
-    navigate(paths.admin.dashboard.getHref());
+    navigate(paths.admin.dashboard.getHref(orgSlug));
   };
 
   return completeLogin;

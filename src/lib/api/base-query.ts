@@ -7,15 +7,15 @@ import {
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-import { getAccessToken } from "./auth";
+import { type RootState } from "../stores/store";
 import { getCurrentOrgSlug } from "../tenant/current-tenant";
 import { tenantPath } from "../tenant/tenant-path";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
 
-  prepareHeaders(headers) {
-    const token = getAccessToken();
+  prepareHeaders(headers, { getState }) {
+    const token = (getState() as RootState).adminAuth.token;
 
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);

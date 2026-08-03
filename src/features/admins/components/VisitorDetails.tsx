@@ -7,6 +7,7 @@ import { VisitorAvatar } from "./visitor-avatar.tsx";
 import { paths } from "../../../config/paths";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
 import type { VisitorRow } from "../utils/visits";
+import {useTenant} from "../../../lib/tenant/tenant";
 
 type TimelineStatus = "done-blue" | "done-orange" | "done-green";
 
@@ -36,6 +37,7 @@ function TimelineDot({ status }: { status: TimelineStatus }) {
 export default function VisitorDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { orgSlug } = useTenant();
 
   // Fetch with large limit to find visitor across all pages
   const { visitorRecords } = useVisitorTableData({
@@ -133,7 +135,7 @@ export default function VisitorDetails() {
           type="link"
           icon={<ArrowLeftOutlined className="text-xs" />}
           className="mb-4 px-0! font-medium text-sky-500!"
-          onClick={() => navigate(paths.admin.visitors.getHref())}
+          onClick={() => navigate(paths.admin.visitors.getHref(orgSlug))}
         >
           Back to List
         </Button>

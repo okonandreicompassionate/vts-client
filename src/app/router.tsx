@@ -4,8 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Spinner } from "../components/Spinner";
 import { paths } from "../config/paths";
 import { ProtectedRoute } from "./protected-route";
-
-import { TenantProvider } from "../lib/tenant";
+import { TenantLayout } from "./tenant-layout";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/AdminDashboard"));
 const LazyAdminAuthPage = lazy(() => import("../features/admins/components/AuthPage"));
@@ -19,8 +18,13 @@ const LazyRegistration = lazy(() => import("../features/visitors/components/Regi
 const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/VerifyIdentity"));
 const LazyVisitorProfile = lazy(() => import("../features/visitors/components/VisitorProfile"));
 
-const LazyAuthLayout = lazy(() => import("../features/visitors/components/layout/AuthLayout"));
-const LazyLayout = lazy(() => import("../features/admins/components/layout/Layout"));
+const LazyAuthLayout = lazy(
+  () => import("../features/visitors/components/layout/AuthLayout"),
+);
+
+const LazyLayout = lazy(
+  () => import("../features/admins/components/layout/Layout"),
+);
 
 const fallback = <Spinner />;
 
@@ -29,17 +33,13 @@ export function AppRouter() {
     <BrowserRouter>
       <Suspense fallback={fallback}>
         <Routes>
-          {/* All tenant routes */}
-          <Route
-            path=":orgSlug" element={<TenantLayout />}
-            
-          >
+          <Route element={<TenantLayout />}>
             {/* Visitor */}
-            <Route index element={<LazyLandingPage />} />
+            <Route path={paths.home.path} element={<LazyLandingPage />} />
 
             <Route element={<LazyAuthLayout />}>
               <Route
-                path="register"
+                path={paths.register.path}
                 element={
                   <ProtectedRoute requiredAuth="visitor-verified">
                     <LazyRegistration />
@@ -47,10 +47,13 @@ export function AppRouter() {
                 }
               />
 
-              <Route path="verify" element={<LazyVerifyIdentity />} />
+              <Route
+                path={paths.verify.path}
+                element={<LazyVerifyIdentity />}
+              />
 
               <Route
-                path="profile"
+                path={paths.visitorProfile.path}
                 element={
                   <ProtectedRoute requiredAuth="visitor">
                     <LazyVisitorProfile />
@@ -60,10 +63,17 @@ export function AppRouter() {
             </Route>
 
             {/* Admin auth */}
-            <Route path="admin" element={<LazyAdminAuthPage />} />
-            <Route path="admin/signup" element={<LazyAdminAuthPage />} />
+            <Route
+              path={paths.admin.login.path}
+              element={<LazyAdminAuthPage />}
+            />
 
-            {/* Admin application */}
+            <Route
+              path={paths.admin.signup.path}
+              element={<LazyAdminAuthPage />}
+            />
+
+            {/* Admin app */}
             <Route
               element={
                 <ProtectedRoute requiredAuth="admin">
@@ -71,11 +81,30 @@ export function AppRouter() {
                 </ProtectedRoute>
               }
             >
-              <Route path="admin/dashboard" element={<LazyAdminDashboard />} />
-              <Route path="admin/visitors" element={<LazyVisitorPage />} />
-              <Route path="admin/visitors/:id" element={<LazyVisitorDetails />} />
-              <Route path="admin/visitors/:id/review" element={<LazyVisitorReview />} />
-              <Route path="admin/settings" element={<LazyAdminSettings />} />
+              <Route
+                path={paths.admin.dashboard.path}
+                element={<LazyAdminDashboard />}
+              />
+
+              <Route
+                path={paths.admin.visitors.path}
+                element={<LazyVisitorPage />}
+              />
+
+              <Route
+                path={paths.admin.visitorDetails.path}
+                element={<LazyVisitorDetails />}
+              />
+
+              <Route
+                path={paths.admin.visitorReview.path}
+                element={<LazyVisitorReview />}
+              />
+
+              <Route
+                path={paths.admin.settings.path}
+                element={<LazyAdminSettings />}
+              />
             </Route>
           </Route>
         </Routes>

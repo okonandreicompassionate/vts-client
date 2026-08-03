@@ -2,11 +2,12 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../../config/paths";
-import { ORG_SLUG } from "../../../config/constants";
+import {useTenant} from '../../../lib/tenant'
 import { useVerifyVisitIdentityMutation } from "../api/visit-api";
 
 export default function VerifyIdentity() {
   const navigate = useNavigate();
+   const { orgSlug } = useTenant();
   const [verifyVisitIdentity] = useVerifyVisitIdentityMutation();
 
   const handleFinish = async (values: { emailOrPhone: string }) => {
@@ -15,12 +16,11 @@ export default function VerifyIdentity() {
 
     try {
       await verifyVisitIdentity({
-        orgSlug: ORG_SLUG,
         email: isEmail ? rawValue : "",
       }).unwrap();
 
       window.localStorage.setItem("visitorVerified", "true");
-      navigate(paths.register.getHref());
+      navigate(paths.register.getHref(orgSlug));
     } catch {
       message.error("We couldn't verify your identity. Please try again.");
     }

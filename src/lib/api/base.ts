@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { tenantBaseQuery } from "./tenant-base-query";
+import { tenantBaseQuery } from "../api/base-query";
 
 export const api = createApi({
   reducerPath: "api",

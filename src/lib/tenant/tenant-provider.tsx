@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { TenantContext } from "./tenant-context";
-import { setCurrentOrgSlug } from "./current";
+import { setCurrentOrgSlug } from "../tenant/current-tenant";
 
 export function TenantProvider({
   children,

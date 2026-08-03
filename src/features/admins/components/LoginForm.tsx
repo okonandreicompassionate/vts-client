@@ -1,5 +1,4 @@
 import { Form, Input, Button, message } from "antd";
-import { ORG_SLUG } from "../../../config/constants";
 import { useAdminLoginMutation } from "../api/admin-api";
 import { getAuthToken } from "../utils/get-auth-token";
 import { useCompleteLogin } from "../hooks/use-complete-login";
@@ -19,7 +18,6 @@ export default function LoginForm() {
   const handleSubmit = async (values: LoginFormValues) => {
     try {
       const response = await adminLogin({
-        orgSlug: ORG_SLUG,
         email: values.email,
         password: values.password,
       }).unwrap();
