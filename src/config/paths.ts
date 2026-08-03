@@ -1,52 +1,68 @@
+import { tenantPath } from "@/lib/tenant";
+
 export const paths = {
   // Visitor side
   home: {
-    path: "/",
-    getHref: () => "/",
+    path: "/:orgSlug",
+    getHref: (orgSlug: string) => tenantPath(orgSlug, "/"),
   },
   register: {
-    path: "/register",
-    getHref: () => "/register",
+    path: "/:orgSlug/register",
+    getHref: (orgSlug: string) => tenantPath(orgSlug, "/register"),
   },
   verify: {
-    path: "/verify",
-    getHref: () => "/verify",
+    path: "/:orgSlug/verify",
+    getHref: (orgSlug: string) => tenantPath(orgSlug, "/verify"),
   },
   visitorProfile: {
-    path: "/profile",
-    getHref: () => "/profile",
+    path: "/:orgSlug/profile",
+    getHref: (orgSlug: string) => tenantPath(orgSlug, "/profile"),
   },
 
   // Admin side
   admin: {
     login: {
-      path: "/admin",
-      getHref: (redirectTo?: string | null) =>
-        `/admin${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`,
+      path: "/:orgSlug/admin",
+      getHref: (orgSlug: string, redirectTo?: string | null) =>
+        `${tenantPath(orgSlug, "/admin")}${
+          redirectTo
+            ? `?redirectTo=${encodeURIComponent(redirectTo)}`
+            : ""
+        }`,
     },
     signup: {
-      path: "/admin/signup",
-      getHref: () => "/admin/signup",
+      path: "/:orgSlug/admin/signup",
+      getHref: (orgSlug: string) =>
+        tenantPath(orgSlug, "/admin/signup"),
     },
     dashboard: {
-      path: "/admin/dashboard",
-      getHref: () => "/admin/dashboard",
+      path: "/:orgSlug/admin/dashboard",
+      getHref: (orgSlug: string) =>
+        tenantPath(orgSlug, "/admin/dashboard"),
     },
     visitors: {
-      path: "/admin/visitors",
-      getHref: () => "/admin/visitors",
+      path: "/:orgSlug/admin/visitors",
+      getHref: (orgSlug: string) =>
+        tenantPath(orgSlug, "/admin/visitors"),
     },
     visitorDetails: {
-      path: "/admin/visitors/:id",
-      getHref: (id?: string) => (id ? `/admin/visitors/${id}` : "/admin/visitors"),
+      path: "/:orgSlug/admin/visitors/:id",
+      getHref: (orgSlug: string, id?: string) =>
+        id
+          ? tenantPath(orgSlug, `/admin/visitors/${id}`)
+          : tenantPath(orgSlug, "/admin/visitors"),
     },
     visitorReview: {
-      path: "/admin/visitors/:id/review",
-      getHref: (id?: string) => (id ? `/admin/visitors/${id}/review` : "/admin/visitors"),
+      path: "/:orgSlug/admin/visitors/:id/review",
+      getHref: (orgSlug: string, id?: string) =>
+        id
+          ? tenantPath(orgSlug, `/admin/visitors/${id}/review`)
+          : tenantPath(orgSlug, "/admin/visitors"),
     },
     settings: {
-      path: "/admin/settings",
-      getHref: () => "/admin/settings",
+      path: "/:orgSlug/admin/settings",
+      getHref: (orgSlug: string) =>
+        tenantPath(orgSlug, "/admin/settings"),
     },
   },
 } as const;
