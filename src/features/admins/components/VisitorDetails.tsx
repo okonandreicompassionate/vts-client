@@ -13,7 +13,7 @@ import {
   useApproveVisitMutation,
   useRejectVisitMutation,
   useSignoffVisitMutation,
-} from "../api/admin-api";
+} from "../api/admin-api-slice.ts";
 import { useTenant } from "../../../lib/tenant/tenant";
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
 

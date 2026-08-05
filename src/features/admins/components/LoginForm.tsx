@@ -1,5 +1,5 @@
 import { Form, Input, Button, message } from "antd";
-import { useAdminLoginMutation } from "../api/admin-api";
+import { useAdminLoginMutation } from "../api/admin-api-slice";
 import { getAuthToken } from "../utils/get-auth-token";
 import { useCompleteLogin } from "../hooks/use-complete-login";
 import MicrosoftLogin from "../components/ms-login";

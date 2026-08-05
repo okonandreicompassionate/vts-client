@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, message } from "antd";
-import { useMicrosoftLoginMutation } from "../api/admin-api";
+import { useMicrosoftLoginMutation } from "../api/admin-api-slice";
 import { useMsalAuth } from "../../../lib/api/msal";
 import { getAuthToken } from "../utils/get-auth-token";
 import { useCompleteLogin } from "../hooks/use-complete-login";

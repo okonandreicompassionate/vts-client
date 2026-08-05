@@ -17,7 +17,7 @@ const LazyRegistration = lazy(() => import("../features/visitors/components/Regi
 const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/VerifyIdentity"));
 const LazyVisitorProfile = lazy(() => import("../features/visitors/components/VisitorProfile"));
 
-const LazyAuthLayout = lazy(() => import("../features/visitors/components/layout/AuthLayout"));
+const LazyVisitorLayout = lazy(() => import("../features/visitors/components/layout/layout"));
 
 const LazyLayout = lazy(() => import("../features/admins/components/layout/Layout"));
 
@@ -32,7 +32,7 @@ export function AppRouter() {
             {/* Visitor */}
             <Route path={paths.home.path} element={<LazyLandingPage />} />
 
-            <Route element={<LazyAuthLayout />}>
+            <Route element={<LazyVisitorLayout />}>
               <Route
                 path={paths.register.path}
                 element={
@@ -54,12 +54,12 @@ export function AppRouter() {
               />
             </Route>
 
-            {/* Admin auth */}
+            {/* admin auth */}
             <Route path={paths.admin.login.path} element={<LazyAdminAuthPage />} />
 
             <Route path={paths.admin.signup.path} element={<LazyAdminAuthPage />} />
 
-            {/* Admin app */}
+            {/* admin app */}
             <Route
               element={
                 <ProtectedRoute requiredAuth="admin">

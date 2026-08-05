@@ -41,7 +41,7 @@ export default function LandingPage() {
       className="relative isolate flex min-h-screen w-full items-center justify-center overflow-hidden bg-white px-4 py-10 dark:bg-slate-900"
       style={{ position: "relative", isolation: "isolate" }}
     >
-      <div className="absolute top-4 right-4 z-[10]">
+      <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
       </div>
       <style>{`
@@ -148,7 +148,7 @@ export default function LandingPage() {
             size="large"
             block
             onClick={() => navigate(paths.verify.getHref(orgSlug))}
-            className="mt-3 h-12 rounded-xl border-none bg-emerald-600 font-semibold shadow-[0_10px_30px_-8px_rgba(5,150,105,0.5)] hover:!bg-emerald-500"
+            className="mt-3 h-12 rounded-xl border-none bg-emerald-600 font-semibold shadow-[0_10px_30px_-8px_rgba(5,150,105,0.5)] hover:bg-emerald-500!"
             icon={<ArrowRight size={18} />}
             iconPlacement="end"
           >
@@ -156,7 +156,7 @@ export default function LandingPage() {
           </Button>
         </div>
 
-        <p className="mt-6 text-[11px] text-[#10241C]/30 dark:text-slate-400">
+        <p className="mt-6 text-base text-[#10241C]/30 dark:text-slate-400">
           Zoracom © {new Date().getFullYear()} · Secured visitor access
         </p>
       </div>

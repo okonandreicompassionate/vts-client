@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useGetVisitQuery } from "../api/admin-api";
+import { useGetVisitQuery } from "../api/admin-api-slice";
 import { toVisitorRow, type VisitorRow } from "../utils/visits";
 
 export function useVisitorDetails(id?: string) {

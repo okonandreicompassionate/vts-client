@@ -1,4 +1,4 @@
-import { useGetProfileQuery } from "../../api/admin-api";
+import { useGetProfileQuery } from "../../api/admin-api-slice.ts";
 import { VisitorAvatar } from "../visitor-avatar.tsx";
 import { ThemeToggle } from "../../../../components/ThemeToggle";
 

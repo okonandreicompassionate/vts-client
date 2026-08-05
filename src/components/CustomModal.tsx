@@ -21,12 +21,20 @@ interface RootProps {
   open?: boolean;
   width?: number;
   onCancel?: () => void;
+  disableClose?: boolean;
 }
 
-export const CustomModal = ({ children, open, width = 680, onCancel }: RootProps) => {
+export const CustomModal = ({
+  children,
+  open,
+  width = 680,
+  onCancel,
+  disableClose = false,
+}: RootProps) => {
   const { closeModal, isModalOpen } = usePopup();
   const [isConfirmed, setIsConfirmed] = useState(false);
   const close = () => {
+    if (disableClose) return;
     closeModal();
     onCancel?.();
   };
@@ -39,6 +47,7 @@ export const CustomModal = ({ children, open, width = 680, onCancel }: RootProps
         footer={false}
         closable={false}
         closeIcon={false}
+        keyboard={!disableClose}
         width={width}
         centered
       >
