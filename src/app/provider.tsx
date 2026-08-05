@@ -10,8 +10,7 @@ import { PopupProvider } from "../lib/contexts/popup/PopupProvider";
 import { msalConfig } from "../lib/api/msal";
 import { store } from "../lib/stores/store";
 import { ThemeProvider } from "../lib/contexts/theme/ThemeProvider";
-import { useTheme } from "../lib/contexts/theme/use-theme";
-
+import { useTheme } from "../hooks/use-theme";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
