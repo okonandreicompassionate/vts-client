@@ -1,5 +1,3 @@
-// lib/api/tenant-base-query.ts
-
 import {
   fetchBaseQuery,
   type BaseQueryFn,

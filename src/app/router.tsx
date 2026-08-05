@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Spinner } from "../components/Spinner";
 import { paths } from "../config/paths";
 import { ProtectedRoute } from "./protected-route";
-import { TenantLayout } from "./tenant-layout";
+import { TenantLayout } from "../lib/tenant/tenant-layout";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/AdminDashboard"));
 const LazyAdminAuthPage = lazy(() => import("../features/admins/components/AuthPage"));

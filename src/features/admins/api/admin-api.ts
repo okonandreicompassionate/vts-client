@@ -50,6 +50,7 @@ export const authApi = api.injectEndpoints({
     getVisit: builder.query<VisitRecord, string>({
       query: (id) => ({
         url: `/visits/${id}`,
+        // console.log("Creating request"),
       }),
       providesTags: (_result, _error, id) => [{ type: "Visits", id }],
     }),
