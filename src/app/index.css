@@ -1,5 +1,7 @@
 @layer theme, base, antd, components, utilities;
 @import "tailwindcss";
+
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 body {
@@ -40,7 +42,6 @@ body {
     border-radius: 14px !important;
   }
 
-  .min-h-screen.flex .flex.items-start.gap-6,
   .min-h-screen.flex .flex.items-start.gap-6 {
     flex-direction: column !important;
   }

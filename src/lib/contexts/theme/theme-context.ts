@@ -8,4 +8,6 @@ export interface ThemeContextType {
   isDark: boolean;
 }
 
-export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined
+);
