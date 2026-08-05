@@ -12,7 +12,7 @@ export default function AuthFooter({ mode, onSwitchMode }: AuthFooterProps) {
 
   return (
     <div className="mt-6 text-center">
-      <span className="text-sm text-slate-500">
+      <span className="text-sm text-slate-500 dark:text-slate-400">
         {prompt}{" "}
         <Button
           type="link"

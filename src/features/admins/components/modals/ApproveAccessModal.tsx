@@ -50,25 +50,27 @@ export default function ApproveAccessModal({
             onClick={handleCancel}
             type="text"
             shape="circle"
-            icon={<CloseOutlined className="text-sm text-slate-500" />}
-            className="absolute top-0 right-0 flex h-9 w-9 items-center justify-center bg-slate-100"
+            icon={<CloseOutlined className="text-sm text-slate-500 dark:text-slate-300" />}
+            className="absolute top-0 right-0 flex h-9 w-9 items-center justify-center bg-slate-100 dark:bg-slate-700"
           />
 
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-orange-400 bg-orange-50">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-orange-400 bg-orange-50 dark:bg-orange-950/40">
             <WarningOutlined className="text-2xl text-orange-500" />
           </div>
 
-          <h3 className="text-xl font-bold text-slate-900">Confirm Approval</h3>
-          <p className="mx-auto mt-3 max-w-sm text-sm text-slate-500">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">Confirm Approval</h3>
+          <p className="mx-auto mt-3 max-w-sm text-sm text-slate-500 dark:text-slate-400">
             You are about to grant access to the following visitor. Please review the details before
             confirming.
           </p>
 
-          <div className="mt-6 rounded-xl bg-emerald-50 px-5 py-4 text-left">
+          <div className="mt-6 rounded-xl bg-emerald-50 px-5 py-4 text-left dark:bg-emerald-950/30">
             {details.map((row) => (
               <div key={row.label} className="flex items-center justify-between py-1.5">
-                <span className="text-sm text-emerald-700">{row.label}</span>
-                <span className="text-sm font-semibold text-emerald-800">{row.value}</span>
+                <span className="text-sm text-emerald-700 dark:text-emerald-300">{row.label}</span>
+                <span className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">
+                  {row.value}
+                </span>
               </div>
             ))}
           </div>
@@ -76,7 +78,10 @@ export default function ApproveAccessModal({
       </CustomModal.Body>
       <CustomModal.Footer>
         <div className="mt-6 flex items-center gap-3">
-          <Button onClick={handleCancel} className="h-11! w-full font-medium text-slate-700!">
+          <Button
+            onClick={handleCancel}
+            className="h-11! w-full font-medium text-slate-700! dark:text-slate-200!"
+          >
             Cancel
           </Button>
           <Button

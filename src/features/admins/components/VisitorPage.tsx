@@ -24,36 +24,44 @@ const columns: ColumnsType<VisitorRow> = [
     render: (_, record) => (
       <div className="flex items-center gap-3">
         <VisitorAvatar name={record.name} size="md" />
-        <div>
-          <span className="text-sm font-medium text-slate-800">{record.name}</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium text-slate-800 dark:text-slate-100">
+            {record.name}
+          </span>
+          <span className="text-xs text-slate-400">{record.phone}</span>
         </div>
       </div>
     ),
-  },
-
-  {
-    title: "Phone No.",
-    dataIndex: "phone",
-    key: "phone",
-    render: (phone) => <span className="text-sm text-slate-500">{phone}</span>,
   },
   {
     title: "Host Name",
     dataIndex: "host",
     key: "host",
-    render: (host) => <span className="text-sm text-slate-500">{host}</span>,
+    render: (host) => <span className="text-sm text-slate-500 dark:text-slate-300">{host}</span>,
   },
   {
     title: "Purpose",
     dataIndex: "purpose",
     key: "purpose",
-    render: (purpose) => <span className="text-sm text-slate-500">{purpose}</span>,
+    render: (purpose) => (
+      <span className="text-sm text-slate-500 dark:text-slate-300">{purpose}</span>
+    ),
   },
   {
     title: "Check-In",
     dataIndex: "checkIn",
     key: "checkIn",
-    render: (checkIn) => <span className="text-sm text-slate-500">{checkIn}</span>,
+    render: (checkIn) => {
+      const parts = checkIn.split(" • ");
+      return (
+        <div className="flex flex-col gap-0.5">
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+            {parts[1] || checkIn}
+          </span>
+          <span className="text-xs text-slate-400">{parts[0]}</span>
+        </div>
+      );
+    },
   },
   {
     title: "Status",
@@ -100,7 +108,7 @@ export default function Visitors() {
       <Header title="Visitors" />
 
       <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
-        <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100">
+        <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
           <div className="flex flex-col gap-3 px-3 py-4 sm:px-6 sm:py-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
@@ -117,7 +125,7 @@ export default function Visitors() {
             </div>
 
             {showFilters && (
-              <div className="overflow-x-auto rounded-lg border border-[#E6EAE8] bg-[#FAFAFA] p-1.5">
+              <div className="overflow-x-auto rounded-lg border border-[#E6EAE8] bg-[#FAFAFA] p-1.5 dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex min-w-max items-center gap-1">
                   {filterTabs.map((tab) => {
                     const isActive = activeTab === tab;
@@ -128,8 +136,8 @@ export default function Visitors() {
                         onClick={() => handleTabChange(tab)}
                         className={`rounded-md! text-sm! font-medium! whitespace-nowrap ${
                           isActive
-                            ? "border! border-emerald-200! bg-emerald-50! text-emerald-500!"
-                            : "text-slate-400! hover:text-slate-600!"
+                            ? "border! border-emerald-200! bg-emerald-50! text-emerald-500! dark:border-emerald-800! dark:bg-emerald-950/40!"
+                            : "text-slate-400! hover:text-slate-600! dark:hover:text-slate-200!"
                         }`}
                       >
                         {tab}

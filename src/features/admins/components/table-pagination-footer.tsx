@@ -17,7 +17,7 @@ export function TablePaginationFooter({
   const endEntry = Math.min(page * pageSize, totalEntries);
 
   return (
-    <div className="flex flex-col gap-3 border-t border-slate-100 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <div className="flex flex-col gap-3 border-t border-slate-100 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:border-slate-700">
       <p className="text-center text-sm text-slate-400 sm:text-left">
         Showing {startEntry} to {endEntry} of {totalEntries} entries
       </p>

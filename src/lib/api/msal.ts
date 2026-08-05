@@ -6,7 +6,7 @@ export const msalConfig: Configuration = {
     auth: {
         clientId: 'f4969f79-b174-4b2e-a018-883bd31a3829',
         authority: 'https://login.microsoftonline.com/zoracom.com',
-        redirectUri: `${window.location.origin}/admin`,
+        redirectUri: `http://localhost:5173/admin`,
         onRedirectNavigate: () => false,
     },
     cache: {

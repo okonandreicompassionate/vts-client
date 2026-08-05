@@ -43,14 +43,14 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="flex h-14 items-center justify-between border-b border-slate-100 bg-white px-4 md:hidden">
+      <div className="flex h-14 items-center justify-between border-b border-slate-100 bg-white px-4 md:hidden dark:border-slate-800 dark:bg-slate-950">
         <img src="/logo.svg" alt="Logo" className="h-3" />
         <Button
           type="text"
           onClick={() => setMobileOpen(true)}
           aria-label="Open menu"
           icon={<MenuOutlined className="text-lg" />}
-          className="h-9! w-9! text-slate-500!"
+          className="h-9! w-9! text-slate-500! dark:text-slate-400!"
         />
       </div>
 
@@ -63,7 +63,7 @@ export default function Sidebar() {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-64 transform flex-col justify-between border-r border-slate-100 bg-white transition-transform duration-200 ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:sticky md:top-0 md:h-screen md:translate-x-0 md:transition-all ${collapsed ? "md:w-20" : "md:w-60"} md:shrink-0`}
+        className={`fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-64 transform flex-col justify-between border-r border-slate-100 bg-white transition-transform duration-200 dark:border-slate-800 dark:bg-slate-950 ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:sticky md:top-0 md:h-screen md:translate-x-0 md:transition-all ${collapsed ? "md:w-20" : "md:w-60"} md:shrink-0`}
       >
         <div>
           <div className="flex h-16 items-center justify-between px-5">
@@ -73,14 +73,14 @@ export default function Sidebar() {
               onClick={() => setCollapsed((c) => !c)}
               aria-label="Toggle sidebar"
               icon={<img src="/collapse.svg" alt="" className="h-4 w-4" />}
-              className="hidden! h-7! w-7! text-slate-400! md:inline-flex!"
+              className="hidden! h-7! w-7! text-slate-400! md:inline-flex! dark:text-slate-500!"
             />
             <Button
               type="text"
               onClick={() => setMobileOpen(false)}
               aria-label="Close menu"
               icon={<CloseOutlined className="text-base" />}
-              className="h-7! w-7! text-slate-400! md:hidden!"
+              className="h-7! w-7! text-slate-400! md:hidden! dark:text-slate-500!"
             />
           </div>
 
@@ -94,8 +94,8 @@ export default function Sidebar() {
                   onClick={() => go(item.href)}
                   className={`flex! h-auto! w-full! items-center! gap-3 rounded-lg! px-3! py-2.5! text-sm! font-medium! ${
                     isActive
-                      ? "bg-sky-500! text-white! shadow-sm shadow-sky-200"
-                      : "text-slate-500! hover:bg-slate-50!"
+                      ? "bg-sky-500! text-white! shadow-sm shadow-sky-200 dark:shadow-sky-900!"
+                      : "text-slate-500! hover:bg-slate-50! dark:text-slate-400! dark:hover:bg-slate-800!"
                   } ${collapsed ? "md:justify-center!" : "justify-start!"}`}
                 >
                   <span className="text-base">{item.icon}</span>
@@ -109,8 +109,8 @@ export default function Sidebar() {
         <div className="p-3">
           <Button
             type="text"
-            onClick={() => go(paths.home.getHref(orgSlug))}
-            className={`flex! h-auto! w-full! items-center! gap-3 rounded-lg! px-3! py-2.5! text-sm! font-medium! text-slate-500! hover:bg-slate-50! ${
+            onClick={() => go(paths.admin.login.getHref(orgSlug))}
+            className={`flex! h-auto! w-full! items-center! gap-3 rounded-lg! px-3! py-2.5! text-sm! font-medium! text-slate-500! hover:bg-slate-50! dark:text-slate-400! dark:hover:bg-slate-800! ${
               collapsed ? "md:justify-center!" : "justify-start!"
             }`}
           >
@@ -122,4 +122,3 @@ export default function Sidebar() {
     </>
   );
 }
-

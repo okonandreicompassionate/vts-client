@@ -1,20 +1,172 @@
-export const theme = {
-  token: {
-    colorPrimary: "#0ea5e9",
-    colorInfo: "#0ea5e9",
-    colorPrimaryHover: "#0284c7",
-    colorPrimaryActive: "#0369a1",
-    borderRadius: 12,
-    fontFamily: "'Raleway Variable', sans-serif",
-  },
-  components: {
-    Input: {
-      borderRadius: 0,
+export const getThemeConfig = (isDark: boolean) => {
+  const lightTheme = {
+    token: {
+      colorPrimary: "#0ea5e9",
+      colorInfo: "#0ea5e9",
+      colorPrimaryHover: "#0284c7",
+      colorPrimaryActive: "#0369a1",
+      borderRadius: 12,
+      fontFamily: "'Raleway Variable', sans-serif",
+      colorBgBase: "#ffffff",
+      colorTextBase: "#1f2937",
+      colorBorder: "#e5e7eb",
+      colorBgContainer: "#f9fafb",
+      colorBgElevated: "#ffffff",
+      colorBgLayout: "#ffffff",
+      colorBgBlur: "#ffffffaa",
+      colorBgMask: "rgba(0, 0, 0, 0.45)",
+      colorBgSpotlight: "rgba(0, 0, 0, 0.85)",
     },
-    Form: {
-      labelFontSize: 13,
-      verticalLabelPadding: "0 0 4px",
-      itemMarginBottom: 16,
+    components: {
+      Input: {
+        borderRadius: 0,
+        controlBg: "#ffffff",
+        colorText: "#1f2937",
+        colorTextPlaceholder: "#9ca3af",
+        colorBorder: "#d1d5db",
+        colorBgContainerDisabled: "#f3f4f6",
+        colorTextDisabled: "#9ca3af",
+        colorBgContainer: "#ffffff",
+      },
+      Form: {
+        labelFontSize: 13,
+        verticalLabelPadding: "0 0 4px",
+        itemMarginBottom: 16,
+        labelColor: "#374151",
+      },
+      Select: {
+        controlBg: "#ffffff",
+        colorText: "#1f2937",
+        colorTextPlaceholder: "#9ca3af",
+        colorBorder: "#d1d5db",
+        colorBgContainer: "#ffffff",
+      },
+      TextArea: {
+        controlBg: "#ffffff",
+        colorText: "#1f2937",
+        colorTextPlaceholder: "#9ca3af",
+        colorBorder: "#d1d5db",
+        colorBgContainer: "#ffffff",
+      },
+      Button: {
+        colorBgBase: "#f3f4f6",
+        defaultBg: "#ffffff",
+        defaultColor: "#1f2937",
+        defaultBorderColor: "#d1d5db",
+        defaultHoverBg: "#f9fafb",
+        defaultHoverColor: "#111827",
+        defaultHoverBorderColor: "#9ca3af",
+      },
+      Card: {
+        colorBgContainer: "#ffffff",
+        colorBorderSecondary: "#e5e7eb",
+      },
+      Modal: {
+        contentBg: "#ffffff",
+        headerBg: "#ffffff",
+        titleColor: "#1f2937",
+      },
+      Checkbox: {
+        colorBgContainer: "#ffffff",
+        colorBorder: "#d1d5db",
+      },
+      Table: {
+        headerBg: "#f9fafb",
+        headerColor: "#374151",
+        colorBgContainer: "#ffffff",
+        rowHoverBg: "#f9fafb",
+        borderColor: "#e5e7eb",
+      },
+      Layout: {
+        colorBgHeader: "#ffffff",
+        colorBgBody: "#ffffff",
+        colorBgTrigger: "#f3f4f6",
+        bodyBg: "#ffffff",
+        headerBg: "#ffffff",
+        headerHeight: 64,
+        headerPadding: "0 24px",
+        headerColor: "#1f2937",
+        footerBg: "#f9fafb",
+        footerPadding: "24px 50px",
+      },
     },
-  },
+  };
+
+  const darkTheme = {
+    token: {
+      colorPrimary: "#0ea5e9",
+      colorInfo: "#0ea5e9",
+      colorPrimaryHover: "#0284c7",
+      colorPrimaryActive: "#0369a1",
+      borderRadius: 12,
+      fontFamily: "'Raleway Variable', sans-serif",
+      colorBgBase: "#0f172a",
+      colorTextBase: "#e2e8f0",
+      colorBorder: "#334155",
+      colorBgContainer: "#1e293b",
+      colorBgElevated: "#1e293b",
+      colorBgLayout: "#0f172a",
+      colorBgBlur: "#0f172aaa",
+    },
+    components: {
+      Input: {
+        borderRadius: 0,
+        controlBg: "#1e293b",
+        colorText: "#e2e8f0",
+        colorTextPlaceholder: "#78829e",
+        colorBorder: "#334155",
+        colorBgContainerDisabled: "#0f172a",
+        colorTextDisabled: "#64748b",
+      },
+      Form: {
+        labelFontSize: 13,
+        verticalLabelPadding: "0 0 4px",
+        itemMarginBottom: 16,
+        labelColor: "#cbd5e1",
+      },
+      Select: {
+        controlBg: "#1e293b",
+        colorText: "#e2e8f0",
+        colorTextPlaceholder: "#78829e",
+        colorBorder: "#334155",
+      },
+      TextArea: {
+        controlBg: "#1e293b",
+        colorText: "#e2e8f0",
+        colorTextPlaceholder: "#78829e",
+        colorBorder: "#334155",
+      },
+      Button: {
+        colorBgBase: "#1e293b",
+        defaultBg: "#1e293b",
+        defaultColor: "#e2e8f0",
+        defaultBorderColor: "#334155",
+        defaultHoverBg: "#334155",
+        defaultHoverColor: "#f1f5f9",
+        defaultHoverBorderColor: "#475569",
+      },
+      Card: {
+        colorBgContainer: "#1e293b",
+        colorBorderSecondary: "#334155",
+      },
+      Modal: {
+        contentBg: "#1e293b",
+        headerBg: "#1e293b",
+        titleColor: "#e2e8f0",
+      },
+      Checkbox: {
+        colorBgContainer: "#1e293b",
+        colorBorder: "#475569",
+      },
+      Table: {
+        headerBg: "#0f172a",
+        headerColor: "#cbd5e1",
+        colorBgContainer: "#1e293b",
+        rowHoverBg: "#334155",
+        borderColor: "#334155",
+      },
+    },
+  };
+
+  return isDark ? darkTheme : lightTheme;
 };

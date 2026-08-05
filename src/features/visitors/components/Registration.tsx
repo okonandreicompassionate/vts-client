@@ -6,10 +6,10 @@ import RegistrationModal from "../components/modals/RegistrationModal";
 import RegistrationSuccessModal from "../components/modals/RegistrationSuccessModal";
 import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
-import {useTenant} from '../../../lib/tenant'
+import { useTenant } from "../../../lib/tenant";
 
 export default function Registration() {
-   const { orgSlug } = useTenant();
+  const { orgSlug } = useTenant();
   const [form] = Form.useForm<RegistrationValues>();
   const { openModal } = usePopup();
   const [createVisit] = useCreateVisitMutation();
@@ -49,9 +49,9 @@ export default function Registration() {
   };
 
   return (
-    <div className="flex w-full flex-col bg-white">
-      <header className="jusify-between flex items-center border-b border-slate-200 px-5 py-4">
-        <h1 className="text-lg font-bold text-slate-900">Registration</h1>
+    <div className="flex w-full flex-col bg-white dark:bg-slate-900">
+      <header className="jusify-between flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+        <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Registration</h1>
       </header>
 
       <Form
@@ -66,7 +66,11 @@ export default function Registration() {
           label="Name"
           rules={[{ required: true, message: "Please enter your name" }]}
         >
-          <Input size="large" placeholder="" className="rounded-xl" />
+          <Input
+            size="large"
+            placeholder=""
+            className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+          />
         </Form.Item>
 
         <Form.Item
@@ -74,7 +78,11 @@ export default function Registration() {
           label="Purpose of Visit"
           rules={[{ required: true, message: "Please select a purpose" }]}
         >
-          <Input size="large" placeholder="" className="rounded-xl" />
+          <Input
+            size="large"
+            placeholder=""
+            className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+          />
         </Form.Item>
 
         <Form.Item
@@ -82,7 +90,10 @@ export default function Registration() {
           label="Host Name"
           rules={[{ required: true, message: "Please enter the host name" }]}
         >
-          <Input size="large" className="rounded-xl" />
+          <Input
+            size="large"
+            className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+          />
         </Form.Item>
 
         <Form.Item
@@ -93,7 +104,11 @@ export default function Registration() {
             { type: "email", message: "Please enter a valid email address" },
           ]}
         >
-          <Input size="large" type="email" className="rounded-xl" />
+          <Input
+            size="large"
+            type="email"
+            className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+          />
         </Form.Item>
 
         <Form.Item
@@ -101,7 +116,10 @@ export default function Registration() {
           label="Department"
           rules={[{ required: true, message: "Please enter your department" }]}
         >
-          <Input size="large" className="rounded-xl" />
+          <Input
+            size="large"
+            className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+          />
         </Form.Item>
 
         <Form.Item
@@ -112,7 +130,11 @@ export default function Registration() {
             { pattern: /^[0-9+\-\s]{7,15}$/, message: "Please enter a valid phone number" },
           ]}
         >
-          <Input size="large" inputMode="tel" className="rounded-xl" />
+          <Input
+            size="large"
+            inputMode="tel"
+            className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+          />
         </Form.Item>
 
         <div className="flex-1" />

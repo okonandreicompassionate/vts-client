@@ -30,7 +30,7 @@ function ManageSecurityModal() {
       <CustomModal.Header title="Manage Security" />
 
       <CustomModal.Body>
-        <p className="text-[11px] font-bold tracking-wide text-slate-400 mb-3 mt-4">
+        <p className="mt-4 mb-3 text-[11px] font-bold tracking-wide text-slate-400">
           CHANGE PASSWORD
         </p>
 
@@ -42,18 +42,20 @@ function ManageSecurityModal() {
           initialValues={{ twoFactorEnabled: true }}
         >
           <FormItem
-            label={<span className="text-slate-800 font-semibold text-[14px]">Current Password</span>}
+            label={
+              <span className="text-[14px] font-semibold text-slate-800">Current Password</span>
+            }
             name="currentPassword"
             rules={[{ required: true, message: "Please enter your current password" }]}
           >
             <Input.Password
-              className="!rounded-lg !bg-[#F5FBFE] !border-slate-100 !h-11 !px-4 !text-[14px] placeholder:!text-slate-400"
+              className="!h-11 !rounded-lg !border-slate-100 !bg-[#F5FBFE] !px-4 !text-[14px] placeholder:!text-slate-400"
               placeholder="Enter current password"
             />
           </FormItem>
 
           <FormItem
-            label={<span className="text-slate-800 font-semibold text-[14px]">New Password</span>}
+            label={<span className="text-[14px] font-semibold text-slate-800">New Password</span>}
             name="newPassword"
             rules={[
               { required: true, message: "Please enter a new password" },
@@ -61,13 +63,15 @@ function ManageSecurityModal() {
             ]}
           >
             <Input.Password
-              className="!rounded-lg !bg-[#F5FBFE] !border-slate-100 !h-11 !px-4 !text-[14px] placeholder:!text-slate-400"
+              className="!h-11 !rounded-lg !border-slate-100 !bg-[#F5FBFE] !px-4 !text-[14px] placeholder:!text-slate-400"
               placeholder="Enter new password"
             />
           </FormItem>
 
           <FormItem
-            label={<span className="text-slate-800 font-semibold text-[14px]">Confirm New Password</span>}
+            label={
+              <span className="text-[14px] font-semibold text-slate-800">Confirm New Password</span>
+            }
             name="confirmPassword"
             dependencies={["newPassword"]}
             rules={[
@@ -83,17 +87,17 @@ function ManageSecurityModal() {
             ]}
           >
             <Input.Password
-              className="!rounded-lg !bg-[#F5FBFE] !border-slate-100 !h-11 !px-4 !text-[14px] placeholder:!text-slate-400"
+              className="!h-11 !rounded-lg !border-slate-100 !bg-[#F5FBFE] !px-4 !text-[14px] placeholder:!text-slate-400"
               placeholder="Re-enter new password"
             />
           </FormItem>
 
-          <div className="flex items-center justify-between mt-6 mb-2">
+          <div className="mt-6 mb-2 flex items-center justify-between">
             <div className="pr-4">
-              <p className="text-[14px] font-bold text-slate-800 leading-tight">
+              <p className="text-[14px] leading-tight font-bold text-slate-800">
                 Two-Factor Authentication
               </p>
-              <p className="text-[12px] text-slate-400 mt-0.5">
+              <p className="mt-0.5 text-[12px] text-slate-400">
                 Add an extra layer of security to your account
               </p>
             </div>
@@ -108,14 +112,14 @@ function ManageSecurityModal() {
         <div className="mt-4 flex w-full items-center gap-3">
           <Button
             onClick={handleCancel}
-            className="!rounded-full !h-11 !px-8 !bg-white !text-slate-500 !border-slate-200 hover:!bg-slate-50 hover:!text-slate-600 !font-medium !flex-1"
+            className="!h-11 !flex-1 !rounded-full !border-slate-200 !bg-white !px-8 !font-medium !text-slate-500 hover:!bg-slate-50 hover:!text-slate-600 dark:!border-slate-600 dark:!bg-slate-700 dark:!text-slate-300 dark:hover:!bg-slate-600 dark:hover:!text-slate-100"
           >
             Cancel
           </Button>
           <Button
             type="primary"
             onClick={handleSaveChanges}
-            className="!rounded-full !h-11 !px-8 !bg-sky-500 hover:!bg-sky-600 !border-none !font-semibold !flex-1"
+            className="!h-11 !flex-1 !rounded-full !border-none !bg-sky-500 !px-8 !font-semibold hover:!bg-sky-600"
           >
             Update Password
           </Button>

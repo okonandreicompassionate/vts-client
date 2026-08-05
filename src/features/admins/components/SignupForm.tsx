@@ -27,33 +27,43 @@ export default function SignupForm() {
     >
       {/* Full Name */}
       <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700">Full Name</span>}
+        label={
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Full Name
+          </span>
+        }
         name="fullName"
         rules={[{ required: true, message: "Please enter your full name" }]}
       >
         <Input
           placeholder="John Doe"
           size="large"
-          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white!"
+          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />
       </Form.Item>
 
       {/* Email */}
       <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700">Email Address</span>}
+        label={
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Email Address
+          </span>
+        }
         name="email"
         rules={emailRules}
       >
         <Input
           placeholder="admin@zoracom.com"
           size="large"
-          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white!"
+          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />
       </Form.Item>
 
       {/* Password */}
       <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700">Password</span>}
+        label={
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Password</span>
+        }
         name="password"
         rules={getPasswordRules({ minLength: 8 })}
         hasFeedback
@@ -61,13 +71,17 @@ export default function SignupForm() {
         <Input.Password
           placeholder="••••••••••"
           size="large"
-          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white!"
+          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />
       </Form.Item>
 
       {/* Confirm Password */}
       <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700">Confirm Password</span>}
+        label={
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Confirm Password
+          </span>
+        }
         name="confirmPassword"
         dependencies={["password"]}
         hasFeedback
@@ -76,7 +90,7 @@ export default function SignupForm() {
         <Input.Password
           placeholder="••••••••••"
           size="large"
-          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white!"
+          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />
       </Form.Item>
 
