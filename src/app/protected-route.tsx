@@ -18,7 +18,7 @@ export function ProtectedRoute({
   const adminAuth = useAppSelector((state) => state.adminAuth);
 
   if (requiredAuth === "admin") {
-    if (!adminAuth.isAuthenticated || !adminAuth.token) {
+    if (!adminAuth.token) {
       return (
         <Navigate
           to={paths.admin.login.getHref(orgSlug)}

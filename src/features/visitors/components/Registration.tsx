@@ -11,42 +11,64 @@ import { useTenant } from "../../../lib/tenant";
 export default function Registration() {
   const { orgSlug } = useTenant();
   const [form] = Form.useForm<RegistrationValues>();
-  const { openModal } = usePopup();
+  const { openModal, closeModal } = usePopup();
   const [createVisit] = useCreateVisitMutation();
 
   const handleFinish = async (values: RegistrationValues) => {
-    openModal(
-      <RegistrationModal
-        onSubmit={async () => {
-          try {
-            await createVisit({
-              fullName: values.name,
-              email: values.email,
-              phoneNumber: values.phoneNo,
-              hostName: values.hostName,
-              department: values.department,
-              purposeOfVisit: values.purposeOfVisit,
-            }).unwrap();
+  openModal(
+    <RegistrationModal
+      onSubmit={async () => {
+        // Close confirmation modal first
+        openModal(
+          <RegistrationSuccessModal
+            loading
+            onOk={() =>
+              window.location.assign(
+                `${paths.visitorProfile.getHref(orgSlug)}?status=pending`,
+              )
+            }
+          />,
+        );
 
-            window.localStorage.setItem(
-              "visitorRegistration",
-              JSON.stringify({ ...values, email: values.email, department: values.department }),
-            );
-            form.resetFields();
-            openModal(
-              <RegistrationSuccessModal
-                onOk={() =>
-                  window.location.assign(`${paths.visitorProfile.getHref(orgSlug)}?status=pending`)
-                }
-              />,
-            );
-          } catch {
-            message.error("Registration could not be submitted. Please try again.");
-          }
-        }}
-      />,
-    );
-  };
+        try {
+          await createVisit({
+            fullName: values.name,
+            email: values.email,
+            phoneNumber: values.phoneNo,
+            hostName: values.hostName,
+            department: values.department,
+            purposeOfVisit: values.purposeOfVisit,
+          }).unwrap();
+
+          window.localStorage.setItem(
+            "visitorRegistration",
+            JSON.stringify({
+              ...values,
+              email: values.email,
+              department: values.department,
+            }),
+          );
+
+          form.resetFields();
+
+          openModal(
+            <RegistrationSuccessModal
+              loading={false}
+              onOk={() =>
+                window.location.assign(
+                  `${paths.visitorProfile.getHref(orgSlug)}?status=pending`,
+                )
+              }
+            />,
+          );
+        } catch {
+          closeModal();
+          message.error("Registration could not be submitted. Please try again.");
+        }
+      }}
+    />,
+  );
+};
 
   return (
     <div className="flex w-full flex-col bg-white dark:bg-slate-900">

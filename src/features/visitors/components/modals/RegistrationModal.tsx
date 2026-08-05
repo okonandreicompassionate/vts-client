@@ -15,10 +15,15 @@ export default function RegistrationModal({ onSubmit, onCancel }: RegistrationMo
 
   const handleConfirm = async () => {
     try {
-      setSubmitting(true);
-      await onSubmit();
-      closeModal();
-      setConfirmed(false); // reset so a reopened modal starts unchecked
+       setSubmitting(true);
+
+    closeModal();
+
+    await Promise.resolve(); // allow the modal to unmount
+
+    await onSubmit();
+
+    setConfirmed(false); // reset so a reopened modal starts unchecked
     } finally {
       setSubmitting(false);
     }

@@ -1,5 +1,5 @@
 import { api } from "../../../lib/api/base";
-import type { VisitListResponse, UserProfile } from "../types/api-types";
+import type { VisitListResponse, UserProfile, VisitRecord } from "../types/api-types";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -47,6 +47,14 @@ export const authApi = api.injectEndpoints({
       invalidatesTags: ["Visits"],
     }),
 
+    getVisit: builder.query<VisitRecord, string>({
+      query: (id) => ({
+        url: `/visits/${id}`,
+        // console.log("Creating request"),
+      }),
+      providesTags: (_result, _error, id) => [{ type: "Visits", id }],
+    }),
+
     rejectVisit: builder.mutation<void, string>({
       query: (id) => ({
         url: `/visits/${id}/reject`,
@@ -65,4 +73,5 @@ export const {
   useApproveVisitMutation,
   useSignoffVisitMutation,
   useRejectVisitMutation,
+  useGetVisitQuery,
 } = authApi;
