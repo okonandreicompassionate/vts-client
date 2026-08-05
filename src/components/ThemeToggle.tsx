@@ -1,7 +1,7 @@
 import { SunOutlined, MoonOutlined, DesktopOutlined } from "@ant-design/icons";
 import { Button, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import { useTheme } from "@/lib/contexts/ThemeContext";
+import { useTheme } from "@/hooks/useTheme";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
