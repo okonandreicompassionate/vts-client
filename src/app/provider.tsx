@@ -4,25 +4,36 @@ import { MsalProvider } from "@azure/msal-react";
 import { ConfigProvider } from "antd";
 import type { ReactNode } from "react";
 import { Provider } from "react-redux";
-import { theme } from "./theme";
+import { useMemo } from "react";
+import { getThemeConfig } from "./theme";
 import { PopupProvider } from "../lib/contexts/PopupProvider";
 import { msalConfig } from "../lib/api/msal";
 import { store } from "../lib/stores/store";
-
-
+import { ThemeProvider, useTheme } from "../lib/contexts/ThemeContext";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
+function AppProviderContent({ children }: { children: ReactNode }) {
+  const { isDark } = useTheme();
+  const theme = useMemo(() => getThemeConfig(isDark), [isDark]);
+
+  return (
+    <StyleProvider layer>
+      <ConfigProvider theme={theme}>
+        <Provider store={store}>
+          <PopupProvider>{children}</PopupProvider>
+        </Provider>
+      </ConfigProvider>
+    </StyleProvider>
+  );
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   return (
-    <MsalProvider instance={msalInstance}>
-      <StyleProvider layer>
-        <ConfigProvider theme={theme}>
-          <Provider store={store}>
-            <PopupProvider>{children}</PopupProvider>
-          </Provider>
-        </ConfigProvider>
-      </StyleProvider>
-    </MsalProvider>
+    <ThemeProvider>
+      <MsalProvider instance={msalInstance}>
+        <AppProviderContent>{children}</AppProviderContent>
+      </MsalProvider>
+    </ThemeProvider>
   );
 }

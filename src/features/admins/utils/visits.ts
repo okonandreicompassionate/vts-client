@@ -64,9 +64,19 @@ export function formatVisitTime(value?: string) {
 }
 
 export function toVisitorRow(visit: VisitRecord, index: number): VisitorRow {
-  const id = visit.id ?? `${visit.email ?? "visit"}-${index}`;
+  // avoid index in the fallback key: index differs between queries (e.g. table page vs details fetch)
+  // and would make the same visit resolve to a different id depending on which list loaded it.
+  // email alone isn't enough either: repeat visitors have multiple visits under the same email,
+  // which would collide onto one id and let a stale visit's status shadow the current one.
+  const visitTimestamp = visit.createdAt ?? visit.checkInTime ?? visit.time;
+  const id =
+    visit.id ??
+    visit.referenceId ??
+    (visit.email && visitTimestamp ? `${visit.email}-${visitTimestamp}` : visit.email) ??
+    `visit-${index}`;
   const status = toVisitorStatus(visit.status);
-  const fallbackCheckIn = status === "Pending" || status === "Rejected" ? undefined : visit.updatedAt;
+  const fallbackCheckIn =
+    status === "Pending" || status === "Rejected" ? undefined : visit.updatedAt;
   const resolvedCheckIn = visit.checkIn ?? visit.checkInTime ?? fallbackCheckIn;
   const resolvedCheckOut = visit.checkOut ?? visit.checkOutTime;
 

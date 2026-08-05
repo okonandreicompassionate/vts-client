@@ -40,27 +40,33 @@ export default function LoginForm() {
     >
       {/* Email */}
       <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700">Email Address</span>}
+        label={
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Email Address
+          </span>
+        }
         name="email"
         rules={emailRules}
       >
         <Input
           placeholder="admin@zoracom.com"
           size="large"
-          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white!"
+          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />
       </Form.Item>
 
       {/* Password */}
       <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700">Password</span>}
+        label={
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Password</span>
+        }
         name="password"
         rules={getPasswordRules({ required: true })}
       >
         <Input.Password
           placeholder="••••••••••"
           size="large"
-          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white!"
+          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />
       </Form.Item>
 
@@ -80,8 +86,10 @@ export default function LoginForm() {
 
       {/* Microsoft Login */}
       <div className="relative flex items-center justify-center py-3">
-        <div className="absolute right-0 left-0 border-t border-slate-200" />
-        <span className="relative bg-white px-3 text-xs font-medium text-slate-400">or</span>
+        <div className="absolute right-0 left-0 border-t border-slate-200 dark:border-slate-700" />
+        <span className="relative bg-white px-3 text-xs font-medium text-slate-400 dark:bg-slate-900 dark:text-slate-500">
+          or
+        </span>
       </div>
 
       <div className="mb-3">

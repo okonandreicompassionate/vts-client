@@ -11,20 +11,15 @@ const LazyAdminAuthPage = lazy(() => import("../features/admins/components/AuthP
 const LazyAdminSettings = lazy(() => import("../features/admins/components/AdminSettings"));
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/VisitorDetails"));
 const LazyVisitorPage = lazy(() => import("../features/admins/components/VisitorPage"));
-const LazyVisitorReview = lazy(() => import("../features/admins/components/VisitorReview"));
 
 const LazyLandingPage = lazy(() => import("../features/visitors/components/LandingPage"));
 const LazyRegistration = lazy(() => import("../features/visitors/components/Registration"));
 const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/VerifyIdentity"));
 const LazyVisitorProfile = lazy(() => import("../features/visitors/components/VisitorProfile"));
 
-const LazyAuthLayout = lazy(
-  () => import("../features/visitors/components/layout/AuthLayout"),
-);
+const LazyAuthLayout = lazy(() => import("../features/visitors/components/layout/AuthLayout"));
 
-const LazyLayout = lazy(
-  () => import("../features/admins/components/layout/Layout"),
-);
+const LazyLayout = lazy(() => import("../features/admins/components/layout/Layout"));
 
 const fallback = <Spinner />;
 
@@ -47,10 +42,7 @@ export function AppRouter() {
                 }
               />
 
-              <Route
-                path={paths.verify.path}
-                element={<LazyVerifyIdentity />}
-              />
+              <Route path={paths.verify.path} element={<LazyVerifyIdentity />} />
 
               <Route
                 path={paths.visitorProfile.path}
@@ -63,15 +55,9 @@ export function AppRouter() {
             </Route>
 
             {/* Admin auth */}
-            <Route
-              path={paths.admin.login.path}
-              element={<LazyAdminAuthPage />}
-            />
+            <Route path={paths.admin.login.path} element={<LazyAdminAuthPage />} />
 
-            <Route
-              path={paths.admin.signup.path}
-              element={<LazyAdminAuthPage />}
-            />
+            <Route path={paths.admin.signup.path} element={<LazyAdminAuthPage />} />
 
             {/* Admin app */}
             <Route
@@ -81,30 +67,13 @@ export function AppRouter() {
                 </ProtectedRoute>
               }
             >
-              <Route
-                path={paths.admin.dashboard.path}
-                element={<LazyAdminDashboard />}
-              />
+              <Route path={paths.admin.dashboard.path} element={<LazyAdminDashboard />} />
 
-              <Route
-                path={paths.admin.visitors.path}
-                element={<LazyVisitorPage />}
-              />
+              <Route path={paths.admin.visitors.path} element={<LazyVisitorPage />} />
 
-              <Route
-                path={paths.admin.visitorDetails.path}
-                element={<LazyVisitorDetails />}
-              />
+              <Route path={paths.admin.visitorDetails.path} element={<LazyVisitorDetails />} />
 
-              <Route
-                path={paths.admin.visitorReview.path}
-                element={<LazyVisitorReview />}
-              />
-
-              <Route
-                path={paths.admin.settings.path}
-                element={<LazyAdminSettings />}
-              />
+              <Route path={paths.admin.settings.path} element={<LazyAdminSettings />} />
             </Route>
           </Route>
         </Routes>

@@ -36,7 +36,7 @@ function TableComponent<T extends object>({
           width: 54,
           align: "center" as const,
           render: (_value: unknown, _record: T, index: number) => (
-            <span className="text-sm text-slate-500">{startIndex + index}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400">{startIndex + index}</span>
           ),
         },
         ...columns,

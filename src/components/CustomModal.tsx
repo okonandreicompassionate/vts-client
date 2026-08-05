@@ -68,7 +68,9 @@ CustomModal.Header = ({
             <p className={twMerge("text-lg! font-semibold capitalize", !subtitle && "text-base!")}>
               {title}
             </p>
-            {subtitle && <p className="text-sm! leading-5 text-gray-600">{subtitle}</p>}
+            {subtitle && (
+              <p className="text-sm! leading-5 text-gray-600 dark:text-slate-400">{subtitle}</p>
+            )}
           </>
         )}
       </div>
@@ -76,9 +78,9 @@ CustomModal.Header = ({
         <Button
           onClick={close}
           type="text"
-          className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F5FBFE] p-1"
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F5FBFE] p-1 dark:bg-slate-700"
         >
-          <img src="/close.svg" alt="Close" className="h-3 w-3" />
+          <img src="/close.svg" alt="Close" className="h-3 w-3 dark:invert" />
         </Button>
       )}
     </div>
@@ -112,7 +114,9 @@ CustomModal.Confirmation = ({ text }: { text?: string }) => {
   return (
     <div className="w-full p-6 pt-2">
       <Checkbox onChange={(e) => setIsConfirmed(e.target.checked)} className="custom-checkbox">
-        <p className="text-sm text-gray-600">{text ?? "I confirm this action"}</p>
+        <p className="text-sm text-gray-600 dark:text-slate-400">
+          {text ?? "I confirm this action"}
+        </p>
       </Checkbox>
     </div>
   );

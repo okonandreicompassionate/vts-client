@@ -1,10 +1,10 @@
 @layer theme, base, antd, components, utilities;
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 body {
   font-family: "Raleway Variable", sans-serif;
 }
-
 
 @media (max-width: 768px) {
   #root {

@@ -1,13 +1,23 @@
 import { ArrowLeftOutlined, CheckOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import { useMemo } from "react";
+import { Button, Input, message } from "antd";
+import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
+import ApproveAccessModal from "../components/modals/ApproveAccessModal";
+import RejectVisitorModal from "../components/modals/RejectVisitorModal";
 import { VisitorAvatar } from "./visitor-avatar.tsx";
 import { paths } from "../../../config/paths";
+import { usePopup } from "../../../hooks/usePopup";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
+import {
+  useApproveVisitMutation,
+  useRejectVisitMutation,
+  useSignoffVisitMutation,
+} from "../api/admin-api";
 import type { VisitorRow } from "../utils/visits";
-import {useTenant} from "../../../lib/tenant/tenant";
+import { useTenant } from "../../../lib/tenant/tenant";
+
+const { TextArea } = Input;
 
 type TimelineStatus = "done-blue" | "done-orange" | "done-green";
 
@@ -38,6 +48,11 @@ export default function VisitorDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { orgSlug } = useTenant();
+  const { openModal, closeModal } = usePopup();
+  const [notes, setNotes] = useState("");
+  const [signoffVisit, { isLoading: isSigningOff }] = useSignoffVisitMutation();
+  const [approveVisit, { isLoading: isApproving }] = useApproveVisitMutation();
+  const [rejectVisit, { isLoading: isRejecting }] = useRejectVisitMutation();
 
   // Fetch with large limit to find visitor across all pages
   const { visitorRecords } = useVisitorTableData({
@@ -47,8 +62,8 @@ export default function VisitorDetails() {
 
   const visitor = useMemo<VisitorRow>(() => {
     return (
-      visitorRecords.find((item) => item.id === id) ??
-      visitorRecords[0] ?? {
+      visitorRecords.find((item) => item.id === id) ?? {
+        id: "",
         name: "Visitor unavailable",
         email: "N/A",
         phone: "N/A",
@@ -64,10 +79,14 @@ export default function VisitorDetails() {
   }, [id, visitorRecords]);
 
   const statusStyles: Record<string, string> = {
-    "Signed In": "bg-emerald-50 text-emerald-500 border border-emerald-200",
-    Pending: "bg-orange-50 text-orange-400 border border-orange-200",
-    "Signed Off": "bg-slate-100 text-slate-500 border border-slate-200",
-    Rejected: "bg-rose-50 text-rose-500 border border-rose-200",
+    "Signed In":
+      "bg-emerald-50 text-emerald-500 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800",
+    Pending:
+      "bg-orange-50 text-orange-400 border border-orange-200 dark:bg-orange-950/40 dark:text-orange-400 dark:border-orange-800",
+    "Signed Off":
+      "bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600",
+    Rejected:
+      "bg-rose-50 text-rose-500 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800",
   };
 
   const timeline: TimelineStep[] = [
@@ -126,6 +145,58 @@ export default function VisitorDetails() {
     { label: "Check-Out Time", value: visitor.status === "Signed Off" ? visitor.time : "Pending" },
   ];
 
+  const handleSignOff = async () => {
+    if (!visitor.id) {
+      message.error("Visitor ID is missing.");
+      return;
+    }
+
+    try {
+      await signoffVisit(visitor.id).unwrap();
+      message.success("Visitor signed off successfully.");
+    } catch {
+      message.error("Sign off could not be completed. Please try again.");
+    }
+  };
+
+  const handleApprove = () => {
+    openModal(<ApproveAccessModal visitorName={visitor.name} onConfirm={handleConfirmApprove} />);
+  };
+
+  const handleConfirmApprove = async () => {
+    if (!visitor.id) {
+      message.error("Visitor ID is missing.");
+      return;
+    }
+
+    try {
+      await approveVisit(visitor.id).unwrap();
+      message.success("Visitor approved successfully.");
+      closeModal();
+    } catch {
+      message.error("Approval could not be completed. Please try again.");
+    }
+  };
+
+  const handleReject = () => {
+    openModal(<RejectVisitorModal onConfirm={handleConfirmReject} />);
+  };
+
+  const handleConfirmReject = async () => {
+    if (!visitor.id) {
+      message.error("Visitor ID is missing.");
+      return;
+    }
+
+    try {
+      await rejectVisit(visitor.id).unwrap();
+      message.success("Visitor rejected.");
+      closeModal();
+    } catch {
+      message.error("Rejection could not be completed. Please try again.");
+    }
+  };
+
   return (
     <>
       <Header title="Visitor Details" />
@@ -141,12 +212,14 @@ export default function VisitorDetails() {
         </Button>
 
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-          <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1">
+          <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
             <div className="mb-6 flex flex-col items-center text-center">
               <div className="mb-4">
                 <VisitorAvatar name={visitor.name} size="lg" />
               </div>
-              <h3 className="text-xl font-bold text-slate-800">{visitor.name}</h3>
+              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+                {visitor.name}
+              </h3>
               <span
                 className={`mt-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusStyles[visitor.status]}`}
               >
@@ -154,48 +227,91 @@ export default function VisitorDetails() {
               </span>
             </div>
 
-            <div className="overflow-hidden rounded-lg border border-slate-100">
+            <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-slate-700">
               {detailRows.map((row, idx) => (
                 <div
                   key={row.label}
-                  className={`flex flex-col gap-1 px-4 py-3.5 sm:flex-row sm:items-center sm:px-5 ${idx !== detailRows.length - 1 ? "border-b border-slate-100" : ""}`}
+                  className={`flex flex-col gap-1 px-4 py-3.5 sm:flex-row sm:items-center sm:px-5 ${idx !== detailRows.length - 1 ? "border-b border-slate-100 dark:border-slate-700" : ""}`}
                 >
                   <span className="w-full shrink-0 text-sm text-slate-400 sm:w-40">
                     {row.label}
                   </span>
-                  <span className="text-sm text-slate-700">{row.value}</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-200">{row.value}</span>
                 </div>
               ))}
             </div>
 
-            <Button
-              danger={visitor.status !== "Pending"}
-              type="primary"
-              shape="round"
-              className="mt-6 h-10! w-full bg-[#EF4444]! px-5! font-semibold sm:w-auto"
-              onClick={() => {
-                if (visitor.status === "Pending") {
-                  navigate(paths.admin.visitorReview.getHref(visitor.id));
-                }
-              }}
-            >
-              {visitor.status === "Pending" ? "Review Visitor" : "Sign Off Visitor"}
-            </Button>
+            {visitor.status === "Pending" ? (
+              <div className="mt-6 border-t border-slate-100 pt-6 dark:border-slate-700">
+                <h4 className="mb-2 text-base font-bold text-slate-800 dark:text-slate-100">
+                  Review and Approve
+                </h4>
+                <p className="mb-4 text-sm leading-relaxed text-slate-400">
+                  Please verify the visitor information before granting access. You can add internal
+                  notes below for audit purposes.
+                </p>
+                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200">
+                  Notes (Optional)
+                </label>
+                <TextArea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Enter notes here.."
+                  rows={4}
+                  className="mb-5 rounded-lg"
+                />
+
+                <div className="flex justify-start gap-3">
+                  <Button
+                    danger
+                    loading={isRejecting}
+                    disabled={isApproving || isRejecting}
+                    onClick={handleReject}
+                    className="h-11! px-8 font-semibold"
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    type="primary"
+                    loading={isApproving}
+                    disabled={isApproving || isRejecting}
+                    onClick={handleApprove}
+                    className="h-11! bg-emerald-500! px-8 font-semibold hover:bg-emerald-600!"
+                  >
+                    Approve Access
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                danger
+                type="primary"
+                shape="round"
+                loading={isSigningOff}
+                disabled={visitor.status === "Signed Off" || visitor.status === "Rejected"}
+                className="mt-6 h-10! w-full bg-[#EF4444]! px-5! font-semibold sm:w-auto"
+                onClick={handleSignOff}
+              >
+                Sign Off Visitor
+              </Button>
+            )}
           </div>
 
-          <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-80 lg:shrink-0">
-            <h3 className="mb-5 text-base font-bold text-slate-800">Visit Timeline</h3>
+          <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-80 lg:shrink-0 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
+            <h3 className="mb-5 text-base font-bold text-slate-800 dark:text-slate-100">
+              Visit Timeline
+            </h3>
             <div className="space-y-0">
               {timeline.map((step, idx) => (
                 <div key={step.key} className="flex gap-3">
                   <div className="flex flex-col items-center">
                     <TimelineDot status={step.status} />
                     {idx !== timeline.length - 1 && (
-                      <span className="my-1 w-px flex-1 bg-slate-100" />
+                      <span className="my-1 w-px flex-1 bg-slate-100 dark:bg-slate-700" />
                     )}
                   </div>
                   <div className={idx !== timeline.length - 1 ? "pb-6" : ""}>
-                    <p className="text-sm leading-tight font-semibold text-slate-800">
+                    <p className="text-sm leading-tight font-semibold text-slate-800 dark:text-slate-100">
                       {step.title}
                     </p>
                     <p className="mt-0.5 text-xs text-slate-400">{step.time}</p>

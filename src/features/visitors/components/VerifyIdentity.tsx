@@ -2,12 +2,13 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../../config/paths";
-import {useTenant} from '../../../lib/tenant'
+import { useTenant } from "../../../lib/tenant";
+import { ThemeToggle } from "../../../components/ThemeToggle";
 import { useVerifyVisitIdentityMutation } from "../api/visit-api";
 
 export default function VerifyIdentity() {
   const navigate = useNavigate();
-   const { orgSlug } = useTenant();
+  const { orgSlug } = useTenant();
   const [verifyVisitIdentity] = useVerifyVisitIdentityMutation();
 
   const handleFinish = async (values: { emailOrPhone: string }) => {
@@ -27,7 +28,10 @@ export default function VerifyIdentity() {
   };
 
   return (
-    <div className="flex max-h-screen w-full flex-col items-center bg-white max-md:pt-18">
+    <div className="flex max-h-screen w-full flex-col items-center bg-white max-md:pt-18 dark:bg-slate-900">
+      <div className="absolute top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
       <Form
         layout="vertical"
         requiredMark={false}
@@ -40,8 +44,10 @@ export default function VerifyIdentity() {
               <img src="/padlock.svg" alt="" loading="lazy" />
             </div>
             <div className="mt-1 text-center">
-              <h1 className="text-xl font-bold text-slate-900">Verify Identity</h1>
-              <p className="mt-2 px-2 text-sm leading-snug text-slate-500">
+              <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                Verify Identity
+              </h1>
+              <p className="mt-2 px-2 text-sm leading-snug text-slate-500 dark:text-slate-400">
                 Enter your email address or phone number to
                 <br /> continue with registration.
               </p>
@@ -65,7 +71,11 @@ export default function VerifyIdentity() {
               },
             ]}
           >
-            <Input size="large" placeholder="" className="rounded-xl" />
+            <Input
+              size="large"
+              placeholder=""
+              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+            />
           </Form.Item>
         </div>
 

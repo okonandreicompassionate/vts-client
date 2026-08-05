@@ -56,7 +56,9 @@ const columns: ColumnsType<VisitorRow> = [
       <div className="flex items-center gap-3">
         <VisitorAvatar name={record.name} size="md" />
         <div>
-          <p className="text-sm leading-tight font-medium text-slate-800">{record.name}</p>
+          <p className="text-sm leading-tight font-medium text-slate-800 dark:text-slate-100">
+            {record.name}
+          </p>
         </div>
       </div>
     ),
@@ -65,19 +67,21 @@ const columns: ColumnsType<VisitorRow> = [
     title: "Phone Number",
     dataIndex: "phone",
     key: "phone",
-    render: (phone) => <span className="text-sm text-slate-500">{phone}</span>,
+    render: (phone) => <span className="text-sm text-slate-500 dark:text-slate-400">{phone}</span>,
   },
   {
     title: "Host Name",
     dataIndex: "host",
     key: "host",
-    render: (host) => <span className="text-sm text-slate-600">{host}</span>,
+    render: (host) => <span className="text-sm text-slate-600 dark:text-slate-300">{host}</span>,
   },
   {
     title: "Purpose",
     dataIndex: "purpose",
     key: "purpose",
-    render: (purpose) => <span className="text-sm text-slate-600">{purpose}</span>,
+    render: (purpose) => (
+      <span className="text-sm text-slate-600 dark:text-slate-300">{purpose}</span>
+    ),
   },
   {
     title: "Status",
@@ -89,7 +93,7 @@ const columns: ColumnsType<VisitorRow> = [
     title: "Check-In Time",
     dataIndex: "time",
     key: "time",
-    render: (time) => <span className="text-sm text-slate-600">{time}</span>,
+    render: (time) => <span className="text-sm text-slate-600 dark:text-slate-300">{time}</span>,
   },
   {
     title: "Action",
@@ -148,7 +152,7 @@ export default function Dashboard() {
           {cards.map((card) => (
             <div
               key={card.label}
-              className="flex items-center gap-2 rounded-md border border-slate-100 bg-white px-2.5 py-2 shadow-sm shadow-slate-100"
+              className="flex items-center gap-2 rounded-md border border-slate-100 bg-white px-2.5 py-2 shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none"
             >
               <div
                 className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${card.iconBg} ${card.iconColor}`}
@@ -156,32 +160,36 @@ export default function Dashboard() {
                 {card.icon}
               </div>
               <div className="min-w-0">
-                <p className="text-sm leading-none font-semibold text-slate-800">{card.value}</p>
+                <p className="text-sm leading-none font-semibold text-slate-800 dark:text-slate-100">
+                  {card.value}
+                </p>
                 <p className="mt-0.5 text-[10px] leading-none text-slate-400">{card.label}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100">
+        <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
           <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
-            <h3 className="text-base font-bold text-slate-800">Recent Visitors</h3>
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
+              Recent Visitors
+            </h3>
             <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
-              <p>Filter:</p>
+              <p className="text-slate-600 dark:text-slate-300">Filter:</p>
               <Select
-              value={statusFilter}
-              onChange={handleStatusChange}
-              size="middle"
-              className="w-full bg-[#F5FBFE] sm:w-32"
-              popupMatchSelectWidth={false}
-              options={[
-                { value: "All", label: "All" },
-                { value: "Signed In", label: "Signed In" },
-                { value: "Pending", label: "Pending" },
-                { value: "Signed Off", label: "Signed Off" },
-                { value: "Rejected", label: "Rejected" },
-              ]}
-            />
+                value={statusFilter}
+                onChange={handleStatusChange}
+                size="middle"
+                className="w-full bg-[#F5FBFE] sm:w-32 dark:bg-slate-700"
+                popupMatchSelectWidth={false}
+                options={[
+                  { value: "All", label: "All" },
+                  { value: "Signed In", label: "Signed In" },
+                  { value: "Pending", label: "Pending" },
+                  { value: "Signed Off", label: "Signed Off" },
+                  { value: "Rejected", label: "Rejected" },
+                ]}
+              />
             </div>
           </div>
 

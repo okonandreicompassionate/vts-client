@@ -85,6 +85,12 @@ export interface UserProfile {
   fullName?: string;
   name?: string;
   email?: string;
+  phoneNumber?: string;
   role?: string;
+  orgId?: string;
+  organization?: {
+    name?: string;
+    slug?: string;
+  };
   avatar?: string;
 }
