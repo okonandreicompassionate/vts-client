@@ -9,7 +9,11 @@ interface UseVisitorTableDataParams {
   status?: string;
 }
 
-export function useVisitorTableData({ page, limit, status }: UseVisitorTableDataParams) {
+export function useVisitorTableData({
+  page,
+  limit,
+  status,
+}: UseVisitorTableDataParams) {
   const { data: visitsData } = useGetVisitsQuery({
     page,
     limit,
@@ -17,11 +21,19 @@ export function useVisitorTableData({ page, limit, status }: UseVisitorTableData
   });
 
   const visitorRecords = useMemo<VisitorRow[]>(() => {
-    if (!visitsData || !visitsData.data) return [];
-    return visitsData.data.map((visit: VisitRecord, index: number) => toVisitorRow(visit, index));
+    if (!visitsData?.data) {
+      return [];
+    }
+
+    return visitsData.data.map((visit: VisitRecord, index) =>
+      toVisitorRow(visit, index)
+    );
   }, [visitsData]);
 
-  const totalEntries = visitsData?.total ?? 0;
+  const totalEntries = visitsData?.meta.total ?? 0;
 
-  return { visitorRecords, totalEntries };
+  return {
+    visitorRecords,
+    totalEntries,
+  };
 }

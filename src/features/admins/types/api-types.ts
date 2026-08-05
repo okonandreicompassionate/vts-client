@@ -29,7 +29,7 @@ export interface VisitListResponse {
   count?: number;
   page?: number;
   limit?: number;
-  meta?: {
+  meta: {
     total?: number;
     totalItems?: number;
     count?: number;
