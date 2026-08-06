@@ -1,6 +1,6 @@
 import { useGetProfileQuery } from "../../api/admin-api-slice.ts";
 import { VisitorAvatar } from "../visitor-avatar.tsx";
-import { ThemeToggle } from "../../../../components/ThemeToggle";
+import { ThemeToggle } from "../../../../components/theme-toggle.tsx";
 
 const Header = ({ title }: { title: string }) => {
   const { data: profile } = useGetProfileQuery(undefined);

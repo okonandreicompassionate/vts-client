@@ -1,6 +1,6 @@
 import { CloseOutlined, WarningOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
-import CustomModal from "../../../../components/CustomModal";
+import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "../../../../hooks/usePopup";
 
 type ApproveAccessModalProps = {

@@ -4,8 +4,8 @@ import { Alert, Button, Input, message } from "antd";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
-import ApproveAccessModal from "../components/modals/ApproveAccessModal";
-import RejectVisitorModal from "../components/modals/RejectVisitorModal";
+import ApproveAccessModal from "./modals/approve-access-modal.tsx";
+import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
 import { VisitorAvatar } from "./visitor-avatar.tsx";
 import { paths } from "../../../config/paths";
 import { usePopup } from "../../../hooks/usePopup";
@@ -16,7 +16,7 @@ import {
 } from "../api/admin-api-slice.ts";
 import { useTenant } from "../../../lib/tenant/tenant";
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
-import { Spinner } from "@/components/Spinner.tsx";
+import { Spinner } from "@/components/spinner.tsx";
 
 const { TextArea } = Input;
 

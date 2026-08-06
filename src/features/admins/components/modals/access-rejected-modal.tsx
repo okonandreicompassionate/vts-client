@@ -1,6 +1,6 @@
 import { CloseOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import CustomModal from "../../../../components/CustomModal";
+import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "../../../../hooks/usePopup";
 
 type AccessRejectedModalProps = {

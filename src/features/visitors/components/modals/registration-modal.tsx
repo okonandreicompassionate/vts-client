@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Checkbox, Button } from "antd";
-import CustomModal from "../../../../components/CustomModal";
+import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "../../../../hooks/usePopup";
 
 type RegistrationModalProps = {

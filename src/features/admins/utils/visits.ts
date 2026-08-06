@@ -1,5 +1,5 @@
 import type { VisitRecord } from "../types/api-types";
-import type { VisitorStatus } from "../components/StatusPill";
+import type { VisitorStatus } from "../components/status-pill";
 
 export interface VisitorRow {
   id: string;

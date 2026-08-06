@@ -1,7 +1,7 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, Checkbox, message } from "antd";
 import { useState } from "react";
-import CustomModal from "../../../../components/CustomModal";
+import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "../../../../hooks/usePopup";
 
 type RejectVisitorModalProps = {

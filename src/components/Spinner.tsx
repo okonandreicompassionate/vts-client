@@ -10,11 +10,11 @@ interface SpinnerProps {
 
 const variantClasses: Record<SpinnerVariant, string> = {
   inline: "min-h-[240px]",
-  page: "h-full min-h-[400px]",
+  page: "min-h-screen",
   screen: "fixed inset-0",
 };
 
-export const Spinner = ({ variant = "inline", label, className = "" }: SpinnerProps) => {
+export const Spinner = ({ variant = "page", label, className = "" }: SpinnerProps) => {
   return (
     <div
       className={`flex w-full flex-col items-center justify-center gap-3 ${variantClasses[variant]} ${className}`}

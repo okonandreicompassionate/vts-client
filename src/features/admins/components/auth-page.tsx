@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AuthLayout from "./layout/AuthLayout";
-import AuthCard from "./AuthCard";
+import AuthCard from "./auth-card";
 
 type AuthMode = "login" | "signup";
 

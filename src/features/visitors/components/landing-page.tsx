@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
-import { ThemeToggle } from "../../../components/ThemeToggle";
+import { ThemeToggle } from "../../../components/theme-toggle";
 
 const ORBS = [
   { top: "4%", left: "8%", size: 220, color: "#22C55E" },

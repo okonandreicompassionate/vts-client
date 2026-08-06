@@ -4,8 +4,8 @@ import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePopup } from "../../../hooks/usePopup";
 import { useCreateVisitMutation } from "../api/visit-api-slice";
-import RegistrationModal from "../components/modals/RegistrationModal";
-import RegistrationSuccessModal from "../components/modals/RegistrationSuccessModal";
+import RegistrationModal from "./modals/registration-modal";
+import RegistrationSuccessModal from "./modals/registration-success-modal";
 import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
@@ -107,7 +107,7 @@ export default function Registration() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-white dark:bg-slate-950">
+    <div className="flex min-h-screen w-full flex-col dark:bg-slate-950">
       <header className="jusify-between flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
         <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Registration</h1>
       </header>
@@ -122,7 +122,7 @@ export default function Registration() {
           phoneNo: existingIdentity?.phoneNo,
         }}
         onFinish={handleFinish}
-        className="flex flex-1 flex-col gap-6 rounded-3xl border border-slate-200 bg-slate-50 px-5 pt-6 pb-4 shadow-lg shadow-slate-200/40 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
+        className="flex flex-1 flex-col gap-2 px-5 pt-6 pb-4 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
       >
         <Form.Item
           name="name"

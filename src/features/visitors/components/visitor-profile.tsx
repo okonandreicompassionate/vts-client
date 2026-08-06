@@ -278,14 +278,6 @@ export default function VisitorProfile() {
                   {registration.phoneNo}
                 </p>
               </div>
-              <div>
-                <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
-                  Badge Number
-                </p>
-                <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
-                  {registration.badgeNumber ?? "Pending"}
-                </p>
-              </div>
               <div className="col-span-2">
                 <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
                   Purpose of Visit

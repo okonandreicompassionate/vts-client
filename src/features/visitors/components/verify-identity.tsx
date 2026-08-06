@@ -3,7 +3,7 @@ import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
-import { ThemeToggle } from "../../../components/ThemeToggle";
+import { ThemeToggle } from "../../../components/theme-toggle";
 import { useVerifyVisitIdentityMutation } from "../api/visit-api-slice";
 
 export default function VerifyIdentity() {
@@ -44,7 +44,7 @@ export default function VerifyIdentity() {
   };
 
   return (
-    <div className="relative min-h-screen bg-white px-4 py-8 dark:bg-slate-950">
+    <div className="relative min-h-screen px-4 py-8 dark:bg-slate-950">
       <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
       </div>
@@ -53,7 +53,7 @@ export default function VerifyIdentity() {
         layout="vertical"
         requiredMark={false}
         onFinish={handleFinish}
-        className="mx-auto flex min-h-screen w-full max-w-md flex-col rounded-3xl border border-slate-200 bg-slate-50 px-7 pt-18 pb-6 shadow-lg shadow-slate-200/40 md:min-h-0 md:pb-0 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
+        className="mx-auto flex min-h-screen w-full max-w-md flex-col px-7 pt-18 pb-6 md:min-h-0 md:pb-0 dark:bg-slate-900 dark:shadow-black/20"
       >
         <div className="md:flex md:flex-col md:items-center lg:items-center">
           <div className="flex justify-center">

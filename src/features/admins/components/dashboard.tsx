@@ -3,15 +3,15 @@ import { Select, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { ClockCircleOutlined, WarningOutlined, EyeOutlined } from "@ant-design/icons";
 import Header from "./layout/Header.tsx";
-import StatusPill from "./StatusPill.tsx";
-import TableComponent from "./Table.tsx";
+import StatusPill from "./status-pill.tsx";
+import TableComponent from "./table.tsx";
 import { TablePaginationFooter } from "./table-pagination-footer.tsx";
 import { VisitorAvatar } from "./visitor-avatar.tsx";
-import type { VisitorStatus } from "./StatusPill.tsx";
+import type { VisitorStatus } from "./status-pill.tsx";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits.ts";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data.ts";
 import { useVisitorRowClick } from "../hooks/use-visitor-row-click.ts";
-import { Spinner } from "@/components/Spinner.tsx";
+import { Spinner } from "@/components/spinner.tsx";
 import { useVisitorStats } from "../hooks/use-visitor-stats.ts";
 
 const statCards = [

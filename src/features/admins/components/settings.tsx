@@ -3,10 +3,10 @@ import { Button } from "antd";
 import { usePopup } from "../../../hooks/usePopup.tsx";
 
 import Header from "../components/layout/Header.tsx";
-import EditProfileModal from "../components/modals/EditProfileModal.tsx";
-import ManageSecurityModal from "../components/modals/ManageSecurityModal.tsx";
-import NotificationPreferencesModal from "../components/modals/NotificationPreferencesModal.tsx";
-import SystemSettingsModal from "../components/modals/SystemSettingsModal.tsx";
+import EditProfileModal from "./modals/edit-profile-modal.tsx";
+import ManageSecurityModal from "./modals/manage-security-modal.tsx";
+import NotificationPreferencesModal from "./modals/notifications-preferences-modal.tsx";
+import SystemSettingsModal from "./modals/system-settings-modal.tsx";
 
 export default function AdminSettings() {
   const { openModal } = usePopup();

@@ -1,4 +1,4 @@
-import CustomModal from "../../../../components/CustomModal";
+import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "../../../../hooks/usePopup";
 
 type ReviewFeedBackModalProps = {

@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "antd";
-import CustomModal from "../../../../components/CustomModal";
+import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "../../../../hooks/usePopup";
-import LoadingRing from "../modals/success-checkmark";
-import SuccessCheckmark from "../modals/success-checkmark";
+import LoadingRing from "./success-checkmark";
+import SuccessCheckmark from "./success-checkmark";
 import {
   containerVariants,
   itemVariants,

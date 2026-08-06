@@ -1,21 +1,21 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { Spinner } from "../components/Spinner";
+import { Spinner } from "../components/spinner";
 import { paths } from "../config/paths";
 import { ProtectedRoute } from "./protected-route";
 import { TenantLayout } from "../lib/tenant/tenant-layout";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/dashboard"));
-const LazyAdminAuthPage = lazy(() => import("../features/admins/components/AuthPage"));
+const LazyAdminAuthPage = lazy(() => import("../features/admins/components/auth-page"));
 const LazyAdminSettings = lazy(() => import("../features/admins/components/settings"));
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/visitor-details"));
 const LazyVisitorPage = lazy(() => import("../features/admins/components/VisitorPage"));
 
-const LazyLandingPage = lazy(() => import("../features/visitors/components/LandingPage"));
-const LazyRegistration = lazy(() => import("../features/visitors/components/Registration"));
-const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/VerifyIdentity"));
-const LazyVisitorProfile = lazy(() => import("../features/visitors/components/VisitorProfile"));
+const LazyLandingPage = lazy(() => import("../features/visitors/components/landing-page"));
+const LazyRegistration = lazy(() => import("../features/visitors/components/registration"));
+const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/verify-identity"));
+const LazyVisitorProfile = lazy(() => import("../features/visitors/components/visitor-profile"));
 
 const LazyVisitorLayout = lazy(() => import("../features/visitors/components/layout/layout"));
 
@@ -29,7 +29,7 @@ export function AppRouter() {
       <Suspense fallback={fallback}>
         <Routes>
           <Route element={<TenantLayout />}>
-            {/* Visitor */}
+            {/* visitor */}
             <Route path={paths.home.path} element={<LazyLandingPage />} />
 
             <Route element={<LazyVisitorLayout />}>
