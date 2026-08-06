@@ -8,7 +8,7 @@ const toggleRows = [
   { name: "checkInAlerts", label: "Email alerts for new visitor check-ins" },
   { name: "pendingApprovalAlerts", label: "Email alerts for pending approvals" },
   { name: "dailySummary", label: "Daily summary report" },
-  { name: "vipSms", label: "SMS alerts for VIP guests" },
+  
 ];
 
 function NotificationPreferencesModal() {

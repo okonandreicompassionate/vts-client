@@ -209,8 +209,8 @@ export default function VisitorProfile() {
   return (
     <>
       {/* ===================== MOBILE LAYOUT ===================== */}
-      <div className="relative flex min-h-screen flex-col bg-white px-6 pt-16 pb-6 md:hidden">
-        {isPending && <div className="absolute inset-0 z-10 bg-white/50" />}
+      <div className="relative flex min-h-screen flex-col bg-white px-6 pt-16 pb-6 text-slate-900 md:hidden dark:bg-slate-950 dark:text-slate-100">
+        {isPending && <div className="absolute inset-0 z-10 bg-slate-950/60" />}
 
         <div className="flex flex-col items-center text-center">
           <div className="flex h-16 items-center justify-center">{meta.icon}</div>
@@ -222,55 +222,67 @@ export default function VisitorProfile() {
           </span>
 
           {status === "rejected" && reason ? (
-            <div className="mt-9 w-full rounded-2xl border border-slate-100 p-4 text-left">
+            <div className="mt-9 w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left shadow-sm dark:border-slate-700 dark:bg-slate-800">
               <p className="text-xs font-medium text-slate-400">Reason for refusal</p>
               <div className="mt-2.5 flex items-start gap-2">
                 <Info className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" strokeWidth={2} />
-                <p className="text-[15px] leading-snug font-semibold text-slate-800">{reason}</p>
+                <p className="text-[15px] leading-snug font-semibold text-slate-100">{reason}</p>
               </div>
             </div>
           ) : null}
 
-          <div className="mt-9 w-full rounded-2xl border border-slate-100 p-5 text-left">
-            <p className="text-[19px] font-bold text-slate-900">{registration.name}</p>
+          <div className="mt-9 w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <p className="text-[19px] font-bold text-slate-900 dark:text-slate-100">
+              {registration.name}
+            </p>
             <p className="mt-1 text-sm text-slate-400">ID: {requestId}</p>
 
-            <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-4 border-t border-slate-100 pt-4">
+            <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-4 border-t border-slate-200 pt-4 dark:border-slate-700">
               <div>
                 <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
                   Host
                 </p>
-                <p className="mt-1 text-sm font-bold text-slate-800">{registration.hostName}</p>
+                <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
+                  {registration.hostName}
+                </p>
               </div>
               <div>
                 <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
                   Department
                 </p>
-                <p className="mt-1 text-sm font-bold text-slate-800">{registration.department}</p>
+                <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
+                  {registration.department}
+                </p>
               </div>
               <div>
                 <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
                   Date
                 </p>
-                <p className="mt-1 text-sm font-bold text-slate-800">{createdDate}</p>
+                <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
+                  {createdDate}
+                </p>
               </div>
               <div>
                 <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
                   Time
                 </p>
-                <p className="mt-1 text-sm font-bold text-slate-800">{createdTime}</p>
+                <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
+                  {createdTime}
+                </p>
               </div>
               <div>
                 <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
                   Phone No
                 </p>
-                <p className="mt-1 text-sm font-bold text-slate-800">{registration.phoneNo}</p>
+                <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
+                  {registration.phoneNo}
+                </p>
               </div>
               <div>
                 <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
                   Badge Number
                 </p>
-                <p className="mt-1 text-sm font-bold text-slate-800">
+                <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
                   {registration.badgeNumber ?? "Pending"}
                 </p>
               </div>
@@ -278,7 +290,7 @@ export default function VisitorProfile() {
                 <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
                   Purpose of Visit
                 </p>
-                <p className="mt-1 text-sm font-bold text-slate-800">
+                <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
                   {registration.purposeOfVisit}
                 </p>
               </div>
@@ -302,8 +314,8 @@ export default function VisitorProfile() {
         </div>
       </div>
 
-      <div className="relative hidden min-h-screen flex-col justify-center bg-white px-6 py-6 md:flex lg:px-10">
-        {isPending && <div className="absolute inset-0 z-10 bg-white/70" />}
+      <div className="relative hidden min-h-screen flex-col justify-center bg-white px-6 py-6 text-slate-900 md:flex lg:px-10 dark:bg-slate-950 dark:text-slate-100">
+        {isPending && <div className="absolute inset-0 z-10 bg-slate-950/70" />}
 
         <div className="mx-auto w-full max-w-xl">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -311,7 +323,9 @@ export default function VisitorProfile() {
               <p className="text-xs font-semibold tracking-[0.25em] text-slate-400 uppercase">
                 Visitor profile
               </p>
-              <h1 className="mt-1 text-xl font-bold text-slate-900">Your request status</h1>
+              <h1 className="mt-1 text-xl font-bold text-slate-900 dark:text-slate-100">
+                Your request status
+              </h1>
             </div>
             <Tag
               className="rounded-full border-0! px-4 py-1.5 text-sm font-semibold"
@@ -333,47 +347,51 @@ export default function VisitorProfile() {
 
           {/* Status banner */}
           <div
-            className={`flex items-center gap-3 rounded-2xl border p-4 shadow-sm ${meta.bannerBg}`}
+            className={`flex items-center gap-3 rounded-2xl border p-4 shadow-sm ${meta.bannerBg} dark:border-slate-700 dark:bg-slate-900/70`}
           >
             <div
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full shadow-sm ${meta.iconWrapBg}`}
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full shadow-sm ${meta.iconWrapBg} dark:bg-slate-800`}
             >
               {meta.desktopIcon}
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-900">{meta.title}</p>
-              <p className="mt-0.5 text-xs text-slate-600">{meta.description}</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{meta.title}</p>
+              <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
+                {meta.description}
+              </p>
             </div>
           </div>
 
           <div className="mt-4 flex flex-col gap-3">
             {/* Visitor details card */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+              <div className="flex items-center gap-3 border-b border-slate-100 pb-4 dark:border-slate-700">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-white">
                   <span className="text-base font-bold">{registration.name.charAt(0)}</span>
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-base font-bold text-slate-900">{registration.name}</p>
+                  <p className="truncate text-base font-bold text-slate-900 dark:text-slate-100">
+                    {registration.name}
+                  </p>
                   <p className="mt-0.5 text-xs text-slate-400">Request {requestId}</p>
                 </div>
               </div>
 
               {status === "rejected" && (reason || meta.reason) && (
-                <div className="mt-4 flex items-start gap-3 rounded-xl bg-rose-50 p-3">
+                <div className="mt-4 flex items-start gap-3 rounded-xl bg-rose-50 p-3 dark:bg-rose-900/20">
                   <Info className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" strokeWidth={2} />
                   <div>
                     <p className="text-xs font-semibold tracking-wide text-rose-400 uppercase">
                       Reason for refusal
                     </p>
-                    <p className="mt-1 text-sm font-semibold text-rose-700">
+                    <p className="mt-1 text-sm font-semibold text-rose-700 dark:text-rose-100">
                       {reason || meta.reason}
                     </p>
                   </div>
                 </div>
               )}
 
-              <div className="mt-4 divide-y divide-slate-100">
+              <div className="mt-4 divide-y divide-slate-100 dark:divide-slate-700">
                 {[
                   { label: "Purpose of Visit", value: registration.purposeOfVisit },
                   { label: "Host", value: registration.hostName },
@@ -385,8 +403,10 @@ export default function VisitorProfile() {
                     key={row.label}
                     className="flex items-center justify-between gap-4 py-2 first:pt-0 last:pb-0"
                   >
-                    <span className="shrink-0 text-sm text-slate-500">{row.label}</span>
-                    <span className="truncate text-right text-sm font-semibold text-slate-900">
+                    <span className="shrink-0 text-sm text-slate-500 dark:text-slate-400">
+                      {row.label}
+                    </span>
+                    <span className="truncate text-right text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {row.value}
                     </span>
                   </div>
@@ -395,26 +415,32 @@ export default function VisitorProfile() {
             </div>
 
             {/* Timeline card */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="text-sm font-bold text-slate-900">Timeline</p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+              <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Timeline</p>
               <div className="mt-3 space-y-2">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm text-slate-500">Submitted</p>
-                  <p className="text-sm font-semibold text-slate-800">{`${createdDate} • ${createdTime}`}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Submitted</p>
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{`${createdDate} • ${createdTime}`}</p>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm text-slate-500">Review by</p>
-                  <p className="text-sm font-semibold text-slate-800">Your host</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Review by</p>
+                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                    Your host
+                  </p>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm text-slate-500">Request ID</p>
-                  <p className="truncate text-sm font-semibold text-slate-800">{requestId}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Request ID</p>
+                  <p className="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">
+                    {requestId}
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="mb-3 text-sm font-bold text-slate-900">Next steps</p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+              <p className="mb-3 text-sm font-bold text-slate-900 dark:text-slate-100">
+                Next steps
+              </p>
               <Button
                 type="primary"
                 block

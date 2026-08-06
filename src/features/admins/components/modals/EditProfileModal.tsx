@@ -1,22 +1,35 @@
-import { Button, Input } from "antd";
+import { Button, Input, message } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
+import { useEffect } from "react";
 import CustomModal from "../../../../components/CustomModal";
 import { usePopup } from "../../../../hooks/usePopup";
+import { useGetProfileQuery, useUpdateProfileMutation } from "../../api/admin-api-slice";
 
 function EditProfileModal() {
   const [form] = useForm();
   const { closeModal } = usePopup();
+  const { data: profile } = useGetProfileQuery();
+  const [updateProfile] = useUpdateProfileMutation();
+
+  useEffect(() => {
+    if (!profile) return;
+    form.setFieldsValue({
+      fullName: profile.fullName ?? profile.name ?? "",
+      email: profile.email ?? "",
+      phoneNumber: profile.phoneNumber ?? "",
+    });
+  }, [profile, form]);
 
   const handleSaveChanges = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values);
-      // TODO: call your update API here
+      await updateProfile(values).unwrap();
+      message.success("Profile updated successfully.");
       form.resetFields();
       closeModal();
-    } catch (error) {
-      console.log(error);
+    } catch {
+      message.error("Unable to save profile changes. Please try again.");
     }
   };
 
@@ -30,21 +43,21 @@ function EditProfileModal() {
       <CustomModal.Header title="Edit Profile" />
 
       <CustomModal.Body>
-        <Form form={form} className="space-y-1 mt-2" layout="vertical">
+        <Form form={form} className="mt-2 space-y-1" layout="vertical">
           <FormItem
-            label={<span className="text-slate-800 font-semibold text-[14px]">Full Name</span>}
+            label={<span className="text-[14px] font-semibold text-slate-800">Full Name</span>}
             name="fullName"
             rules={[{ required: true, message: "Please enter your full name" }]}
           >
             <Input
               type="text"
-              className="!rounded-lg !bg-[#F5FBFE] !border-slate-100 !h-11 !px-4 !text-[14px] placeholder:!text-slate-400"
+              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
               placeholder="Admin User"
             />
           </FormItem>
 
           <FormItem
-            label={<span className="text-slate-800 font-semibold text-[14px]">Email Address</span>}
+            label={<span className="text-[14px] font-semibold text-slate-800">Email Address</span>}
             name="email"
             rules={[
               { required: true, message: "Please enter your email address" },
@@ -53,19 +66,19 @@ function EditProfileModal() {
           >
             <Input
               type="email"
-              className="!rounded-lg !bg-[#F5FBFE] !border-slate-100 !h-11 !px-4 !text-[14px] placeholder:!text-slate-400"
+              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
               placeholder="admin@zoracom.com"
             />
           </FormItem>
 
           <FormItem
-            label={<span className="text-slate-800 font-semibold text-[14px]">Phone Number</span>}
-            name="phone"
+            label={<span className="text-[14px] font-semibold text-slate-800">Phone Number</span>}
+            name="phoneNumber"
             rules={[{ required: true, message: "Please enter your phone number" }]}
           >
             <Input
               type="text"
-              className="rounded-lg! bg-[#F5FBFE]! border-slate-100! !h-11 !px-4 text-[14px]! placeholder:text-slate-400!"
+              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
               placeholder="+234 801 234 5678"
             />
           </FormItem>
@@ -76,14 +89,14 @@ function EditProfileModal() {
         <div className="mt-4 flex w-full items-center gap-3">
           <Button
             onClick={handleCancel}
-            className="rounded-full! h-11! px-8! bg-slate-50! !text-slate-400 border-slate-100! hover:bg-slate-100! hover:text-slate-500! font-medium! flex-1!"
+            className="h-11! flex-1! rounded-full! border-slate-100! bg-slate-50! px-8! font-medium! text-slate-400! hover:bg-slate-100! hover:text-slate-500!"
           >
             Cancel
           </Button>
           <Button
             type="primary"
             onClick={handleSaveChanges}
-            className="rounded-full! !h-11 !px-8 !bg-sky-500 hover:!bg-sky-600 !border-none !font-semibold !flex-1"
+            className="h-11! flex-1! rounded-full! border-none! bg-sky-500! px-8! font-semibold! hover:bg-sky-600!"
           >
             Save Changes
           </Button>

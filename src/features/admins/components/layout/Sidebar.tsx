@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "antd";
 import { AppstoreOutlined, SettingOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
@@ -17,14 +17,14 @@ export default function Sidebar() {
       key: "dashboard",
       label: "Dashboard",
       href: paths.admin.dashboard.getHref(orgSlug),
-      icon: <img src="/dashboard.svg" alt="" />,
+      icon: <img src="/dashboard.svg" alt="" className="h-4 w-4" />,
       fallbackIcon: <AppstoreOutlined />,
     },
     {
       key: "visitors",
       label: "Visitors",
       href: paths.admin.visitors.getHref(orgSlug),
-      icon: <img src="/visitors.svg" alt="" />,
+      icon: <img src="/visitors.svg" alt="" className="h-4 w-4" />,
       fallbackIcon: <AppstoreOutlined />,
     },
     {
@@ -87,6 +87,10 @@ export default function Sidebar() {
           <nav className="mt-4 space-y-1 px-3">
             {navItems.map((item) => {
               const isActive = location.pathname.startsWith(item.href);
+              const isImg =
+                React.isValidElement(item.icon) &&
+                (item.icon as React.ReactElement<unknown>).type === "img";
+
               return (
                 <Button
                   key={item.key}
@@ -98,7 +102,20 @@ export default function Sidebar() {
                       : "text-slate-500! hover:bg-slate-50! dark:text-slate-400! dark:hover:bg-slate-800!"
                   } ${collapsed ? "md:justify-center!" : "justify-start!"}`}
                 >
-                  <span className="text-base">{item.icon}</span>
+                  <span className={`text-base ${isActive ? "text-white" : ""}`}>
+                    {isImg
+                      ? React.cloneElement(
+                          item.icon as React.ReactElement<unknown>,
+                          {
+                            style: {
+                              ...(item.icon.props?.style || {}),
+                              filter: isActive ? "brightness(0) invert(1)" : undefined,
+                            },
+                            className: `${(item.icon.props && item.icon.props.className) || ""}`,
+                          } as Record<string, unknown>,
+                        )
+                      : item.icon}
+                  </span>
                   <span className={collapsed ? "md:hidden" : ""}>{item.label}</span>
                 </Button>
               );
