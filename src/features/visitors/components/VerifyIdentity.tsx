@@ -16,10 +16,26 @@ export default function VerifyIdentity() {
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawValue);
 
     try {
-      await verifyVisitIdentity({
-        email: isEmail ? rawValue : "",
+      const response = await verifyVisitIdentity({
+        email: isEmail ? rawValue : undefined,
+        phoneNumber: isEmail ? undefined : rawValue,
       }).unwrap();
 
+      const visitorData = response.existingVisitor ?? response;
+      const identity = {
+        name: visitorData.fullName ?? visitorData.name ?? "",
+        email:
+          visitorData.email ??
+          (visitorData.email === undefined && isEmail ? rawValue : undefined) ??
+          "",
+        phoneNo:
+          visitorData.phoneNumber ??
+          visitorData.phone ??
+          (visitorData.phoneNumber === undefined && !isEmail ? rawValue : undefined) ??
+          "",
+      };
+
+      window.localStorage.setItem("visitorIdentity", JSON.stringify(identity));
       window.localStorage.setItem("visitorVerified", "true");
       navigate(paths.register.getHref(orgSlug));
     } catch {
