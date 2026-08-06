@@ -1,11 +1,15 @@
 import { api } from "../../../lib/api/base";
-import type { VerifyIdentityPayload } from "../types/api-types";
+import type {
+  CreateVisitPayload,
+  CreateVisitResponse,
+  VerifyIdentityPayload,
+  VerifyIdentityResponse,
+  VisitResponse,
+} from "../types/api-types";
 
 export const visitsApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    
-
-    createVisit: builder.mutation({
+    createVisit: builder.mutation<CreateVisitResponse, CreateVisitPayload>({
       query: (body) => ({
         url: "/visits",
         method: "POST",
@@ -14,21 +18,34 @@ export const visitsApi = api.injectEndpoints({
       invalidatesTags: ["Visits"],
     }),
 
-    verifyVisitIdentity: builder.mutation<
-      { success?: boolean; message?: string },
-      VerifyIdentityPayload
-    >({
+    checkInVisit: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/visits/${id}/approve`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Visits"],
+    }),
+
+    getVisit: builder.query<VisitResponse, string>({
+      query: (id) => ({
+        url: `/visits/${id}`,
+      }),
+      providesTags: (_result, _error, id) => [{ type: "Visits", id }],
+    }),
+
+    verifyVisitIdentity: builder.mutation<VerifyIdentityResponse, VerifyIdentityPayload>({
       query: (body) => ({
         url: "/visits/verify-identity",
         method: "POST",
         body,
       }),
     }),
-
   }),
 });
 
 export const {
   useCreateVisitMutation,
+  useCheckInVisitMutation,
+  useGetVisitQuery,
   useVerifyVisitIdentityMutation,
 } = visitsApi;

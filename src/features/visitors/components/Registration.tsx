@@ -1,5 +1,7 @@
 import { Button, Form, Input, message } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
+import { useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { usePopup } from "../../../hooks/usePopup";
 import { useCreateVisitMutation } from "../api/visit-api-slice";
 import RegistrationModal from "../components/modals/RegistrationModal";
@@ -12,63 +14,97 @@ export default function Registration() {
   const { orgSlug } = useTenant();
   const [form] = Form.useForm<RegistrationValues>();
   const { openModal, closeModal } = usePopup();
+  const navigate = useNavigate();
   const [createVisit] = useCreateVisitMutation();
 
+  const existingIdentity = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const stored = window.localStorage.getItem("visitorIdentity");
+    if (!stored) return null;
+    try {
+      return JSON.parse(stored) as {
+        name?: string;
+        email?: string;
+        phoneNo?: string;
+      };
+    } catch {
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!existingIdentity) return;
+    form.setFieldsValue({
+      name: existingIdentity.name ?? undefined,
+      email: existingIdentity.email ?? undefined,
+      phoneNo: existingIdentity.phoneNo ?? undefined,
+    });
+  }, [existingIdentity, form]);
+
+  const normalizeVisitStatus = (status?: string) => {
+    const normalized = status?.toLowerCase().replace(/[_-]/g, " ").trim();
+    if (normalized === "approved" || normalized === "signed in") return "approved";
+    if (normalized === "rejected" || normalized === "declined") return "rejected";
+    return "pending";
+  };
+
   const handleFinish = async (values: RegistrationValues) => {
-  openModal(
-    <RegistrationModal
-      onSubmit={async () => {
-        // Close confirmation modal first
-        openModal(
-          <RegistrationSuccessModal
-            loading
-            onOk={() =>
-              window.location.assign(
-                `${paths.visitorProfile.getHref(orgSlug)}?status=pending`,
-              )
-            }
-          />,
-        );
-
-        try {
-          await createVisit({
-            fullName: values.name,
-            email: values.email,
-            phoneNumber: values.phoneNo,
-            hostName: values.hostName,
-            department: values.department,
-            purposeOfVisit: values.purposeOfVisit,
-          }).unwrap();
-
-          window.localStorage.setItem(
-            "visitorRegistration",
-            JSON.stringify({
-              ...values,
-              email: values.email,
-              department: values.department,
-            }),
-          );
-
-          form.resetFields();
-
+    openModal(
+      <RegistrationModal
+        onSubmit={async () => {
           openModal(
             <RegistrationSuccessModal
-              loading={false}
-              onOk={() =>
-                window.location.assign(
-                  `${paths.visitorProfile.getHref(orgSlug)}?status=pending`,
-                )
-              }
+              loading
+              onOk={() => navigate(paths.visitorProfile.getHref(orgSlug))}
             />,
           );
-        } catch {
-          closeModal();
-          message.error("Registration could not be submitted. Please try again.");
-        }
-      }}
-    />,
-  );
-};
+
+          try {
+            const response = await createVisit({
+              fullName: values.name,
+              email: values.email,
+              phoneNumber: values.phoneNo,
+              hostName: values.hostName,
+              department: values.department,
+              purposeOfVisit: values.purposeOfVisit,
+            }).unwrap();
+
+            const createdAt = response?.createdAt ?? new Date().toISOString();
+            const status = normalizeVisitStatus(response?.status);
+            const visitId = response?.id ?? response?.referenceId;
+            const requestId = response?.referenceId ?? response?.id;
+            const reason = response?.rejectionReason ?? response?.reason;
+
+            window.localStorage.setItem(
+              "visitorRegistration",
+              JSON.stringify({
+                id: visitId,
+                ...values,
+                email: values.email,
+                status,
+                requestId,
+                createdAt,
+                badgeNumber: response?.badgeNumber,
+                reason,
+              }),
+            );
+
+            form.resetFields();
+
+            openModal(
+              <RegistrationSuccessModal
+                loading={false}
+                onOk={() => navigate(paths.visitorProfile.getHref(orgSlug))}
+              />,
+            );
+          } catch {
+            closeModal();
+            message.error("Registration could not be submitted. Please try again.");
+          }
+        }}
+      />,
+    );
+  };
 
   return (
     <div className="flex w-full flex-col bg-white dark:bg-slate-900">
@@ -80,6 +116,11 @@ export default function Registration() {
         form={form}
         layout="vertical"
         requiredMark={false}
+        initialValues={{
+          name: existingIdentity?.name,
+          email: existingIdentity?.email,
+          phoneNo: existingIdentity?.phoneNo,
+        }}
         onFinish={handleFinish}
         className="flex flex-1 flex-col px-5 pt-6 pb-4"
       >

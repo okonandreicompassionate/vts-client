@@ -109,8 +109,9 @@ export default function VisitorDetails() {
   const handleConfirmReject = async () => {
     if (!visitor?.id) return;
     try {
-      await rejectVisit(visitor.id).unwrap();
+      await rejectVisit({ id: visitor.id, reason: notes }).unwrap();
       message.success("Visitor rejected.");
+      setNotes("");
       closeModal();
     } catch {
       message.error("Rejection could not be completed. Please try again.");
@@ -355,19 +356,18 @@ export default function VisitorDetails() {
                   </Button>
                 </div>
               </div>
-            ) : (
+            ) : visitor.status === "Signed In" ? (
               <Button
                 danger
                 type="primary"
                 shape="round"
                 loading={isSigningOff}
-                disabled={visitor.status === "Signed Off" || visitor.status === "Rejected"}
                 className="mt-6 h-10! w-full bg-[#EF4444]! px-5! font-semibold sm:w-auto"
                 onClick={handleSignOff}
               >
                 Sign Off Visitor
               </Button>
-            )}
+            ) : null}
           </div>
 
           <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-80 lg:shrink-0 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">

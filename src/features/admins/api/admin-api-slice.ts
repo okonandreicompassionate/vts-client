@@ -59,10 +59,11 @@ export const authApi = api.injectEndpoints({
       providesTags: (_result, _error, id) => [{ type: "Visits", id }],
     }),
 
-    rejectVisit: builder.mutation<void, string>({
-      query: (id) => ({
+    rejectVisit: builder.mutation<void, { id: string; reason?: string }>({
+      query: ({ id, reason }) => ({
         url: `/visits/${id}/reject`,
         method: "PATCH",
+        body: { reason },
       }),
       invalidatesTags: ["Visits"],
     }),
@@ -78,5 +79,5 @@ export const {
   useSignoffVisitMutation,
   useRejectVisitMutation,
   useGetVisitQuery,
-  useGetVisitStatsQuery, 
+  useGetVisitStatsQuery,
 } = authApi;
