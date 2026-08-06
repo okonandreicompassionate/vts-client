@@ -4,23 +4,16 @@ export interface VerifyIdentityPayload {
 }
 
 export interface VerifyIdentityResponse {
-  success?: boolean;
-  message?: string;
-  existingVisitor?: {
-    fullName?: string;
-    name?: string;
-    email?: string;
-    phone?: string;
-    phoneNumber?: string;
+  visitor: {
+    id: string;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
   };
-  fullName?: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  phoneNumber?: string;
 }
 
 export interface CreateVisitPayload {
+  visitorId?: string;
   fullName: string;
   email: string;
   phoneNumber: string;

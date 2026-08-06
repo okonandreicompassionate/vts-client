@@ -1,5 +1,25 @@
 import type { Variants } from "framer-motion";
 
+export const loadingVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.96,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.25,
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.96,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
 export const containerVariants: Variants = {
   hidden: { opacity: 0, scale: 0.96 },
   visible: {

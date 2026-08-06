@@ -22,7 +22,7 @@ export default function ActionPanel({ meta, isPending, onAction }: Props) {
         disabled={isPending}
         className="h-11 rounded-xl font-semibold disabled:opacity-50"
         icon={<ArrowRight size={18} />}
-        iconPosition="end"
+        iconPlacement="end"
         onClick={onAction}
       >
         {meta.actionLabel}

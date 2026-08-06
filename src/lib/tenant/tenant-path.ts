@@ -3,3 +3,12 @@ export function tenantPath(orgSlug: string, path: string): string {
 
   return `/${orgSlug}${normalizedPath}`;
 }
+
+export function switchTenantPath(
+  pathname: string,
+  orgSlug: string,
+) {
+  const segments = pathname.split("/");
+  segments[1] = orgSlug;
+  return segments.join("/");
+}

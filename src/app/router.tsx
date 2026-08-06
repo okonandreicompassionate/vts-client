@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import { Spinner } from "../components/spinner";
 import { paths } from "../config/paths";
@@ -25,59 +25,57 @@ const fallback = <Spinner />;
 
 export function AppRouter() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={fallback}>
-        <Routes>
-          <Route element={<TenantLayout />}>
-            {/* visitor */}
-            <Route path={paths.home.path} element={<LazyLandingPage />} />
+    <Suspense fallback={fallback}>
+      <Routes>
+        <Route element={<TenantLayout />}>
+          {/* visitor */}
+          <Route path={paths.home.path} element={<LazyLandingPage />} />
 
-            <Route element={<LazyVisitorLayout />}>
-              <Route
-                path={paths.register.path}
-                element={
-                  <ProtectedRoute requiredAuth="visitor-verified">
-                    <LazyRegistration />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route path={paths.verify.path} element={<LazyVerifyIdentity />} />
-
-              <Route
-                path={paths.visitorProfile.path}
-                element={
-                  <ProtectedRoute requiredAuth="visitor">
-                    <LazyVisitorProfile />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-
-            {/* admin auth */}
-            <Route path={paths.admin.login.path} element={<LazyAdminAuthPage />} />
-
-            <Route path={paths.admin.signup.path} element={<LazyAdminAuthPage />} />
-
-            {/* admin app */}
+          <Route element={<LazyVisitorLayout />}>
             <Route
+              path={paths.register.path}
               element={
-                <ProtectedRoute requiredAuth="admin">
-                  <LazyLayout />
+                <ProtectedRoute requiredAuth="visitor-verified">
+                  <LazyRegistration />
                 </ProtectedRoute>
               }
-            >
-              <Route path={paths.admin.dashboard.path} element={<LazyAdminDashboard />} />
+            />
 
-              <Route path={paths.admin.visitors.path} element={<LazyVisitorPage />} />
+            <Route path={paths.verify.path} element={<LazyVerifyIdentity />} />
 
-              <Route path={paths.admin.visitorDetails.path} element={<LazyVisitorDetails />} />
-
-              <Route path={paths.admin.settings.path} element={<LazyAdminSettings />} />
-            </Route>
+            <Route
+              path={paths.visitorProfile.path}
+              element={
+                <ProtectedRoute requiredAuth="visitor">
+                  <LazyVisitorProfile />
+                </ProtectedRoute>
+              }
+            />
           </Route>
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+
+          {/* admin auth */}
+          <Route path={paths.admin.login.path} element={<LazyAdminAuthPage />} />
+
+          <Route path={paths.admin.signup.path} element={<LazyAdminAuthPage />} />
+
+          {/* admin app */}
+          <Route
+            element={
+              <ProtectedRoute requiredAuth="admin">
+                <LazyLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path={paths.admin.dashboard.path} element={<LazyAdminDashboard />} />
+
+            <Route path={paths.admin.visitors.path} element={<LazyVisitorPage />} />
+
+            <Route path={paths.admin.visitorDetails.path} element={<LazyVisitorDetails />} />
+
+            <Route path={paths.admin.settings.path} element={<LazyAdminSettings />} />
+          </Route>
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }

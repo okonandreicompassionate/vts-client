@@ -19,14 +19,9 @@ export default function RegistrationModal({ onSubmit, onCancel }: RegistrationMo
 
     try {
       setSubmitting(true);
-
       closeModal();
-
-      // Allow this modal to unmount before opening the next one.
       await Promise.resolve();
-
       await onSubmit();
-
       setConfirmed(false);
     } finally {
       setSubmitting(false);

@@ -6,11 +6,14 @@ import "@fontsource-variable/raleway/index.css";
 
 import { AppProvider } from "./provider";
 import { AppRouter } from "./router";
+import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AppProvider>
-      <AppRouter />
-    </AppProvider>
-  </StrictMode>
+    <BrowserRouter>
+      <AppProvider>
+        <AppRouter />
+      </AppProvider>
+    </BrowserRouter>
+  </StrictMode>,
 );

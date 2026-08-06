@@ -2,8 +2,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "antd";
 import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "../../../../hooks/use-popup";
-import LoadingRing from "./success-checkmark";
-import SuccessCheckmark from "./success-checkmark";
+import LoadingRing from "../loading-ring";
+import SuccessCheckmark from "../success-checkmark";
+import { loadingVariants } from "../../animations/success-modal-variants";
 import {
   containerVariants,
   itemVariants,
@@ -39,6 +40,7 @@ export default function RegistrationSuccessModal({
         <AnimatePresence mode="wait">
           {loading ? (
             <motion.div
+            variants={loadingVariants}
               key="loading"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

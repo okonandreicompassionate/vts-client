@@ -208,7 +208,6 @@ export default function VisitorProfile() {
 
   return (
     <>
-      {/* ===================== MOBILE LAYOUT ===================== */}
       <div className="relative flex min-h-screen flex-col bg-white px-6 pt-16 pb-6 text-slate-900 md:hidden dark:bg-slate-950 dark:text-slate-100">
         {isPending && <div className="absolute inset-0 z-10 bg-slate-950/60" />}
 
@@ -305,7 +304,6 @@ export default function VisitorProfile() {
           </Button>
         </div>
       </div>
-
       <div className="relative hidden min-h-screen flex-col justify-center bg-white px-6 py-6 text-slate-900 md:flex lg:px-10 dark:bg-slate-950 dark:text-slate-100">
         {isPending && <div className="absolute inset-0 z-10 bg-slate-950/70" />}
 

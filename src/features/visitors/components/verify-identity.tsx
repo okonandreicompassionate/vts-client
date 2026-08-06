@@ -12,31 +12,21 @@ export default function VerifyIdentity() {
   const [verifyVisitIdentity] = useVerifyVisitIdentityMutation();
 
   const handleFinish = async (values: { email: string }) => {
-    const rawValue = values.email.trim();
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawValue);
-
     try {
-      const response = await verifyVisitIdentity({
-        email: isEmail ? rawValue : undefined,
-        phoneNumber: isEmail ? undefined : rawValue,
-      }).unwrap();
+      const response = await verifyVisitIdentity(values).unwrap();
 
-      const visitorData = response.existingVisitor ?? response;
-      const identity = {
-        name: visitorData.fullName ?? visitorData.name ?? "",
-        email:
-          visitorData.email ??
-          (visitorData.email === undefined && isEmail ? rawValue : undefined) ??
-          "",
-        phoneNo:
-          visitorData.phoneNumber ??
-          visitorData.phone ??
-          (visitorData.phoneNumber === undefined && !isEmail ? rawValue : undefined) ??
-          "",
-      };
+      window.localStorage.setItem(
+        "visitorIdentity",
+        JSON.stringify({
+          visitorId: response.visitor.id,
+          name: response.visitor.fullName,
+          email: response.visitor.email,
+          phoneNo: response.visitor.phoneNumber,
+        }),
+      );
 
-      window.localStorage.setItem("visitorIdentity", JSON.stringify(identity));
       window.localStorage.setItem("visitorVerified", "true");
+
       navigate(paths.register.getHref(orgSlug));
     } catch {
       message.error("We couldn't verify your identity. Please try again.");
@@ -44,8 +34,8 @@ export default function VerifyIdentity() {
   };
 
   return (
-    <div className="relative min-h-screen px-4 py-8 dark:bg-slate-950">
-      <div className="absolute top-4 right-4 z-10">
+    <div className="relative min-h-screen bg-white dark:bg-slate-900">
+      <div className="absolute top-5 right-5">
         <ThemeToggle />
       </div>
 

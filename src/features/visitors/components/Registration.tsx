@@ -18,19 +18,22 @@ export default function Registration() {
   const [createVisit] = useCreateVisitMutation();
 
   const existingIdentity = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    const stored = window.localStorage.getItem("visitorIdentity");
-    if (!stored) return null;
-    try {
-      return JSON.parse(stored) as {
-        name?: string;
-        email?: string;
-        phoneNo?: string;
-      };
-    } catch {
-      return null;
-    }
-  }, []);
+  if (typeof window === "undefined") return null;
+
+  const stored = localStorage.getItem("visitorIdentity");
+  if (!stored) return null;
+
+  try {
+    return JSON.parse(stored) as {
+      visitorId?: string;
+      name?: string;
+      email?: string;
+      phoneNo?: string;
+    };
+  } catch {
+    return null;
+  }
+}, []);
 
   useEffect(() => {
     if (!existingIdentity) return;
@@ -61,6 +64,7 @@ export default function Registration() {
 
           try {
             const response = await createVisit({
+              visitorId: existingIdentity?.visitorId,
               fullName: values.name,
               email: values.email,
               phoneNumber: values.phoneNo,

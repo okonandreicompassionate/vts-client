@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { circleDraw, checkDraw, iconVariants } from "../../animations/success-modal-variants";
+import { checkDraw, iconVariants } from "../animations/success-modal-variants";
 
 export default function SuccessCheckmark({ size = 64 }: { size?: number }) {
   return (
@@ -11,8 +11,17 @@ export default function SuccessCheckmark({ size = 64 }: { size?: number }) {
           r="28"
           stroke="currentColor"
           strokeWidth="3"
-          className="text-emerald-500"
-          variants={circleDraw}
+          strokeLinecap="round"
+          className="text-sky-500"
+          strokeDasharray="40 176"
+          animate={{
+            strokeDashoffset: [0, -176],
+          }}
+          transition={{
+            duration: 1.2,
+            ease: "linear",
+            repeat: Infinity,
+          }}
         />
         <motion.path
           d="M20 33.5L28 41L45 24"
