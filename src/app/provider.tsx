@@ -6,10 +6,10 @@ import type { ReactNode } from "react";
 import { Provider } from "react-redux";
 import { useMemo } from "react";
 import { getThemeConfig } from "./theme";
-import { PopupProvider } from "../lib/contexts/popup/PopupProvider";
+import { PopupProvider } from "../lib/contexts/popup/popup-provider";
 import { msalConfig } from "../lib/api/msal";
 import { store } from "../lib/stores/store";
-import { ThemeProvider } from "../lib/contexts/theme/ThemeProvider";
+import { ThemeProvider } from "../lib/contexts/theme/theme-provider";
 import { useTheme } from "../hooks/use-theme";
 
 const msalInstance = new PublicClientApplication(msalConfig);

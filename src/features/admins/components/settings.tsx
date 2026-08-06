@@ -1,6 +1,6 @@
 import { SettingOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { usePopup } from "../../../hooks/usePopup.tsx";
+import { usePopup } from "../../../hooks/use-popup.tsx";
 
 import Header from "../components/layout/Header.tsx";
 import EditProfileModal from "./modals/edit-profile-modal.tsx";

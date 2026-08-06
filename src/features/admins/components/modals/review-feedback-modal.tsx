@@ -1,5 +1,5 @@
 import CustomModal from "../../../../components/custom-modal";
-import { usePopup } from "../../../../hooks/usePopup";
+import { usePopup } from "../../../../hooks/use-popup";
 
 type ReviewFeedBackModalProps = {
   onClose?: () => void;

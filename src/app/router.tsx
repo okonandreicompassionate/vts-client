@@ -10,7 +10,7 @@ const LazyAdminDashboard = lazy(() => import("../features/admins/components/dash
 const LazyAdminAuthPage = lazy(() => import("../features/admins/components/auth-page"));
 const LazyAdminSettings = lazy(() => import("../features/admins/components/settings"));
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/visitor-details"));
-const LazyVisitorPage = lazy(() => import("../features/admins/components/VisitorPage"));
+const LazyVisitorPage = lazy(() => import("../features/admins/components/visitor-page"));
 
 const LazyLandingPage = lazy(() => import("../features/visitors/components/landing-page"));
 const LazyRegistration = lazy(() => import("../features/visitors/components/registration"));

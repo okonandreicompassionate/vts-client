@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from "react";
-import { PopupContext } from "./PopupContext";
+import { PopupContext } from "./popup-context";
 
 export const PopupProvider: React.FC<{ children: ReactNode }> = ({
   children,

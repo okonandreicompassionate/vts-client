@@ -3,7 +3,7 @@ import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import CustomModal from "../../../../components/custom-modal";
 import { useEffect } from "react";
-import { usePopup } from "../../../../hooks/usePopup";
+import { usePopup } from "../../../../hooks/use-popup";
 import { useGetProfileQuery, useUpdateSettingsMutation } from "../../api/admin-api-slice";
 
 function SystemSettingsModal() {

@@ -2,7 +2,7 @@ import { Switch, Button } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import CustomModal from "../../../../components/custom-modal";
-import { usePopup } from "../../../../hooks/usePopup";
+import { usePopup } from "../../../../hooks/use-popup";
 
 const toggleRows = [
   { name: "checkInAlerts", label: "Email alerts for new visitor check-ins" },

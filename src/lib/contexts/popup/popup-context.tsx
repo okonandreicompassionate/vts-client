@@ -1,4 +1,3 @@
-// context/PopupContext.tsx
 import { createContext, type ReactNode } from "react";
 
 interface PopupOptions {

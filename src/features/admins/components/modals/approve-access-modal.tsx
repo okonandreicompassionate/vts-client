@@ -1,7 +1,7 @@
 import { CloseOutlined, WarningOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import CustomModal from "../../../../components/custom-modal";
-import { usePopup } from "../../../../hooks/usePopup";
+import { usePopup } from "../../../../hooks/use-popup";
 
 type ApproveAccessModalProps = {
   onConfirm?: () => void | Promise<void>;
