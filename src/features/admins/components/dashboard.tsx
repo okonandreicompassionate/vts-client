@@ -2,15 +2,17 @@ import { useState } from "react";
 import { Select, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { ClockCircleOutlined, WarningOutlined, EyeOutlined } from "@ant-design/icons";
-import Header from "../components/layout/Header.tsx";
-import StatusPill from "../components/StatusPill.tsx";
+import Header from "./layout/Header.tsx";
+import StatusPill from "./StatusPill.tsx";
 import TableComponent from "./Table.tsx";
 import { TablePaginationFooter } from "./table-pagination-footer.tsx";
 import { VisitorAvatar } from "./visitor-avatar.tsx";
-import type { VisitorStatus } from "./StatusPill";
-import { getVisitorSummary, toApiVisitStatus, type VisitorRow } from "../utils/visits";
-import { useVisitorTableData } from "../hooks/use-visitor-table-data";
-import { useVisitorRowClick } from "../hooks/use-visitor-row-click";
+import type { VisitorStatus } from "./StatusPill.tsx";
+import { toApiVisitStatus, type VisitorRow } from "../utils/visits.ts";
+import { useVisitorTableData } from "../hooks/use-visitor-table-data.ts";
+import { useVisitorRowClick } from "../hooks/use-visitor-row-click.ts";
+import { Spinner } from "@/components/Spinner.tsx";
+import { useVisitorStats } from "../hooks/use-visitor-stats.ts";
 
 const statCards = [
   {
@@ -116,13 +118,12 @@ export default function Dashboard() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const pageSize = 8;
 
-  const { visitorRecords, totalEntries } = useVisitorTableData({
+  const { visitorRecords, totalEntries, isLoading } = useVisitorTableData({
     page,
     limit: pageSize,
     status: statusFilter === "All" ? undefined : toApiVisitStatus(statusFilter),
   });
-
-  const summary = getVisitorSummary(visitorRecords);
+  const summary = useVisitorStats();
   const handleRowClick = useVisitorRowClick();
 
   const handleStatusChange = (value: StatusFilter) => {
@@ -194,18 +195,31 @@ export default function Dashboard() {
           </div>
 
           <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
-            <TableComponent<VisitorRow>
-              columns={columns}
-              dataSource={visitorRecords}
-              rowKey="id"
-              scroll={{ x: 900 }}
-              className="visitor-table"
-              size="small"
-              showSerialNumber
-              startIndex={(page - 1) * pageSize + 1}
-              onRow={handleRowClick}
-            />
+            {isLoading ? (
+              <Spinner variant="inline" />
+            ) : (
+              <TableComponent<VisitorRow>
+                columns={columns}
+                dataSource={visitorRecords}
+                rowKey="id"
+                scroll={{ x: 900 }}
+                className="visitor-table"
+                size="small"
+                showSerialNumber
+                startIndex={(page - 1) * pageSize + 1}
+                onRow={handleRowClick}
+              />
+            )}
           </div>
+
+          {!isLoading && (
+            <TablePaginationFooter
+              page={page}
+              pageSize={pageSize}
+              totalEntries={totalEntries}
+              onPageChange={setPage}
+            />
+          )}
 
           <TablePaginationFooter
             page={page}

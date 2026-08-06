@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined, CheckOutlined } from "@ant-design/icons";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { Alert, Button, Input, message, Spin } from "antd";
+import { Alert, Button, Input, message } from "antd";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/layout/Header.tsx";
@@ -16,6 +16,7 @@ import {
 } from "../api/admin-api-slice.ts";
 import { useTenant } from "../../../lib/tenant/tenant";
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
+import { Spinner } from "@/components/Spinner.tsx";
 
 const { TextArea } = Input;
 
@@ -142,8 +143,8 @@ export default function VisitorDetails() {
     return (
       <>
         <Header title="Visitor Details" />
-        <main className="flex flex-1 items-center justify-center px-3 py-16">
-          <Spin size="large" tip="Loading visitor..." />
+        <main className="flex flex-1 px-3 py-16">
+          <Spinner variant="page" label="Loading visitor..." />
         </main>
       </>
     );

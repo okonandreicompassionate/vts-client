@@ -9,12 +9,8 @@ interface UseVisitorTableDataParams {
   status?: string;
 }
 
-export function useVisitorTableData({
-  page,
-  limit,
-  status,
-}: UseVisitorTableDataParams) {
-  const { data: visitsData } = useGetVisitsQuery({
+export function useVisitorTableData({ page, limit, status }: UseVisitorTableDataParams) {
+  const { data: visitsData, isLoading } = useGetVisitsQuery({
     page,
     limit,
     status,
@@ -24,10 +20,7 @@ export function useVisitorTableData({
     if (!visitsData?.data) {
       return [];
     }
-
-    return visitsData.data.map((visit: VisitRecord, index) =>
-      toVisitorRow(visit, index)
-    );
+    return visitsData.data.map((visit: VisitRecord, index) => toVisitorRow(visit, index));
   }, [visitsData]);
 
   const totalEntries = visitsData?.meta.total ?? 0;
@@ -35,5 +28,6 @@ export function useVisitorTableData({
   return {
     visitorRecords,
     totalEntries,
+    isLoading,
   };
 }

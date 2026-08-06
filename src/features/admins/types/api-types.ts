@@ -21,6 +21,14 @@ export interface VisitRecord {
   updatedAt?: string;
 }
 
+export interface VisitStats {
+  total: number;
+  signedIn: number;
+  signedOff: number;
+  pending: number;
+  rejected: number;
+}
+
 export interface VisitListResponse {
   data?: VisitRecord[];
   visits?: VisitRecord[];

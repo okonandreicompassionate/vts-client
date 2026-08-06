@@ -6,10 +6,10 @@ import { paths } from "../config/paths";
 import { ProtectedRoute } from "./protected-route";
 import { TenantLayout } from "../lib/tenant/tenant-layout";
 
-const LazyAdminDashboard = lazy(() => import("../features/admins/components/AdminDashboard"));
+const LazyAdminDashboard = lazy(() => import("../features/admins/components/dashboard"));
 const LazyAdminAuthPage = lazy(() => import("../features/admins/components/AuthPage"));
-const LazyAdminSettings = lazy(() => import("../features/admins/components/AdminSettings"));
-const LazyVisitorDetails = lazy(() => import("../features/admins/components/VisitorDetails"));
+const LazyAdminSettings = lazy(() => import("../features/admins/components/settings"));
+const LazyVisitorDetails = lazy(() => import("../features/admins/components/visitor-details"));
 const LazyVisitorPage = lazy(() => import("../features/admins/components/VisitorPage"));
 
 const LazyLandingPage = lazy(() => import("../features/visitors/components/LandingPage"));
