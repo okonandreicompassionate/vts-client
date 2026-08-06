@@ -221,12 +221,6 @@ export default function Dashboard() {
             />
           )}
 
-          <TablePaginationFooter
-            page={page}
-            pageSize={pageSize}
-            totalEntries={totalEntries}
-            onPageChange={setPage}
-          />
         </div>
       </main>
     </>
