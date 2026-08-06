@@ -3,7 +3,7 @@ import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Alert, Button, Input, message } from "antd";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Header from "../components/layout/Header.tsx";
+import Header from "./layout/header.tsx";
 import ApproveAccessModal from "./modals/approve-access-modal.tsx";
 import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
 import { VisitorAvatar } from "./visitor-avatar.tsx";

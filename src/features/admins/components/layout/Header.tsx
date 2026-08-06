@@ -4,7 +4,7 @@ import { ThemeToggle } from "../../../../components/theme-toggle.tsx";
 
 const Header = ({ title }: { title: string }) => {
   const { data: profile } = useGetProfileQuery(undefined);
-  const displayName = profile?.fullName ?? profile?.name ?? profile?.email ?? "Admin User";
+  const displayName = profile?.fullName ?? profile?.email ?? "Admin User";
   const role = profile?.role ?? "Admin";
 
   return (

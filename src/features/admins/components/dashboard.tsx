@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Select, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { ClockCircleOutlined, WarningOutlined, EyeOutlined } from "@ant-design/icons";
-import Header from "./layout/Header.tsx";
+import Header from "./layout/header.tsx";
 import StatusPill from "./status-pill.tsx";
 import TableComponent from "./table.tsx";
 import { TablePaginationFooter } from "./table-pagination-footer.tsx";

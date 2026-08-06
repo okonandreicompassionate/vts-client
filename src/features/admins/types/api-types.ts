@@ -114,16 +114,16 @@ export interface SettingsResponse {
 }
 
 export interface UserProfile {
-  id?: string;
-  fullName?: string;
-  name?: string;
-  email?: string;
-  phoneNumber?: string;
-  role?: string;
-  orgId?: string;
-  organization?: {
-    name?: string;
-    slug?: string;
+  id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  role: "SUPERADMIN" | "ADMIN";
+  orgId: string;
+
+  organization: {
+    name: string;
+    slug: string;
     visitorBadgePrefix?: string;
     maxVisitorsPerDay?: number;
   };

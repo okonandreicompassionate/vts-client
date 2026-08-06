@@ -19,7 +19,7 @@ const LazyVisitorProfile = lazy(() => import("../features/visitors/components/vi
 
 const LazyVisitorLayout = lazy(() => import("../features/visitors/components/layout/layout"));
 
-const LazyLayout = lazy(() => import("../features/admins/components/layout/Layout"));
+const LazyLayout = lazy(() => import("../features/admins/components/layout/dashboard-layout"));
 
 const fallback = <Spinner />;
 

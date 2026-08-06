@@ -15,7 +15,7 @@ function EditProfileModal() {
   useEffect(() => {
     if (!profile) return;
     form.setFieldsValue({
-      fullName: profile.fullName ?? profile.name ?? "",
+      fullName: profile.fullName ?? "",
       email: profile.email ?? "",
       phoneNumber: profile.phoneNumber ?? "",
     });

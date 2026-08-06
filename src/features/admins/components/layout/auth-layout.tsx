@@ -1,5 +1,5 @@
 import React from "react";
-import LoginLeft from "../../components/layout/LoginLeft";
+import LoginLeft from "./login-left";
 
 interface AuthLayoutProps {
   children: React.ReactNode;

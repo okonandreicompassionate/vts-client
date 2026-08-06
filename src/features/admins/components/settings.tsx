@@ -1,8 +1,8 @@
 import { SettingOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { usePopup } from "../../../hooks/use-popup.tsx";
-
-import Header from "../components/layout/Header.tsx";
+import { useGetProfileQuery } from "../api/admin-api-slice";
+import Header from "./layout/header.tsx";
 import EditProfileModal from "./modals/edit-profile-modal.tsx";
 import ManageSecurityModal from "./modals/manage-security-modal.tsx";
 import NotificationPreferencesModal from "./modals/notifications-preferences-modal.tsx";
@@ -10,13 +10,13 @@ import SystemSettingsModal from "./modals/system-settings-modal.tsx";
 
 export default function AdminSettings() {
   const { openModal } = usePopup();
-  
+  const { data: profile } = useGetProfileQuery();
+
+  const isSuperAdmin = profile?.role === "SUPERADMIN";
 
   const systemDescription = (
     <>
       <span>Set company name, badge prefix and visitor limits</span>
-      
-      
     </>
   );
 
@@ -48,15 +48,19 @@ export default function AdminSettings() {
       iconColor: "text-orange-400",
       modal: <NotificationPreferencesModal />,
     },
-    {
-      key: "system",
-      title: "System Settings",
-      description: systemDescription,
-      icon: <SettingOutlined />,
-      iconBg: "bg-slate-100",
-      iconColor: "text-slate-500",
-      modal: <SystemSettingsModal />,
-    },
+    ...(isSuperAdmin
+      ? [
+          {
+            key: "system",
+            title: "System Settings",
+            description: systemDescription,
+            icon: <SettingOutlined />,
+            iconBg: "bg-slate-100",
+            iconColor: "text-slate-500",
+            modal: <SystemSettingsModal />,
+          },
+        ]
+      : []),
   ];
 
   return (
