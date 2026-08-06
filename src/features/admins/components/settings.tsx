@@ -1,53 +1,63 @@
 import { SettingOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { usePopup } from "../../../hooks/usePopup.tsx";
+
 import Header from "../components/layout/Header.tsx";
 import EditProfileModal from "../components/modals/EditProfileModal.tsx";
 import ManageSecurityModal from "../components/modals/ManageSecurityModal.tsx";
 import NotificationPreferencesModal from "../components/modals/NotificationPreferencesModal.tsx";
 import SystemSettingsModal from "../components/modals/SystemSettingsModal.tsx";
 
-const settingsItems = [
-  {
-    key: "profile",
-    title: "Profile Settings",
-    description: "Update your name, email and contact info",
-    icon: <img src="/profile.svg" alt="Profile" />,
-    iconBg: "bg-sky-50",
-    iconColor: "text-sky-500",
-    modal: <EditProfileModal />,
-  },
-  {
-    key: "security",
-    title: "Security",
-    description: "Change password and two-factor authentication",
-    icon: <img src="/padlock2.svg" alt="Security" />,
-    iconBg: "bg-emerald-50",
-    iconColor: "text-emerald-500",
-    modal: <ManageSecurityModal />,
-  },
-  {
-    key: "notifications",
-    title: "Notifications",
-    description: "Configure email alerts and report frequency",
-    icon: <img src="/bell2.svg" alt="Notifications" />,
-    iconBg: "bg-orange-50",
-    iconColor: "text-orange-400",
-    modal: <NotificationPreferencesModal />,
-  },
-  {
-    key: "system",
-    title: "System Settings",
-    description: "Set company name, badge prefix and visitor limits",
-    icon: <SettingOutlined />,
-    iconBg: "bg-slate-100",
-    iconColor: "text-slate-500",
-    modal: <SystemSettingsModal />,
-  },
-];
-
 export default function AdminSettings() {
   const { openModal } = usePopup();
+  
+
+  const systemDescription = (
+    <>
+      <span>Set company name, badge prefix and visitor limits</span>
+      
+      
+    </>
+  );
+
+  const settingsItems = [
+    {
+      key: "profile",
+      title: "Profile Settings",
+      description: "Update your name, email and contact info",
+      icon: <img src="/profile.svg" alt="Profile" />,
+      iconBg: "bg-sky-50",
+      iconColor: "text-sky-500",
+      modal: <EditProfileModal />,
+    },
+    {
+      key: "security",
+      title: "Security",
+      description: "Change password and two-factor authentication",
+      icon: <img src="/padlock2.svg" alt="Security" />,
+      iconBg: "bg-emerald-50",
+      iconColor: "text-emerald-500",
+      modal: <ManageSecurityModal />,
+    },
+    {
+      key: "notifications",
+      title: "Notifications",
+      description: "Configure email alerts and report frequency",
+      icon: <img src="/bell2.svg" alt="Notifications" />,
+      iconBg: "bg-orange-50",
+      iconColor: "text-orange-400",
+      modal: <NotificationPreferencesModal />,
+    },
+    {
+      key: "system",
+      title: "System Settings",
+      description: systemDescription,
+      icon: <SettingOutlined />,
+      iconBg: "bg-slate-100",
+      iconColor: "text-slate-500",
+      modal: <SystemSettingsModal />,
+    },
+  ];
 
   return (
     <>

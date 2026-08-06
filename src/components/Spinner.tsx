@@ -11,7 +11,7 @@ interface SpinnerProps {
 const variantClasses: Record<SpinnerVariant, string> = {
   inline: "min-h-[240px]",
   page: "h-full min-h-[400px]",
-  screen: "min-h-screen",
+  screen: "fixed inset-0",
 };
 
 export const Spinner = ({ variant = "inline", label, className = "" }: SpinnerProps) => {

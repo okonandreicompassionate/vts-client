@@ -77,7 +77,7 @@ export default function ApproveAccessModal({
         </div>
       </CustomModal.Body>
       <CustomModal.Footer>
-        <div className="mt-6 flex items-center gap-3">
+        <div className="mt-6 flex items-center gap-19">
           <Button
             onClick={handleCancel}
             className="h-11! w-full font-medium text-slate-700! dark:text-slate-200!"

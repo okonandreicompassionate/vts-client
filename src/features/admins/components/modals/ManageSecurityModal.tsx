@@ -1,22 +1,27 @@
-import { Button, Input, Switch } from "antd";
+import { Button, Input, message } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import CustomModal from "../../../../components/CustomModal";
 import { usePopup } from "../../../../hooks/usePopup";
+import { useUpdatePasswordMutation } from "../../api/admin-api-slice";
 
 function ManageSecurityModal() {
   const [form] = useForm();
   const { closeModal } = usePopup();
+  const [updatePassword] = useUpdatePasswordMutation();
 
   const handleSaveChanges = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values);
-      // TODO: call your update-password / 2FA API here
+      await updatePassword({
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+      }).unwrap();
+      message.success("Password updated successfully.");
       form.resetFields();
       closeModal();
-    } catch (error) {
-      console.log(error);
+    } catch {
+      message.error("Unable to update password. Please try again.");
     }
   };
 
@@ -49,7 +54,7 @@ function ManageSecurityModal() {
             rules={[{ required: true, message: "Please enter your current password" }]}
           >
             <Input.Password
-              className="!h-11 !rounded-lg !border-slate-100 !bg-[#F5FBFE] !px-4 !text-[14px] placeholder:!text-slate-400"
+              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
               placeholder="Enter current password"
             />
           </FormItem>
@@ -63,7 +68,7 @@ function ManageSecurityModal() {
             ]}
           >
             <Input.Password
-              className="!h-11 !rounded-lg !border-slate-100 !bg-[#F5FBFE] !px-4 !text-[14px] placeholder:!text-slate-400"
+              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
               placeholder="Enter new password"
             />
           </FormItem>
@@ -87,24 +92,10 @@ function ManageSecurityModal() {
             ]}
           >
             <Input.Password
-              className="!h-11 !rounded-lg !border-slate-100 !bg-[#F5FBFE] !px-4 !text-[14px] placeholder:!text-slate-400"
+              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
               placeholder="Re-enter new password"
             />
           </FormItem>
-
-          <div className="mt-6 mb-2 flex items-center justify-between">
-            <div className="pr-4">
-              <p className="text-[14px] leading-tight font-bold text-slate-800">
-                Two-Factor Authentication
-              </p>
-              <p className="mt-0.5 text-[12px] text-slate-400">
-                Add an extra layer of security to your account
-              </p>
-            </div>
-            <FormItem name="twoFactorEnabled" valuePropName="checked" noStyle>
-              <Switch className="!bg-[#F5FBFE]" />
-            </FormItem>
-          </div>
         </Form>
       </CustomModal.Body>
 
@@ -112,14 +103,14 @@ function ManageSecurityModal() {
         <div className="mt-4 flex w-full items-center gap-3">
           <Button
             onClick={handleCancel}
-            className="!h-11 !flex-1 !rounded-full !border-slate-200 !bg-white !px-8 !font-medium !text-slate-500 hover:!bg-slate-50 hover:!text-slate-600 dark:!border-slate-600 dark:!bg-slate-700 dark:!text-slate-300 dark:hover:!bg-slate-600 dark:hover:!text-slate-100"
+            className="h-11! flex-1! rounded-full! border-slate-200! bg-white! px-8! font-medium! text-slate-500 hover:bg-slate-50! hover:text-slate-600! dark:border-slate-600! dark:bg-slate-700! dark:text-slate-300! dark:hover:bg-slate-600! dark:hover:text-slate-100!"
           >
             Cancel
           </Button>
           <Button
             type="primary"
             onClick={handleSaveChanges}
-            className="!h-11 !flex-1 !rounded-full !border-none !bg-sky-500 !px-8 !font-semibold hover:!bg-sky-600"
+            className="h-11! flex-1! rounded-full! border-none! bg-sky-500! px-8! font-semibold! hover:bg-sky-600!"
           >
             Update Password
           </Button>

@@ -18,7 +18,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       </header>
 
      
-      <div className="flex h-full w-full items-center justify-center bg-slate-50 px-4 py-8 sm:px-6 sm:py-10 md:w-1/2 md:px-8 md:py-16 dark:bg-slate-950">
+      <div className="flex h-full w-full items-center justify-center  px-4 py-8 sm:px-6 sm:py-10 md:w-1/2 md:px-8 md:py-16 dark:bg-slate-950">
         {children}
       </div>
     </div>

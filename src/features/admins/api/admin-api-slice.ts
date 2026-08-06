@@ -1,5 +1,14 @@
 import { api } from "../../../lib/api/base";
-import type { VisitListResponse, UserProfile, VisitRecord, VisitStats } from "../types/api-types";
+import type {
+  VisitListResponse,
+  UserProfile,
+  SettingsResponse,
+  VisitRecord,
+  VisitStats,
+  UpdatePasswordPayload,
+  UpdateSettingsPayload,
+  UpdateProfilePayload,
+} from "../types/api-types";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,6 +30,41 @@ export const authApi = api.injectEndpoints({
 
     getProfile: builder.query<UserProfile, void>({
       query: () => "/auth/profile",
+      providesTags: [{ type: "Admins", id: "PROFILE" }],
+    }),
+
+    getSettings: builder.query<SettingsResponse, void>({
+      query: () => "/auth/settings",
+      providesTags: [{ type: "Admins", id: "SETTINGS" }],
+    }),
+
+    updateProfile: builder.mutation<UserProfile, UpdateProfilePayload>({
+      query: (body) => ({
+        url: "/auth/profile",
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: [{ type: "Admins", id: "PROFILE" }],
+    }),
+
+    updatePassword: builder.mutation<{ success: boolean }, UpdatePasswordPayload>({
+      query: (body) => ({
+        url: "/auth/password",
+        method: "PATCH",
+        body,
+      }),
+    }),
+
+    updateSettings: builder.mutation<unknown, UpdateSettingsPayload>({
+      query: (body) => ({
+        url: "/auth/settings",
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: [
+        { type: "Admins", id: "PROFILE" },
+        { type: "Admins", id: "SETTINGS" },
+      ],
     }),
 
     getVisits: builder.query<VisitListResponse, { page: number; limit: number; status?: string }>({
@@ -74,6 +118,10 @@ export const {
   useAdminLoginMutation,
   useMicrosoftLoginMutation,
   useGetProfileQuery,
+  useGetSettingsQuery,
+  useUpdateProfileMutation,
+  useUpdatePasswordMutation,
+  useUpdateSettingsMutation,
   useGetVisitsQuery,
   useApproveVisitMutation,
   useSignoffVisitMutation,

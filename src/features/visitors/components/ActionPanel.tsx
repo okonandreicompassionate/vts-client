@@ -10,11 +10,11 @@ type Props = {
 
 export default function ActionPanel({ meta, isPending, onAction }: Props) {
   return (
-    <div className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-6">
+    <div className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-6 dark:border-slate-700 dark:bg-slate-900">
       {isPending && (
-        <div className="absolute inset-0 z-10 flex cursor-not-allowed items-center justify-center rounded-2xl bg-white/60 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 z-10 flex cursor-not-allowed items-center justify-center rounded-2xl bg-white/60 backdrop-blur-[1px] dark:bg-slate-900/60" />
       )}
-      <p className="mb-4 text-sm font-bold text-slate-900">Next steps</p>
+      <p className="mb-4 text-sm font-bold text-slate-900 dark:text-slate-100">Next steps</p>
       <Button
         type="primary"
         block

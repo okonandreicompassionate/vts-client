@@ -8,7 +8,7 @@ type Props = {
 
 export default function StatusBanner({ meta, status }: Props) {
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between lg:p-6">
+    <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between lg:p-6 dark:border-slate-700 dark:bg-slate-800">
       <div className="flex items-center gap-4">
         <div
           className={`flex h-14 w-14 items-center justify-center rounded-full shadow-sm ${meta.iconWrapBg}`}
@@ -16,8 +16,8 @@ export default function StatusBanner({ meta, status }: Props) {
           {meta.desktopIcon}
         </div>
         <div>
-          <p className="text-base font-bold text-slate-900">{meta.title}</p>
-          <p className="mt-1 text-sm text-slate-600">{meta.description}</p>
+          <p className="text-base font-bold text-slate-900 dark:text-slate-100">{meta.title}</p>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{meta.description}</p>
         </div>
       </div>
 
