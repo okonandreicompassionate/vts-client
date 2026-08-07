@@ -3,7 +3,7 @@ import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import { useEffect } from "react";
 import CustomModal from "../../../../components/custom-modal";
-import { usePopup } from "../../../../hooks/use-popup";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { useGetProfileQuery, useUpdateProfileMutation } from "../../api/admin-api-slice";
 
 function EditProfileModal() {
@@ -67,7 +67,7 @@ function EditProfileModal() {
             <Input
               type="email"
               className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
-              placeholder="admin@zoracom.com"
+              placeholder=""
             />
           </FormItem>
 

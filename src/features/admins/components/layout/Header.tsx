@@ -1,9 +1,17 @@
 import { useGetProfileQuery } from "../../api/admin-api-slice.ts";
 import { VisitorAvatar } from "../visitor-avatar.tsx";
 import { ThemeToggle } from "../../../../components/theme-toggle.tsx";
+import { Spinner } from "@/components/spinner";
 
 const Header = ({ title }: { title: string }) => {
-  const { data: profile } = useGetProfileQuery(undefined);
+  const { data: profile, isLoading } = useGetProfileQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+  });
+
+  if (isLoading) {
+    return <Spinner />;
+  }
   const displayName = profile?.fullName ?? profile?.email ?? "Admin User";
   const role = profile?.role ?? "Admin";
 

@@ -37,6 +37,7 @@ export interface VisitListResponse {
   count?: number;
   page?: number;
   limit?: number;
+
   meta: {
     total?: number;
     totalItems?: number;
@@ -44,6 +45,7 @@ export interface VisitListResponse {
     page?: number;
     limit?: number;
   };
+
   pagination?: {
     total?: number;
     totalItems?: number;
@@ -68,24 +70,12 @@ export interface VisitListResult {
 }
 
 export interface AdminLoginPayload {
-  orgSlug: string;
   email: string;
   password: string;
 }
 
 export interface MicrosoftLoginPayload {
   accessToken: string;
-}
-
-export interface AuthResponse {
-  token?: string;
-  accessToken?: string;
-  data?: {
-    token?: string;
-    accessToken?: string;
-    user?: UserProfile;
-  };
-  user?: UserProfile;
 }
 
 export interface UpdateProfilePayload {
@@ -119,13 +109,20 @@ export interface UserProfile {
   email: string;
   phoneNumber: string;
   role: "SUPERADMIN" | "ADMIN";
-  orgId: string;
+  orgId?: string;
+  orgSlug: string;
 
-  organization: {
+  organization?: {
     name: string;
     slug: string;
     visitorBadgePrefix?: string;
     maxVisitorsPerDay?: number;
   };
+
   avatar?: string;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  user: UserProfile;
 }

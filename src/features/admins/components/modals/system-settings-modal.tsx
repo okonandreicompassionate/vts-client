@@ -1,13 +1,13 @@
-import { Input, Button, message } from "antd";
+import { Button, Input, message } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import CustomModal from "../../../../components/custom-modal";
-import { usePopup } from "../../../../hooks/use-popup";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 import {
-  useGetProfileQuery,
+  useGetSettingsQuery,
   useUpdateSettingsMutation,
 } from "../../api/admin-api-slice";
 import { switchTenantPath } from "@/lib/tenant";
@@ -19,36 +19,44 @@ function SystemSettingsModal() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { data: profile } = useGetProfileQuery();
+  const {
+    data: settings,
+    isLoading: isLoadingSettings,
+  } = useGetSettingsQuery();
+
   const [updateSettings, { isLoading: isSaving }] =
     useUpdateSettingsMutation();
 
   useEffect(() => {
-    if (!profile) return;
+    if (!settings) return;
 
     form.setFieldsValue({
-      slug: profile.organization?.slug ?? "",
-      badgePrefix: profile.organization?.visitorBadgePrefix ?? "",
-      maxCapacity: profile.organization?.maxVisitorsPerDay?.toString() ?? "",
+      name: settings.name ?? "",
+      slug: settings.slug ?? "",
+      badgePrefix: settings.visitorBadgePrefix ?? "",
+      maxCapacity: settings.maxVisitorsPerDay?.toString() ?? "",
     });
-  }, [profile, form]);
+  }, [settings, form]);
 
   const handleSaveSettings = async () => {
     try {
       const values = await form.validateFields();
 
-      const newSlug = values.slug.toString().trim();
-      const currentSlug = profile?.organization?.slug;
+      const newName = values.name.trim();
+      const newSlug = values.slug.trim();
 
       await updateSettings({
+        name: newName,
         slug: newSlug,
         maxVisitorsPerDay: values.maxCapacity
           ? Number(values.maxCapacity)
           : undefined,
-        visitorBadgePrefix: values.badgePrefix?.toString().trim(),
+        visitorBadgePrefix: values.badgePrefix?.trim() || undefined,
       }).unwrap();
 
       message.success("System settings updated successfully.");
+
+      const currentSlug = settings?.slug;
 
       if (currentSlug && currentSlug !== newSlug) {
         navigate(switchTenantPath(location.pathname, newSlug), {
@@ -71,18 +79,33 @@ function SystemSettingsModal() {
     <CustomModal>
       <CustomModal.Header title="System Settings" />
 
-      <CustomModal.Body>
+      <CustomModal.Body loading={isLoadingSettings}>
         <Form
           form={form}
           className="mt-4 space-y-1"
           layout="vertical"
           requiredMark={false}
-          initialValues={{
-            slug: "",
-            badgePrefix: "",
-            maxCapacity: "",
-          }}
         >
+          <FormItem
+            label={
+              <span className="text-[14px] font-semibold text-slate-800">
+                Organization Name
+              </span>
+            }
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: "Please enter the organization name",
+              },
+            ]}
+          >
+            <Input
+              className="h-11! rounded-lg! border-slate-100! bg-slate-50! px-4!"
+              placeholder="Organization name"
+            />
+          </FormItem>
+
           <FormItem
             label={
               <span className="text-[14px] font-semibold text-slate-800">
@@ -99,7 +122,7 @@ function SystemSettingsModal() {
           >
             <Input
               className="h-11! rounded-lg! border-slate-100! bg-slate-50! px-4!"
-              placeholder="e.g. acme"
+              placeholder="e.g. zoracom"
             />
           </FormItem>
 
@@ -110,16 +133,10 @@ function SystemSettingsModal() {
               </span>
             }
             name="badgePrefix"
-            rules={[
-              {
-                required: true,
-                message: "Please enter a badge prefix",
-              },
-            ]}
           >
             <Input
               className="h-11! rounded-lg! border-slate-100! bg-slate-50! px-4!"
-              placeholder="e.g. ACM-"
+              placeholder="e.g. ZOR"
             />
           </FormItem>
 
@@ -138,6 +155,8 @@ function SystemSettingsModal() {
             ]}
           >
             <Input
+              type="number"
+              min={1}
               className="h-11! rounded-lg! border-slate-100! bg-slate-50! px-4!"
               placeholder="Enter max capacity"
             />

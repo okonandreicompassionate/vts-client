@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit/query";
 
 import { type RootState } from "../stores/store";
-import { getCurrentOrgSlug } from "../tenant/current-tenant";
+import { clearAdminAuth } from "../../features/admins/stores/auth-slice";
 import { tenantPath } from "../tenant/tenant-path";
 
 const rawBaseQuery = fetchBaseQuery({
@@ -28,7 +28,7 @@ export const tenantBaseQuery: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  const orgSlug = getCurrentOrgSlug();
+  const [, orgSlug] = window.location.pathname.split("/");
 
   if (!orgSlug) {
     return {
@@ -47,5 +47,14 @@ export const tenantBaseQuery: BaseQueryFn<
           url: tenantPath(orgSlug, args.url),
         };
 
-  return rawBaseQuery(request, api, extraOptions);
+  const result = await rawBaseQuery(request, api, extraOptions);
+
+  
+  if (result.error?.status === 401) {
+    api.dispatch(clearAdminAuth());
+
+    window.location.href = `/${orgSlug}/auth/login`;
+  }
+
+  return result;
 };

@@ -1,6 +1,6 @@
 import { SettingOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { usePopup } from "../../../hooks/use-popup.tsx";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { useGetProfileQuery } from "../api/admin-api-slice";
 import Header from "./layout/header.tsx";
 import EditProfileModal from "./modals/edit-profile-modal.tsx";

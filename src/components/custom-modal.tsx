@@ -1,7 +1,7 @@
 import { Button, Checkbox, Modal, Spin } from "antd";
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import { usePopup } from "../hooks/use-popup";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 // shared state so Confirmation + Footer can talk without prop threading
 interface ModalCtx {

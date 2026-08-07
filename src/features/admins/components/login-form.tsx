@@ -1,6 +1,5 @@
 import { Form, Input, Button, message } from "antd";
 import { useAdminLoginMutation } from "../api/admin-api-slice";
-import { getAuthToken } from "../utils/get-auth-token";
 import { useCompleteLogin } from "../hooks/use-complete-login";
 import MicrosoftLogin from "../components/ms-login";
 import { emailRules, getPasswordRules } from "../utils/validation";
@@ -21,8 +20,8 @@ export default function LoginForm() {
         email: values.email,
         password: values.password,
       }).unwrap();
-
-      completeLogin(getAuthToken(response));
+      console.log(response);
+      completeLogin(response);
       message.success("Login successful");
     } catch (error) {
       console.error(error);
@@ -49,7 +48,7 @@ export default function LoginForm() {
         rules={emailRules}
       >
         <Input
-          placeholder="admin@zoracom.com"
+          placeholder=""
           size="large"
           className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />

@@ -3,22 +3,27 @@ import { message } from "antd";
 import { useAppDispatch } from "../../../lib/stores/hooks";
 import { setAdminToken } from "../stores/auth-slice";
 import { paths } from "../../../config/paths";
-import {useTenant} from '../../../lib/tenant'
-
+import { api } from "@/lib/api/base";
+import type { LoginResponse } from "../types/api-types";
 
 export const useCompleteLogin = () => {
-  const { orgSlug } = useTenant();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const completeLogin = (token: string) => {
-    if (!token) {
+  const completeLogin = ({ accessToken, user }: LoginResponse) => {
+    if (!accessToken) {
       message.error("Login succeeded but no token was returned.");
       return;
     }
 
-    dispatch(setAdminToken(token));
-    navigate(paths.admin.dashboard.getHref(orgSlug));
+    dispatch(setAdminToken(accessToken));
+
+    // clears any cached data from a previous user/session
+    dispatch(api.util.resetApiState());
+
+    navigate(paths.admin.dashboard.getHref(user.orgSlug), {
+      replace: true,
+    });
   };
 
   return completeLogin;

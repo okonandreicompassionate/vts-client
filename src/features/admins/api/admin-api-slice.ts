@@ -8,11 +8,14 @@ import type {
   UpdatePasswordPayload,
   UpdateSettingsPayload,
   UpdateProfilePayload,
+  AdminLoginPayload,
+  MicrosoftLoginPayload,
+  LoginResponse,
 } from "../types/api-types";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    adminLogin: builder.mutation({
+    adminLogin: builder.mutation<LoginResponse, AdminLoginPayload>({
       query: (body) => ({
         url: "/auth/login",
         method: "POST",
@@ -20,7 +23,7 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-    microsoftLogin: builder.mutation({
+    microsoftLogin: builder.mutation<LoginResponse, MicrosoftLoginPayload>({
       query: (body) => ({
         url: "/auth/microsoft",
         method: "POST",
@@ -31,6 +34,7 @@ export const authApi = api.injectEndpoints({
     getProfile: builder.query<UserProfile, void>({
       query: () => "/auth/profile",
       providesTags: [{ type: "Admins", id: "PROFILE" }],
+      keepUnusedDataFor: 0,
     }),
 
     getSettings: builder.query<SettingsResponse, void>({

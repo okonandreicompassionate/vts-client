@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button, message } from "antd";
 import { useMicrosoftLoginMutation } from "../api/admin-api-slice";
 import { useMsalAuth } from "../../../lib/api/msal";
-import { getAuthToken } from "../utils/get-auth-token";
 import { useCompleteLogin } from "../hooks/use-complete-login";
 
 export default function MicrosoftLogin() {
@@ -14,9 +13,15 @@ export default function MicrosoftLogin() {
   const handleClick = async () => {
     try {
       setIsPopupOpen(true);
+
       const msalResult = await msal.login();
-      const response = await microsoftLogin({ accessToken: msalResult.accessToken }).unwrap();
-      completeLogin(getAuthToken(response));
+
+      const response = await microsoftLogin({
+        accessToken: msalResult.accessToken,
+      }).unwrap();
+
+      completeLogin(response);
+
       message.success("Microsoft login successful");
     } catch (error) {
       console.error(error);

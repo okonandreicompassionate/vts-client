@@ -8,7 +8,7 @@ import ApproveAccessModal from "./modals/approve-access-modal.tsx";
 import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
 import { VisitorAvatar } from "./visitor-avatar.tsx";
 import { paths } from "../../../config/paths";
-import { usePopup } from "../../../hooks/use-popup.tsx";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 import {
   useApproveVisitMutation,
   useRejectVisitMutation,

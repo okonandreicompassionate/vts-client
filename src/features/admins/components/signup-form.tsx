@@ -53,7 +53,7 @@ export default function SignupForm() {
         rules={emailRules}
       >
         <Input
-          placeholder="admin@zoracom.com"
+          placeholder=""
           size="large"
           className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />

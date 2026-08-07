@@ -1,8 +1,3 @@
-import type { AuthResponse } from "../types/api-types";
+import type { LoginResponse } from "../types/api-types";
 
-export const getAuthToken = (response: AuthResponse) =>
-  response.token ??
-  response.accessToken ??
-  response.data?.token ??
-  response.data?.accessToken ??
-  "";
+export const getAuthToken = (response: LoginResponse) => response.accessToken ?? "";

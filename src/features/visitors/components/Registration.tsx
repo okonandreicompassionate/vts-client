@@ -2,7 +2,7 @@ import { Button, Form, Input, message } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { usePopup } from "../../../hooks/use-popup";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { useCreateVisitMutation } from "../api/visit-api-slice";
 import RegistrationModal from "./modals/registration-modal";
 import RegistrationSuccessModal from "./modals/registration-success-modal";

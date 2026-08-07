@@ -437,4 +437,4 @@ Before implementing changes, research current best practices—consult React and
 Present a concise plan and a detailed summary of the exact changes you will make before you implement them.
 
 ### NOTE
-ALWAYS WRITE DRY CODE, AND MAINTAIN DRY PRINCIPLES THROUGHOUT THE ENTIRE CODEBASE, before you implement anything i ask make sure it lines up with this file
+ALWAYS WRITE DRY CODE, AND MAINTAIN DRY PRINCIPLES THROUGHOUT THE ENTIRE CODEBASE, before you implement anything i ask make sure it lines up with this file, avoid useEffect at all cost only use when rendering something on mount

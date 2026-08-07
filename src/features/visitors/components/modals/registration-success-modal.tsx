@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "antd";
 import CustomModal from "../../../../components/custom-modal";
-import { usePopup } from "../../../../hooks/use-popup";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 import LoadingRing from "../loading-ring";
 import SuccessCheckmark from "../success-checkmark";
 import { loadingVariants } from "../../animations/success-modal-variants";
