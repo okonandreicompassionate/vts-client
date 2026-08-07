@@ -6,7 +6,7 @@ Streamlines visitor access and management for effortless logging
 
 This project uses **Husky** and **Commitlint** to enforce the [Conventional Commits](https://www.conventionalcommits.org/) specification.
 
-### Commit Format: <type>(<optional-scope>): <description>
+### Commit Format: `<type>(<optional-scope>): <description>`
 
 
 **Examples**
