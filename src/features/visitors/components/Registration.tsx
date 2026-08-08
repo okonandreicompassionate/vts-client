@@ -25,7 +25,7 @@ export default function Registration() {
   const existingIdentity = useMemo(() => {
     if (typeof window === "undefined") return null;
 
-    const stored = localStorage.getItem("visitorIdentity");
+    const stored = localStorage.getItem("visitorId");
     if (!stored) return null;
 
     try {
@@ -82,19 +82,17 @@ export default function Registration() {
             const status = normalizeVisitStatus(response?.status);
             const visitId = response?.id ?? response?.referenceId;
             const requestId = response?.referenceId ?? response?.id;
-            const reason = response?.rejectionReason ?? response?.reason;
 
             window.localStorage.setItem(
               "visitorRegistration",
               JSON.stringify({
                 id: visitId,
+                visitorId: response?.visitorId ?? existingIdentity?.visitorId,
                 ...values,
                 email: values.email,
                 status,
                 requestId,
                 createdAt,
-                badgeNumber: response?.badgeNumber,
-                reason,
               }),
             );
 

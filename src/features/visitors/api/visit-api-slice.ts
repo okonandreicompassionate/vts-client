@@ -23,17 +23,25 @@ export const visitsApi = api.injectEndpoints({
         url: `/visits/${id}/approve`,
         method: "PATCH",
       }),
-      invalidatesTags: ["Visits"],
+      invalidatesTags: (_result, _error, id) => [
+        "Visits",
+        { type: "Visits", id },
+      ],
     }),
 
     getVisit: builder.query<VisitResponse, string>({
       query: (id) => ({
         url: `/visits/${id}`,
       }),
-      providesTags: (_result, _error, id) => [{ type: "Visits", id }],
+      providesTags: (_result, _error, id) => [
+        { type: "Visits", id },
+      ],
     }),
 
-    verifyVisitIdentity: builder.mutation<VerifyIdentityResponse, VerifyIdentityPayload>({
+    verifyVisitIdentity: builder.mutation<
+      VerifyIdentityResponse,
+      VerifyIdentityPayload
+    >({
       query: (body) => ({
         url: "/visits/verify-identity",
         method: "POST",

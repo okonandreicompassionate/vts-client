@@ -10,6 +10,35 @@ interface ProtectedRouteProps {
   requiredAuth?: "admin" | "visitor" | "visitor-verified";
 }
 
+interface VisitorSession {
+  visitorId: string;
+  accessToken: string;
+}
+
+function getVisitorSession(): VisitorSession | null {
+  const stored = localStorage.getItem("visitorSession");
+
+  if (!stored) {
+    return null;
+  }
+
+  try {
+    const session = JSON.parse(stored) as Partial<VisitorSession>;
+
+    if (!session.visitorId || !session.accessToken) {
+      return null;
+    }
+
+    return {
+      visitorId: session.visitorId,
+      accessToken: session.accessToken,
+    };
+  } catch {
+    localStorage.removeItem("visitorSession");
+    return null;
+  }
+}
+
 export function ProtectedRoute({
   children,
   requiredAuth = "admin",
@@ -29,12 +58,12 @@ export function ProtectedRoute({
   }
 
   if (requiredAuth === "visitor") {
-    const visitorData = localStorage.getItem("visitorRegistration");
+    const visitorSession = getVisitorSession();
 
-    if (!visitorData) {
+    if (!visitorSession) {
       return (
         <Navigate
-          to={paths.home.getHref(orgSlug)}
+          to={paths.verify.getHref(orgSlug)}
           replace
         />
       );
@@ -42,9 +71,9 @@ export function ProtectedRoute({
   }
 
   if (requiredAuth === "visitor-verified") {
-    const hasVerifiedIdentity = localStorage.getItem("visitorVerified");
+    const visitorSession = getVisitorSession();
 
-    if (!hasVerifiedIdentity) {
+    if (!visitorSession) {
       return (
         <Navigate
           to={paths.verify.getHref(orgSlug)}

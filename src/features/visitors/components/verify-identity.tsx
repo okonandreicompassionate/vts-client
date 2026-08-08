@@ -11,17 +11,25 @@ export default function VerifyIdentity() {
   const { orgSlug } = useTenant();
   const [verifyVisitIdentity] = useVerifyVisitIdentityMutation();
 
-  const handleFinish = async (values: { email: string }) => {
+  const handleFinish = async (value: { email: string }) => {
     try {
-      const response = await verifyVisitIdentity(values).unwrap();
+      const response = await verifyVisitIdentity(value).unwrap();
 
       window.localStorage.setItem(
-        "visitorIdentity",
+        "visitorId",
         JSON.stringify({
           visitorId: response.visitor.id,
           name: response.visitor.fullName,
           email: response.visitor.email,
           phoneNo: response.visitor.phoneNumber,
+        }),
+      );
+
+      window.localStorage.setItem(
+        "visitorSession",
+        JSON.stringify({
+          visitorId: response.visitor.id,
+          accessToken: response.accessToken,
         }),
       );
 

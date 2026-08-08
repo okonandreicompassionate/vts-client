@@ -160,7 +160,7 @@ CustomModal.Footer = ({
   return (
     <div className="mt-2 flex w-full items-center justify-center gap-3">
       {!hideCancel && (
-        <Button className="h-9 w-full !bg-[#F5FBFE] px-6! text-sm!" onClick={onCancel ?? close}>
+        <Button className="h-9 w-full bg-[#F5FBFE]! px-6! text-sm!" onClick={onCancel ?? close}>
           Cancel
         </Button>
       )}

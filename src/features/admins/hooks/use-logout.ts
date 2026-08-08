@@ -16,7 +16,7 @@ export function useLogout() {
 
     dispatch(api.util.resetApiState());
 
-    localStorage.removeItem("visitorIdentity");
+    localStorage.removeItem("visitorId");
     localStorage.removeItem("visitorVerified");
     localStorage.removeItem("visitorRegistration");
 

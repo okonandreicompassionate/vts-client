@@ -1,20 +1,31 @@
 ﻿import type { ReactNode } from "react";
 import { Info } from "lucide-react";
 import { Button, message } from "antd";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+
 import LoadingRing from "../components/loading-ring";
 import SuccessCheckmark from "../components/success-checkmark";
+
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
+
 import {
   useCheckInVisitMutation,
   useGetVisitQuery,
 } from "../api/visit-api-slice";
+
 import type {
   VisitorProfileStatus,
   VisitorRegistration,
 } from "../types/visitor-profile";
+
+import {
+  getVisitorSession,
+  type VisitorSession,
+} from "../utils/get-visitor-session";
+
+import { useVisitorSocket } from "../hooks/use-visitor-socket";
 
 type StatusMeta = {
   title: string;
@@ -36,9 +47,7 @@ const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     reason: "",
     pillLabel: "Pending Approval",
     pillClasses: "border-[#F5A623]/60 text-[#F5A623]",
-    icon: (
-      <LoadingRing size={64} className="text-[#F5A623]" />
-    ),
+    icon: <LoadingRing />,
   },
 
   approved: {
@@ -49,7 +58,7 @@ const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     reason: "",
     pillLabel: "Visit Approved",
     pillClasses: "border-emerald-400/60 text-emerald-500",
-    icon: <SuccessCheckmark size={64} />,
+    icon: <SuccessCheckmark />,
     actionLabel: "Continue",
   },
 
@@ -61,13 +70,7 @@ const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     reason: "",
     pillLabel: "Visit Declined",
     pillClasses: "border-rose-400/60 text-rose-500",
-    icon: (
-      <img
-        src="/rejected.svg"
-        alt="Rejected"
-        className="h-16 w-16 md:h-20 md:w-20"
-      />
-    ),
+    icon: <Info className="h-12 w-12 text-rose-500" />,
     actionLabel: "Register Again",
   },
 };
@@ -77,9 +80,23 @@ export default function VisitorProfile() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const statusParam =
-    searchParams.get("status") as VisitorProfileStatus | null;
+  /**
+   * Visitor authentication/session is now the source of truth.
+   */
+  const visitorSession = useMemo<VisitorSession | null>(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
 
+    return getVisitorSession();
+  }, []);
+
+  /**
+   * Optional registration data.
+   *
+   * This is only used as a UI fallback.
+   * It is NOT used for authentication.
+   */
   const storedRegistration = useMemo<VisitorRegistration | null>(() => {
     if (typeof window === "undefined") {
       return null;
@@ -98,69 +115,153 @@ export default function VisitorProfile() {
     }
   }, []);
 
-  const normalizeStatus = (
-    status?: string | null,
-  ): VisitorProfileStatus => {
-    const normalized = status
-      ?.toLowerCase()
-      .replace(/[_-]/g, " ")
-      .trim();
+  const visitorId = visitorSession?.visitorId;
+  const token = visitorSession?.accessToken;
 
-    if (normalized === "approved" || normalized === "signed in") {
-      return "approved";
-    }
+  // the visit belonging to the authenticated visitor.
+  const visitId =
+    visitorSession?.visitId ??
+    storedRegistration?.id ??
+    undefined;
 
-    if (normalized === "rejected" || normalized === "declined") {
-      return "rejected";
-    }
+  const normalizeStatus = useCallback(
+    (status?: string | null): VisitorProfileStatus => {
+      const normalized = status
+        ?.toLowerCase()
+        .replace(/[-]/g, " ")
+        .trim();
 
-    return "pending";
-  };
+      if (
+        normalized === "approved" ||
+        normalized === "signed in"
+      ) {
+        return "approved";
+      }
 
-  const visitId = storedRegistration?.id;
+      if (
+        normalized === "rejected" ||
+        normalized === "declined"
+      ) {
+        return "rejected";
+      }
 
-  const { data: visitData } = useGetVisitQuery(visitId ?? "", {
+      return "pending";
+    },
+    [],
+  );
+
+  /**
+   * Fetch the visitor's visit.
+   *
+   * The backend should verify that this visit belongs
+   * to the authenticated visitor.
+   */
+  const {
+    data: visitData,
+    isLoading: isVisitLoading,
+    refetch: refetchVisit,
+  } = useGetVisitQuery(visitId ?? "", {
     skip: !visitId,
   });
 
-  const displayedRegistration = useMemo<VisitorRegistration | null>(() => {
+  /**
+   * WebSocket status update.
+   *
+   * When the admin approves/rejects the visit:
+   *
+   * Backend:
+   *   VisitStatusChangedEvent
+   *        ↓
+   *   VisitsGateway
+   *        ↓
+   *   visit.status.changed
+   *
+   * Frontend:
+   *   this callback
+   *        ↓
+   *   refetch visit
+   *        ↓
+   *   UI updates
+   */
+  const handleStatusChanged = useCallback(
+    (data: {
+      visitId: string;
+      status: string;
+    }) => {
+      if (!visitId || data.visitId !== visitId) {
+        return;
+      }
+
+      void refetchVisit();
+    },
+    [visitId, refetchVisit],
+  );
+
+  useVisitorSocket({
+    visitorId,
+    token,
+    onStatusChanged: handleStatusChanged,
+  });
+
+  const displayedRegistration = useMemo<
+    VisitorRegistration | null
+  >(() => {
     if (visitData) {
       return {
         id: visitData.id ?? storedRegistration?.id,
+
         name:
           visitData.fullName ??
           visitData.name ??
           storedRegistration?.name ??
           "Visitor",
+
         purposeOfVisit:
           visitData.purposeOfVisit ??
           visitData.purpose ??
           storedRegistration?.purposeOfVisit ??
           "",
+
         hostName:
           visitData.hostName ??
           visitData.host ??
           storedRegistration?.hostName ??
           "",
+
         department:
-          visitData.department ?? storedRegistration?.department ?? "",
+          visitData.department ??
+          storedRegistration?.department ??
+          "",
+
         phoneNo:
           visitData.phoneNumber ??
           visitData.phone ??
           storedRegistration?.phoneNo ??
           "",
-        email: visitData.email ?? storedRegistration?.email ?? "",
+
+        email:
+          visitData.email ??
+          storedRegistration?.email ??
+          "",
+
         status: normalizeStatus(
-          visitData.status ?? storedRegistration?.status,
+          visitData.status ??
+            storedRegistration?.status,
         ),
+
         requestId:
           visitData.referenceId ??
           visitData.id ??
           storedRegistration?.requestId,
+
         createdAt:
-          visitData.createdAt ?? storedRegistration?.createdAt,
+          visitData.createdAt ??
+          storedRegistration?.createdAt,
+
         badgeNumber:
-          visitData.badgeNumber ?? storedRegistration?.badgeNumber,
+          visitData.badgeNumber ??
+          storedRegistration?.badgeNumber,
+
         reason:
           visitData.rejectionReason ??
           visitData.reason ??
@@ -169,7 +270,11 @@ export default function VisitorProfile() {
     }
 
     return storedRegistration;
-  }, [storedRegistration, visitData]);
+  }, [
+    visitData,
+    storedRegistration,
+    normalizeStatus,
+  ]);
 
   const formatDate = (value?: string) => {
     if (!value) {
@@ -213,18 +318,26 @@ export default function VisitorProfile() {
   const registration = displayedRegistration;
 
   const status = normalizeStatus(
-    registration?.status ?? statusParam,
+    registration?.status ??
+      searchParams.get("status"),
   );
 
   const meta = statusMeta[status];
+
   const isPending = status === "pending";
 
   const requestId = registration?.requestId
     ? `#${registration.requestId}`
     : "Pending";
 
-  const createdDate = formatDate(registration?.createdAt);
-  const createdTime = formatTime(registration?.createdAt);
+  const createdDate = formatDate(
+    registration?.createdAt,
+  );
+
+  const createdTime = formatTime(
+    registration?.createdAt,
+  );
+
   const reason = registration?.reason;
 
   const actionPath = (() => {
@@ -245,25 +358,18 @@ export default function VisitorProfile() {
       message.error(
         "Unable to check in because the visit ID is missing.",
       );
+
       return;
     }
 
     try {
       await checkInVisit(registration.id).unwrap();
 
-      const updatedRegistration: VisitorRegistration = {
-        ...registration,
-        status: "approved",
-      };
-
-      window.localStorage.setItem(
-        "visitorRegistration",
-        JSON.stringify(updatedRegistration),
+      message.success(
+        "Visit status updated to signed in.",
       );
 
-      message.success("Visit status updated to signed in.");
-
-      window.location.reload();
+      await refetchVisit();
     } catch {
       message.error(
         "Unable to complete check-in. Please try again.",
@@ -271,17 +377,25 @@ export default function VisitorProfile() {
     }
   };
 
+  if (isVisitLoading && !registration) {
+    return (
+      <div className="flex min-h-full items-center justify-center">
+        <LoadingRing />
+      </div>
+    );
+  }
+
   if (!registration) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white px-6 text-center text-slate-700 dark:bg-slate-950 dark:text-slate-100">
-        <div>
-          <p className="text-lg font-semibold">
+      <div className="flex min-h-full items-center justify-center">
+        <div className="w-full max-w-md text-center">
+          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">
             Visitor registration data could not be loaded.
           </p>
 
           <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-            Please complete registration again to view your visitor
-            request status.
+            Please complete registration again to view
+            your visitor request status.
           </p>
 
           <Button
@@ -289,7 +403,9 @@ export default function VisitorProfile() {
             size="large"
             className="mt-6"
             onClick={() =>
-              navigate(paths.register.getHref(orgSlug))
+              navigate(
+                paths.register.getHref(orgSlug),
+              )
             }
           >
             Return to registration
@@ -300,8 +416,8 @@ export default function VisitorProfile() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white px-6 pt-16 pb-6 text-slate-900 md:px-10 md:pt-20 dark:bg-slate-950 dark:text-slate-100">
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col">
+    <div className="flex min-h-full w-full justify-center">
+      <main className="flex w-full max-w-md flex-1 flex-col items-center px-5 py-8">
         <div className="flex justify-center">
           {meta.icon}
         </div>
@@ -399,15 +515,15 @@ export default function VisitorProfile() {
               </p>
 
               <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
-                {registration.purposeOfVisit || "Pending"}
+                {registration.purposeOfVisit ||
+                  "Pending"}
               </p>
             </div>
           </div>
         </section>
 
-        {/* Action button — only for non-pending states */}
         {!isPending && meta.actionLabel && (
-          <div className="mt-auto pt-8">
+          <div className="mt-auto w-full pt-8">
             <Button
               type="primary"
               block
@@ -420,7 +536,9 @@ export default function VisitorProfile() {
                   : () => navigate(actionPath)
               }
             >
-              {isCheckingIn ? "Processing..." : meta.actionLabel}
+              {isCheckingIn
+                ? "Processing..."
+                : meta.actionLabel}
             </Button>
           </div>
         )}

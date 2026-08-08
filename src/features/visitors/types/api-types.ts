@@ -10,6 +10,7 @@ export interface VerifyIdentityResponse {
     email: string;
     phoneNumber: string;
   };
+  accessToken: string;
 }
 
 export interface CreateVisitPayload {
@@ -23,13 +24,28 @@ export interface CreateVisitPayload {
 }
 
 export interface CreateVisitResponse {
-  id?: string;
-  referenceId?: string;
-  status?: string;
-  createdAt?: string;
-  badgeNumber?: string;
-  rejectionReason?: string;
-  reason?: string;
+  id: string;
+  orgId: string;
+  visitorId: string;
+  visitorName: string;
+  hostName: string;
+  department: string;
+  purposeOfVisit: string;
+  status: string;
+  checkInTime: string | null;
+  checkOutTime: string | null;
+  reviewedAt: string | null;
+  referenceId: string;
+  createdAt: string;
+  updatedAt: string;
+
+  visitor: {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+  };
+
+  visitorSocketToken: string;
 }
 
 export interface VisitResponse {
