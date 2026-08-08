@@ -34,7 +34,8 @@ function SystemSettingsModal() {
       name: settings.name ?? "",
       slug: settings.slug ?? "",
       badgePrefix: settings.visitorBadgePrefix ?? "",
-      maxCapacity: settings.maxVisitorsPerDay?.toString() ?? "",
+      maxCapacity:
+        settings.maxVisitorsPerDay?.toString() ?? "",
     });
   }, [settings, form]);
 
@@ -51,7 +52,8 @@ function SystemSettingsModal() {
         maxVisitorsPerDay: values.maxCapacity
           ? Number(values.maxCapacity)
           : undefined,
-        visitorBadgePrefix: values.badgePrefix?.trim() || undefined,
+        visitorBadgePrefix:
+          values.badgePrefix?.trim() || undefined,
       }).unwrap();
 
       message.success("System settings updated successfully.");
@@ -59,14 +61,17 @@ function SystemSettingsModal() {
       const currentSlug = settings?.slug;
 
       if (currentSlug && currentSlug !== newSlug) {
-        navigate(switchTenantPath(location.pathname, newSlug), {
-          replace: true,
-        });
+        navigate(
+          switchTenantPath(location.pathname, newSlug),
+          { replace: true },
+        );
       }
 
       closeModal();
     } catch {
-      message.error("Unable to save system settings. Please try again.");
+      message.error(
+        "Unable to save system settings. Please try again.",
+      );
     }
   };
 

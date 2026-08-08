@@ -10,12 +10,17 @@ import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
 
+const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
+
 export default function Registration() {
   const { orgSlug } = useTenant();
   const [form] = Form.useForm<RegistrationValues>();
   const { openModal, closeModal } = usePopup();
   const navigate = useNavigate();
   const [createVisit] = useCreateVisitMutation();
+
+  const purposeOfVisitValue = Form.useWatch("purposeOfVisit", form);
+  const purposeOfVisitLength = purposeOfVisitValue?.length ?? 0;
 
   const existingIdentity = useMemo(() => {
     if (typeof window === "undefined") return null;
@@ -111,9 +116,9 @@ export default function Registration() {
   };
 
   return (
-    <div className="hide-scrollbar flex min-h-screen w-full flex-col items-center dark:bg-slate-950 md:justify-center">
+    <div className="hide-scrollbar flex min-h-screen w-full flex-col items-center md:justify-center dark:bg-slate-950">
       <div className="flex w-full flex-1 flex-col md:max-h-[90vh] md:max-w-lg md:flex-none md:overflow-y-auto">
-        <header className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
+        <header className="mt-6 flex items-center justify-between border-b border-slate-200 px-5 py-4 md:mt-0 dark:border-slate-700">
           <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Registration</h1>
         </header>
 
@@ -144,14 +149,25 @@ export default function Registration() {
           <Form.Item
             name="purposeOfVisit"
             label="Purpose of Visit"
-            rules={[{ required: true, message: "Please select a purpose" }]}
+            rules={[
+              { required: true, message: "Please select a purpose" },
+              {
+                max: PURPOSE_OF_VISIT_MAX_LENGTH,
+                message: `Purpose of visit can't exceed ${PURPOSE_OF_VISIT_MAX_LENGTH} characters`,
+              },
+            ]}
           >
             <Input
               size="large"
               placeholder=""
+              maxLength={PURPOSE_OF_VISIT_MAX_LENGTH}
               className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             />
           </Form.Item>
+          <p className="-mt-2 mb-2 text-xs text-slate-400 dark:text-slate-500">
+            Keep it brief, e.g. "Job interview" ({purposeOfVisitLength}/
+            {PURPOSE_OF_VISIT_MAX_LENGTH})
+          </p>
 
           <Form.Item
             name="hostName"
