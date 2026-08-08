@@ -1,13 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "antd";
+
 import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
+
 import LoadingRing from "../loading-ring";
 import SuccessCheckmark from "../success-checkmark";
-import { loadingVariants } from "../../animations/success-modal-variants";
+
 import {
   containerVariants,
   itemVariants,
+  loadingVariants,
 } from "../../animations/success-modal-variants";
 
 type RegistrationSuccessModalProps = {
@@ -25,6 +28,7 @@ export default function RegistrationSuccessModal({
 
   const handleClose = () => {
     if (loading) return;
+
     onClose?.();
     closeModal();
   };
@@ -35,22 +39,29 @@ export default function RegistrationSuccessModal({
   };
 
   return (
-    <CustomModal width={340} onCancel={loading ? undefined : handleClose}>
+    <CustomModal
+      width={340}
+      onCancel={loading ? undefined : handleClose}
+    >
       <CustomModal.Body>
         <AnimatePresence mode="wait">
           {loading ? (
             <motion.div
-            variants={loadingVariants}
               key="loading"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              variants={loadingVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               className="flex flex-col items-center gap-4 pt-8 pb-4 text-center"
             >
-              <LoadingRing />
-              <p className="text-[14px] font-medium text-slate-500">
+              <LoadingRing size={64} />
+
+              <motion.p
+                variants={itemVariants}
+                className="text-[15px] font-medium text-slate-700"
+              >
                 Submitting your registration...
-              </p>
+              </motion.p>
             </motion.div>
           ) : (
             <motion.div
@@ -61,13 +72,11 @@ export default function RegistrationSuccessModal({
               exit="exit"
               className="flex flex-col items-center pt-6 pb-2 text-center"
             >
-              <div className="mb-4">
-                <SuccessCheckmark />
-              </div>
+              <SuccessCheckmark size={64} />
 
               <motion.h3
                 variants={itemVariants}
-                className="text-[15px] font-medium text-slate-700"
+                className="mt-4 text-[15px] font-medium text-slate-700"
               >
                 Submitted Successfully
               </motion.h3>
@@ -82,7 +91,7 @@ export default function RegistrationSuccessModal({
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mt-5"
+              className="mt-5 w-full"
             >
               <Button
                 type="link"

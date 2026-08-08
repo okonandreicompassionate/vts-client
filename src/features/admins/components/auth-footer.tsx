@@ -11,7 +11,7 @@ export default function AuthFooter({ mode, onSwitchMode }: AuthFooterProps) {
   const actionText = isLogin ? "Sign Up" : "Login";
 
   return (
-    <div className="mt-6 text-center">
+    <div className="mt-3 text-center">
       <span className="text-sm text-slate-500 dark:text-slate-400">
         {prompt}{" "}
         <Button

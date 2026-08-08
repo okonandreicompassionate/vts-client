@@ -35,7 +35,7 @@ export default function LoginForm() {
       layout="vertical"
       onFinish={handleSubmit}
       requiredMark={false}
-      className="space-y-1"
+      className="space-y-1 mt-4 flex w-full flex-col"
     >
       {/* Email */}
       <Form.Item

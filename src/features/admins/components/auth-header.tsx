@@ -3,16 +3,13 @@ interface AuthHeaderProps {
 }
 
 export default function AuthHeader({ mode }: AuthHeaderProps) {
-  const title = mode === "login" ? "" : "Create Account";
-  const subtitle =
-    mode === "login"
-      ? "Enter your credentials to manage the portal"
-      : "Fill in your details to get started";
+  if (mode === "login") return null;
 
   return (
-    <div className="mb-8">
-      <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-200">{title}</h2>
-      <p className="mt-2 text-lg font-medium text-slate-500 dark:text-slate-400 text-center">{subtitle}</p>
+    <div className="text-center">
+      <p className="mt-1 text-base font-medium text-slate-900 dark:text-slate-400 mb-2">
+        Fill in your details to get started
+      </p>
     </div>
   );
 }

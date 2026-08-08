@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "antd";
-import {
-  AppstoreOutlined,
-  SettingOutlined,
-  MenuOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
+import { AppstoreOutlined, SettingOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { paths } from "../../../../config/paths";
 import { useTenant } from "@/lib/tenant";
@@ -59,7 +54,7 @@ export default function Sidebar() {
         onClick={() => setMobileOpen(true)}
         aria-label="Open menu"
         icon={<MenuOutlined />}
-        className="h-9! w-9! text-slate-500! dark:text-slate-400!"
+        className="h-9! w-9! text-slate-500! md:hidden! dark:text-slate-400!"
       />
 
       {mobileOpen && (
@@ -79,15 +74,15 @@ export default function Sidebar() {
       >
         <div>
           <div className="flex h-16 items-center justify-between px-5">
-            {!collapsed && (
-              <img src="/logo.svg" alt="Logo" className="h-3 md:block" />
-            )}
+            {!collapsed && <img src="/logo.svg" alt="Logo" className="h-3 md:block" />}
 
             <Button
               type="text"
               onClick={() => setCollapsed((c) => !c)}
               aria-label="Toggle sidebar"
-              icon={<img src="/collapse.svg" alt="" className="h-4 w-4" />}
+              icon={
+                <img src={collapsed ? "/expand.svg" : "/collapse.svg"} alt="" className="h-4 w-4" />
+              }
               className="hidden! h-7! w-7! text-slate-400! md:inline-flex! dark:text-slate-500!"
             />
 
@@ -120,18 +115,14 @@ export default function Sidebar() {
                       <img
                         src={item.icon}
                         alt=""
-                        className={`h-5 w-5 ${
-                          isActive ? "brightness-0 invert" : ""
-                        }`}
+                        className={`h-5 w-5 ${isActive ? "brightness-0 invert" : ""}`}
                       />
                     ) : (
                       item.icon
                     )}
                   </span>
 
-                  <span className={collapsed ? "md:hidden" : ""}>
-                    {item.label}
-                  </span>
+                  <span className={collapsed ? "md:hidden" : ""}>{item.label}</span>
                 </Button>
               );
             })}
