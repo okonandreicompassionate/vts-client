@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
 import { clearAdminAuth } from "../stores/auth-slice";
 import { useTenant } from "@/lib/tenant";
+import { paths } from "@/config/paths";
 
 interface JwtPayload {
   exp?: number;
@@ -15,7 +16,9 @@ export function useAuthSession() {
   const navigate = useNavigate();
   const { orgSlug } = useTenant();
 
-  const token = useAppSelector((state) => state.adminAuth.token);
+  const token = useAppSelector(
+    (state) => state.adminAuth.token,
+  );
 
   useEffect(() => {
     if (!token) {
@@ -35,9 +38,10 @@ export function useAuthSession() {
       const logout = () => {
         dispatch(clearAdminAuth());
 
-        navigate(`/${orgSlug}/auth/login`, {
-          replace: true,
-        });
+        navigate(
+          paths.admin.login.getHref(orgSlug),
+          { replace: true },
+        );
       };
 
       if (remainingTime <= 0) {
@@ -45,7 +49,10 @@ export function useAuthSession() {
         return;
       }
 
-      const timeout = window.setTimeout(logout, remainingTime);
+      const timeout = window.setTimeout(
+        logout,
+        remainingTime,
+      );
 
       return () => {
         window.clearTimeout(timeout);
@@ -53,9 +60,15 @@ export function useAuthSession() {
     } catch {
       dispatch(clearAdminAuth());
 
-      navigate(`/${orgSlug}/auth/login`, {
-        replace: true,
-      });
+      navigate(
+        paths.admin.login.getHref(orgSlug),
+        { replace: true },
+      );
     }
-  }, [token, dispatch, navigate, orgSlug]);
+  }, [
+    token,
+    dispatch,
+    navigate,
+    orgSlug,
+  ]);
 }

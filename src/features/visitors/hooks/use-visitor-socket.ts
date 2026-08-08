@@ -1,9 +1,11 @@
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 import {
   connectVisitorSocket,
   disconnectVisitorSocket,
 } from "../api/visitor-socket";
-import { useDispatch } from "react-redux";
+
 import { visitsApi } from "../api/visit-api-slice";
 
 interface UseVisitorSocketOptions {
@@ -30,17 +32,15 @@ export function useVisitorSocket({
     const socket = connectVisitorSocket(token);
 
     const handleConnect = () => {
-      socket.emit("visitor.join", visitorId);
+      socket.emit("visitor.join");
     };
 
     const handleStatusChanged = (data: {
       visitId: string;
       status: string;
     }) => {
-      // Optional component-level callback
       onStatusChanged?.(data);
 
-      // Tell RTK Query that this specific visit has changed
       dispatch(
         visitsApi.util.invalidateTags([
           {
@@ -52,13 +52,24 @@ export function useVisitorSocket({
     };
 
     socket.on("connect", handleConnect);
-    socket.on("visit.status.changed", handleStatusChanged);
+    socket.on(
+      "visit.status.changed",
+      handleStatusChanged,
+    );
 
     return () => {
       socket.off("connect", handleConnect);
-      socket.off("visit.status.changed", handleStatusChanged);
+      socket.off(
+        "visit.status.changed",
+        handleStatusChanged,
+      );
 
       disconnectVisitorSocket();
     };
-  }, [visitorId, token, onStatusChanged, dispatch]);
+  }, [
+    visitorId,
+    token,
+    onStatusChanged,
+    dispatch,
+  ]);
 }

@@ -4,7 +4,7 @@ import { Button } from "antd";
 import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 
-import LoadingRing from "../loading-ring";
+import LoadingRing from "../../animations/loading-ring";
 import SuccessCheckmark from "../success-checkmark";
 
 import {

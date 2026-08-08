@@ -4,7 +4,7 @@ import { Button, message } from "antd";
 import { useCallback, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import LoadingRing from "../components/loading-ring";
+import LoadingRing from "../animations/loading-ring";
 import SuccessCheckmark from "../components/success-checkmark";
 
 import { paths } from "../../../config/paths";
@@ -47,7 +47,7 @@ const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     reason: "",
     pillLabel: "Pending Approval",
     pillClasses: "border-[#F5A623]/60 text-[#F5A623]",
-    icon: <LoadingRing />,
+    icon: <LoadingRing className="text-[#F5A623]" />,
   },
 
   approved: {
@@ -80,9 +80,7 @@ export default function VisitorProfile() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  /**
-   * Visitor authentication/session is now the source of truth.
-   */
+
   const visitorSession = useMemo<VisitorSession | null>(() => {
     if (typeof window === "undefined") {
       return null;
@@ -91,12 +89,7 @@ export default function VisitorProfile() {
     return getVisitorSession();
   }, []);
 
-  /**
-   * Optional registration data.
-   *
-   * This is only used as a UI fallback.
-   * It is NOT used for authentication.
-   */
+
   const storedRegistration = useMemo<VisitorRegistration | null>(() => {
     if (typeof window === "undefined") {
       return null;
@@ -150,12 +143,7 @@ export default function VisitorProfile() {
     [],
   );
 
-  /**
-   * Fetch the visitor's visit.
-   *
-   * The backend should verify that this visit belongs
-   * to the authenticated visitor.
-   */
+
   const {
     data: visitData,
     isLoading: isVisitLoading,
@@ -164,25 +152,7 @@ export default function VisitorProfile() {
     skip: !visitId,
   });
 
-  /**
-   * WebSocket status update.
-   *
-   * When the admin approves/rejects the visit:
-   *
-   * Backend:
-   *   VisitStatusChangedEvent
-   *        ↓
-   *   VisitsGateway
-   *        ↓
-   *   visit.status.changed
-   *
-   * Frontend:
-   *   this callback
-   *        ↓
-   *   refetch visit
-   *        ↓
-   *   UI updates
-   */
+
   const handleStatusChanged = useCallback(
     (data: {
       visitId: string;

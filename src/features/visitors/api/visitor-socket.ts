@@ -7,16 +7,18 @@ type ServerToClientEvents = {
     visitId: string;
     status: string;
   }) => void;
+
   "visitor.joined": (data: {
     room: string;
   }) => void;
+
   "visitor.join.error": (data: {
     message: string;
   }) => void;
 };
 
 type ClientToServerEvents = {
-  "visitor.join": (visitorId: string) => void;
+  "visitor.join": () => void;
 };
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null;
@@ -33,6 +35,7 @@ export function connectVisitorSocket(
       token,
     },
     transports: ["websocket"],
+    withCredentials: true,
   });
 
   return socket;

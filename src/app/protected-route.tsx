@@ -57,20 +57,10 @@ export function ProtectedRoute({
     }
   }
 
-  if (requiredAuth === "visitor") {
-    const visitorSession = getVisitorSession();
-
-    if (!visitorSession) {
-      return (
-        <Navigate
-          to={paths.verify.getHref(orgSlug)}
-          replace
-        />
-      );
-    }
-  }
-
-  if (requiredAuth === "visitor-verified") {
+  if (
+    requiredAuth === "visitor" ||
+    requiredAuth === "visitor-verified"
+  ) {
     const visitorSession = getVisitorSession();
 
     if (!visitorSession) {
