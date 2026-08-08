@@ -1,4 +1,5 @@
-import { api } from "../../../lib/api/base";
+import { visitorApi } from "@/features/visitors/api/visit-base";
+
 import type {
   CreateVisitPayload,
   CreateVisitResponse,
@@ -7,9 +8,12 @@ import type {
   VisitResponse,
 } from "../types/api-types";
 
-export const visitsApi = api.injectEndpoints({
+export const visitsApi = visitorApi.injectEndpoints({
   endpoints: (builder) => ({
-    createVisit: builder.mutation<CreateVisitResponse, CreateVisitPayload>({
+    createVisit: builder.mutation<
+      CreateVisitResponse,
+      CreateVisitPayload
+    >({
       query: (body) => ({
         url: "/visits",
         method: "POST",
@@ -30,9 +34,7 @@ export const visitsApi = api.injectEndpoints({
     }),
 
     getVisit: builder.query<VisitResponse, string>({
-      query: (id) => ({
-        url: `/visits/${id}`,
-      }),
+      query: (id) => `/visits/${id}`,
       providesTags: (_result, _error, id) => [
         { type: "Visits", id },
       ],

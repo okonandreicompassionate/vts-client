@@ -6,7 +6,6 @@ import {
 } from "@reduxjs/toolkit/query";
 
 import { type RootState } from "../stores/store";
-import { clearAdminAuth } from "../../features/admins/stores/auth-slice";
 import { tenantPath } from "../tenant/tenant-path";
 
 const rawBaseQuery = fetchBaseQuery({
@@ -47,14 +46,5 @@ export const tenantBaseQuery: BaseQueryFn<
           url: tenantPath(orgSlug, args.url),
         };
 
-  const result = await rawBaseQuery(request, api, extraOptions);
-
-  
-  if (result.error?.status === 401) {
-    api.dispatch(clearAdminAuth());
-
-    window.location.href = `/${orgSlug}/auth/login`;
-  }
-
-  return result;
+  return rawBaseQuery(request, api, extraOptions);
 };

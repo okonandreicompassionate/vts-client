@@ -12,11 +12,12 @@ import {
 } from "redux-persist";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 
+import { api } from "../api/base";
+import { visitorApi } from "@/features/visitors/api/visit-base";
+import adminAuthReducer from "../../features/admins/stores/auth-slice";
+
 const storage = createWebStorage("local");
 
-import { api } from "../api/base";
-import adminAuthReducer from "../../features/admins/stores/auth-slice";
-console.log(storage);
 const persistConfig = {
   key: "root",
   storage,
@@ -31,8 +32,10 @@ const persistedReducer = persistReducer(
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
+    [visitorApi.reducerPath]: visitorApi.reducer,
     adminAuth: persistedReducer,
   },
+
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -45,7 +48,9 @@ export const store = configureStore({
           REGISTER,
         ],
       },
-    }).concat(api.middleware),
+    })
+      .concat(api.middleware)
+      .concat(visitorApi.middleware),
 });
 
 export const persistor = persistStore(store);

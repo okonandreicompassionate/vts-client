@@ -1,4 +1,5 @@
 import { api } from "../../../lib/api/base";
+
 import type {
   VisitListResponse,
   UserProfile,
@@ -51,7 +52,10 @@ export const authApi = api.injectEndpoints({
       invalidatesTags: [{ type: "Admins", id: "PROFILE" }],
     }),
 
-    updatePassword: builder.mutation<{ success: boolean }, UpdatePasswordPayload>({
+    updatePassword: builder.mutation<
+      { success: boolean },
+      UpdatePasswordPayload
+    >({
       query: (body) => ({
         url: "/auth/password",
         method: "PATCH",
@@ -71,10 +75,17 @@ export const authApi = api.injectEndpoints({
       ],
     }),
 
-    getVisits: builder.query<VisitListResponse, { page: number; limit: number; status?: string }>({
+    getVisits: builder.query<
+      VisitListResponse,
+      { page: number; limit: number; status?: string }
+    >({
       query: ({ page, limit, status }) => ({
         url: "/visits",
-        params: { page, limit, ...(status && { status }) },
+        params: {
+          page,
+          limit,
+          ...(status && { status }),
+        },
       }),
       providesTags: ["Visits"],
     }),
@@ -96,7 +107,7 @@ export const authApi = api.injectEndpoints({
     }),
 
     getVisitStats: builder.query<VisitStats, void>({
-      query: () => `/visits/stats`,
+      query: () => "/visits/stats",
       providesTags: ["Visits"],
     }),
 
@@ -104,7 +115,9 @@ export const authApi = api.injectEndpoints({
       query: (id) => ({
         url: `/visits/${id}`,
       }),
-      providesTags: (_result, _error, id) => [{ type: "Visits", id }],
+      providesTags: (_result, _error, id) => [
+        { type: "Visits", id },
+      ],
     }),
 
     rejectVisit: builder.mutation<void, { id: string; reason?: string }>({

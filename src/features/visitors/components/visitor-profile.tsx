@@ -150,6 +150,7 @@ export default function VisitorProfile() {
     refetch: refetchVisit,
   } = useGetVisitQuery(visitId ?? "", {
     skip: !visitId,
+    refetchOnMountOrArgChange: true,
   });
 
 
