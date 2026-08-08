@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useCallback } from "react";
 
-import LoginLeft from "@/features/admins/components/layout/login-left";
+import LoginLeft from "@/components/left-layout";
 
 import { useVisitorSocket } from "@/features/visitors/hooks/use-visitor-socket";
 
