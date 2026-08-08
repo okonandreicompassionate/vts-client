@@ -42,7 +42,7 @@ export default function VerifyIdentity() {
   };
 
   return (
-    <div className="relative min-h-screen bg-white dark:bg-slate-900">
+    <div className="relative md:flex md:items-center  min-h-screen bg-white dark:bg-slate-900">
       <div className="absolute top-5 right-5">
         <ThemeToggle />
       </div>
@@ -51,7 +51,7 @@ export default function VerifyIdentity() {
         layout="vertical"
         requiredMark={false}
         onFinish={handleFinish}
-        className="mx-auto flex min-h-screen w-full max-w-md flex-col px-7 pt-18 pb-6 md:min-h-0 md:pb-0 dark:bg-slate-900 dark:shadow-black/20"
+        className="mx-auto flex min-h-screen w-full max-w-md flex-col px-7 pt-18 md:pt-0 pb-6 md:min-h-0 md:pb-0 dark:bg-slate-900 dark:shadow-black/20"
       >
         <div className="md:flex md:flex-col md:items-center lg:items-center">
           <div className="flex justify-center">
@@ -64,7 +64,7 @@ export default function VerifyIdentity() {
             </h1>
 
             <p className="mt-2 px-2 text-sm leading-snug text-slate-500 dark:text-slate-400">
-              Enter your email address or phone number
+              Enter your email address
               <br />
               to continue with registration.
             </p>
