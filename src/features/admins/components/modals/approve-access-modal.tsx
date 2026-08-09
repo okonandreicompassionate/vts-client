@@ -4,28 +4,40 @@ import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 type ApproveAccessModalProps = {
+   visitorName: string;
+  purpose: string;
+  hostName: string;
+  department: string;
   onConfirm?: () => void | Promise<void>;
   onCancel?: () => void;
-  visitorName?: string;
-  accessLevel?: string;
-  validUntil?: string;
-  entryPoint?: string;
 };
 
 export default function ApproveAccessModal({
+ visitorName,
+  purpose,
+  hostName,
+  department,
   onConfirm,
   onCancel,
-  visitorName = "Visitor",
-  accessLevel = "Standard Visitor",
-  validUntil = "N/A",
-  entryPoint = "Main Entrance",
 }: ApproveAccessModalProps) {
   const { closeModal } = usePopup();
   const details = [
-    { label: "Visitor Name", value: visitorName },
-    { label: "Access Level", value: accessLevel },
-    { label: "Valid Until", value: validUntil },
-    { label: "Entry Point", value: entryPoint },
+    {
+      label: "Visitor Name",
+      value: visitorName,
+    },
+    {
+      label: "Purpose of Visit",
+      value: purpose,
+    },
+    {
+      label: "Host Name",
+      value: hostName,
+    },
+    {
+      label: "Department",
+      value: department,
+    },
   ];
 
   const handleCancel = () => {
@@ -77,7 +89,7 @@ export default function ApproveAccessModal({
         </div>
       </CustomModal.Body>
       <CustomModal.Footer>
-        <div className="mt-6 flex items-center gap-19">
+        <div className="mt-6 flex justify-center items-center gap-10">
           <Button
             onClick={handleCancel}
             className="h-11! w-full font-medium text-slate-700! dark:text-slate-200!"
