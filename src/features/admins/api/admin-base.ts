@@ -4,7 +4,7 @@ import {
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-import { clearAdminAuth } from "@/features/admins/stores/auth-slice";
+import { clearAdminAuth } from "@/features/admins/stores/admin-auth-slice";
 import { tenantBaseQuery } from "@/lib/api/base-query";
 
 export const adminBaseQuery: BaseQueryFn<

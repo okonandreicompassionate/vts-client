@@ -1,7 +1,9 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../layout/sidebar";
+import { useAdminAuthSession } from "../../hooks/use-admin-auth-session";
 
 const Layout = () => {
+  useAdminAuthSession();
   return (
     <div className="flex min-h-screen flex-col bg-[#EEF2F7] md:flex-row dark:bg-slate-900">
       <Sidebar />

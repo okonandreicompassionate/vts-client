@@ -6,29 +6,17 @@ import {
 } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
+import { type RootState } from "@/lib/stores/store";
 import { tenantPath } from "@/lib/tenant/tenant-path";
 
 const rawVisitorBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
 
-  prepareHeaders(headers) {
-    const storedSession = localStorage.getItem("visitorSession");
+  prepareHeaders(headers, { getState }) {
+    const token = (getState() as RootState).visitorAuth.accessToken;
 
-    if (storedSession) {
-      try {
-        const session = JSON.parse(storedSession) as {
-          accessToken?: string;
-        };
-
-        if (session.accessToken) {
-          headers.set(
-            "Authorization",
-            `Bearer ${session.accessToken}`,
-          );
-        }
-      } catch {
-        // Ignore invalid visitor session data.
-      }
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
     }
 
     return headers;

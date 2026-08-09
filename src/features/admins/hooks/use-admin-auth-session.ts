@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-
 import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
-import { clearAdminAuth } from "../stores/auth-slice";
+import { clearAdminAuth } from "../stores/admin-auth-slice";
 import { useTenant } from "@/lib/tenant";
 import { paths } from "@/config/paths";
 
@@ -11,7 +10,7 @@ interface JwtPayload {
   exp?: number;
 }
 
-export function useAuthSession() {
+export function useAdminAuthSession() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { orgSlug } = useTenant();

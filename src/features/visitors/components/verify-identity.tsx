@@ -1,14 +1,17 @@
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { paths } from "../../../config/paths";
-import { useTenant } from "../../../lib/tenant";
-import { ThemeToggle } from "../../../components/theme-toggle";
+import { paths } from "@/config/paths";
+import { useTenant } from "@/lib/tenant";
+import { useAppDispatch } from "@/lib/stores/hooks";
+import { setVisitorSession } from "../stores/visitor-auth-slice";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useVerifyVisitIdentityMutation } from "../api/visit-api-slice";
 
 export default function VerifyIdentity() {
   const navigate = useNavigate();
   const { orgSlug } = useTenant();
+  const dispatch = useAppDispatch();
   const [verifyVisitIdentity] = useVerifyVisitIdentityMutation();
 
   const handleFinish = async (value: { email: string }) => {
@@ -25,9 +28,8 @@ export default function VerifyIdentity() {
         }),
       );
 
-      window.localStorage.setItem(
-        "visitorSession",
-        JSON.stringify({
+      dispatch(
+        setVisitorSession({
           visitorId: response.visitor.id,
           accessToken: response.accessToken,
         }),
@@ -42,7 +44,7 @@ export default function VerifyIdentity() {
   };
 
   return (
-    <div className="relative md:flex md:items-center  min-h-screen bg-white dark:bg-slate-900">
+    <div className="relative min-h-screen bg-white md:flex md:items-center dark:bg-slate-900">
       <div className="absolute top-5 right-5">
         <ThemeToggle />
       </div>
@@ -51,7 +53,7 @@ export default function VerifyIdentity() {
         layout="vertical"
         requiredMark={false}
         onFinish={handleFinish}
-        className="mx-auto flex min-h-screen w-full max-w-md flex-col px-7 pt-18 md:pt-0 pb-6 md:min-h-0 md:pb-0 dark:bg-slate-900 dark:shadow-black/20"
+        className="mx-auto flex min-h-screen w-full max-w-md flex-col px-7 pt-18 pb-6 md:min-h-0 md:pt-0 md:pb-0 dark:bg-slate-900 dark:shadow-black/20"
       >
         <div className="md:flex md:flex-col md:items-center lg:items-center">
           <div className="flex justify-center">

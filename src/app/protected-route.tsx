@@ -10,44 +10,22 @@ interface ProtectedRouteProps {
   requiredAuth?: "admin" | "visitor" | "visitor-verified";
 }
 
-interface VisitorSession {
-  visitorId: string;
-  accessToken: string;
-}
-
-function getVisitorSession(): VisitorSession | null {
-  const stored = localStorage.getItem("visitorSession");
-
-  if (!stored) {
-    return null;
-  }
-
-  try {
-    const session = JSON.parse(stored) as Partial<VisitorSession>;
-
-    if (!session.visitorId || !session.accessToken) {
-      return null;
-    }
-
-    return {
-      visitorId: session.visitorId,
-      accessToken: session.accessToken,
-    };
-  } catch {
-    localStorage.removeItem("visitorSession");
-    return null;
-  }
-}
-
 export function ProtectedRoute({
   children,
   requiredAuth = "admin",
 }: ProtectedRouteProps) {
   const { orgSlug } = useTenant();
-  const adminAuth = useAppSelector((state) => state.adminAuth);
+
+  const adminAuth = useAppSelector(
+    (state) => state.adminAuth,
+  );
+
+  const visitorAuth = useAppSelector(
+    (state) => state.visitorAuth,
+  );
 
   if (requiredAuth === "admin") {
-    if (!adminAuth.token) {
+    if (!adminAuth.isAuthenticated) {
       return (
         <Navigate
           to={paths.admin.login.getHref(orgSlug)}
@@ -57,13 +35,22 @@ export function ProtectedRoute({
     }
   }
 
-  if (
-    requiredAuth === "visitor" ||
-    requiredAuth === "visitor-verified"
-  ) {
-    const visitorSession = getVisitorSession();
+  if (requiredAuth === "visitor") {
+    if (!visitorAuth.isAuthenticated) {
+      return (
+        <Navigate
+          to={paths.verify.getHref(orgSlug)}
+          replace
+        />
+      );
+    }
+  }
 
-    if (!visitorSession) {
+  if (requiredAuth === "visitor-verified") {
+    if (
+      !visitorAuth.isAuthenticated ||
+      !visitorAuth.isVerified
+    ) {
       return (
         <Navigate
           to={paths.verify.getHref(orgSlug)}

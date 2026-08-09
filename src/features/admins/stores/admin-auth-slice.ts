@@ -6,32 +6,34 @@ export interface AdminAuthState {
 }
 
 const initialState: AdminAuthState = {
-  token: localStorage.getItem("token"),
-  isAuthenticated: !!localStorage.getItem("token"),
+  token: null,
+  isAuthenticated: false,
 };
 
-const authSlice = createSlice({
+const adminAuthSlice = createSlice({
   name: "adminAuth",
 
   initialState,
 
   reducers: {
-    setAdminToken: (state, action: PayloadAction<string>) => {
+    setAdminToken: (
+      state,
+      action: PayloadAction<string>,
+    ) => {
       state.token = action.payload;
       state.isAuthenticated = true;
-
-      localStorage.setItem("token", action.payload);
     },
 
     clearAdminAuth: (state) => {
       state.token = null;
       state.isAuthenticated = false;
-
-      localStorage.removeItem("token");
     },
   },
 });
 
-export const { setAdminToken, clearAdminAuth } = authSlice.actions;
+export const {
+  setAdminToken,
+  clearAdminAuth,
+} = adminAuthSlice.actions;
 
-export default authSlice.reducer;
+export default adminAuthSlice.reducer;
