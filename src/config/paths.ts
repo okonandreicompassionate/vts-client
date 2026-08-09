@@ -22,32 +22,32 @@ export const paths = {
   // Admin side
   admin: {
     login: {
-      path: "/:orgSlug/admin",
+      path: "/:orgSlug/login",
       getHref: (orgSlug: string, redirectTo?: string | null) =>
         `${tenantPath(orgSlug, "/admin")}${
           redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
         }`,
     },
     signup: {
-      path: "/:orgSlug/admin/signup",
-      getHref: (orgSlug: string) => tenantPath(orgSlug, "/admin/signup"),
+      path: "/:orgSlug/signup",
+      getHref: (orgSlug: string) => tenantPath(orgSlug, "/signup"),
     },
     dashboard: {
-      path: "/:orgSlug/admin/dashboard",
-      getHref: (orgSlug: string) => tenantPath(orgSlug, "/admin/dashboard"),
+      path: "/:orgSlug/dashboard",
+      getHref: (orgSlug: string) => tenantPath(orgSlug, "/dashboard"),
     },
     visitors: {
-      path: "/:orgSlug/admin/visitors",
-      getHref: (orgSlug: string) => tenantPath(orgSlug, "/admin/visitors"),
+      path: "/:orgSlug/visitors",
+      getHref: (orgSlug: string) => tenantPath(orgSlug, "/visitors"),
     },
     visitorDetails: {
-      path: "/:orgSlug/admin/visitors/:id",
+      path: "/:orgSlug/visitors/:id",
       getHref: (orgSlug: string, id?: string) =>
-        id ? tenantPath(orgSlug, `/admin/visitors/${id}`) : tenantPath(orgSlug, "/admin/visitors"),
+        id ? tenantPath(orgSlug, `/visitors/${id}`) : tenantPath(orgSlug, "/admin/visitors"),
     },
     settings: {
-      path: "/:orgSlug/admin/settings",
-      getHref: (orgSlug: string) => tenantPath(orgSlug, "/admin/settings"),
+      path: "/:orgSlug/settings",
+      getHref: (orgSlug: string) => tenantPath(orgSlug, "/settings"),
     },
   },
 } as const;
