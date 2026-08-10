@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { message } from "antd";
+
 import { useAppDispatch } from "@/lib/stores/hooks";
 import { authApi } from "../api/admin-api-slice";
 import {
   connectNotificationSocket,
+  disconnectNotificationSocket,
 } from "../api/notification-socket";
 
 type PendingVisitNotification = {
@@ -33,122 +35,39 @@ type PendingVisitNotification = {
 
 type UseNotificationSocketOptions = {
   token?: string;
+  onPendingVisit?: (notification: PendingVisitNotification) => void;
 };
 
 export function useNotificationSocket({
   token,
+  onPendingVisit,
 }: UseNotificationSocketOptions = {}) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log(
-      "Notification socket effect:",
-      token ? "TOKEN EXISTS" : "NO TOKEN",
-    );
-
     if (!token) {
+      disconnectNotificationSocket();
       return;
     }
 
     const socket = connectNotificationSocket(token);
 
-    const handleConnect = () => {
-      console.log(
-        "Admin notification WebSocket connected:",
-        socket.id,
-      );
-    };
-
     const handlePendingVisit = (
       notification: PendingVisitNotification,
     ) => {
-      console.log(
-        "visit.pending RECEIVED:",
-        notification.visitId,
-        "socket:",
-        socket.id,
-      );
-
-      dispatch(
-        authApi.util.invalidateTags(["Visits"]),
-      );
+      dispatch(authApi.util.invalidateTags(["Visits"]));
 
       message.success({
-        content:
-          notification.message ||
-          "New visit registered",
+        content: notification.message || "New visit registered",
       });
+
+      onPendingVisit?.(notification);
     };
 
-    const handleConnectError = (error: Error) => {
-      console.error(
-        "Notification WebSocket connection failed:",
-        error.message,
-      );
-    };
-
-    const handleSocketError = (error: {
-      message?: string;
-    }) => {
-      console.error(
-        "Notification WebSocket error:",
-        error?.message,
-      );
-    };
-
-    const handleDisconnect = (
-      reason: string,
-    ) => {
-      console.warn(
-        "🔌 Notification WebSocket disconnected:",
-        reason,
-      );
-    };
-
-    socket.on("connect", handleConnect);
-    socket.on(
-      "visit.pending",
-      handlePendingVisit,
-    );
-    socket.on(
-      "connect_error",
-      handleConnectError,
-    );
-    socket.on(
-      "notification.socket.error",
-      handleSocketError,
-    );
-    socket.on(
-      "disconnect",
-      handleDisconnect,
-    );
+    socket.on("visit.pending", handlePendingVisit);
 
     return () => {
-
-
-      socket.off("connect", handleConnect);
-
-      socket.off(
-        "visit.pending",
-        handlePendingVisit,
-      );
-
-      socket.off(
-        "connect_error",
-        handleConnectError,
-      );
-
-      socket.off(
-        "notification.socket.error",
-        handleSocketError,
-      );
-
-      socket.off(
-        "disconnect",
-        handleDisconnect,
-      );
-
-
+      socket.off("visit.pending", handlePendingVisit);
     };
-  }, [token, dispatch]);
+  }, [token, onPendingVisit, dispatch]);
 }

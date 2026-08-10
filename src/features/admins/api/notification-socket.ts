@@ -6,19 +6,22 @@ type NotificationSocket = Socket;
 
 let socket: NotificationSocket | null = null;
 
-export function connectNotificationSocket(
-  token: string,
-): NotificationSocket {
+export function connectNotificationSocket(token: string): NotificationSocket {
   if (socket) {
+    if (!socket.connected) {
+      socket.auth = { token };
+      socket.connect();
+    }
+
     return socket;
   }
 
   socket = io(`${SOCKET_URL}/notifications`, {
+    transports: ["websocket"],
     auth: {
       token,
     },
-    transports: ["websocket"],
-    autoConnect: true,
+    withCredentials: true,
     reconnection: true,
   });
 
@@ -30,6 +33,7 @@ export function disconnectNotificationSocket(): void {
     return;
   }
 
+  socket.removeAllListeners();
   socket.disconnect();
   socket = null;
 }
