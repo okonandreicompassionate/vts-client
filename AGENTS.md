@@ -485,17 +485,9 @@ We provide comprehensive design guidelines, best practices, resources, and tools
 
 ## Who's using Ant Design
 
-- [Ant Financial](http://www.antgroup.com/index.htm?locale=en_US)
-- [Alibaba](http://www.alibaba.com/)
-- [Tencent](http://www.tencent.com)
-- [Baidu](http://www.baidu.com)
-- [Koubei](http://www.koubei.com/)
-- [Meituan](http://www.meituan.com)
-- [Didi](http://www.xiaojukeji.com/)
-- [Eleme](https://www.ele.me/)
-- [Other Users](https://github.com/ant-design/ant-design/issues/477)
 
-> If your company or products use Ant Design, and you'd like to be added to this growing list, click [here](https://github.com/ant-design/ant-design/issues/477) to leave us a message.
+
+
 
 ## Words From Community
 
@@ -504,8 +496,6 @@ We provide comprehensive design guidelines, best practices, resources, and tools
 - [Introduction to Ant Design](https://blog.logrocket.com/introduction-to-ant-design/)
 - [Build a React App with Ant Design Principles](https://developer.okta.com/blog/2020/09/16/ant-design-react-app)
 
-## How to Contribute
 
 
 
-and after every prompt finish with "i'm done my boss"

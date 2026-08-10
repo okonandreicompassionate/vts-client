@@ -15,12 +15,22 @@ export const adminBaseQuery: BaseQueryFn<
   const result = await tenantBaseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
-    api.dispatch(clearAdminAuth());
+    const requestUrl =
+      typeof args === "string"
+        ? args
+        : args.url;
 
-    const [, orgSlug] = window.location.pathname.split("/");
+    const isLoginRequest =
+      requestUrl.includes("/auth/login");
 
-    if (orgSlug) {
-      window.location.href = `/${orgSlug}/login`;
+    if (!isLoginRequest) {
+      api.dispatch(clearAdminAuth());
+
+      const [, orgSlug] = window.location.pathname.split("/");
+
+      if (orgSlug) {
+        window.location.href = `/${orgSlug}/admin`;
+      }
     }
   }
 

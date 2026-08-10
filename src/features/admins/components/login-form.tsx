@@ -1,4 +1,5 @@
 import { Form, Input, Button, message } from "antd";
+
 import { useAdminLoginMutation } from "../api/admin-api-slice";
 import { useCompleteLogin } from "../hooks/use-complete-login";
 import MicrosoftLogin from "../components/ms-login";
@@ -9,33 +10,60 @@ interface LoginFormValues {
   password: string;
 }
 
+type LoginError = {
+  status?: number | string;
+  data?: {
+    message?: string | string[];
+    error?: string;
+    statusCode?: number;
+  };
+};
+
 export default function LoginForm() {
   const [form] = Form.useForm<LoginFormValues>();
+
   const [adminLogin, { isLoading }] = useAdminLoginMutation();
+
   const completeLogin = useCompleteLogin();
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
       const response = await adminLogin({
-        email: values.email,
+        email: values.email.trim(),
         password: values.password,
       }).unwrap();
-      console.log(response);
+
       completeLogin(response);
       message.success("Login successful");
     } catch (error) {
-      console.error(error);
-      message.error("Unable to login, please check your credentials.");
+      const loginError = error as LoginError;
+
+      const backendMessage = loginError.data?.message;
+
+      let errorMessage = "Unable to login. Please check your credentials.";
+
+      if (Array.isArray(backendMessage)) {
+        errorMessage = backendMessage.join(", ");
+      } else if (typeof backendMessage === "string") {
+        errorMessage = backendMessage;
+      } else if (loginError.status === "FETCH_ERROR") {
+        errorMessage =
+          "Unable to connect to the server. Please check your connection.";
+      } else if (loginError.status === "TIMEOUT_ERROR") {
+        errorMessage =
+          "The login request timed out. Please try again.";
+      }
+
+      message.error(errorMessage);
     }
   };
 
   return (
-    <Form
+    <Form<LoginFormValues>
       form={form}
       layout="vertical"
-      onFinish={handleSubmit}
       requiredMark={false}
-      className="space-y-1 mt-4 flex w-full flex-col"
+      onFinish={handleSubmit}
     >
       {/* Email */}
       <Form.Item
@@ -48,16 +76,20 @@ export default function LoginForm() {
         rules={emailRules}
       >
         <Input
-          placeholder=""
+          type="email"
+          placeholder="you@example.com"
           size="large"
-          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
+          autoComplete="email"
+          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:text-slate-100! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />
       </Form.Item>
 
       {/* Password */}
       <Form.Item
         label={
-          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Password</span>
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Password
+          </span>
         }
         name="password"
         rules={getPasswordRules({ required: true })}
@@ -65,6 +97,7 @@ export default function LoginForm() {
         <Input.Password
           placeholder="••••••••••"
           size="large"
+          autoComplete="current-password"
           className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
         />
       </Form.Item>
@@ -86,6 +119,7 @@ export default function LoginForm() {
       {/* Microsoft Login */}
       <div className="relative flex items-center justify-center py-3">
         <div className="absolute right-0 left-0 border-t border-slate-200 dark:border-slate-700" />
+
         <span className="relative bg-white px-3 text-xs font-medium text-slate-400 dark:bg-slate-900 dark:text-slate-500">
           or
         </span>

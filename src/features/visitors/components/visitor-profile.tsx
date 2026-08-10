@@ -1,6 +1,6 @@
 ﻿// import type { ReactNode } from "react";
 import { Info } from "lucide-react";
-import { Button, message } from "antd";
+import { Button } from "antd";
 import { useCallback, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -8,19 +8,12 @@ import LoadingRing from "../animations/loading-ring";
 // import SuccessCheckmark from "../components/success-checkmark";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
-import {
-  useCheckInVisitMutation,
-  useGetVisitQuery,
-} from "../api/visit-api-slice";
-import type {
-  VisitorProfileStatus,
-  VisitorRegistration,
-} from "../types/visitor-profile";
+import { useGetVisitQuery } from "../api/visit-api-slice";
+import type { VisitorProfileStatus, VisitorRegistration } from "../types/visitor-profile";
 import { useVisitorSocket } from "../hooks/use-visitor-socket";
 import { useAppSelector } from "@/lib/stores/hooks";
 
 type StatusMeta = {
-
   subtitle: string;
   description: string;
   reason: string;
@@ -32,8 +25,7 @@ type StatusMeta = {
 const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
   pending: {
     subtitle: "Your request is now in review.",
-    description:
-      "",
+    description: "",
     reason: "",
     label: "Pending",
     pillClasses: "border border-[#F5A623] bg-transparent text-[#F5A623]",
@@ -46,7 +38,6 @@ const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     reason: "",
     label: "Approved",
     pillClasses: "border border-emerald-500 bg-transparent text-emerald-500",
-    actionLabel: "Continue",
   },
 
   rejected: {
@@ -87,25 +78,19 @@ export default function VisitorProfile() {
 
   const visitId = storedRegistration?.id;
 
-  const normalizeStatus = useCallback(
-    (status?: string | null): VisitorProfileStatus => {
-      const normalized = status
-        ?.toLowerCase()
-        .replace(/[_-]/g, " ")
-        .trim();
+  const normalizeStatus = useCallback((status?: string | null): VisitorProfileStatus => {
+    const normalized = status?.toLowerCase().replace(/[_-]/g, " ").trim();
 
-      if (normalized === "approved" || normalized === "signed in") {
-        return "approved";
-      }
+    if (normalized === "approved" || normalized === "signed in") {
+      return "approved";
+    }
 
-      if (normalized === "rejected" || normalized === "declined") {
-        return "rejected";
-      }
+    if (normalized === "rejected" || normalized === "declined") {
+      return "rejected";
+    }
 
-      return "pending";
-    },
-    [],
-  );
+    return "pending";
+  }, []);
 
   const {
     data: visitData,
@@ -140,67 +125,33 @@ export default function VisitorProfile() {
       return {
         id: visitData.id ?? storedRegistration?.id,
 
-        name:
-          visitData.fullName ??
-          visitData.name ??
-          storedRegistration?.name ??
-          "Visitor",
+        name: visitData.fullName ?? visitData.name ?? storedRegistration?.name ?? "Visitor",
 
         purposeOfVisit:
-          visitData.purposeOfVisit ??
-          visitData.purpose ??
-          storedRegistration?.purposeOfVisit ??
-          "",
+          visitData.purposeOfVisit ?? visitData.purpose ?? storedRegistration?.purposeOfVisit ?? "",
 
-        hostName:
-          visitData.hostName ??
-          visitData.host ??
-          storedRegistration?.hostName ??
-          "",
+        hostName: visitData.hostName ?? visitData.host ?? storedRegistration?.hostName ?? "",
 
-        department:
-          visitData.department ??
-          storedRegistration?.department ??
-          "",
+        department: visitData.department ?? storedRegistration?.department ?? "",
 
-        phoneNo:
-          visitData.phoneNumber ??
-          visitData.phone ??
-          storedRegistration?.phoneNo ??
-          "",
+        phoneNo: visitData.phoneNumber ?? visitData.phone ?? storedRegistration?.phoneNo ?? "",
 
         email: visitData.email ?? storedRegistration?.email ?? "",
 
-        status: normalizeStatus(
-          visitData.status ?? storedRegistration?.status,
-        ),
+        status: normalizeStatus(visitData.status ?? storedRegistration?.status),
 
-        requestId:
-          visitData.referenceId ??
-          visitData.id ??
-          storedRegistration?.requestId,
+        requestId: visitData.referenceId ?? visitData.id ?? storedRegistration?.requestId,
 
-        createdAt:
-          visitData.createdAt ??
-          storedRegistration?.createdAt,
+        createdAt: visitData.createdAt ?? storedRegistration?.createdAt,
 
-        badgeNumber:
-          visitData.badgeNumber ??
-          storedRegistration?.badgeNumber,
+        badgeNumber: visitData.badgeNumber ?? storedRegistration?.badgeNumber,
 
-        reason:
-          visitData.rejectionReason ??
-          visitData.reason ??
-          storedRegistration?.reason,
+        reason: visitData.rejectionReason ?? visitData.reason ?? storedRegistration?.reason,
       };
     }
 
     return storedRegistration;
-  }, [
-    visitData,
-    storedRegistration,
-    normalizeStatus,
-  ]);
+  }, [visitData, storedRegistration, normalizeStatus]);
 
   const formatDate = (value?: string) => {
     if (!value) {
@@ -238,22 +189,15 @@ export default function VisitorProfile() {
     }).format(date);
   };
 
-  const [checkInVisit, { isLoading: isCheckingIn }] =
-    useCheckInVisitMutation();
-
   const registration = displayedRegistration;
 
-  const status = normalizeStatus(
-    registration?.status ?? searchParams.get("status"),
-  );
+  const status = normalizeStatus(registration?.status ?? searchParams.get("status"));
 
   const meta = statusMeta[status];
 
   const isPending = status === "pending";
 
-  const requestId = registration?.requestId
-    ? `#${registration.requestId}`
-    : "Pending";
+  const requestId = registration?.requestId ? `#${registration.requestId}` : "Pending";
 
   const createdDate = formatDate(registration?.createdAt);
   const createdTime = formatTime(registration?.createdAt);
@@ -273,28 +217,6 @@ export default function VisitorProfile() {
     }
   })();
 
-  const handleCheckIn = async () => {
-    if (!registration?.id) {
-      message.error(
-        "Unable to check in because the visit ID is missing.",
-      );
-
-      return;
-    }
-
-    try {
-      await checkInVisit(registration.id).unwrap();
-
-      message.success("Visit status updated to signed in.");
-
-      await refetchVisit();
-    } catch {
-      message.error(
-        "Unable to complete check-in. Please try again.",
-      );
-    }
-  };
-
   if (!visitorAuth.accessToken && !registration) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
@@ -311,9 +233,7 @@ export default function VisitorProfile() {
             type="primary"
             size="large"
             className="mt-6"
-            onClick={() =>
-              navigate(paths.verify.getHref(orgSlug))
-            }
+            onClick={() => navigate(paths.verify.getHref(orgSlug))}
           >
             Return to verification
           </Button>
@@ -339,17 +259,14 @@ export default function VisitorProfile() {
           </p>
 
           <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-            Please complete registration again to view your visitor
-            request status.
+            Please complete registration again to view your visitor request status.
           </p>
 
           <Button
             type="primary"
             size="large"
             className="mt-6"
-            onClick={() =>
-              navigate(paths.register.getHref(orgSlug))
-            }
+            onClick={() => navigate(paths.register.getHref(orgSlug))}
           >
             Return to registration
           </Button>
@@ -362,9 +279,7 @@ export default function VisitorProfile() {
     <div className="flex min-h-dvh items-center justify-center bg-white px-4 py-8 dark:bg-slate-950">
       <main className="flex w-full max-w-xl flex-col">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            {meta.subtitle}
-          </h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{meta.subtitle}</h1>
 
           <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             {meta.description}
@@ -373,15 +288,10 @@ export default function VisitorProfile() {
 
         {status === "rejected" && reason && (
           <div className="mt-8 w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-            <p className="text-xs font-medium text-slate-400">
-              Reason for refusal
-            </p>
+            <p className="text-xs font-medium text-slate-400">Reason for refusal</p>
 
             <div className="mt-2.5 flex items-start gap-2">
-              <Info
-                className="mt-0.5 h-4 w-4 shrink-0 text-slate-400"
-                strokeWidth={2}
-              />
+              <Info className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" strokeWidth={2} />
 
               <p className="text-[15px] leading-snug font-semibold text-slate-800 dark:text-slate-100">
                 {reason}
@@ -397,23 +307,15 @@ export default function VisitorProfile() {
                 {registration.name}
               </p>
 
-              <p className="mt-1 text-sm text-slate-400">
-                ID: {requestId}
-              </p>
+              <p className="mt-1 text-sm text-slate-400">ID: {requestId}</p>
             </div>
 
-            {isVisitFetching && (
-              <span className="text-xs text-slate-400">
-                Updating...
-              </span>
-            )}
+            {isVisitFetching && <span className="text-xs text-slate-400">Updating...</span>}
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-slate-200 pt-4 dark:border-slate-700">
             <div>
-              <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
-                Host
-              </p>
+              <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">Host</p>
 
               <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
                 {registration.hostName || "Pending"}
@@ -431,9 +333,7 @@ export default function VisitorProfile() {
             </div>
 
             <div>
-              <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
-                Date
-              </p>
+              <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">Date</p>
 
               <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
                 {createdDate}
@@ -441,9 +341,7 @@ export default function VisitorProfile() {
             </div>
 
             <div>
-              <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
-                Time
-              </p>
+              <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">Time</p>
 
               <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
                 {createdTime}
@@ -490,15 +388,10 @@ export default function VisitorProfile() {
               type="primary"
               block
               size="large"
-              disabled={isCheckingIn}
               className="h-12! rounded-xl! bg-sky-400! text-[15px]! font-semibold hover:bg-sky-500! disabled:opacity-50!"
-              onClick={
-                status === "approved"
-                  ? handleCheckIn
-                  : () => navigate(actionPath)
-              }
+              onClick={() => navigate(actionPath)}
             >
-              {isCheckingIn ? "Processing..." : meta.actionLabel}
+              Register Again
             </Button>
           </div>
         )}
