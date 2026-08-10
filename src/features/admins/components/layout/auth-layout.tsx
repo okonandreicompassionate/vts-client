@@ -1,5 +1,5 @@
 import React from "react";
-import LoginLeft from "../../../../components/left-layout";
+import LeftLayout from "../../../../components/left-layout";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="grid h-screen w-full md:grid-cols-2">
       <div className="hidden h-full md:block">
-        <LoginLeft />
+        <LeftLayout />
       </div>
 
       <div className="flex min-h-full w-full flex-col items-center justify-center px-4 py-8 sm:px-6 md:px-16 md:py-12 dark:bg-slate-950">

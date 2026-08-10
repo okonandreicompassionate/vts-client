@@ -1,4 +1,4 @@
-const LoginLeft = () => {
+const LeftLayout = () => {
   return (
     <div className="hidden h-full w-full flex-col gap-2 overflow-hidden bg-[#EFF7FB] px-8 py-10 md:flex md:px-16 md:py-12 dark:bg-slate-900">
       <div className="flex w-full justify-center">
@@ -25,4 +25,4 @@ const LoginLeft = () => {
   );
 };
 
-export default LoginLeft;
+export default LeftLayout;

@@ -1,75 +1,88 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { io, type Socket } from "socket.io-client";
 
-import {
-  connectVisitorSocket,
-  disconnectVisitorSocket,
-} from "../api/visitor-socket";
+type StatusChangedPayload = {
+  visitId: string;
+  status: string;
+};
 
-import { visitsApi } from "../api/visit-api-slice";
-
-interface UseVisitorSocketOptions {
-  visitorId?: string;
+type UseVisitorSocketOptions = {
   token?: string;
-  onStatusChanged?: (data: {
-    visitId: string;
-    status: string;
-  }) => void;
-}
+  onStatusChanged?: (
+    data: StatusChangedPayload,
+  ) => void;
+};
+
+const SOCKET_URL =
+  import.meta.env.VITE_API_URL;
 
 export function useVisitorSocket({
-  visitorId,
   token,
   onStatusChanged,
-}: UseVisitorSocketOptions) {
-  const dispatch = useDispatch();
-
+}: UseVisitorSocketOptions = {}) {
   useEffect(() => {
-    if (!visitorId || !token) {
+    if (!token) {
       return;
     }
 
-    const socket = connectVisitorSocket(token);
+    let socket: Socket | null = null;
 
-    const handleConnect = () => {
-      socket.emit("visitor.join");
-    };
+    socket = io(`${SOCKET_URL}/visits`, {
+      transports: ["polling", "websocket"],
+      auth: {
+        token,
+      },
+      withCredentials: true,
+    });
 
-    const handleStatusChanged = (data: {
-      visitId: string;
-      status: string;
-    }) => {
+    const handleStatusChanged = (
+      data: StatusChangedPayload,
+    ) => {
       onStatusChanged?.(data);
-
-      dispatch(
-        visitsApi.util.invalidateTags([
-          {
-            type: "Visits",
-            id: data.visitId,
-          },
-        ]),
-      );
     };
 
-    socket.on("connect", handleConnect);
     socket.on(
       "visit.status.changed",
       handleStatusChanged,
     );
 
+    socket.on("connect", () => {
+      console.log(
+        "Visitor WebSocket connected:",
+        socket?.id,
+      );
+
+      socket?.emit("visitor.join");
+    });
+
+    socket.on("connect_error", (error) => {
+      /**
+       * IMPORTANT:
+       *
+       * A WebSocket failure must NOT affect the REST
+       * visit query.
+       */
+      console.warn(
+        "Visitor WebSocket connection failed:",
+        error.message,
+      );
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.warn(
+        "Visitor WebSocket disconnected:",
+        reason,
+      );
+    });
+
     return () => {
-      socket.off("connect", handleConnect);
-      socket.off(
+      socket?.off(
         "visit.status.changed",
         handleStatusChanged,
       );
 
-      disconnectVisitorSocket();
+      socket?.disconnect();
+      socket = null;
     };
-  }, [
-    visitorId,
-    token,
-    onStatusChanged,
-    dispatch,
-  ]);
+  }, [token, onStatusChanged]);
 }
