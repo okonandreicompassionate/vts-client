@@ -1,6 +1,27 @@
+const globalFontSize = 12;
+const globalFormFieldHeight = 40;
+const globalTypographyTokens = {
+  fontSize: globalFontSize,
+  fontSizeSM: globalFontSize,
+  fontSizeLG: globalFontSize,
+  fontSizeXL: globalFontSize,
+  fontSizeHeading1: globalFontSize,
+  fontSizeHeading2: globalFontSize,
+  fontSizeHeading3: globalFontSize,
+  fontSizeHeading4: globalFontSize,
+  fontSizeHeading5: globalFontSize,
+};
+const globalFormFieldHeightTokens = {
+  controlHeight: globalFormFieldHeight,
+  controlHeightSM: globalFormFieldHeight,
+  controlHeightLG: globalFormFieldHeight,
+};
+
 export const getThemeConfig = (isDark: boolean) => {
   const lightTheme = {
     token: {
+      ...globalTypographyTokens,
+      ...globalFormFieldHeightTokens,
       colorPrimary: "#0ea5e9",
       colorInfo: "#0ea5e9",
       colorPrimaryHover: "#0284c7",
@@ -19,6 +40,7 @@ export const getThemeConfig = (isDark: boolean) => {
     },
     components: {
       Input: {
+        ...globalFormFieldHeightTokens,
         borderRadius: 0,
         controlBg: "#ffffff",
         colorText: "#1f2937",
@@ -29,12 +51,13 @@ export const getThemeConfig = (isDark: boolean) => {
         colorBgContainer: "#ffffff",
       },
       Form: {
-        labelFontSize: 13,
+        labelFontSize: globalFontSize,
         verticalLabelPadding: "0 0 4px",
         itemMarginBottom: 10,
         labelColor: "#374151",
       },
       Select: {
+        ...globalFormFieldHeightTokens,
         controlBg: "#ffffff",
         colorText: "#1f2937",
         colorTextPlaceholder: "#9ca3af",
@@ -94,6 +117,8 @@ export const getThemeConfig = (isDark: boolean) => {
 
   const darkTheme = {
     token: {
+      ...globalTypographyTokens,
+      ...globalFormFieldHeightTokens,
       colorPrimary: "#0ea5e9",
       colorInfo: "#0ea5e9",
       colorPrimaryHover: "#0284c7",
@@ -110,6 +135,7 @@ export const getThemeConfig = (isDark: boolean) => {
     },
     components: {
       Input: {
+        ...globalFormFieldHeightTokens,
         borderRadius: 0,
         controlBg: "#1e293b",
         colorText: "#e2e8f0",
@@ -119,12 +145,13 @@ export const getThemeConfig = (isDark: boolean) => {
         colorTextDisabled: "#64748b",
       },
       Form: {
-        labelFontSize: 13,
+        labelFontSize: globalFontSize,
         verticalLabelPadding: "0 0 4px",
         itemMarginBottom: 16,
         labelColor: "#cbd5e1",
       },
       Select: {
+        ...globalFormFieldHeightTokens,
         controlBg: "#1e293b",
         colorText: "#e2e8f0",
         colorTextPlaceholder: "#78829e",

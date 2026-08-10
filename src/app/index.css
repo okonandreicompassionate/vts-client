@@ -3,8 +3,8 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-body {
-  font-family: "Raleway Variable", sans-serif;
+* {
+  font-family: "Raleway Variable", sans-serif; font: size 10px !important;
 }
 
 .dark .ant-btn,
