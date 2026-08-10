@@ -1,4 +1,4 @@
-import { VisitorAvatar } from "./visitor-avatar";
+import { VisitorAvatar } from "@/features/admins/components/visitor-avatar";
 
 type VisitorIdentityCellProps = {
   name: string;

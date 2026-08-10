@@ -2,56 +2,72 @@ import { useState } from "react";
 import { Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { EyeOutlined, FilterOutlined } from "@ant-design/icons";
-import Header from "./layout/header.tsx";
-import StatusPill from "./status-pill.tsx";
-import TableComponent from "./table.tsx";
-import { TablePaginationFooter } from "./table-pagination-footer.tsx";
-import type { VisitorStatus } from "./status-pill.tsx";
+
+import Header from "./layout/header";
+import StatusPill from "./status-pill";
+import TableComponent from "./table";
+import { TablePaginationFooter } from "./table-pagination-footer";
+import type { VisitorStatus } from "./status-pill";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
 import { useVisitorRowClick } from "../hooks/use-visitor-row-click";
-import { VisitorIdentityCell } from "./visitor-table-cells";
+import {
+  VisitorIdentityCell,
+  VisitDateTimeCell,
+} from "@/features/admins/components/visitor-table-cells";
 
 type FilterTab = "All" | VisitorStatus;
 
-const filterTabs: FilterTab[] = ["All", "Signed In", "Signed Off", "Pending", "Rejected"];
+const filterTabs: FilterTab[] = [
+  "All",
+  "Signed In",
+  "Signed Off",
+  "Pending",
+  "Rejected",
+];
 
 const columns: ColumnsType<VisitorRow> = [
   {
     title: "Name",
     dataIndex: "name",
     key: "name",
-    render: (_, record) => <VisitorIdentityCell name={record.name} phone={record.phone} />,
+    render: (_, record) => (
+      <VisitorIdentityCell
+        name={record.name}
+        phone={record.phone}
+      />
+    ),
   },
   {
     title: "Host Name",
     dataIndex: "host",
     key: "host",
-    render: (host) => <span className="text-sm text-slate-500 dark:text-slate-300">{host}</span>,
+    render: (host) => (
+      <span className="text-sm text-slate-500 dark:text-slate-300">
+        {host}
+      </span>
+    ),
   },
   {
     title: "Purpose",
     dataIndex: "purpose",
     key: "purpose",
     render: (purpose) => (
-      <span className="text-sm text-slate-500 dark:text-slate-300">{purpose}</span>
+      <span className="text-sm text-slate-500 dark:text-slate-300">
+        {purpose}
+      </span>
     ),
   },
   {
     title: "Check-In",
     dataIndex: "checkIn",
     key: "checkIn",
-    render: (checkIn) => {
-      const parts = checkIn.split(" • ");
-      return (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-            {parts[1] || checkIn}
-          </span>
-          <span className="text-xs text-slate-400">{parts[0]}</span>
-        </div>
-      );
-    },
+    render: (_, record) => (
+      <VisitDateTimeCell
+        date={record.checkInDate}
+        time={record.checkInTime}
+      />
+    ),
   },
   {
     title: "Status",
@@ -83,7 +99,10 @@ export default function Visitors() {
   const { visitorRecords, totalEntries } = useVisitorTableData({
     page,
     limit: pageSize,
-    status: activeTab === "All" ? undefined : toApiVisitStatus(activeTab),
+    status:
+      activeTab === "All"
+        ? undefined
+        : toApiVisitStatus(activeTab),
   });
 
   const handleRowClick = useVisitorRowClick();
@@ -107,7 +126,11 @@ export default function Visitors() {
                   iconPlacement="end"
                   aria-label="Toggle filters"
                   onClick={() => setShowFilters((prev) => !prev)}
-                  className={`h-9! ${showFilters ? "bg-emerald-50! text-emerald-500!" : "text-slate-400!"}`}
+                  className={`h-9! ${
+                    showFilters
+                      ? "bg-emerald-50! text-emerald-500!"
+                      : "text-slate-400!"
+                  }`}
                 >
                   Filter
                 </Button>
@@ -144,7 +167,7 @@ export default function Visitors() {
               columns={columns}
               dataSource={visitorRecords}
               rowKey="id"
-              scroll={{ x: 900 }}
+              scroll={{ x: 760 }}
               className="visitor-table"
               size="small"
               showSerialNumber

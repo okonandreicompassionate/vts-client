@@ -6,13 +6,16 @@ import Header from "./layout/header.tsx";
 import StatusPill from "./status-pill.tsx";
 import TableComponent from "./table.tsx";
 import { TablePaginationFooter } from "./table-pagination-footer.tsx";
-import { VisitorAvatar } from "./visitor-avatar.tsx";
 import type { VisitorStatus } from "./status-pill.tsx";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits.ts";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data.ts";
 import { useVisitorRowClick } from "../hooks/use-visitor-row-click.ts";
 import { Spinner } from "@/components/spinner.tsx";
 import { useVisitorStats } from "../hooks/use-visitor-stats.ts";
+import {
+  VisitorIdentityCell,
+  VisitDateTimeCell,
+} from "@/features/admins/components/visitor-table-cells";
 
 const statCards = [
   {
@@ -55,21 +58,11 @@ const columns: ColumnsType<VisitorRow> = [
     dataIndex: "name",
     key: "name",
     render: (_, record) => (
-      <div className="flex items-center gap-3">
-        <VisitorAvatar name={record.name} size="md" />
-        <div>
-          <p className="text-sm leading-tight font-medium text-slate-800 dark:text-slate-100">
-            {record.name}
-          </p>
-        </div>
-      </div>
+      <VisitorIdentityCell
+        name={record.name}
+        phone={record.phone}
+      />
     ),
-  },
-  {
-    title: "Phone Number",
-    dataIndex: "phone",
-    key: "phone",
-    render: (phone) => <span className="text-sm text-slate-500 dark:text-slate-400">{phone}</span>,
   },
   {
     title: "Host Name",
@@ -93,9 +86,14 @@ const columns: ColumnsType<VisitorRow> = [
   },
   {
     title: "Check-In Time",
-    dataIndex: "time",
-    key: "time",
-    render: (time) => <span className="text-sm text-slate-600 dark:text-slate-300">{time}</span>,
+    dataIndex: "checkIn",
+    key: "checkIn",
+    render: (_, record) => (
+      <VisitDateTimeCell
+        date={record.checkInDate}
+        time={record.checkInTime}
+      />
+    ),
   },
   {
     title: "Action",
@@ -202,7 +200,7 @@ export default function Dashboard() {
                 columns={columns}
                 dataSource={visitorRecords}
                 rowKey="id"
-                scroll={{ x: 900 }}
+                scroll={{ x: 760 }}
                 className="visitor-table"
                 size="small"
                 showSerialNumber
