@@ -17,7 +17,7 @@ const LazyRegistration = lazy(() => import("../features/visitors/components/regi
 const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/verify-identity"));
 const LazyVisitorProfile = lazy(() => import("../features/visitors/components/visitor-profile"));
 
-const LazyVisitorLayout = lazy(() => import("../features/visitors/components/layout/layout"));
+const LazyVisitorLayout = lazy(() => import("../features/visitors/components/layout"));
 
 const LazyLayout = lazy(() => import("../features/admins/components/layout/dashboard-layout"));
 

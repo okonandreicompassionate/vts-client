@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { io, type Socket } from "socket.io-client";
 
 type StatusChangedPayload = {
@@ -13,32 +13,37 @@ type UseVisitorSocketOptions = {
   ) => void;
 };
 
-const SOCKET_URL =
-  import.meta.env.VITE_API_URL;
+const SOCKET_URL = import.meta.env.VITE_API_URL;
 
 export function useVisitorSocket({
   token,
   onStatusChanged,
 }: UseVisitorSocketOptions = {}) {
+  const onStatusChangedRef = useRef(onStatusChanged);
+
+  useEffect(() => {
+    onStatusChangedRef.current = onStatusChanged;
+  }, [onStatusChanged]);
+
   useEffect(() => {
     if (!token) {
       return;
     }
 
-    let socket: Socket | null = null;
-
-    socket = io(`${SOCKET_URL}/visits`, {
-      transports: ["polling", "websocket"],
+    const socket: Socket = io(`${SOCKET_URL}/visits`, {
       auth: {
         token,
       },
       withCredentials: true,
+
+      // Let Socket.IO manage the transport upgrade.
+      transports: ["polling", "websocket"],
     });
 
     const handleStatusChanged = (
       data: StatusChangedPayload,
     ) => {
-      onStatusChanged?.(data);
+      onStatusChangedRef.current?.(data);
     };
 
     socket.on(
@@ -49,19 +54,13 @@ export function useVisitorSocket({
     socket.on("connect", () => {
       console.log(
         "Visitor WebSocket connected:",
-        socket?.id,
+        socket.id,
       );
 
-      socket?.emit("visitor.join");
+      socket.emit("visitor.join");
     });
 
     socket.on("connect_error", (error) => {
-      /**
-       * IMPORTANT:
-       *
-       * A WebSocket failure must NOT affect the REST
-       * visit query.
-       */
       console.warn(
         "Visitor WebSocket connection failed:",
         error.message,
@@ -76,13 +75,12 @@ export function useVisitorSocket({
     });
 
     return () => {
-      socket?.off(
+      socket.off(
         "visit.status.changed",
         handleStatusChanged,
       );
 
-      socket?.disconnect();
-      socket = null;
+      socket.disconnect();
     };
-  }, [token, onStatusChanged]);
+  }, [token]);
 }
