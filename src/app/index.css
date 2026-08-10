@@ -7,6 +7,28 @@ body {
   font-family: "Raleway Variable", sans-serif;
 }
 
+.dark .ant-btn,
+.dark .ant-btn-default,
+.dark .ant-btn-primary {
+  border-color: #475569 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.dark .ant-btn:hover,
+.dark .ant-btn:focus-visible,
+.dark .ant-btn-default:hover,
+.dark .ant-btn-default:focus-visible,
+.dark .ant-btn-primary:hover,
+.dark .ant-btn-primary:focus-visible {
+  border-color: #64748b !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.dark .ant-btn-primary {
+  border-color: transparent !important;
+}
 
 @media (min-width: 768px) {
   html,
