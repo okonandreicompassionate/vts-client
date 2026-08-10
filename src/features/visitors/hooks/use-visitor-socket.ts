@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { io, type Socket } from "socket.io-client";
 
 type StatusChangedPayload = {
@@ -8,9 +8,7 @@ type StatusChangedPayload = {
 
 type UseVisitorSocketOptions = {
   token?: string;
-  onStatusChanged?: (
-    data: StatusChangedPayload,
-  ) => void;
+  onStatusChanged?: (data: StatusChangedPayload) => void;
 };
 
 const SOCKET_URL = import.meta.env.VITE_API_URL;
@@ -19,31 +17,24 @@ export function useVisitorSocket({
   token,
   onStatusChanged,
 }: UseVisitorSocketOptions = {}) {
-  const onStatusChangedRef = useRef(onStatusChanged);
-
-  useEffect(() => {
-    onStatusChangedRef.current = onStatusChanged;
-  }, [onStatusChanged]);
-
   useEffect(() => {
     if (!token) {
       return;
     }
 
     const socket: Socket = io(`${SOCKET_URL}/visits`, {
+      transports: ["polling", "websocket"],
       auth: {
         token,
       },
       withCredentials: true,
-
-      // Let Socket.IO manage the transport upgrade.
-      transports: ["polling", "websocket"],
+      reconnection: false,
     });
 
     const handleStatusChanged = (
       data: StatusChangedPayload,
     ) => {
-      onStatusChangedRef.current?.(data);
+      onStatusChanged?.(data);
     };
 
     socket.on(
@@ -67,6 +58,15 @@ export function useVisitorSocket({
       );
     });
 
+    socket.on("visitor.join.error", (error) => {
+      console.warn(
+        "Visitor WebSocket authentication failed:",
+        error?.message ?? "Authentication failed.",
+      );
+
+      socket.disconnect();
+    });
+
     socket.on("disconnect", (reason) => {
       console.warn(
         "Visitor WebSocket disconnected:",
@@ -80,7 +80,12 @@ export function useVisitorSocket({
         handleStatusChanged,
       );
 
+      socket.off("connect");
+      socket.off("connect_error");
+      socket.off("visitor.join.error");
+      socket.off("disconnect");
+
       socket.disconnect();
     };
-  }, [token]);
+  }, [token, onStatusChanged]);
 }
