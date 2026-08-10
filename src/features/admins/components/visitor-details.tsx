@@ -65,14 +65,11 @@ export default function VisitorDetails() {
 
   const [notes, setNotes] = useState("");
 
-  const [signoffVisit, { isLoading: isSigningOff }] =
-    useSignoffVisitMutation();
+  const [signoffVisit, { isLoading: isSigningOff }] = useSignoffVisitMutation();
 
-  const [approveVisit, { isLoading: isApproving }] =
-    useApproveVisitMutation();
+  const [approveVisit, { isLoading: isApproving }] = useApproveVisitMutation();
 
-  const [rejectVisit, { isLoading: isRejecting }] =
-    useRejectVisitMutation();
+  const [rejectVisit, { isLoading: isRejecting }] = useRejectVisitMutation();
 
   const { visitor, isLoading, isError, error } = useVisitorDetails(id);
 
@@ -98,9 +95,7 @@ export default function VisitorDetails() {
 
       message.success("Visitor signed off successfully.");
     } catch {
-      message.error(
-        "Sign off could not be completed. Please try again.",
-      );
+      message.error("Sign off could not be completed. Please try again.");
     }
   };
 
@@ -127,18 +122,12 @@ export default function VisitorDetails() {
       message.success("Visitor approved successfully.");
       closeModal();
     } catch {
-      message.error(
-        "Approval could not be completed. Please try again.",
-      );
+      message.error("Approval could not be completed. Please try again.");
     }
   };
 
   const handleReject = () => {
-    openModal(
-      <RejectVisitorModal
-        onConfirm={handleConfirmReject}
-      />,
-    );
+    openModal(<RejectVisitorModal onConfirm={handleConfirmReject} />);
   };
 
   const handleConfirmReject = async () => {
@@ -154,9 +143,7 @@ export default function VisitorDetails() {
       setNotes("");
       closeModal();
     } catch {
-      message.error(
-        "Rejection could not be completed. Please try again.",
-      );
+      message.error("Rejection could not be completed. Please try again.");
     }
   };
 
@@ -165,9 +152,7 @@ export default function VisitorDetails() {
       type="link"
       icon={<ArrowLeftOutlined className="text-xs" />}
       className="mb-4 px-0! font-medium text-sky-500!"
-      onClick={() =>
-        navigate(paths.admin.visitors.getHref(orgSlug))
-      }
+      onClick={() => navigate(paths.admin.visitors.getHref(orgSlug))}
     >
       Back to List
     </Button>
@@ -179,11 +164,7 @@ export default function VisitorDetails() {
         <Header title="Visitor Details" />
 
         <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
-          <Alert
-            type="error"
-            showIcon
-            message="No visitor ID was provided."
-          />
+          <Alert type="error" showIcon message="No visitor ID was provided." />
         </main>
       </>
     );
@@ -195,10 +176,7 @@ export default function VisitorDetails() {
         <Header title="Visitor Details" />
 
         <main className="flex flex-1 px-3 py-16">
-          <Spinner
-            variant="page"
-            label="Loading visitor..."
-          />
+          <Spinner variant="page" label="Loading visitor..." />
         </main>
       </>
     );
@@ -256,10 +234,7 @@ export default function VisitorDetails() {
             message="Something went wrong loading this visitor."
             description="Please try again."
             action={
-              <Button
-                size="small"
-                onClick={() => window.location.reload()}
-              >
+              <Button size="small" onClick={() => window.location.reload()}>
                 Retry
               </Button>
             }
@@ -277,11 +252,7 @@ export default function VisitorDetails() {
         <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
           {BackButton}
 
-          <Alert
-            type="warning"
-            showIcon
-            message="Visitor not found"
-          />
+          <Alert type="warning" showIcon message="Visitor not found" />
         </main>
       </>
     );
@@ -302,15 +273,11 @@ export default function VisitorDetails() {
           : visitor.status === "Rejected"
             ? "Approval rejected"
             : "Approved for entry",
-      time:
-        visitor.status === "Pending"
-          ? "Pending review"
-          : visitor.checkIn,
+      time: visitor.status === "Pending" ? "Pending review" : visitor.checkIn,
       status:
         visitor.status === "Rejected"
           ? "done-orange"
-          : visitor.status === "Signed In" ||
-              visitor.status === "Signed Off"
+          : visitor.status === "Signed In" || visitor.status === "Signed Off"
             ? "done-green"
             : "done-orange",
     },
@@ -372,10 +339,7 @@ export default function VisitorDetails() {
     },
     {
       label: "Check-Out Time",
-      value:
-        visitor.status === "Signed Off"
-          ? visitor.time
-          : "Pending",
+      value: visitor.status === "Signed Off" ? visitor.time : "Pending",
     },
   ];
 
@@ -390,10 +354,7 @@ export default function VisitorDetails() {
           <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
             <div className="mb-6 flex flex-col items-center text-center">
               <div className="mb-4">
-                <VisitorAvatar
-                  name={visitor.name}
-                  size="lg"
-                />
+                <VisitorAvatar name={visitor.name} size="lg" />
               </div>
 
               <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
@@ -421,9 +382,7 @@ export default function VisitorDetails() {
                     {row.label}
                   </span>
 
-                  <span className="text-sm text-slate-700 dark:text-slate-200">
-                    {row.value}
-                  </span>
+                  <span className="text-sm text-slate-700 dark:text-slate-200">{row.value}</span>
                 </div>
               ))}
             </div>
@@ -435,9 +394,8 @@ export default function VisitorDetails() {
                 </h4>
 
                 <p className="mb-4 text-sm leading-relaxed text-slate-400">
-                  Please verify the visitor information before
-                  granting access. You can add internal notes
-                  below for audit purposes.
+                  Please verify the visitor information before granting access. You can add internal
+                  notes below for audit purposes.
                 </p>
 
                 <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200">
@@ -495,10 +453,7 @@ export default function VisitorDetails() {
 
             <div className="space-y-0">
               {timeline.map((step, idx) => (
-                <div
-                  key={step.key}
-                  className="flex gap-3"
-                >
+                <div key={step.key} className="flex gap-3">
                   <div className="flex flex-col items-center">
                     <TimelineDot status={step.status} />
 
@@ -507,20 +462,12 @@ export default function VisitorDetails() {
                     )}
                   </div>
 
-                  <div
-                    className={
-                      idx !== timeline.length - 1
-                        ? "pb-6"
-                        : ""
-                    }
-                  >
+                  <div className={idx !== timeline.length - 1 ? "pb-6" : ""}>
                     <p className="text-sm leading-tight font-semibold text-slate-800 dark:text-slate-100">
                       {step.title}
                     </p>
 
-                    <p className="mt-0.5 text-xs text-slate-400">
-                      {step.time}
-                    </p>
+                    <p className="mt-0.5 text-xs text-slate-400">{step.time}</p>
                   </div>
                 </div>
               ))}

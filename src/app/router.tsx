@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { Spinner } from "../components/spinner";
+import { Spinner } from '@/components/spinner';
 import { paths } from "../config/paths";
 import { ProtectedRoute } from "./protected-route";
 import { TenantLayout } from "../lib/tenant/tenant-layout";

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../layout/sidebar";
+import Sidebar from "@/features/admins/components/layout/sidebar";
 import { useAdminAuthSession } from "../../hooks/use-admin-auth-session";
 
 const Layout = () => {

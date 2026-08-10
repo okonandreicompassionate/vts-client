@@ -17,6 +17,8 @@ export default function VerifyIdentity() {
   const handleFinish = async (value: { email: string }) => {
     try {
       const response = await verifyVisitIdentity(value).unwrap();
+      console.log(response.accessToken)
+      console.log(response.visitor)
 
       window.localStorage.setItem(
         "visitorId",
@@ -34,6 +36,8 @@ export default function VerifyIdentity() {
           accessToken: response.accessToken,
         }),
       );
+
+      console.log(response.visitor)
 
       window.localStorage.setItem("visitorVerified", "true");
 
