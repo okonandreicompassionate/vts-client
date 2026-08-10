@@ -10,7 +10,11 @@ export interface VisitorRow {
   purpose: string;
   status: VisitorStatus;
   time: string;
+  visitDate?: string;
+  visitTime: string;
   checkIn: string;
+  checkInDate?: string;
+  checkInTime: string;
   checkOut: string;
   department: string;
 }
@@ -63,6 +67,31 @@ export function formatVisitTime(value?: string) {
   return `${datePart} • ${timePart}`;
 }
 
+function formatVisitDateTime(value?: string) {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return {
+    date: new Intl.DateTimeFormat(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(date),
+    time: new Intl.DateTimeFormat(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    }).format(date),
+  };
+}
+
 export function toVisitorRow(visit: VisitRecord, index: number): VisitorRow {
   const visitTimestamp = visit.createdAt ?? visit.checkInTime ?? visit.time;
   const id =
@@ -75,6 +104,8 @@ export function toVisitorRow(visit: VisitRecord, index: number): VisitorRow {
     status === "Pending" || status === "Rejected" ? undefined : visit.updatedAt;
   const resolvedCheckIn = visit.checkIn ?? visit.checkInTime ?? fallbackCheckIn;
   const resolvedCheckOut = visit.checkOut ?? visit.checkOutTime;
+  const visitDateTime = formatVisitDateTime(visit.checkInTime ?? visit.time ?? visit.createdAt);
+  const checkInDateTime = formatVisitDateTime(resolvedCheckIn);
 
   return {
     id,
@@ -85,7 +116,11 @@ export function toVisitorRow(visit: VisitRecord, index: number): VisitorRow {
     purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
     status,
     time: formatVisitTime(visit.checkInTime ?? visit.time ?? visit.createdAt),
+    visitDate: visitDateTime?.date,
+    visitTime: visitDateTime?.time ?? "Pending",
     checkIn: resolvedCheckIn ? formatVisitTime(resolvedCheckIn) : "Pending",
+    checkInDate: checkInDateTime?.date,
+    checkInTime: checkInDateTime?.time ?? "Pending",
     checkOut: resolvedCheckOut ? formatVisitTime(resolvedCheckOut) : "Pending",
     department: visit.department ?? "N/A",
   };

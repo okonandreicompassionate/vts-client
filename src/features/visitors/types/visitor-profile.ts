@@ -2,6 +2,7 @@ export type VisitorProfileStatus = "pending" | "approved" | "rejected";
 
 export type VisitorRegistration = {
   id?: string;
+  visitorId?: string;
   name: string;
   purposeOfVisit: string;
   hostName: string;
@@ -13,4 +14,5 @@ export type VisitorRegistration = {
   createdAt?: string;
   badgeNumber?: string;
   reason?: string;
+  visitorToken?: string;
 };

@@ -1,4 +1,3 @@
-
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { paths } from "@/config/paths";
 import { useTenant } from "@/lib/tenant";
 import { useAppDispatch } from "@/lib/stores/hooks";
-import { setVisitorSession, clearVisitorAuth } from "../stores/visitor-auth-slice";
+import {
+  setVisitorSession,
+  setVisitorVerified,
+} from "../stores/visitor-auth-slice";
 import { useVerifyVisitIdentityMutation } from "../api/visit-api-slice";
 
 export default function VerifyIdentity() {
@@ -18,20 +20,17 @@ export default function VerifyIdentity() {
 
   const handleFinish = async (value: { email: string }) => {
     try {
-      const response = await verifyVisitIdentity({
-        email: value.email.trim().toLowerCase(),
-      }).unwrap();
+      const email = value.email.trim().toLowerCase();
 
-      console.log("Verify identity response:", response);
+      const response = await verifyVisitIdentity({
+        email,
+      }).unwrap();
 
       if (
         response.exists &&
         response.visitor &&
         response.accessToken
       ) {
-        console.log("Existing visitor:", response.visitor);
-        console.log("Access token:", response.accessToken);
-
         window.localStorage.setItem(
           "visitorId",
           JSON.stringify({
@@ -51,17 +50,17 @@ export default function VerifyIdentity() {
 
         window.localStorage.setItem("visitorVerified", "true");
       } else {
-        console.log("New visitor — proceeding to registration.");
+        dispatch(setVisitorVerified({ email }));
 
-        // Make sure an old visitor session cannot leak into
-        // the new visitor's registration.
-        dispatch(clearVisitorAuth());
-
-        window.localStorage.removeItem("visitorId");
-        window.localStorage.removeItem("visitorVerified");
+        window.localStorage.setItem(
+          "visitorId",
+          JSON.stringify({
+            email,
+          }),
+        );
       }
 
-      navigate(paths.register.getHref(orgSlug));
+      navigate(paths.register.getHref(orgSlug), { replace: true });
     } catch (error) {
       console.error("Verify identity failed:", error);
 
@@ -130,7 +129,7 @@ export default function VerifyIdentity() {
           </Form.Item>
         </div>
 
-        <div className="mt-auto pb-4 md:mt-10 md:pb-0">
+        <div className="mt-auto pb-4 md:pb-0">
           <Button
             type="primary"
             htmlType="submit"
