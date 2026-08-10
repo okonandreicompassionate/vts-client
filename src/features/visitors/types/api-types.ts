@@ -4,13 +4,14 @@ export interface VerifyIdentityPayload {
 }
 
 export interface VerifyIdentityResponse {
+  exists: boolean;
   visitor: {
     id: string;
     fullName: string;
     email: string;
     phoneNumber: string;
-  };
-  accessToken: string;
+  } | null;
+  accessToken: string | null;
 }
 
 export interface CreateVisitPayload {

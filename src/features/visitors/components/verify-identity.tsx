@@ -1,58 +1,78 @@
+
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
+
 import { paths } from "@/config/paths";
 import { useTenant } from "@/lib/tenant";
 import { useAppDispatch } from "@/lib/stores/hooks";
-import { setVisitorSession } from "../stores/visitor-auth-slice";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { setVisitorSession, clearVisitorAuth } from "../stores/visitor-auth-slice";
 import { useVerifyVisitIdentityMutation } from "../api/visit-api-slice";
 
 export default function VerifyIdentity() {
   const navigate = useNavigate();
   const { orgSlug } = useTenant();
   const dispatch = useAppDispatch();
+
   const [verifyVisitIdentity] = useVerifyVisitIdentityMutation();
 
   const handleFinish = async (value: { email: string }) => {
     try {
-      const response = await verifyVisitIdentity(value).unwrap();
-      console.log(response.accessToken)
-      console.log(response.visitor)
+      const response = await verifyVisitIdentity({
+        email: value.email.trim().toLowerCase(),
+      }).unwrap();
 
-      window.localStorage.setItem(
-        "visitorId",
-        JSON.stringify({
-          visitorId: response.visitor.id,
-          name: response.visitor.fullName,
-          email: response.visitor.email,
-          phoneNo: response.visitor.phoneNumber,
-        }),
-      );
+      console.log("Verify identity response:", response);
 
-      dispatch(
-        setVisitorSession({
-          visitorId: response.visitor.id,
-          accessToken: response.accessToken,
-        }),
-      );
+      if (
+        response.exists &&
+        response.visitor &&
+        response.accessToken
+      ) {
+        console.log("Existing visitor:", response.visitor);
+        console.log("Access token:", response.accessToken);
 
-      console.log(response.visitor)
+        window.localStorage.setItem(
+          "visitorId",
+          JSON.stringify({
+            visitorId: response.visitor.id,
+            name: response.visitor.fullName,
+            email: response.visitor.email,
+            phoneNo: response.visitor.phoneNumber,
+          }),
+        );
 
-      window.localStorage.setItem("visitorVerified", "true");
+        dispatch(
+          setVisitorSession({
+            visitorId: response.visitor.id,
+            accessToken: response.accessToken,
+          }),
+        );
+
+        window.localStorage.setItem("visitorVerified", "true");
+      } else {
+        console.log("New visitor — proceeding to registration.");
+
+        // Make sure an old visitor session cannot leak into
+        // the new visitor's registration.
+        dispatch(clearVisitorAuth());
+
+        window.localStorage.removeItem("visitorId");
+        window.localStorage.removeItem("visitorVerified");
+      }
 
       navigate(paths.register.getHref(orgSlug));
-    } catch {
-      message.error("We couldn't verify your identity. Please try again.");
+    } catch (error) {
+      console.error("Verify identity failed:", error);
+
+      message.error(
+        "We couldn't verify your identity. Please try again.",
+      );
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-white md:flex md:items-center dark:bg-slate-900">
-      <div className="absolute top-5 right-5">
-        <ThemeToggle />
-      </div>
-
+    <div>
       <Form
         layout="vertical"
         requiredMark={false}
@@ -81,16 +101,24 @@ export default function VerifyIdentity() {
             name="email"
             label="Email"
             rules={[
-              { required: true, message: "Please enter your email" },
+              {
+                required: true,
+                message: "Please enter your email",
+              },
               {
                 validator: (_, value) => {
-                  if (!value) return Promise.resolve();
+                  if (!value) {
+                    return Promise.resolve();
+                  }
 
-                  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                  const isEmail =
+                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
                   return isEmail
                     ? Promise.resolve()
-                    : Promise.reject(new Error("Enter a valid email address"));
+                    : Promise.reject(
+                        new Error("Enter a valid email address"),
+                      );
                 },
               },
             ]}
