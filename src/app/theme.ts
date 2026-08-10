@@ -31,7 +31,7 @@ export const getThemeConfig = (isDark: boolean) => {
       Form: {
         labelFontSize: 13,
         verticalLabelPadding: "0 0 4px",
-        itemMarginBottom: 16,
+        itemMarginBottom: 10,
         labelColor: "#374151",
       },
       Select: {

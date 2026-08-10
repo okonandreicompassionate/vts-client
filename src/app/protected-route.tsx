@@ -47,10 +47,7 @@ export function ProtectedRoute({
   }
 
   if (requiredAuth === "visitor-verified") {
-    if (
-      !visitorAuth.isAuthenticated ||
-      !visitorAuth.isVerified
-    ) {
+    if (!visitorAuth.isVerified) {
       return (
         <Navigate
           to={paths.verify.getHref(orgSlug)}

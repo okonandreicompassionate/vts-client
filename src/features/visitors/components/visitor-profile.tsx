@@ -1,12 +1,11 @@
-﻿import type { ReactNode } from "react";
+﻿// import type { ReactNode } from "react";
 import { Info } from "lucide-react";
 import { Button, message } from "antd";
 import { useCallback, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 import LoadingRing from "../animations/loading-ring";
-import SuccessCheckmark from "../components/success-checkmark";
+// import SuccessCheckmark from "../components/success-checkmark";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
 import {
@@ -18,52 +17,45 @@ import type {
   VisitorRegistration,
 } from "../types/visitor-profile";
 import { useVisitorSocket } from "../hooks/use-visitor-socket";
-import type { RootState } from "@/lib/stores/store";
+import { useAppSelector } from "@/lib/stores/hooks";
 
 type StatusMeta = {
-  title: string;
+
   subtitle: string;
   description: string;
   reason: string;
-  pillLabel: string;
+  label: string;
   pillClasses: string;
-  icon: ReactNode;
   actionLabel?: string;
 };
 
 const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
   pending: {
-    title: "Waiting for approval",
     subtitle: "Your request is now in review.",
     description:
-      "Please wait while the admin reviews your visitor access request. You will be notified when a decision is made.",
+      "",
     reason: "",
-    pillLabel: "Pending Approval",
-    pillClasses: "border-[#F5A623]/60 text-[#F5A623]",
-    icon: <LoadingRing />,
+    label: "Pending",
+    pillClasses: "border border-[#F5A623] bg-transparent text-[#F5A623]",
   },
 
   approved: {
-    title: "Access approved",
     subtitle: "You're good to go.",
     description:
       "Your visitor request has been approved. Please present this profile page at reception when you arrive.",
     reason: "",
-    pillLabel: "Visit Approved",
-    pillClasses: "border-emerald-400/60 text-emerald-500",
-    icon: <SuccessCheckmark />,
+    label: "Approved",
+    pillClasses: "border border-emerald-500 bg-transparent text-emerald-500",
     actionLabel: "Continue",
   },
 
   rejected: {
-    title: "Request declined",
     subtitle: "Your request was not approved.",
     description:
       "The administrator did not approve this visit. You can resubmit your request with updated details or contact your host for clarification.",
     reason: "",
-    pillLabel: "Visit Declined",
-    pillClasses: "border-rose-400/60 text-rose-500",
-    icon: <Info className="h-16 w-16 text-rose-500" />,
+    label: "Declined",
+    pillClasses: "border border-rose-500 bg-transparent text-rose-500",
     actionLabel: "Register Again",
   },
 };
@@ -73,9 +65,7 @@ export default function VisitorProfile() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const visitorAuth = useSelector(
-    (state: RootState) => state.visitorAuth,
-  );
+  const visitorAuth = useAppSelector((state) => state.visitorAuth);
 
   const storedRegistration = useMemo<VisitorRegistration | null>(() => {
     if (typeof window === "undefined") {
@@ -141,6 +131,7 @@ export default function VisitorProfile() {
   );
 
   useVisitorSocket({
+    token: visitorAuth.accessToken ?? undefined,
     onStatusChanged: handleStatusChanged,
   });
 
@@ -321,10 +312,10 @@ export default function VisitorProfile() {
             size="large"
             className="mt-6"
             onClick={() =>
-              navigate(paths.register.getHref(orgSlug))
+              navigate(paths.verify.getHref(orgSlug))
             }
           >
-            Return to registration
+            Return to verification
           </Button>
         </div>
       </div>
@@ -368,28 +359,12 @@ export default function VisitorProfile() {
   }
 
   return (
-    <div className="flex min-h-screen justify-center bg-white px-4 py-8 dark:bg-slate-950">
+    <div className="flex min-h-dvh items-center justify-center bg-white px-4 py-8 dark:bg-slate-950">
       <main className="flex w-full max-w-xl flex-col">
-        <div className="flex justify-center">
-          {meta.icon}
-        </div>
-
-        <div className="flex justify-center">
-          <span
-            className={`mt-10 inline-flex items-center rounded-full border px-6 py-2 text-[15px] font-semibold md:mt-12 ${meta.pillClasses}`}
-          >
-            {meta.pillLabel}
-          </span>
-        </div>
-
-        <div className="mt-6 text-center">
+        <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            {meta.title}
-          </h1>
-
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             {meta.subtitle}
-          </p>
+          </h1>
 
           <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             {meta.description}
@@ -434,7 +409,7 @@ export default function VisitorProfile() {
             )}
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-slate-200 pt-4 dark:border-slate-700">
+          <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-slate-200 pt-4 dark:border-slate-700">
             <div>
               <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
                 Host
@@ -473,6 +448,18 @@ export default function VisitorProfile() {
               <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
                 {createdTime}
               </p>
+            </div>
+
+            <div>
+              <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">
+                Status
+              </p>
+
+              <span
+                className={`mt-1 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${meta.pillClasses}`}
+              >
+                {meta.label}
+              </span>
             </div>
 
             <div>

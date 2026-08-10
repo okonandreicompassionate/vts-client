@@ -24,7 +24,7 @@ export const paths = {
     login: {
       path: "/:orgSlug/login",
       getHref: (orgSlug: string, redirectTo?: string | null) =>
-        `${tenantPath(orgSlug, "/admin")}${
+        `${tenantPath(orgSlug, "/login")}${
           redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
         }`,
     },
@@ -43,7 +43,7 @@ export const paths = {
     visitorDetails: {
       path: "/:orgSlug/visitors/:id",
       getHref: (orgSlug: string, id?: string) =>
-        id ? tenantPath(orgSlug, `/visitors/${id}`) : tenantPath(orgSlug, "/admin/visitors"),
+        id ? tenantPath(orgSlug, `/visitors/${id}`) : tenantPath(orgSlug, "/visitors"),
     },
     settings: {
       path: "/:orgSlug/settings",

@@ -5,6 +5,7 @@ export interface VisitorAuthState {
   accessToken: string | null;
   isAuthenticated: boolean;
   isVerified: boolean;
+  verifiedEmail: string | null;
 }
 
 interface StoredVisitorSession {
@@ -34,6 +35,7 @@ const initialState: VisitorAuthState = {
   accessToken: storedSession?.accessToken ?? null,
   isAuthenticated: !!storedSession?.accessToken,
   isVerified: !!storedSession?.accessToken,
+  verifiedEmail: null,
 };
 
 const visitorAuthSlice = createSlice({
@@ -55,6 +57,7 @@ const visitorAuthSlice = createSlice({
       state.accessToken = accessToken;
       state.isAuthenticated = true;
       state.isVerified = true;
+      state.verifiedEmail = null;
 
       localStorage.setItem(
         "visitorSession",
@@ -65,11 +68,27 @@ const visitorAuthSlice = createSlice({
       );
     },
 
+    setVisitorVerified: (
+      state,
+      action: PayloadAction<{
+        email: string;
+      }>,
+    ) => {
+      state.visitorId = null;
+      state.accessToken = null;
+      state.isAuthenticated = false;
+      state.isVerified = true;
+      state.verifiedEmail = action.payload.email;
+
+      localStorage.removeItem("visitorSession");
+    },
+
     clearVisitorAuth: (state) => {
       state.visitorId = null;
       state.accessToken = null;
       state.isAuthenticated = false;
       state.isVerified = false;
+      state.verifiedEmail = null;
 
       localStorage.removeItem("visitorSession");
     },
@@ -78,6 +97,7 @@ const visitorAuthSlice = createSlice({
 
 export const {
   setVisitorSession,
+  setVisitorVerified,
   clearVisitorAuth,
 } = visitorAuthSlice.actions;
 

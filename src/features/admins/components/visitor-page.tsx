@@ -6,11 +6,11 @@ import Header from "./layout/header.tsx";
 import StatusPill from "./status-pill.tsx";
 import TableComponent from "./table.tsx";
 import { TablePaginationFooter } from "./table-pagination-footer.tsx";
-import { VisitorAvatar } from "./visitor-avatar.tsx";
 import type { VisitorStatus } from "./status-pill.tsx";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
 import { useVisitorRowClick } from "../hooks/use-visitor-row-click";
+import { VisitorIdentityCell } from "./visitor-table-cells";
 
 type FilterTab = "All" | VisitorStatus;
 
@@ -21,17 +21,7 @@ const columns: ColumnsType<VisitorRow> = [
     title: "Name",
     dataIndex: "name",
     key: "name",
-    render: (_, record) => (
-      <div className="flex items-center gap-3">
-        <VisitorAvatar name={record.name} size="md" />
-        <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-slate-800 dark:text-slate-100">
-            {record.name}
-          </span>
-          <span className="text-xs text-slate-400">{record.phone}</span>
-        </div>
-      </div>
-    ),
+    render: (_, record) => <VisitorIdentityCell name={record.name} phone={record.phone} />,
   },
   {
     title: "Host Name",

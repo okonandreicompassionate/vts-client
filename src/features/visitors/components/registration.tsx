@@ -3,12 +3,14 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { useAppDispatch } from "@/lib/stores/hooks";
 import { useCreateVisitMutation } from "../api/visit-api-slice";
 import RegistrationModal from "./modals/registration-modal";
 import RegistrationSuccessModal from "./modals/registration-success-modal";
 import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
+import { setVisitorSession } from "../stores/visitor-auth-slice";
 
 const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
 
@@ -17,6 +19,7 @@ export default function Registration() {
   const [form] = Form.useForm<RegistrationValues>();
   const { openModal, closeModal } = usePopup();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [createVisit] = useCreateVisitMutation();
 
   const purposeOfVisitValue = Form.useWatch("purposeOfVisit", form);
@@ -82,17 +85,26 @@ export default function Registration() {
             const status = normalizeVisitStatus(response?.status);
             const visitId = response?.id ?? response?.referenceId;
             const requestId = response?.referenceId ?? response?.id;
+            const visitorId = response.visitorId ?? existingIdentity?.visitorId;
+
+            dispatch(
+              setVisitorSession({
+                visitorId,
+                accessToken: response.visitorSocketToken,
+              }),
+            );
 
             window.localStorage.setItem(
               "visitorRegistration",
               JSON.stringify({
                 id: visitId,
-                visitorId: response?.visitorId ?? existingIdentity?.visitorId,
+                visitorId,
                 ...values,
                 email: values.email,
                 status,
                 requestId,
                 createdAt,
+                visitorToken: response.visitorSocketToken,
               }),
             );
 
@@ -114,7 +126,7 @@ export default function Registration() {
   };
 
   return (
-    <div className="hide-scrollbar flex min-h-screen w-full flex-col items-center md:justify-center dark:bg-slate-950">
+    <div className="hide-scrollbar flex min-h-screen w-full flex-col items-center md:justify-center dark:bg-slate-900">
       <div className="flex w-full flex-1 flex-col md:max-h-[90vh] md:max-w-lg md:flex-none md:overflow-y-auto">
         <header className="mt-6 flex items-center justify-between border-b border-slate-200 px-5 py-4 md:mt-0 dark:border-slate-700">
           <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Registration</h1>
@@ -130,7 +142,7 @@ export default function Registration() {
             phoneNo: existingIdentity?.phoneNo,
           }}
           onFinish={handleFinish}
-          className="flex flex-1 flex-col gap-2 px-5 pt-6 pb-4 md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
+          className="flex flex-1 flex-col px-5 pt-6 pb-4 md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
         >
           <Form.Item
             name="name"
