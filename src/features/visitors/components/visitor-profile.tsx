@@ -281,7 +281,7 @@ export default function VisitorProfile() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{meta.subtitle}</h1>
 
-          <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             {meta.description}
           </p>
         </div>
@@ -301,7 +301,7 @@ export default function VisitorProfile() {
         )}
 
         <section className="mt-8 w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left shadow-sm md:p-6 dark:border-slate-700 dark:bg-slate-900">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-1">
             <div>
               <p className="text-[19px] font-bold text-slate-900 dark:text-slate-100">
                 {registration.name}
@@ -313,7 +313,7 @@ export default function VisitorProfile() {
             {isVisitFetching && <span className="text-xs text-slate-400">Updating...</span>}
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-slate-200 pt-4 dark:border-slate-700">
+          <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 border-t border-slate-200 pt-4 dark:border-slate-700">
             <div>
               <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">Host</p>
 
