@@ -1,81 +1,94 @@
 import { useState } from "react";
-import { Select, Button } from "antd";
+import { Button } from "antd";
+import { ClockCircleOutlined, EyeOutlined, WarningOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
-import { ClockCircleOutlined, WarningOutlined, EyeOutlined } from "@ant-design/icons";
+import type { ReactNode } from "react";
+import { TablePaginationFooter } from "./table-pagination-footer.tsx";
+
 import Header from "./layout/header.tsx";
 import StatusPill from "./status-pill.tsx";
 import TableComponent from "./table.tsx";
-import { TablePaginationFooter } from "./table-pagination-footer.tsx";
+
 import type { VisitorStatus } from "./status-pill.tsx";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits.ts";
+
 import { useVisitorTableData } from "../hooks/use-visitor-table-data.ts";
 import { useVisitorRowClick } from "../hooks/use-visitor-row-click.ts";
-import { Spinner } from "@/components/spinner.tsx";
 import { useVisitorStats } from "../hooks/use-visitor-stats.ts";
+
+import { Spinner } from "@/components/spinner.tsx";
 import {
   VisitorIdentityCell,
   VisitDateTimeCell,
 } from "@/features/admins/components/visitor-table-cells";
 
-const statCards = [
+type StatusFilter = "All" | VisitorStatus;
+
+type StatCard = {
+  label: string;
+  filter: StatusFilter;
+  icon: ReactNode;
+  iconBg: string;
+  iconColor: string;
+};
+
+const statCards: StatCard[] = [
   {
     label: "Total Visitors",
-    icon: <img src="/visitors2.svg" alt="Total Visitors" />,
-    iconBg: "bg-blue-50",
-    iconColor: "text-blue-500",
+    filter: "All",
+    icon: <img src="/visitors2.svg" alt="" className="h-4 w-4" />,
+    iconBg: "bg-blue-50 dark:bg-blue-500/10",
+    iconColor: "text-blue-500 dark:text-blue-400",
   },
   {
     label: "Currently Signed In",
-    icon: <img src="/check.svg" alt="Signed In" />,
-    iconBg: "bg-emerald-50",
-    iconColor: "text-emerald-500",
+    filter: "Signed In",
+    icon: <img src="/check.svg" alt="" className="h-4 w-4" />,
+    iconBg: "bg-emerald-50 dark:bg-emerald-500/10",
+    iconColor: "text-emerald-500 dark:text-emerald-400",
   },
   {
     label: "Signed Off",
-    icon: <img src="/back.svg" alt="Signed Off" />,
-    iconBg: "bg-slate-100",
-    iconColor: "text-slate-500",
+    filter: "Signed Off",
+    icon: <img src="/back.svg" alt="" className="h-4 w-4" />,
+    iconBg: "bg-slate-100 dark:bg-slate-700",
+    iconColor: "text-slate-500 dark:text-slate-300",
   },
   {
     label: "Pending Approval",
+    filter: "Pending",
     icon: <ClockCircleOutlined />,
-    iconBg: "bg-orange-50",
-    iconColor: "text-orange-400",
+    iconBg: "bg-orange-50 dark:bg-orange-500/10",
+    iconColor: "text-orange-400 dark:text-orange-300",
   },
   {
     label: "Rejected",
+    filter: "Rejected",
     icon: <WarningOutlined />,
-    iconBg: "bg-rose-50",
-    iconColor: "text-rose-400",
+    iconBg: "bg-rose-50 dark:bg-rose-500/10",
+    iconColor: "text-rose-400 dark:text-rose-300",
   },
 ];
 
-type StatusFilter = "All" | VisitorStatus;
-
 const columns: ColumnsType<VisitorRow> = [
   {
-    title: "Visitor Name",
+    title: "Visitor Details",
     dataIndex: "name",
     key: "name",
-    render: (_, record) => (
-      <VisitorIdentityCell
-        name={record.name}
-        phone={record.phone}
-      />
-    ),
+    render: (_, record) => <VisitorIdentityCell name={record.name} phone={record.phone} />,
   },
   {
     title: "Host Name",
     dataIndex: "host",
     key: "host",
-    render: (host) => <span className="text-sm text-slate-600 dark:text-slate-300">{host}</span>,
+    render: (host) => <span className="text-xs text-slate-600 dark:text-slate-300">{host}</span>,
   },
   {
     title: "Purpose",
     dataIndex: "purpose",
     key: "purpose",
     render: (purpose) => (
-      <span className="text-sm text-slate-600 dark:text-slate-300">{purpose}</span>
+      <span className="text-xs text-slate-600 dark:text-slate-300">{purpose}</span>
     ),
   },
   {
@@ -89,10 +102,7 @@ const columns: ColumnsType<VisitorRow> = [
     dataIndex: "checkIn",
     key: "checkIn",
     render: (_, record) => (
-      <VisitDateTimeCell
-        date={record.checkInDate}
-        time={record.checkInTime}
-      />
+      <VisitDateTimeCell date={record.checkInDate} time={record.checkInTime} />
     ),
   },
   {
@@ -105,7 +115,7 @@ const columns: ColumnsType<VisitorRow> = [
         shape="circle"
         icon={<EyeOutlined />}
         aria-label="View visitor"
-        className="bg-sky-50! text-sky-500! hover:bg-sky-100!"
+        className="bg-sky-50! text-sky-500! hover:bg-sky-100! dark:bg-sky-500/10! dark:text-sky-400! dark:hover:bg-sky-500/20!"
       />
     ),
   },
@@ -114,6 +124,7 @@ const columns: ColumnsType<VisitorRow> = [
 export default function Dashboard() {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
+
   const pageSize = 8;
 
   const { visitorRecords, totalEntries, isLoading } = useVisitorTableData({
@@ -121,26 +132,22 @@ export default function Dashboard() {
     limit: pageSize,
     status: statusFilter === "All" ? undefined : toApiVisitStatus(statusFilter),
   });
+
   const summary = useVisitorStats();
   const handleRowClick = useVisitorRowClick();
 
-  const handleStatusChange = (value: StatusFilter) => {
-    setStatusFilter(value);
+  const handleStatusChange = (filter: StatusFilter) => {
+    setStatusFilter(filter);
     setPage(1);
   };
 
   const cardValues = [
     summary.total.toLocaleString(),
-    summary.signedIn.toString(),
-    summary.signedOff.toString(),
-    summary.pending.toString(),
-    summary.rejected.toString(),
+    summary.signedIn.toLocaleString(),
+    summary.signedOff.toLocaleString(),
+    summary.pending.toLocaleString(),
+    summary.rejected.toLocaleString(),
   ];
-
-  const cards = statCards.map((card, index) => ({
-    ...card,
-    value: cardValues[index],
-  }));
 
   return (
     <>
@@ -148,51 +155,49 @@ export default function Dashboard() {
 
       <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
         <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-          {cards.map((card) => (
-            <div
-              key={card.label}
-              className="flex items-center gap-2 rounded-md border border-slate-100 bg-white px-2.5 py-2 shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none"
-            >
-              <div
-                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${card.iconBg} ${card.iconColor}`}
+          {statCards.map((card, index) => {
+            const isActive = statusFilter === card.filter;
+
+            return (
+              <button
+                key={card.label}
+                type="button"
+                onClick={() => handleStatusChange(card.filter)}
+                aria-pressed={isActive}
+                className={`group flex w-full cursor-pointer items-center gap-2 rounded-md border px-2.5 py-2 text-left transition-all duration-150 hover:border-slate-300 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-[0.99] dark:hover:border-slate-700 dark:focus-visible:ring-slate-600 ${
+                  isActive
+                    ? "border-slate-300 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
+                    : "border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-800"
+                } `}
               >
-                {card.icon}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm leading-none font-semibold text-slate-800 dark:text-slate-100">
-                  {card.value}
-                </p>
-                <p className="mt-0.5 text-[10px] leading-none text-slate-400">{card.label}</p>
-              </div>
-            </div>
-          ))}
+                <div
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-transform duration-150 group-hover:scale-105 ${card.iconBg} ${card.iconColor} `}
+                >
+                  {card.icon}
+                </div>
+
+                <div className="min-w-0">
+                  <p className="text-sm leading-none font-semibold text-slate-800 dark:text-slate-100">
+                    {cardValues[index]}
+                  </p>
+
+                  <p className="mt-0.5 text-[10px] leading-none text-slate-400 dark:text-slate-500">
+                    {card.label}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-          <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
+          <div className="px-3 py-4 sm:px-6 sm:py-5">
             <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
               Recent Visitors
             </h3>
-            <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
-              <p className="text-slate-600 dark:text-slate-300">Filter:</p>
-              <Select
-                value={statusFilter}
-                onChange={handleStatusChange}
-                size="middle"
-                className="w-full bg-[#F5FBFE] sm:w-32 dark:bg-slate-700"
-                popupMatchSelectWidth={false}
-                options={[
-                  { value: "All", label: "All" },
-                  { value: "Signed In", label: "Signed In" },
-                  { value: "Pending", label: "Pending" },
-                  { value: "Signed Off", label: "Signed Off" },
-                  { value: "Rejected", label: "Rejected" },
-                ]}
-              />
-            </div>
           </div>
 
-          <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="w-full min-w-0">
             {isLoading ? (
               <Spinner variant="inline" />
             ) : (
@@ -200,7 +205,6 @@ export default function Dashboard() {
                 columns={columns}
                 dataSource={visitorRecords}
                 rowKey="id"
-                scroll={{ x: 760 }}
                 className="visitor-table"
                 size="small"
                 showSerialNumber

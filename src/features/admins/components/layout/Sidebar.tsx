@@ -5,7 +5,6 @@ import { AppstoreOutlined, SettingOutlined, MenuOutlined, CloseOutlined } from "
 
 import { paths } from "../../../../config/paths";
 import { useTenant } from "@/lib/tenant";
-import { useLogout } from "../../hooks/use-logout";
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -14,7 +13,6 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { orgSlug } = useTenant();
-  const logout = useLogout();
 
   const navItems = [
     {
@@ -42,10 +40,7 @@ export default function Sidebar() {
     setMobileOpen(false);
   };
 
-  const handleLogout = () => {
-    setMobileOpen(false);
-    logout();
-  };
+;
 
   return (
     <>
@@ -104,7 +99,7 @@ export default function Sidebar() {
                   key={item.key}
                   type="text"
                   onClick={() => go(item.href)}
-                  className={`flex! h-auto! w-full! items-center! gap-3 rounded-lg! px-3! py-2.5! text-sm! font-medium! ${
+                  className={`flex! h-auto! w-full! items-center! gap-2 rounded-lg! px-3! py-1.5! text-sm! font-medium! ${
                     isActive
                       ? "bg-sky-500! text-white! shadow-sm shadow-sky-200 dark:shadow-sky-900!"
                       : "text-slate-500! hover:bg-slate-50! dark:text-slate-400! dark:hover:bg-slate-800!"
@@ -129,18 +124,7 @@ export default function Sidebar() {
           </nav>
         </div>
 
-        <div className="p-3">
-          <Button
-            type="text"
-            onClick={handleLogout}
-            className={`flex! h-auto! w-full! items-center! gap-3 rounded-lg! px-3! py-2.5! text-sm! font-medium! text-slate-500! hover:bg-slate-50! dark:text-slate-400! dark:hover:bg-slate-800! ${
-              collapsed ? "md:justify-center!" : "justify-start!"
-            }`}
-          >
-            <img src="/back.svg" alt="" />
-            <span className={collapsed ? "md:hidden" : ""}>Logout</span>
-          </Button>
-        </div>
+       
       </aside>
     </>
   );

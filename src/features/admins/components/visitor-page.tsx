@@ -167,7 +167,6 @@ export default function Visitors() {
               columns={columns}
               dataSource={visitorRecords}
               rowKey="id"
-              scroll={{ x: 760 }}
               className="visitor-table"
               size="small"
               showSerialNumber

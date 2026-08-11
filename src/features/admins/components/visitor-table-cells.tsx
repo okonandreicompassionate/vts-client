@@ -16,7 +16,7 @@ export function VisitorIdentityCell({
 }: VisitorIdentityCellProps) {
   return (
     <div className="flex items-center gap-3">
-      <VisitorAvatar name={name} size="md" />
+      <VisitorAvatar name={name} size="sm" />
 
       <div className="flex min-w-0 flex-col gap-1">
         <span className="truncate text-sm font-medium text-slate-800 dark:text-slate-100">
