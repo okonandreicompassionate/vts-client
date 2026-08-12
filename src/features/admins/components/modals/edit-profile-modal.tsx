@@ -45,19 +45,19 @@ function EditProfileModal() {
       <CustomModal.Body>
         <Form form={form} className="mt-2 space-y-1" layout="vertical">
           <FormItem
-            label={<span className="text-[14px] font-semibold text-slate-800">Full Name</span>}
+            label={<span className="text-xs font-semibold text-slate-800">Full Name</span>}
             name="fullName"
             rules={[{ required: true, message: "Please enter your full name" }]}
           >
             <Input
               type="text"
-              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
+              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-xs! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
               placeholder="Admin User"
             />
           </FormItem>
 
           <FormItem
-            label={<span className="text-[14px] font-semibold text-slate-800">Email Address</span>}
+            label={<span className="text-xs font-semibold text-slate-800">Email Address</span>}
             name="email"
             rules={[
               { required: true, message: "Please enter your email address" },
@@ -66,19 +66,19 @@ function EditProfileModal() {
           >
             <Input
               type="email"
-              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
+              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-xs! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
               placeholder=""
             />
           </FormItem>
 
           <FormItem
-            label={<span className="text-[14px] font-semibold text-slate-800">Phone Number</span>}
+            label={<span className="text-xs font-semibold text-slate-800">Phone Number</span>}
             name="phoneNumber"
             rules={[{ required: true, message: "Please enter your phone number" }]}
           >
             <Input
               type="text"
-              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[14px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
+              className="h-11! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-xs! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
               placeholder="+234 801 234 5678"
             />
           </FormItem>

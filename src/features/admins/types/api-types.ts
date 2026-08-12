@@ -126,3 +126,13 @@ export interface LoginResponse {
   accessToken: string;
   user: UserProfile;
 }
+
+export interface NotificationSettingsResponse {
+  notifyPendingVisitEmail: boolean;
+  dailySummaryEmailReport: boolean;
+}
+
+export interface UpdateNotificationSettingsPayload {
+  notifyPendingVisitEmail?: boolean;
+  dailySummaryEmailReport?: boolean;
+}

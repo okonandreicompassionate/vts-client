@@ -48,7 +48,7 @@ function ManageSecurityModal() {
         >
           <FormItem
             label={
-              <span className="text-[14px] font-semibold text-slate-800">Current Password</span>
+              <span className="text-xs font-semibold text-slate-800">Current Password</span>
             }
             name="currentPassword"
             rules={[{ required: true, message: "Please enter your current password" }]}
@@ -60,7 +60,7 @@ function ManageSecurityModal() {
           </FormItem>
 
           <FormItem
-            label={<span className="text-[14px] font-semibold text-slate-800">New Password</span>}
+            label={<span className="text-xs font-semibold text-slate-800">New Password</span>}
             name="newPassword"
             rules={[
               { required: true, message: "Please enter a new password" },
@@ -75,7 +75,7 @@ function ManageSecurityModal() {
 
           <FormItem
             label={
-              <span className="text-[14px] font-semibold text-slate-800">Confirm New Password</span>
+              <span className="text-xs font-semibold text-slate-800">Confirm New Password</span>
             }
             name="confirmPassword"
             dependencies={["newPassword"]}
@@ -103,14 +103,14 @@ function ManageSecurityModal() {
         <div className="mt-4 flex w-full items-center gap-3">
           <Button
             onClick={handleCancel}
-            className="h-11! flex-1! rounded-full! border-slate-200! bg-white! px-8! font-medium! text-slate-500 hover:bg-slate-50! hover:text-slate-600! dark:border-slate-600! dark:bg-slate-700! dark:text-slate-300! dark:hover:bg-slate-600! dark:hover:text-slate-100!"
+            className="h-11! text-xs flex-1! rounded-full! border-slate-200! bg-white! px-8! font-medium! text-slate-500 hover:bg-slate-50! hover:text-slate-600! dark:border-slate-600! dark:bg-slate-700! dark:text-slate-300! dark:hover:bg-slate-600! dark:hover:text-slate-100!"
           >
             Cancel
           </Button>
           <Button
             type="primary"
             onClick={handleSaveChanges}
-            className="h-11! flex-1! rounded-full! border-none! bg-sky-500! px-8! font-semibold! hover:bg-sky-600!"
+            className="h-11! text-xs flex-1! rounded-full! border-none! bg-sky-500! px-8! font-semibold! hover:bg-sky-600!"
           >
             Update Password
           </Button>
