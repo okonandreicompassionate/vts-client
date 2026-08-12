@@ -1,7 +1,8 @@
-import { Switch, Button } from "antd";
+import { Button, Switch } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import { useEffect } from "react";
+
 import CustomModal from "../../../../components/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 
@@ -30,10 +31,8 @@ function NotificationPreferencesModal() {
     isLoading: isLoadingSettings,
   } = useGetNotificationSettingsQuery();
 
-  const [
-    updateNotificationSettings,
-    { isLoading: isUpdating },
-  ] = useUpdateNotificationSettingsMutation();
+  const [updateNotificationSettings, { isLoading: isUpdating }] =
+    useUpdateNotificationSettingsMutation();
 
   const handleSavePreferences = async () => {
     try {
@@ -56,24 +55,21 @@ function NotificationPreferencesModal() {
   };
 
   useEffect(() => {
-  if (!notificationSettings) {
-    return;
-  }
+    if (!notificationSettings) return;
 
-  form.setFieldsValue({
-    notifyPendingVisitEmail:
-      notificationSettings.notifyPendingVisitEmail,
-
-    dailySummaryEmailReport:
-      notificationSettings.dailySummaryEmailReport,
-  });
-}, [notificationSettings, form]);
+    form.setFieldsValue({
+      notifyPendingVisitEmail:
+        notificationSettings.notifyPendingVisitEmail,
+      dailySummaryEmailReport:
+        notificationSettings.dailySummaryEmailReport,
+    });
+  }, [notificationSettings, form]);
 
   return (
     <CustomModal onCancel={handleCancel} width={400}>
       <CustomModal.Header title="Notification Preferences" />
 
-      <CustomModal.Body>
+      <CustomModal.Body loading={isLoadingSettings}>
         <Form
           form={form}
           className="mt-4"
@@ -81,7 +77,6 @@ function NotificationPreferencesModal() {
           initialValues={{
             notifyPendingVisitEmail:
               notificationSettings?.notifyPendingVisitEmail ?? false,
-
             dailySummaryEmailReport:
               notificationSettings?.dailySummaryEmailReport ?? true,
           }}
@@ -101,7 +96,7 @@ function NotificationPreferencesModal() {
                   valuePropName="checked"
                   noStyle
                 >
-                  <Switch disabled={isLoadingSettings} />
+                  <Switch />
                 </FormItem>
               </div>
             ))}
@@ -113,7 +108,7 @@ function NotificationPreferencesModal() {
         <div className="mt-4 flex w-full items-center gap-3">
           <Button
             onClick={handleCancel}
-            disabled={isUpdating}
+            disabled={isUpdating || isLoadingSettings}
             className="h-11! flex-1! rounded-full! border-slate-100! bg-slate-50! px-8! font-medium! text-slate-400! hover:bg-slate-100! hover:text-slate-500!"
           >
             Cancel
