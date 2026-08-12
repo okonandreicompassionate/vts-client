@@ -384,52 +384,7 @@ export default function VisitorDetails() {
               ))}
             </div>
 
-            {visitor.status === "Pending" ? (
-              <div className="mt-6 border-t border-slate-100 pt-6 dark:border-slate-700">
-                <h4 className="mb-2 text-base font-bold text-slate-800 dark:text-slate-100">
-                  Review and Approve
-                </h4>
-
-                <p className="mb-4 text-sm leading-relaxed text-slate-400">
-                  Please verify the visitor information before granting access. You can add internal
-                  notes below for audit purposes.
-                </p>
-
-                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200">
-                  Notes (Optional)
-                </label>
-
-                <TextArea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Enter notes here.."
-                  rows={4}
-                  className="mb-5 rounded-lg"
-                />
-
-                <div className="flex justify-start gap-3">
-                  <Button
-                    danger
-                    loading={isRejecting}
-                    disabled={isApproving || isRejecting}
-                    onClick={handleReject}
-                    className="h-11! px-8 font-semibold"
-                  >
-                    Reject
-                  </Button>
-
-                  <Button
-                    type="primary"
-                    loading={isApproving}
-                    disabled={isApproving || isRejecting}
-                    onClick={handleApprove}
-                    className="h-11! bg-emerald-500! px-8 font-semibold hover:bg-emerald-600!"
-                  >
-                    Approve Access
-                  </Button>
-                </div>
-              </div>
-            ) : visitor.status === "Signed In" ? (
+            {visitor.status === "Signed In" ? (
               <Button
                 danger
                 type="primary"
@@ -469,6 +424,53 @@ export default function VisitorDetails() {
                 </div>
               ))}
             </div>
+
+            {visitor.status === "Pending" ? (
+              <div className="mt-6 rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900">
+                <h4 className="mb-3 text-xs font-bold text-slate-800 dark:text-slate-100">
+                  Review and Approve
+                </h4>
+
+                <p className="mb-4 text-xs leading-relaxed text-slate-400">
+                  Verify the visitor information before granting access and optionally add internal
+                  notes.
+                </p>
+
+                <label className="mb-2 block text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  Notes (Optional)
+                </label>
+
+                <TextArea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Enter notes here.."
+                  rows={4}
+                  className="mb-5 rounded-lg"
+                />
+
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button
+                    danger
+                    loading={isRejecting}
+                    disabled={isApproving || isRejecting}
+                    onClick={handleReject}
+                    className="h-11! w-full px-8 font-semibold sm:w-auto"
+                  >
+                    Reject
+                  </Button>
+
+                  <Button
+                    type="primary"
+                    loading={isApproving}
+                    disabled={isApproving || isRejecting}
+                    onClick={handleApprove}
+                    className="h-11! w-full bg-emerald-500! px-4 font-semibold hover:bg-emerald-600! sm:w-auto"
+                  >
+                    Approve Access
+                  </Button>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </main>
