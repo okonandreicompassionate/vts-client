@@ -2,6 +2,7 @@ interface VisitorAvatarProps {
   name: string;
   size?: "sm" | "md" | "lg";
   className?: string;
+  src?: string;
 }
 
 function getInitials(name: string): string {
@@ -28,7 +29,7 @@ function getColorFromInitials(initials: string): string {
   return colors[charCode % colors.length];
 }
 
-export function VisitorAvatar({ name, size = "md", className = "" }: VisitorAvatarProps) {
+export function VisitorAvatar({ name, size = "md", className = "", src }: VisitorAvatarProps) {
   const initials = getInitials(name);
   const bgColor = getColorFromInitials(initials);
 
@@ -37,6 +38,17 @@ export function VisitorAvatar({ name, size = "md", className = "" }: VisitorAvat
     md: "h-9 w-9 text-sm",
     lg: "h-14 w-14 text-base",
   };
+
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={name}
+        title={name}
+        className={`rounded-full object-cover ${sizeClasses[size]} ${className}`}
+      />
+    );
+  }
 
   return (
     <div
