@@ -10,7 +10,7 @@ const statusStyles: Record<VisitorStatus, string> = {
 function StatusPill({ status }: { status: VisitorStatus }) {
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusStyles[status]}`}
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs ${statusStyles[status]}`}
     >
       {status}
     </span>

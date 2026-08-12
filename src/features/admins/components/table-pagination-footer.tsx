@@ -13,7 +13,11 @@ export function TablePaginationFooter({
   totalEntries,
   onPageChange,
 }: TablePaginationFooterProps) {
-  const startEntry = totalEntries === 0 ? 0 : Math.min((page - 1) * pageSize + 1, totalEntries);
+  const startEntry =
+    totalEntries === 0
+      ? 0
+      : Math.min((page - 1) * pageSize + 1, totalEntries);
+
   const endEntry = Math.min(page * pageSize, totalEntries);
 
   return (
@@ -21,12 +25,29 @@ export function TablePaginationFooter({
       <p className="text-center text-sm text-slate-400 sm:text-left">
         Showing {startEntry} to {endEntry} of {totalEntries} entries
       </p>
+
       <Pagination
         current={page}
         pageSize={pageSize}
         total={totalEntries}
         onChange={onPageChange}
         showSizeChanger={false}
+        showLessItems
+        itemRender={(pageNumber, type, originalElement) => {
+          if (type === "page") {
+            if (pageNumber === page || pageNumber === page + 1) {
+              return originalElement;
+            }
+
+            return null;
+          }
+
+          if (type === "jump-prev" || type === "jump-next") {
+            return null;
+          }
+
+          return originalElement;
+        }}
         className="text-center sm:text-right"
       />
     </div>

@@ -12,9 +12,11 @@ import type {
   AdminLoginPayload,
   MicrosoftLoginPayload,
   LoginResponse,
+  NotificationSettingsResponse,
+  UpdateNotificationSettingsPayload,
 } from "../types/api-types";
 
-export const authApi = api.injectEndpoints({
+export const adminApi = api.injectEndpoints({
   endpoints: (builder) => ({
     adminLogin: builder.mutation<LoginResponse, AdminLoginPayload>({
       query: (body) => ({
@@ -22,6 +24,23 @@ export const authApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
+    }),
+
+    getNotificationSettings: builder.query<NotificationSettingsResponse, void>({
+      query: () => "/notifications/settings",
+      providesTags: [{ type: "Admins", id: "NOTIFICATION_SETTINGS" }],
+    }),
+
+    updateNotificationSettings: builder.mutation<
+      NotificationSettingsResponse,
+      UpdateNotificationSettingsPayload
+    >({
+      query: (body) => ({
+        url: "/notifications/settings",
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: [{ type: "Admins", id: "NOTIFICATION_SETTINGS" }],
     }),
 
     microsoftLogin: builder.mutation<LoginResponse, MicrosoftLoginPayload>({
@@ -52,10 +71,7 @@ export const authApi = api.injectEndpoints({
       invalidatesTags: [{ type: "Admins", id: "PROFILE" }],
     }),
 
-    updatePassword: builder.mutation<
-      { success: boolean },
-      UpdatePasswordPayload
-    >({
+    updatePassword: builder.mutation<{ success: boolean }, UpdatePasswordPayload>({
       query: (body) => ({
         url: "/auth/password",
         method: "PATCH",
@@ -75,10 +91,7 @@ export const authApi = api.injectEndpoints({
       ],
     }),
 
-    getVisits: builder.query<
-      VisitListResponse,
-      { page: number; limit: number; status?: string }
-    >({
+    getVisits: builder.query<VisitListResponse, { page: number; limit: number; status?: string }>({
       query: ({ page, limit, status }) => ({
         url: "/visits",
         params: {
@@ -115,9 +128,7 @@ export const authApi = api.injectEndpoints({
       query: (id) => ({
         url: `/visits/${id}`,
       }),
-      providesTags: (_result, _error, id) => [
-        { type: "Visits", id },
-      ],
+      providesTags: (_result, _error, id) => [{ type: "Visits", id }],
     }),
 
     rejectVisit: builder.mutation<void, { id: string; reason?: string }>({
@@ -145,4 +156,6 @@ export const {
   useRejectVisitMutation,
   useGetVisitQuery,
   useGetVisitStatsQuery,
-} = authApi;
+  useGetNotificationSettingsQuery,
+  useUpdateNotificationSettingsMutation,
+} = adminApi;

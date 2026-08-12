@@ -16,7 +16,7 @@ export function VisitorIdentityCell({
 }: VisitorIdentityCellProps) {
   return (
     <div className="flex items-center gap-3">
-      <VisitorAvatar name={name} size="md" />
+      <VisitorAvatar name={name} size="sm" />
 
       <div className="flex min-w-0 flex-col gap-1">
         <span className="truncate text-sm font-medium text-slate-800 dark:text-slate-100">
@@ -37,7 +37,7 @@ export function VisitDateTimeCell({
 }: VisitDateTimeCellProps) {
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+      <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
         {time}
       </span>
 

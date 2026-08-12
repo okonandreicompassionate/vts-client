@@ -9,7 +9,6 @@ import ApproveAccessModal from "./modals/approve-access-modal.tsx";
 import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
 import { VisitorAvatar } from "./visitor-avatar.tsx";
 
-import { paths } from "../../../config/paths";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 import {
@@ -18,7 +17,6 @@ import {
   useSignoffVisitMutation,
 } from "../api/admin-api-slice.ts";
 
-import { useTenant } from "../../../lib/tenant/tenant";
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
 import { Spinner } from "@/components/spinner.tsx";
 
@@ -60,7 +58,6 @@ function getErrorStatus(error: unknown): number | string | undefined {
 export default function VisitorDetails() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { orgSlug } = useTenant();
   const { openModal, closeModal } = usePopup();
 
   const [notes, setNotes] = useState("");
@@ -152,7 +149,7 @@ export default function VisitorDetails() {
       type="link"
       icon={<ArrowLeftOutlined className="text-xs" />}
       className="mb-4 px-0! font-medium text-sky-500!"
-      onClick={() => navigate(paths.admin.visitors.getHref(orgSlug))}
+      onClick={() => navigate(-1)}
     >
       Back to List
     </Button>
@@ -334,11 +331,11 @@ export default function VisitorDetails() {
       value: visitor.purpose,
     },
     {
-      label: "Check-In Time",
+      label: "Signed-In Time",
       value: visitor.checkIn,
     },
     {
-      label: "Check-Out Time",
+      label: "Signed-Out Time",
       value: visitor.status === "Signed Off" ? visitor.time : "Pending",
     },
   ];
@@ -354,10 +351,10 @@ export default function VisitorDetails() {
           <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
             <div className="mb-6 flex flex-col items-center text-center">
               <div className="mb-4">
-                <VisitorAvatar name={visitor.name} size="lg" />
+                <VisitorAvatar name={visitor.name} size="md" />
               </div>
 
-              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+              <h3 className="text-md font-bold text-slate-800 dark:text-slate-100">
                 {visitor.name}
               </h3>
 
@@ -378,11 +375,11 @@ export default function VisitorDetails() {
                       : ""
                   }`}
                 >
-                  <span className="w-full shrink-0 text-sm text-slate-400 sm:w-40">
+                  <span className="w-full shrink-0 text-xs text-slate-400 sm:w-40">
                     {row.label}
                   </span>
 
-                  <span className="text-sm text-slate-700 dark:text-slate-200">{row.value}</span>
+                  <span className="text-xs text-slate-700 dark:text-slate-200">{row.value}</span>
                 </div>
               ))}
             </div>
@@ -447,7 +444,7 @@ export default function VisitorDetails() {
           </div>
 
           <div className="w-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-80 lg:shrink-0 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-            <h3 className="mb-5 text-base font-bold text-slate-800 dark:text-slate-100">
+            <h3 className="mb-5 text-sm font-bold text-slate-800 dark:text-slate-100">
               Visit Timeline
             </h3>
 
@@ -463,7 +460,7 @@ export default function VisitorDetails() {
                   </div>
 
                   <div className={idx !== timeline.length - 1 ? "pb-6" : ""}>
-                    <p className="text-sm leading-tight font-semibold text-slate-800 dark:text-slate-100">
+                    <p className="text-xs leading-tight font-semibold text-slate-800 dark:text-slate-100">
                       {step.title}
                     </p>
 
