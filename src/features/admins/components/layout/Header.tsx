@@ -56,7 +56,7 @@ const Header = ({ title }: { title: string }) => {
             className="flex h-auto items-center rounded-lg text-xs text-slate-500 font-medium hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
           >
             <img src="/back.svg" alt="" className="h-4 w-4" />
-            <span>Logout</span>
+            <span className="hidden sm:block">Logout</span>
           </Button>
         </div>
       </div>

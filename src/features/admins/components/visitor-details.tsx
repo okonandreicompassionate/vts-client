@@ -9,7 +9,6 @@ import ApproveAccessModal from "./modals/approve-access-modal.tsx";
 import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
 import { VisitorAvatar } from "./visitor-avatar.tsx";
 
-import { paths } from "../../../config/paths";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 import {
@@ -18,7 +17,6 @@ import {
   useSignoffVisitMutation,
 } from "../api/admin-api-slice.ts";
 
-import { useTenant } from "../../../lib/tenant/tenant";
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
 import { Spinner } from "@/components/spinner.tsx";
 
@@ -60,7 +58,6 @@ function getErrorStatus(error: unknown): number | string | undefined {
 export default function VisitorDetails() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { orgSlug } = useTenant();
   const { openModal, closeModal } = usePopup();
 
   const [notes, setNotes] = useState("");
@@ -152,7 +149,7 @@ export default function VisitorDetails() {
       type="link"
       icon={<ArrowLeftOutlined className="text-xs" />}
       className="mb-4 px-0! font-medium text-sky-500!"
-      onClick={() => navigate(paths.admin.dashboard.getHref(orgSlug))}
+      onClick={() => navigate(-1)}
     >
       Back to List
     </Button>
