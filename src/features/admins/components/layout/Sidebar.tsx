@@ -90,7 +90,7 @@ export default function Sidebar() {
             />
           </div>
 
-          <nav className="mt-4 space-y-1 px-3">
+          <nav className="mt-1 space-y-1 px-3">
             {navItems.map((item) => {
               const isActive = location.pathname.startsWith(item.href);
 

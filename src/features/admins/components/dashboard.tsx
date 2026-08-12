@@ -112,8 +112,9 @@ const columns: ColumnsType<VisitorRow> = [
     render: () => (
       <Button
         type="text"
+        size="small"
         shape="circle"
-        icon={<EyeOutlined />}
+        icon={<EyeOutlined/>}
         aria-label="View visitor"
         className="bg-sky-50! text-sky-500! hover:bg-sky-100! dark:bg-sky-500/10! dark:text-sky-400! dark:hover:bg-sky-500/20!"
       />
@@ -166,7 +167,7 @@ export default function Dashboard() {
                 aria-pressed={isActive}
                 className={`group flex w-full cursor-pointer items-center gap-2 rounded-md border px-2.5 py-2 text-left transition-all duration-150 hover:border-slate-300 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-[0.99] dark:hover:border-slate-700 dark:focus-visible:ring-slate-600 ${
                   isActive
-                    ? "border-slate-300 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
+                    ? "border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
                     : "border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-800"
                 } `}
               >
@@ -191,8 +192,8 @@ export default function Dashboard() {
         </div>
 
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-          <div className="px-3 py-4 sm:px-6 sm:py-5">
-            <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
+          <div className="px-3 py-2 sm:px-6 sm:py-3.5">
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">
               Recent Visitors
             </h3>
           </div>

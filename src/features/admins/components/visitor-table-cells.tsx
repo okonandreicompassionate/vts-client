@@ -37,7 +37,7 @@ export function VisitDateTimeCell({
 }: VisitDateTimeCellProps) {
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+      <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
         {time}
       </span>
 
