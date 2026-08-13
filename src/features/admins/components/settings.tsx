@@ -81,7 +81,7 @@ export default function AdminSettings() {
       <Header title="Settings" />
 
       <main className="flex-1 px-2 pt-1 pb-3 sm:px-4 md:px-5 md:py-3">
-        <div className="max-w-4xl md:max-w-7xl w-full space-y-3 sm:space-y-4">
+        <div className="max-w-4xl md:max-w-full w-full space-y-3 sm:space-y-4">
           {settingsItems.map((item) => (
             <Button
               key={item.key}

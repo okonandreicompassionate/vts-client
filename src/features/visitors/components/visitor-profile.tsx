@@ -13,7 +13,6 @@ import { useAppSelector } from "@/lib/stores/hooks";
 import MetaItem from "./profile-metai-tem";
 import { statusMeta } from "../types/status-meta";
 
-
 export default function VisitorProfile() {
   const { orgSlug } = useTenant();
   const navigate = useNavigate();
@@ -233,7 +232,7 @@ export default function VisitorProfile() {
   }
 
   return (
-    <div className="flex items-center justify-center bg-white px-10 dark:bg-slate-950 pt-10">
+    <div className="flex min-h-[calc(100dvh-6rem)] w-full items-center justify-center bg-white px-4 py-6 sm:px-6 md:min-h-0 md:px-10 md:py-0 dark:bg-slate-950">
       <main className="flex w-full max-w-xl flex-col">
         <div className="text-center">
           <div className="text-[20px] font-bold text-slate-900 dark:text-slate-100">
@@ -274,9 +273,13 @@ export default function VisitorProfile() {
 
           <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 border-t border-slate-200 pt-3 dark:border-slate-700">
             <MetaItem label="Host" value={registration.hostName || "Pending"} />
+
             <MetaItem label="Department" value={registration.department || "Pending"} />
+
             <MetaItem label="Date" value={createdDate} />
+
             <MetaItem label="Time" value={createdTime} />
+
             <MetaItem
               label="Status"
               value={
@@ -287,7 +290,9 @@ export default function VisitorProfile() {
                 </span>
               }
             />
+
             <MetaItem label="Phone No" value={registration.phoneNo || "Pending"} />
+
             <MetaItem
               label="Purpose of Visit"
               value={registration.purposeOfVisit || "Pending"}
@@ -297,7 +302,7 @@ export default function VisitorProfile() {
         </section>
 
         {!isPending && meta.actionLabel && (
-          <div className="mt-auto w-full pt-8">
+          <div className="mt-6 w-full">
             <Button
               type="primary"
               block
