@@ -1,10 +1,10 @@
 export default function LeftTopLayout() {
   return (
-    <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-10 text-center 2xl:gap-12">
+    <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 text-center 2xl:gap-10">
       <img src="/logo.svg" alt="" className="h-20 w-32 2xl:h-24 2xl:w-40" />
 
       <img
-        src="/loginimage.svg"
+        src="/left-layout-img.png"
         alt=""
         className="w-72 object-contain 2xl:w-96 border-0! outline-none! shadow-none!"
       />

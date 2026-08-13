@@ -1,19 +1,15 @@
 import { useState } from "react";
 import { Button } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { EyeOutlined, FilterOutlined } from "@ant-design/icons";
+
+import { FilterOutlined } from "@ant-design/icons";
 import Header from "./layout/admin-header";
-import StatusPill from "./status-pill";
 import TableComponent from "./table";
 import { TablePaginationFooter } from "./table-pagination-footer";
 import type { VisitorStatus } from "./status-pill";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
 import { useVisitorRowClick } from "../hooks/use-visitor-row-click";
-import {
-  VisitorIdentityCell,
-  VisitDateTimeCell,
-} from "@/features/admins/components/visitor-table-cells";
+import { visitorColumns } from "./visitor-columns";
 
 type FilterTab = "All" | VisitorStatus;
 
@@ -25,70 +21,6 @@ const filterTabs: FilterTab[] = [
   "Rejected",
 ];
 
-const columns: ColumnsType<VisitorRow> = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    render: (_, record) => (
-      <VisitorIdentityCell
-        name={record.name}
-        phone={record.phone}
-      />
-    ),
-  },
-  {
-    title: "Host Name",
-    dataIndex: "host",
-    key: "host",
-    render: (host) => (
-      <span className="text-sm text-slate-500 dark:text-slate-300">
-        {host}
-      </span>
-    ),
-  },
-  {
-    title: "Purpose",
-    dataIndex: "purpose",
-    key: "purpose",
-    render: (purpose) => (
-      <span className="text-sm text-slate-500 dark:text-slate-300">
-        {purpose}
-      </span>
-    ),
-  },
-  {
-    title: "Check-In",
-    dataIndex: "checkIn",
-    key: "checkIn",
-    render: (_, record) => (
-      <VisitDateTimeCell
-        date={record.checkInDate}
-        time={record.checkInTime}
-      />
-    ),
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (status) => <StatusPill status={status} />,
-  },
-  {
-    title: "Actions",
-    key: "actions",
-    align: "center",
-    render: () => (
-      <Button
-        type="text"
-        shape="circle"
-        icon={<EyeOutlined />}
-        aria-label="View visitor"
-        className="bg-sky-50! text-sky-500! hover:bg-sky-100!"
-      />
-    ),
-  },
-];
 
 export default function Visitors() {
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
@@ -162,7 +94,7 @@ export default function Visitors() {
 
           <div className="-mx-3 px-3 sm:mx-0 sm:px-0">
             <TableComponent<VisitorRow>
-              columns={columns}
+              columns={visitorColumns}
               dataSource={visitorRecords}
               rowKey="id"
               className="visitor-table"

@@ -7,13 +7,18 @@ import { AppRouter } from "./router";
 
 function App() {
   return (
-    <PersistGate loading={null} persistor={persistor}>
-      <AppProvider>
-        <ErrorBoundary FallbackComponent={PageError}>
+    <ErrorBoundary
+      FallbackComponent={PageError}
+      onError={(error, info) => {
+        console.error("Unhandled application error:", error, info);
+      }}
+    >
+      <PersistGate loading={null} persistor={persistor}>
+        <AppProvider>
           <AppRouter />
-        </ErrorBoundary>
-      </AppProvider>
-    </PersistGate>
+        </AppProvider>
+      </PersistGate>
+    </ErrorBoundary>
   );
 }
 
