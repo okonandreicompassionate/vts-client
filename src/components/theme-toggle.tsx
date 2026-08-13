@@ -9,7 +9,7 @@ export function ThemeToggle() {
   const items: MenuProps["items"] = [
     {
       key: "light",
-      icon: <SunOutlined />,
+      icon: <SunOutlined/>,
       label: "Light",
       onClick: () => setTheme("light"),
     },
@@ -41,7 +41,7 @@ export function ThemeToggle() {
       <Button
         type="text"
         icon={getIcon()}
-        className="flex h-9! w-9! items-center justify-center text-slate-600! hover:bg-slate-100!"
+        className="flex h-7! w-4! items-center justify-center text-slate-600! hover:bg-slate-100!"
         title="Toggle theme"
       />
     </Dropdown>

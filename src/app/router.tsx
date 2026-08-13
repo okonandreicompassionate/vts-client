@@ -6,10 +6,11 @@ import { ProtectedRoute } from "./protected-route";
 import { TenantLayout } from "../lib/tenant/tenant-layout";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/dashboard"));
+
 const LazyAdminAuthPage = lazy(() => import("../features/admins/components/auth-page"));
 const LazyAdminSettings = lazy(() => import("../features/admins/components/settings"));
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/visitor-details"));
-const LazyVisitorPage = lazy(() => import("../features/admins/components/visitor-page"));
+const LazyVisitorPage = lazy(() => import("../features/admins/components/visitors-page"));
 const LazyLandingPage = lazy(() => import("../features/visitors/components/landing-page"));
 const LazyRegistration = lazy(() => import("../features/visitors/components/registration"));
 const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/verify-identity"));
@@ -70,6 +71,7 @@ export function AppRouter() {
             <Route path={paths.admin.visitorDetails.path} element={<LazyVisitorDetails />} />
 
             <Route path={paths.admin.settings.path} element={<LazyAdminSettings />} />
+    
           </Route>
         </Route>
       </Routes>

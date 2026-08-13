@@ -69,7 +69,7 @@ export default function Sidebar() {
       >
         <div>
           <div className="flex h-16 items-center justify-between px-5">
-            {!collapsed && <img src="/logo.svg" alt="Logo" className="h-3 md:block" />}
+            {!collapsed && <img src="/logo.svg" className="h-3 md:block border-0! outline-none! shadow-none!" alt="Logo" />}
 
             <Button
               type="text"

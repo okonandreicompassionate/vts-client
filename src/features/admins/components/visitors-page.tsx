@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { EyeOutlined, FilterOutlined } from "@ant-design/icons";
-
 import Header from "./layout/admin-header";
 import StatusPill from "./status-pill";
 import TableComponent from "./table";
@@ -116,17 +115,16 @@ export default function Visitors() {
     <>
       <Header title="Visitors" />
 
-      <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+      <main className="flex-1 px-3 pt-1 pb-3 sm:px-4 md:px-8 md:py-6">
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-          <div className="flex flex-col gap-3 px-3 py-4 sm:px-6 sm:py-5">
+          <div className="flex flex-col gap-3 px-3 sm:px-6 sm:py-1">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+              <div className="flex py-2 w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                 <Button
                   icon={<FilterOutlined />}
-                  iconPlacement="end"
                   aria-label="Toggle filters"
                   onClick={() => setShowFilters((prev) => !prev)}
-                  className={`h-9! ${
+                  className={`h-6! ${
                     showFilters
                       ? "bg-emerald-50! text-emerald-500!"
                       : "text-slate-400!"

@@ -5,10 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { paths } from "@/config/paths";
 import { useTenant } from "@/lib/tenant";
 import { useAppDispatch } from "@/lib/stores/hooks";
-import {
-  setVisitorSession,
-  setVisitorVerified,
-} from "../stores/visitor-auth-slice";
+import { setVisitorSession, setVisitorVerified } from "../stores/visitor-auth-slice";
 import { useVerifyVisitIdentityMutation } from "../api/visit-api-slice";
 
 export default function VerifyIdentity() {
@@ -26,11 +23,7 @@ export default function VerifyIdentity() {
         email,
       }).unwrap();
 
-      if (
-        response.exists &&
-        response.visitor &&
-        response.accessToken
-      ) {
+      if (response.exists && response.visitor && response.accessToken) {
         window.localStorage.setItem(
           "visitorId",
           JSON.stringify({
@@ -64,31 +57,29 @@ export default function VerifyIdentity() {
     } catch (error) {
       console.error("Verify identity failed:", error);
 
-      message.error(
-        "We couldn't verify your identity. Please try again.",
-      );
+      message.error("We couldn't verify your identity. Please try again.");
     }
   };
 
   return (
-    <div>
+    <div className="flex w-full justify-center md:min-h-[calc(100dvh-8rem)] md:items-center">
       <Form
         layout="vertical"
         requiredMark={false}
         onFinish={handleFinish}
-        className="mx-auto flex min-h-screen w-full max-w-md flex-col px-7 pb-6 md:min-h-0 md:pt-0 md:pb-0 dark:bg-slate-900 dark:shadow-black/20"
+        className="flex min-h-[calc(100dvh-4rem)] w-full max-w-md flex-col px-7 pt-4 pb-6 md:min-h-0 md:pt-0 md:pb-0 dark:bg-slate-900 dark:shadow-black/20"
       >
-        <div className="md:flex md:flex-col md:items-center lg:items-center">
+        <div className="md:flex md:flex-col md:items-center">
           <div className="flex justify-center">
-            <img src="/padlock.svg" alt="" loading="lazy" />
+            <img src="/padlock.svg" alt="" className="w-17" loading="lazy" />
           </div>
 
           <div className="mt-1 text-center">
-            <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <h1 className="text-lg font-bold text-slate-900 md:text-xl dark:text-slate-100">
               Verify Identity
             </h1>
 
-            <p className="mt-2 px-2 text-sm leading-snug text-slate-500 dark:text-slate-400">
+            <p className="mt-2 px-2 text-[13px] leading-snug text-slate-500 md:text-sm dark:text-slate-400">
               Enter your email address
               <br />
               to continue with registration.
@@ -110,14 +101,11 @@ export default function VerifyIdentity() {
                     return Promise.resolve();
                   }
 
-                  const isEmail =
-                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
                   return isEmail
                     ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("Enter a valid email address"),
-                      );
+                    : Promise.reject(new Error("Enter a valid email address"));
                 },
               },
             ]}

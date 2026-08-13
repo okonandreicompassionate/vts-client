@@ -154,7 +154,7 @@ export default function Dashboard() {
     <>
       <AdminHeader title="Dashboard" />
 
-      <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+      <main className="flex-1 px-2 pt-1 pb-3 sm:px-4 md:px-5 md:py-3">
         <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
           {statCards.map((card, index) => {
             const isActive = statusFilter === card.filter;

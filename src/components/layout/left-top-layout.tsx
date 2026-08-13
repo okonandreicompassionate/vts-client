@@ -6,7 +6,7 @@ export default function LeftTopLayout() {
       <img
         src="/loginimage.svg"
         alt=""
-        className="w-72 object-contain 2xl:w-96"
+        className="w-72 object-contain 2xl:w-96 border-0! outline-none! shadow-none!"
       />
 
       <div className="flex flex-col gap-2">

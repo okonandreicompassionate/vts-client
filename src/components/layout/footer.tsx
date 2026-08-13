@@ -1,7 +1,9 @@
-export default function Footer() {
+export default function Footer({ className = "" }: { className?: string }) {
   return (
-    <footer className="-mx-8 px-1 py-0.5 text-left text-[11px] text-slate-500 md:-mx-16 dark:text-slate-400">
-      {`Copyright ${new Date().getFullYear()} Zoracom. All rights reserved.`}
+    <footer
+      className={`w-full px-4 py-1 text-center text-[11px] text-slate-500 dark:text-slate-400 ${className}`}
+    >
+      Copyright {new Date().getFullYear()} Zoracom. All rights reserved.
     </footer>
   );
 }
