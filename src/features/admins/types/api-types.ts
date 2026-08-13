@@ -5,7 +5,6 @@ export interface VisitRecord {
   name?: string;
   email?: string;
   phoneNumber?: string;
-  phone?: string;
   hostName?: string;
   host?: string;
   department?: string;
@@ -13,10 +12,12 @@ export interface VisitRecord {
   purpose?: string;
   status?: string;
   time?: string;
+  registeredAt?: string;
+  reviewedAt?: string | null;
   checkIn?: string;
-  checkInTime?: string;
+  checkInTime?: string | null;
   checkOut?: string;
-  checkOutTime?: string;
+  checkOutTime?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }

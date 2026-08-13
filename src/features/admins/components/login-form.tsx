@@ -1,5 +1,4 @@
 import { Form, Input, Button, message } from "antd";
-
 import { useAdminLoginMutation } from "../api/admin-api-slice";
 import { useCompleteLogin } from "../hooks/use-complete-login";
 import MicrosoftLogin from "../components/ms-login";
@@ -103,21 +102,21 @@ export default function LoginForm() {
       </Form.Item>
 
       {/* Submit */}
-      <Form.Item className="mb-3 pt-2">
+      <Form.Item className="mb-3 pt-1">
         <Button
           type="primary"
           htmlType="submit"
           block
           size="large"
           loading={isLoading}
-          className="h-11! rounded-lg! border-0! bg-sky-500! font-semibold! shadow-md! hover:bg-sky-600! hover:shadow-lg!"
+          className="h-10! rounded-lg! border-0! bg-sky-500! font-semibold! shadow-md! hover:bg-sky-600! hover:shadow-lg!"
         >
           Login
         </Button>
       </Form.Item>
 
       {/* Microsoft Login */}
-      <div className="relative flex items-center justify-center py-3">
+      <div className="relative flex items-center justify-center py-2">
         <div className="absolute right-0 left-0 border-t border-slate-200 dark:border-slate-700" />
 
         <span className="relative bg-white px-3 text-xs font-medium text-slate-400 dark:bg-slate-900 dark:text-slate-500">
@@ -125,19 +124,19 @@ export default function LoginForm() {
         </span>
       </div>
 
-      <div className="mb-3">
+      <div className="mb-1.5">
         <MicrosoftLogin />
       </div>
 
       {/* Forgot Password */}
-      <div className="text-center">
+      {/* <div className="text-center">
         <Button
           type="link"
-          className="px-0! text-sm! font-medium! text-sky-500! hover:text-sky-600!"
+          className="px-0! text-[13px]! font-medium! text-sky-500! hover:text-sky-600!"
         >
           Forgot Password?
         </Button>
-      </div>
+      </div> */}
     </Form>
   );
 }

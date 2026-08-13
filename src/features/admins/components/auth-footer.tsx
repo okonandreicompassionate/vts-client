@@ -11,12 +11,12 @@ export default function AuthFooter({ mode, onSwitchMode }: AuthFooterProps) {
   const actionText = isLogin ? "Sign Up" : "Login";
 
   return (
-    <div className="mt-3 text-center">
-      <span className="text-sm text-slate-500 dark:text-slate-400">
+    <div className="text-center">
+      <span className="text-[13px] text-slate-500 dark:text-slate-400">
         {prompt}{" "}
         <Button
           type="link"
-          className="px-1! text-sm! font-semibold! text-sky-500! hover:text-sky-600!"
+          className="px-0.5! text-[13px]! font-semibold! text-sky-500! hover:text-sky-600!"
           onClick={onSwitchMode}
         >
           {actionText}

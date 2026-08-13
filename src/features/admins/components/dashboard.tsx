@@ -5,7 +5,7 @@ import type { ColumnsType } from "antd/es/table";
 import type { ReactNode } from "react";
 import { TablePaginationFooter } from "./table-pagination-footer.tsx";
 
-import Header from "./layout/header.tsx";
+import AdminHeader from "./layout/admin-header.tsx";
 import StatusPill from "./status-pill.tsx";
 import TableComponent from "./table.tsx";
 
@@ -114,7 +114,7 @@ const columns: ColumnsType<VisitorRow> = [
         type="text"
         size="small"
         shape="circle"
-        icon={<EyeOutlined/>}
+        icon={<EyeOutlined />}
         aria-label="View visitor"
         className="bg-sky-50! text-sky-500! hover:bg-sky-100! dark:bg-sky-500/10! dark:text-sky-400! dark:hover:bg-sky-500/20!"
       />
@@ -152,7 +152,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <Header title="Dashboard" />
+      <AdminHeader title="Dashboard" />
 
       <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
         <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
@@ -198,21 +198,23 @@ export default function Dashboard() {
             </h3>
           </div>
 
-          <div className="w-full min-w-0">
-            {isLoading ? (
-              <Spinner variant="inline" />
-            ) : (
-              <TableComponent<VisitorRow>
-                columns={columns}
-                dataSource={visitorRecords}
-                rowKey="id"
-                className="visitor-table"
-                size="small"
-                showSerialNumber
-                startIndex={(page - 1) * pageSize + 1}
-                onRow={handleRowClick}
-              />
+          <div className="relative min-h-60">
+            {isLoading && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 backdrop-blur-[1px] dark:bg-slate-800/70">
+                <Spinner variant="inline" overlay />
+              </div>
             )}
+
+            <TableComponent<VisitorRow>
+              columns={columns}
+              dataSource={visitorRecords}
+              rowKey="id"
+              className="visitor-table"
+              size="small"
+              showSerialNumber
+              startIndex={(page - 1) * pageSize + 1}
+              onRow={handleRowClick}
+            />
           </div>
 
           {!isLoading && (

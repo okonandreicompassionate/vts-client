@@ -1,5 +1,5 @@
 import React from "react";
-import LeftLayout from "@/components/layout";
+import LeftLayout from "@/components/layout/left-layout";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -12,10 +12,10 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         <LeftLayout />
       </div>
 
-      <div className="flex min-h-full w-full flex-col items-center justify-center px-4 py-8 sm:px-6 md:px-16 md:py-12 dark:bg-slate-950">
-        <header className="flex flex-col items-center gap-4 pb-2 md:hidden">
+      <div className="flex min-h-full w-full flex-col items-center justify-center px-4 py-6 sm:px-6 md:px-16 md:py-12 dark:bg-slate-950">
+        <header className="flex flex-col items-center gap-3 pb-2 md:hidden">
           <img src="/logo.svg" alt="" className="w-32 object-cover" />
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+          <h2 className="text-[20px] font-bold text-slate-800 dark:text-slate-100">
             Visitor Tracker
           </h2>
         </header>

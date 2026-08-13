@@ -10,10 +10,10 @@ export default function LeftTopLayout() {
       />
 
       <div className="flex flex-col gap-2">
-        <h2 className="text-2xl font-bold text-slate-800 md:text-3xl 2xl:text-4xl dark:text-slate-100">
+        <h2 className="text-[20px] font-bold text-slate-800 md:text-2xl 2xl:text-3xl dark:text-slate-100">
           Visitor Tracker
         </h2>
-        <p className="text-slate-400 2xl:text-lg dark:text-slate-400">
+        <p className="text-slate-400 md:text-base 2xl:text-[16px] dark:text-slate-400">
           Ensure Secure Visitor Check-Ins and Approvals
         </p>
       </div>

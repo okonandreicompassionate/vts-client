@@ -3,7 +3,7 @@ import { Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { EyeOutlined, FilterOutlined } from "@ant-design/icons";
 
-import Header from "./layout/header";
+import Header from "./layout/admin-header";
 import StatusPill from "./status-pill";
 import TableComponent from "./table";
 import { TablePaginationFooter } from "./table-pagination-footer";

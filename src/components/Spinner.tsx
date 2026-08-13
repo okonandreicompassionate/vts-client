@@ -6,30 +6,39 @@ interface SpinnerProps {
   variant?: SpinnerVariant;
   label?: string;
   className?: string;
+  overlay?: boolean;
 }
 
 const variantClasses: Record<SpinnerVariant, string> = {
-  inline: "min-h-[240px]",
-  page: "min-h-[calc(100vh-4rem)]",
-  screen: "fixed inset-0 z-50 min-h-screen bg-white/80 backdrop-blur-sm",
+  inline: "flex items-center justify-center",
+  page: "flex min-h-[calc(100vh-4rem)] items-center justify-center",
+  screen:
+    "fixed inset-0 z-50 flex min-h-screen items-center justify-center bg-white/80 backdrop-blur-sm dark:bg-slate-900/80",
 };
 
 export const Spinner = ({
-  variant = "page",
+  variant = "inline",
   label,
   className = "",
+  overlay = false,
 }: SpinnerProps) => {
+  const overlayClasses = overlay
+    ? "absolute inset-0 z-20 bg-white/70 backdrop-blur-[1px] dark:bg-slate-900/70"
+    : "";
+
   return (
     <div
-      className={`flex w-full flex-col items-center justify-center gap-3 ${variantClasses[variant]} ${className}`}
+      className={`w-full ${variantClasses[variant]} ${overlayClasses} ${className}`}
     >
-      <Spin size="default" />
+      <div className="flex flex-col items-center justify-center gap-3">
+        <Spin size="medium" />
 
-      {label && (
-        <p className="text-sm text-slate-400">
-          {label}
-        </p>
-      )}
+        {label && (
+          <p className="text-sm text-slate-400">
+            {label}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

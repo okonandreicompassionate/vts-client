@@ -28,7 +28,7 @@ export default function SignupForm() {
         rules={[{ required: true, message: "Please enter your full name" }]}
         className="mb-4!"
       >
-        <Input size="large" className={inputClass} />
+        <Input size="small" className={inputClass} />
       </Form.Item>
 
       <Form.Item
@@ -37,7 +37,7 @@ export default function SignupForm() {
         rules={emailRules}
         className="mb-4!"
       >
-        <Input size="large" className={inputClass} />
+        <Input size="small" className={inputClass} />
       </Form.Item>
 
       <Form.Item
@@ -47,7 +47,7 @@ export default function SignupForm() {
         hasFeedback
         className="mb-4!"
       >
-        <Input.Password placeholder="••••••••••" size="large" className={inputClass} />
+        <Input.Password placeholder="••••••••••" size="small" className={inputClass} />
       </Form.Item>
 
       <Form.Item
@@ -58,7 +58,7 @@ export default function SignupForm() {
         rules={getConfirmPasswordRules("password")}
         className="mb-5!"
       >
-        <Input.Password placeholder="••••••••••" size="large" className={inputClass} />
+        <Input.Password placeholder="••••••••••" size="small" className={inputClass} />
       </Form.Item>
 
       <Form.Item className="mb-0!">

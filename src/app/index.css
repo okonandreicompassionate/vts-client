@@ -4,7 +4,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 * {
-  font-family: "Raleway Variable", sans-serif; font: size 10px !important;
+  font-family: "Raleway Variable", sans-serif;
+  font: size 10px !important;
 }
 
 .dark .ant-btn,
@@ -29,8 +30,6 @@
 .dark .ant-btn-primary {
   border-color: transparent !important;
 }
-
-
 
 @media (max-width: 768px) {
   #root {
@@ -90,7 +89,47 @@
   }
 }
 
+.ant-dropdown {
+  padding: 0 !important;
+  border-radius: 2px !important;
+}
 
+.ant-dropdown-menu {
+  margin: 0 !important;
+  padding: 4px !important;
+  border-radius: 7px !important;
+}
 
+.ant-dropdown-menu-item {
+  margin: 0 !important;
+  padding: 3px 8px !important;
+}
 
+.ant-dropdown-menu-item-disabled {
+  padding: 6px !important;
+  cursor: default !important;
+}
 
+.ant-dropdown-menu-item-divider {
+  margin: 2px 0 !important;
+}
+
+.ant-btn {
+  border-radius: 7px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ant-input-textarea textarea {
+  min-height: 80px !important;
+  padding: 7px 10px !important;
+}
+
+.ant-btn-circle {
+  border-radius: 50% !important;
+}
+
+td.ant-table-cell {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}

@@ -34,7 +34,7 @@ export default function LandingPage() {
           <h1 className="text-2xl font-semibold tracking-tight text-[#10241C] md:text-[28px] dark:text-slate-100">
             Visitor Tracking System
           </h1>
-          <p className="mt-1.5 text-sm text-[#10241C]/45 dark:text-slate-400">
+          <p className="mt-1.5 text-sm text-[#10241C]/55 dark:text-slate-400">
             Check in below to begin your visit
           </p>
         </header>
@@ -65,7 +65,7 @@ export default function LandingPage() {
           </Button>
         </div>
 
-        <p className="mt-6 text-base text-[#10241C]/30 dark:text-slate-400">
+        <p className="mt-6 text-xs text-[#10241C]/70 dark:text-slate-400">
           Zoracom © {new Date().getFullYear()} · Secured visitor access
         </p>
       </div>

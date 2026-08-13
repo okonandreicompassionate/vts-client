@@ -76,7 +76,7 @@ export default function VerifyIdentity() {
         layout="vertical"
         requiredMark={false}
         onFinish={handleFinish}
-        className="mx-auto flex min-h-screen w-full max-w-md flex-col px-7 pt-18 pb-6 md:min-h-0 md:pt-0 md:pb-0 dark:bg-slate-900 dark:shadow-black/20"
+        className="mx-auto flex min-h-screen w-full max-w-md flex-col px-7 pb-6 md:min-h-0 md:pt-0 md:pb-0 dark:bg-slate-900 dark:shadow-black/20"
       >
         <div className="md:flex md:flex-col md:items-center lg:items-center">
           <div className="flex justify-center">
@@ -96,7 +96,7 @@ export default function VerifyIdentity() {
           </div>
 
           <Form.Item
-            className="mt-8 w-full"
+            className="mt-5 w-full"
             name="email"
             label="Email"
             rules={[

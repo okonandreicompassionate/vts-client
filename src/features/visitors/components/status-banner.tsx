@@ -1,5 +1,5 @@
 import { Tag } from "antd";
-import type { StatusMeta } from "../types/statusMeta";
+import type { StatusMeta } from "../types/pill-status-meta";
 
 type Props = {
   meta: StatusMeta;

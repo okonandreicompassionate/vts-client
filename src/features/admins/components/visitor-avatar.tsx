@@ -34,8 +34,8 @@ export function VisitorAvatar({ name, size = "md", className = "", src }: Visito
   const bgColor = getColorFromInitials(initials);
 
   const sizeClasses = {
-    sm: "h-8 w-8 text-xs",
-    md: "h-9 w-9 text-sm",
+    sm: "h-7 w-7 text-[11.5px]",
+    md: "h-8 w-8 text-sm",
     lg: "h-14 w-14 text-base",
   };
 

@@ -1,6 +1,5 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
-
 import { Spinner } from '@/components/spinner';
 import { paths } from "../config/paths";
 import { ProtectedRoute } from "./protected-route";
@@ -11,17 +10,15 @@ const LazyAdminAuthPage = lazy(() => import("../features/admins/components/auth-
 const LazyAdminSettings = lazy(() => import("../features/admins/components/settings"));
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/visitor-details"));
 const LazyVisitorPage = lazy(() => import("../features/admins/components/visitor-page"));
-
 const LazyLandingPage = lazy(() => import("../features/visitors/components/landing-page"));
 const LazyRegistration = lazy(() => import("../features/visitors/components/registration"));
 const LazyVerifyIdentity = lazy(() => import("../features/visitors/components/verify-identity"));
 const LazyVisitorProfile = lazy(() => import("../features/visitors/components/visitor-profile"));
 
-const LazyVisitorLayout = lazy(() => import("../features/visitors/components/layout"));
-
+const LazyVisitorLayout = lazy(() => import("../features/visitors/components/layout/visitor-layout"));
 const LazyLayout = lazy(() => import("../features/admins/components/layout/dashboard-layout"));
 
-const fallback = <Spinner />;
+const fallback = <Spinner variant="screen" />;
 
 export function AppRouter() {
   return (

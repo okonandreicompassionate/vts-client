@@ -1,6 +1,5 @@
 import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
-
 import { paths } from "../config/paths";
 import { useAppSelector } from "../lib/stores/hooks";
 import { useTenant } from "../lib/tenant";
