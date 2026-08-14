@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
-import { clearVisitorAuth } from "../stores/visitor-auth-slice";
+import { clearVisitorAuth } from "../../auth/stores/visitor-auth-slice";
 
 interface VisitorJwtPayload {
   exp?: number;

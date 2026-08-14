@@ -7,7 +7,7 @@ type VisitorIdentityCellProps = {
 
 type VisitDateTimeCellProps = {
   date?: string;
-  time: string;
+  time: string | null;
 };
 
 export function VisitorIdentityCell({
@@ -15,11 +15,11 @@ export function VisitorIdentityCell({
   phone,
 }: VisitorIdentityCellProps) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       <VisitorAvatar name={name} size="sm" />
 
-      <div className="flex min-w-0 flex-col gap-1">
-        <span className="truncate text-sm font-medium text-slate-800 dark:text-slate-100">
+      <div className="flex min-w-0 flex-col -space-y-0.5">
+        <span className="truncate text-[13px] font-medium text-slate-800 dark:text-slate-100">
           {name}
         </span>
 
@@ -36,7 +36,7 @@ export function VisitDateTimeCell({
   time,
 }: VisitDateTimeCellProps) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col">
       <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
         {time}
       </span>

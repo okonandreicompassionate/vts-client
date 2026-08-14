@@ -17,7 +17,7 @@ const details = [
 
 export default function VisitorDetailsCard({ registration, requestId, status, reason }: Props) {
   return (
-    <div className="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7 lg:p-8 dark:border-slate-700 dark:bg-slate-900">
+    <div className="w-full rounded-2xl border border-slate-200 bg-white shadow-sm sm:p-7 lg:p-8 dark:border-slate-700 dark:bg-slate-900">
       <div className="flex items-center gap-4 border-b border-slate-100 pb-6 dark:border-slate-700">
         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-white">
           <span className="text-lg font-bold">{registration.name.charAt(0)}</span>

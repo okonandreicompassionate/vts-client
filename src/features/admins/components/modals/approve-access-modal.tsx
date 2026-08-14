@@ -1,6 +1,6 @@
 import { CloseOutlined, WarningOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
-import CustomModal from "../../../../components/custom-modal";
+import CustomModal from "../../../../components/ui/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 type ApproveAccessModalProps = {
@@ -57,7 +57,7 @@ export default function ApproveAccessModal({
   return (
     <CustomModal width={480} onCancel={handleCancel}>
       <CustomModal.Body maxHeight={false}>
-        <div className="relative py-2 text-center">
+        <div className="relative text-center">
           <Button
             onClick={handleCancel}
             type="text"
@@ -66,17 +66,17 @@ export default function ApproveAccessModal({
             className="absolute top-0 right-0 flex h-9 w-9 items-center justify-center bg-slate-100 dark:bg-slate-700"
           />
 
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-orange-400 bg-orange-50 dark:bg-orange-950/40">
-            <WarningOutlined className="text-2xl text-orange-500" />
+          <div className="mx-auto mb-1 flex h-16 w-16 items-center justify-center rounded-full border-2 border-orange-200 bg-orange-50 dark:bg-orange-950/40">
+            <WarningOutlined className="text-lg! text-orange-400!" />
           </div>
 
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">Confirm Approval</h3>
-          <p className="mx-auto mt-3 max-w-sm text-sm text-slate-500 dark:text-slate-400">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Confirm Approval</h3>
+          <p className="mx-auto mt-1 max-w-sm text-[13px] text-slate-500 dark:text-slate-400">
             You are about to grant access to the following visitor. Please review the details before
             confirming.
           </p>
 
-          <div className="mt-6 rounded-xl bg-emerald-50 px-5 py-4 text-left dark:bg-emerald-950/30">
+          <div className="mt-4 rounded-xl bg-emerald-50 px-5 py-2 text-left dark:bg-emerald-950/30">
             {details.map((row) => (
               <div key={row.label} className="flex items-center justify-between py-1.5">
                 <span className="text-xs text-emerald-700 dark:text-emerald-300">{row.label}</span>
@@ -89,7 +89,7 @@ export default function ApproveAccessModal({
         </div>
       </CustomModal.Body>
       <CustomModal.Footer>
-        <div className="mt-6 flex justify-center items-center gap-10">
+        <div className="mt-2 w-full flex justify-center items-center gap-4">
           <Button
             onClick={handleCancel}
             className="h-11! w-full font-medium text-slate-700! dark:text-slate-200!"

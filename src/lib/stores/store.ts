@@ -15,12 +15,12 @@ import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import { api } from "../api/base";
 import { visitorApi } from "@/features/visitors/api/visit-base";
 
-import adminAuthReducer from "@/features/admins/stores/admin-auth-slice";
-import visitorAuthReducer from "@/features/visitors/stores/visitor-auth-slice";
+import authReducer from "@/features/auth/stores/admin-auth-slice";
+import visitorAuthReducer from "@/features/auth/stores/visitor-auth-slice";
 
 const storage = createWebStorage("local");
 
-const adminAuthPersistConfig = {
+const authPersistConfig = {
   key: "adminAuth",
   storage,
 };
@@ -31,8 +31,8 @@ const visitorAuthPersistConfig = {
 };
 
 const persistedAdminAuthReducer = persistReducer(
-  adminAuthPersistConfig,
-  adminAuthReducer,
+  authPersistConfig,
+  authReducer,
 );
 
 const persistedVisitorAuthReducer = persistReducer(

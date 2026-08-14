@@ -4,7 +4,6 @@ import {
   type FetchArgs,
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
-
 import { type RootState } from "../stores/store";
 import { tenantPath } from "../tenant/tenant-path";
 

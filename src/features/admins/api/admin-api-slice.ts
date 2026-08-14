@@ -1,5 +1,4 @@
 import { api } from "../../../lib/api/base";
-
 import type {
   VisitListResponse,
   UserProfile,
@@ -9,47 +8,10 @@ import type {
   UpdatePasswordPayload,
   UpdateSettingsPayload,
   UpdateProfilePayload,
-  AdminLoginPayload,
-  MicrosoftLoginPayload,
-  LoginResponse,
-  NotificationSettingsResponse,
-  UpdateNotificationSettingsPayload,
-} from "../types/api-types";
+} from "../types/admin-api.types";
 
 export const adminApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    adminLogin: builder.mutation<LoginResponse, AdminLoginPayload>({
-      query: (body) => ({
-        url: "/auth/login",
-        method: "POST",
-        body,
-      }),
-    }),
-
-    getNotificationSettings: builder.query<NotificationSettingsResponse, void>({
-      query: () => "/notifications/settings",
-      providesTags: [{ type: "Admins", id: "NOTIFICATION_SETTINGS" }],
-    }),
-
-    updateNotificationSettings: builder.mutation<
-      NotificationSettingsResponse,
-      UpdateNotificationSettingsPayload
-    >({
-      query: (body) => ({
-        url: "/notifications/settings",
-        method: "PATCH",
-        body,
-      }),
-      invalidatesTags: [{ type: "Admins", id: "NOTIFICATION_SETTINGS" }],
-    }),
-
-    microsoftLogin: builder.mutation<LoginResponse, MicrosoftLoginPayload>({
-      query: (body) => ({
-        url: "/auth/microsoft",
-        method: "POST",
-        body,
-      }),
-    }),
 
     getProfile: builder.query<UserProfile, void>({
       query: () => "/auth/profile",
@@ -143,19 +105,15 @@ export const adminApi = api.injectEndpoints({
 });
 
 export const {
-  useAdminLoginMutation,
-  useMicrosoftLoginMutation,
   useGetProfileQuery,
   useGetSettingsQuery,
   useUpdateProfileMutation,
   useUpdatePasswordMutation,
-  useUpdateSettingsMutation,
   useGetVisitsQuery,
   useApproveVisitMutation,
   useSignoffVisitMutation,
   useRejectVisitMutation,
   useGetVisitQuery,
   useGetVisitStatsQuery,
-  useGetNotificationSettingsQuery,
-  useUpdateNotificationSettingsMutation,
+  useUpdateSettingsMutation,
 } = adminApi;

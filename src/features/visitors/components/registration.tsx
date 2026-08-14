@@ -10,7 +10,7 @@ import RegistrationSuccessModal from "./modals/registration-success-modal";
 import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
-import { setVisitorSession } from "../stores/visitor-auth-slice";
+import { setVisitorSession } from "../../auth/stores/visitor-auth-slice";
 
 const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
 
@@ -126,10 +126,10 @@ export default function Registration() {
   };
 
   return (
-    <div className="hide-scrollbar flex min-h-screen w-full flex-col items-center md:justify-center dark:bg-slate-900">
+    <div className="flex min-h-screen w-full flex-col items-center md:justify-center dark:bg-slate-900">
       <div className="flex w-full flex-1 flex-col md:max-h-[90vh] md:max-w-lg md:flex-none md:overflow-y-auto">
-        <header className="mt-6 flex items-center justify-between border-b border-slate-200 px-5 py-4 md:mt-0 dark:border-slate-700">
-          <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Registration</h1>
+        <header className=" flex items-center justify-between border-b border-slate-200 px-5 md:mt-0 dark:border-slate-700">
+          <h1 className="text-md font-bold text-slate-900 dark:text-slate-100">Registration</h1>
         </header>
 
         <Form
@@ -142,7 +142,7 @@ export default function Registration() {
             phoneNo: existingIdentity?.phoneNo,
           }}
           onFinish={handleFinish}
-          className="flex flex-1 flex-col px-5 pt-6 pb-4 md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
+          className="flex flex-col px-5 pt-6 pb-4 md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
         >
           <Form.Item
             name="name"
@@ -239,7 +239,7 @@ export default function Registration() {
               htmlType="submit"
               size="large"
               block
-              className="rounded-lg text-[15px] font-semibold"
+              className="rounded-lg text-[15px] font-medium"
               icon={<ArrowRightOutlined />}
               iconPlacement="end"
             >
