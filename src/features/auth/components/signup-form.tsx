@@ -1,10 +1,10 @@
 import { Form, Input, Button, message } from "antd";
-import { emailRules, getPasswordRules, getConfirmPasswordRules } from "../utils/validation";
+import { getPasswordRules, getConfirmPasswordRules } from "../utils/validation";
 
 interface SignupFormValues {
   fullName: string;
-  email: string;
   password: string;
+  phoneNumber: string;
   confirmPassword: string;
 }
 
@@ -23,7 +23,7 @@ export default function SignupForm() {
   return (
     <Form form={form} layout="vertical" onFinish={handleSubmit} requiredMark={false}>
       <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Full Name</span>}
+        label={<span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Full Name</span>}
         name="fullName"
         rules={[{ required: true, message: "Please enter your full name" }]}
         className="mb-4!"
@@ -31,17 +31,17 @@ export default function SignupForm() {
         <Input size="small" className={inputClass} />
       </Form.Item>
 
-      <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Email Address</span>}
-        name="email"
-        rules={emailRules}
+   <Form.Item
+        label={<span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Phone Number</span>}
+        name="phoneNo"
+        rules={[{ required: true, message: "Please enter your phone number" }]}
         className="mb-4!"
       >
         <Input size="small" className={inputClass} />
       </Form.Item>
 
       <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Password</span>}
+        label={<span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Password</span>}
         name="password"
         rules={getPasswordRules({ minLength: 8 })}
         hasFeedback
@@ -51,7 +51,7 @@ export default function SignupForm() {
       </Form.Item>
 
       <Form.Item
-        label={<span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Confirm Password</span>}
+        label={<span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Confirm Password</span>}
         name="confirmPassword"
         dependencies={["password"]}
         hasFeedback

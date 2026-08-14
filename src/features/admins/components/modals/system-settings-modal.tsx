@@ -4,7 +4,7 @@ import FormItem from "antd/es/form/FormItem";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import CustomModal from "../../../../components/custom-modal";
+import CustomModal from "../../../../components/ui/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 import {
   useGetSettingsQuery,

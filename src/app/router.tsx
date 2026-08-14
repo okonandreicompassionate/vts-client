@@ -1,13 +1,13 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
-import { Spinner } from '@/components/spinner';
+import { Spinner } from '@/components/ui/spinner';
 import { paths } from "../config/paths";
 import { ProtectedRoute } from "./protected-route";
 import { TenantLayout } from "../lib/tenant/tenant-layout";
 
 const LazyAdminDashboard = lazy(() => import("../features/admins/components/dashboard"));
 
-const LazyAdminAuthPage = lazy(() => import("../features/admins/components/auth-page"));
+const LazyAuthPage = lazy(() => import("../features/auth/components/auth-page"));
 const LazyAdminSettings = lazy(() => import("../features/admins/components/settings"));
 const LazyVisitorDetails = lazy(() => import("../features/admins/components/visitor-details"));
 const LazyVisitorPage = lazy(() => import("../features/admins/components/visitors-page"));
@@ -52,9 +52,9 @@ export function AppRouter() {
           </Route>
 
           {/* admin auth */}
-          <Route path={paths.admin.login.path} element={<LazyAdminAuthPage />} />
+          <Route path={paths.admin.login.path} element={<LazyAuthPage />} />
 
-          <Route path={paths.admin.signup.path} element={<LazyAdminAuthPage />} />
+          <Route path={paths.admin.signup.path} element={<LazyAuthPage />} />
 
           {/* admin app */}
           <Route

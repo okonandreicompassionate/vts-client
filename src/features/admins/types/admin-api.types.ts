@@ -70,14 +70,7 @@ export interface VisitListResult {
   limit: number;
 }
 
-export interface AdminLoginPayload {
-  email: string;
-  password: string;
-}
 
-export interface MicrosoftLoginPayload {
-  accessToken: string;
-}
 
 export interface UpdateProfilePayload {
   fullName?: string;
@@ -123,17 +116,3 @@ export interface UserProfile {
   avatar?: string;
 }
 
-export interface LoginResponse {
-  accessToken: string;
-  user: UserProfile;
-}
-
-export interface NotificationSettingsResponse {
-  notifyPendingVisitEmail: boolean;
-  dailySummaryEmailReport: boolean;
-}
-
-export interface UpdateNotificationSettingsPayload {
-  notifyPendingVisitEmail?: boolean;
-  dailySummaryEmailReport?: boolean;
-}

@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "@/features/admins/components/layout/sidebar";
-import { useAdminAuthSession } from "../../hooks/use-admin-auth-session";
+import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { useAppSelector } from "@/lib/stores/hooks";
-import { useNotificationSocket } from "../../hooks/use-notification-socket";
+import { useNotificationSocket } from "../../../notifications/hooks/use-notification-socket";
 import Footer from "@/components/layout/footer";
 
 const Layout = () => {

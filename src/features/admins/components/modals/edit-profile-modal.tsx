@@ -2,7 +2,7 @@ import { Button, Input, message } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import { useEffect } from "react";
-import CustomModal from "../../../../components/custom-modal";
+import CustomModal from "../../../../components/ui/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { useGetProfileQuery, useUpdateProfileMutation } from "../../api/admin-api-slice";
 

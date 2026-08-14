@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { TablePaginationFooter } from "./table-pagination-footer.tsx";
-import AdminHeader from "./layout/admin-header.tsx";
+import AdminHeader from "./layout/header.tsx";
 import TableComponent from "./table.tsx";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits.ts";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data.ts";
 import { useVisitorRowClick } from "../hooks/use-visitor-row-click.ts";
 import { useVisitorStats } from "../hooks/use-visitor-stats.ts";
-import { Spinner } from "@/components/spinner.tsx";
+import { Spinner } from "@/components/ui/spinner.tsx";
 import { visitorColumns } from "./visitor-columns.tsx";
 import { statCards, type StatusFilter } from "./visitor-stat-cards.tsx";
 

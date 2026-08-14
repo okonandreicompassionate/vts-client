@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "antd";
 
 import { FilterOutlined } from "@ant-design/icons";
-import Header from "./layout/admin-header";
+import Header from "./layout/header";
 import TableComponent from "./table";
 import { TablePaginationFooter } from "./table-pagination-footer";
 import type { VisitorStatus } from "./status-pill";

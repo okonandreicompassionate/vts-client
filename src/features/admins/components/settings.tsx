@@ -2,12 +2,12 @@ import { SettingOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { useGetProfileQuery } from "../api/admin-api-slice";
-import Header from "./layout/admin-header.tsx";
+import Header from "./layout/header.tsx";
 import EditProfileModal from "./modals/edit-profile-modal.tsx";
 import ManageSecurityModal from "./modals/manage-security-modal.tsx";
-import NotificationPreferencesModal from "./modals/notifications-preferences-modal.tsx";
+import NotificationPreferencesModal from "@/features/notifications/components/notifications-preferences-modal.tsx";
 import SystemSettingsModal from "./modals/system-settings-modal.tsx";
-import { Spinner } from "@/components/spinner.tsx";
+import { Spinner } from "@/components/ui/spinner.tsx";
 
 export default function AdminSettings() {
   const { openModal } = usePopup();

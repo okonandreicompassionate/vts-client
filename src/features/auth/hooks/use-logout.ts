@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { api } from "@/lib/api/base";
-import { clearAdminAuth } from "../stores/admin-auth-slice";
+import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
 import { useTenant } from "@/lib/tenant";
 
@@ -12,7 +12,7 @@ export function useLogout() {
   const { orgSlug } = useTenant();
 
   return () => {
-    dispatch(clearAdminAuth());
+    dispatch(clearAuth());
 
     dispatch(api.util.resetApiState());
 

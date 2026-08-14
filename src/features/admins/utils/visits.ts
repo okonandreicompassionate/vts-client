@@ -1,4 +1,4 @@
-import type { VisitRecord } from "../types/api-types";
+import type { VisitRecord } from "../types/admin-api.types";
 import type { VisitorStatus } from "../components/status-pill";
 
 export interface VisitorRow {

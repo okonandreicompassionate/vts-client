@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
-import { clearAdminAuth } from "../stores/admin-auth-slice";
+import { clearAuth } from "../stores/admin-auth-slice";
 import { useTenant } from "@/lib/tenant";
 import { paths } from "@/config/paths";
 
@@ -35,7 +35,7 @@ export function useAdminAuthSession() {
       const remainingTime = expiresAt - Date.now();
 
       const logout = () => {
-        dispatch(clearAdminAuth());
+        dispatch(clearAuth());
 
         navigate(
           paths.admin.login.getHref(orgSlug),
@@ -57,7 +57,7 @@ export function useAdminAuthSession() {
         window.clearTimeout(timeout);
       };
     } catch {
-      dispatch(clearAdminAuth());
+      dispatch(clearAuth());
 
       navigate(
         paths.admin.login.getHref(orgSlug),

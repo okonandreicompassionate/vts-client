@@ -4,10 +4,10 @@ import {
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-import { clearAdminAuth } from "@/features/admins/stores/admin-auth-slice";
+import { clearAuth } from "@/features/auth/stores/admin-auth-slice";
 import { tenantBaseQuery } from "@/lib/api/base-query";
 
-export const adminBaseQuery: BaseQueryFn<
+export const authBaseQuery: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
@@ -24,7 +24,7 @@ export const adminBaseQuery: BaseQueryFn<
       requestUrl.includes("/auth/login");
 
     if (!isLoginRequest) {
-      api.dispatch(clearAdminAuth());
+      api.dispatch(clearAuth());
 
       const [, orgSlug] = window.location.pathname.split("/");
 

@@ -10,7 +10,7 @@ import RegistrationSuccessModal from "./modals/registration-success-modal";
 import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
-import { setVisitorSession } from "../stores/visitor-auth-slice";
+import { setVisitorSession } from "../../auth/stores/visitor-auth-slice";
 
 const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
 

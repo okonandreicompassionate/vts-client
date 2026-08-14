@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { message } from "antd";
 
 import { useAppDispatch } from "@/lib/stores/hooks";
-import { adminApi } from "../api/admin-api-slice";
+import { adminApi } from "../../admins/api/admin-api-slice";
 import {
   connectNotificationSocket,
   disconnectNotificationSocket,

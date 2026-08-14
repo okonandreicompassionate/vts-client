@@ -1,6 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { PersistGate } from "redux-persist/integration/react";
-import PageError from "@/components/page-error";
+import PageError from "@/components/feedback/page-error";
 import { persistor } from "@/lib/stores/store";
 import { AppProvider } from "./provider";
 import { AppRouter } from "./router";

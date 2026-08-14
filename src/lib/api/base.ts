@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 
-import { adminBaseQuery } from "../../features/admins/api/admin-base";
+import { authBaseQuery } from "../../features/auth/api/auth-base-query";
 
 const getCurrentOrgSlug = () => {
   const [, orgSlug] = window.location.pathname.split("/");
@@ -11,7 +11,7 @@ const getCurrentOrgSlug = () => {
 export const api = createApi({
   reducerPath: "api",
 
-  baseQuery: adminBaseQuery,
+  baseQuery: authBaseQuery,
 
   tagTypes: ["Admins", "Visits"],
 

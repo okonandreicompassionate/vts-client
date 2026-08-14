@@ -1,10 +1,10 @@
 import { Dropdown, type MenuProps } from "antd";
 import { DownOutlined, SettingOutlined } from "@ant-design/icons";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
-import { Spinner } from "@/components/spinner";
-import { ThemeToggle } from "../../../../components/theme-toggle";
+import { Spinner } from "@/components/ui/spinner";
+import { ThemeToggle } from "../../../../components/ui/theme-toggle";
 import { useGetProfileQuery } from "../../api/admin-api-slice";
-import { useLogout } from "../../hooks/use-logout";
+import { useLogout } from "@/features/auth/hooks/use-logout";
 import { VisitorAvatar } from "../visitor-avatar";
 import EditProfileModal from "../modals/edit-profile-modal";
 import SystemSettingsModal from "../modals/system-settings-modal";
@@ -63,7 +63,7 @@ const AdminHeader = ({ title }: { title: string }) => {
       key: "update-profile",
       label: (
         <span className="inline-flex items-center gap-1 text-[11.5px]">
-          <img src="/profile.svg" className="h-3.5 w-3.5 opacity-55 brightness-0" alt="" />
+          <img src="/profile.svg" className="h-3.5 opacity-55 brightness-0" alt="" />
           Update Profile
         </span>
       ),
@@ -112,7 +112,7 @@ const AdminHeader = ({ title }: { title: string }) => {
           <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={["click"]}>
             <button
               type="button"
-              className="inline-flex items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900"
             >
               <VisitorAvatar name={displayName} size="sm" src={profile?.avatar} />
 

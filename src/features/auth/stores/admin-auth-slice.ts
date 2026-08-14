@@ -1,17 +1,17 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-export interface AdminAuthState {
+export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
 }
 
-const initialState: AdminAuthState = {
+const initialState: AuthState = {
   token: null,
   isAuthenticated: false,
 };
 
-const adminAuthSlice = createSlice({
-  name: "adminAuth",
+const authSlice = createSlice({
+  name: "Auth",
 
   initialState,
 
@@ -24,7 +24,7 @@ const adminAuthSlice = createSlice({
       state.isAuthenticated = true;
     },
 
-    clearAdminAuth: (state) => {
+    clearAuth: (state) => {
       state.token = null;
       state.isAuthenticated = false;
     },
@@ -33,7 +33,7 @@ const adminAuthSlice = createSlice({
 
 export const {
   setAdminToken,
-  clearAdminAuth,
-} = adminAuthSlice.actions;
+  clearAuth,
+} = authSlice.actions;
 
-export default adminAuthSlice.reducer;
+export default authSlice.reducer;

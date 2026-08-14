@@ -1,7 +1,7 @@
 import { Form, Input, Button, message } from "antd";
-import { useAdminLoginMutation } from "../api/admin-api-slice";
-import { useCompleteLogin } from "../hooks/use-complete-login";
-import MicrosoftLogin from "../components/ms-login";
+import { useLoginMutation } from "../api/auth-api-slice";
+import { useCompleteLogin } from "../../auth/hooks/use-complete-login";
+import MicrosoftLogin from "./ms-login";
 import { emailRules, getPasswordRules } from "../utils/validation";
 
 interface LoginFormValues {
@@ -21,7 +21,7 @@ type LoginError = {
 export default function LoginForm() {
   const [form] = Form.useForm<LoginFormValues>();
 
-  const [adminLogin, { isLoading }] = useAdminLoginMutation();
+  const [adminLogin, { isLoading }] = useLoginMutation();
 
   const completeLogin = useCompleteLogin();
 
@@ -64,10 +64,9 @@ export default function LoginForm() {
       requiredMark={false}
       onFinish={handleSubmit}
     >
-      {/* Email */}
       <Form.Item
         label={
-          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">
             Email Address
           </span>
         }
@@ -83,10 +82,9 @@ export default function LoginForm() {
         />
       </Form.Item>
 
-      {/* Password */}
       <Form.Item
         label={
-          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">
             Password
           </span>
         }
@@ -101,7 +99,6 @@ export default function LoginForm() {
         />
       </Form.Item>
 
-      {/* Submit */}
       <Form.Item className="mb-3 pt-1">
         <Button
           type="primary"
@@ -115,7 +112,6 @@ export default function LoginForm() {
         </Button>
       </Form.Item>
 
-      {/* Microsoft Login */}
       <div className="relative flex items-center justify-center py-2">
         <div className="absolute right-0 left-0 border-t border-slate-200 dark:border-slate-700" />
 

@@ -1,8 +1,8 @@
 import AuthHeader from "./auth-header";
 import AuthFooter from "./auth-footer";
-import LoginForm from "./login-form";
-import SignupForm from "./signup-form";
-import { ThemeToggle } from "../../../components/theme-toggle";
+import LoginForm from "../login-form";
+import SignupForm from "../signup-form";
+import { ThemeToggle } from "../../../../components/ui/theme-toggle";
 
 interface AuthCardProps {
   mode: "login" | "signup";
