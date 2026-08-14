@@ -99,18 +99,18 @@ export default function Sidebar() {
                   key={item.key}
                   type="text"
                   onClick={() => go(item.href)}
-                  className={`flex! h-auto! w-full! items-center! gap-2 rounded-lg! px-3! py-1.5! text-sm! font-medium! ${
+                  className={`flex! h-auto! w-full! items-center rounded-lg! px-3! py-1.5! text-sm! font-medium! ${
                     isActive
                       ? "bg-sky-500! text-white! shadow-sm shadow-sky-200 dark:shadow-sky-900!"
                       : "text-slate-500! hover:bg-slate-50! dark:text-slate-400! dark:hover:bg-slate-800!"
                   } ${collapsed ? "md:justify-center!" : "justify-start!"}`}
                 >
-                  <span className="text-base">
+                  <span className="text-sm">
                     {typeof item.icon === "string" ? (
                       <img
                         src={item.icon}
                         alt=""
-                        className={`h-5 w-5 ${isActive ? "brightness-0 invert" : ""}`}
+                        className={`h-4 w-4 ${isActive ? "brightness-0 invert" : ""}`}
                       />
                     ) : (
                       item.icon
