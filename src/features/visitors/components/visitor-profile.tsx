@@ -10,7 +10,7 @@ import { useGetVisitQuery } from "../api/visit-api-slice";
 import type { VisitorProfileStatus, VisitorRegistration } from "../types/visitor-profile";
 import { useVisitorSocket } from "../hooks/use-visitor-socket";
 import { useAppSelector } from "@/lib/stores/hooks";
-import MetaItem from "./profile-metai-tem";
+import MetaItem from "./profile-meta-item";
 import { statusMeta } from "../types/status-meta";
 
 export default function VisitorProfile() {

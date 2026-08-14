@@ -4,15 +4,12 @@ import "./index.css";
 import "@fontsource-variable/raleway/index.css";
 
 import { AppProvider } from "./provider";
-import { AppRouter } from "./router";
-import { BrowserRouter } from "react-router-dom";
+import { AppRouter } from "./app-router";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
       <AppProvider>
         <AppRouter />
       </AppProvider>
-    </BrowserRouter>
   </StrictMode>,
 );

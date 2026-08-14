@@ -22,7 +22,6 @@ export default function MicrosoftLogin() {
 
       completeLogin(response);
 
-      message.success("Microsoft login successful");
     } catch (error) {
       console.error(error);
       message.error("Unable to login with Microsoft, please try again");

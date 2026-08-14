@@ -1,0 +1,80 @@
+import type { RouteObject } from "react-router-dom";
+
+import { paths } from "@/config/paths";
+import { ProtectedRoute } from "@/app/protected-route";
+
+export const visitorRoutes: RouteObject[] = [
+  {
+    path: paths.home.path,
+    lazy: async () => {
+      const { default: Landing } = await import(
+        "@/features/visitors/components/landing-page"
+      );
+
+      return { Component: Landing };
+    },
+  },
+
+  {
+    lazy: async () => {
+      const { default: VisitorLayout } = await import(
+        "./layout/visitor-layout"
+      );
+
+      return { Component: VisitorLayout };
+    },
+
+    children: [
+      {
+        path: paths.verify.path,
+        lazy: async () => {
+          const { default: VerifyIdentity } = await import(
+            "@/features/visitors/components/verify-identity"
+          );
+
+          return { Component: VerifyIdentity };
+        },
+      },
+
+      {
+        path: paths.register.path,
+        element: (
+          <ProtectedRoute requiredAuth="visitor-verified">
+            <div />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            lazy: async () => {
+              const { default: Registration } = await import(
+                "@/features/visitors/components/registration"
+              );
+
+              return { Component: Registration };
+            },
+          },
+        ],
+      },
+
+      {
+        path: paths.visitorProfile.path,
+        element: (
+          <ProtectedRoute requiredAuth="visitor">
+            <div />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            lazy: async () => {
+              const { default: VisitorProfile } = await import(
+                "@/features/visitors/components/visitor-profile"
+              );
+
+              return { Component: VisitorProfile };
+            },
+          },
+        ],
+      },
+    ],
+  },
+];

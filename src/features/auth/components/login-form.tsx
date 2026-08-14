@@ -33,7 +33,6 @@ export default function LoginForm() {
       }).unwrap();
 
       completeLogin(response);
-      message.success("Login successful");
     } catch (error) {
       const loginError = error as LoginError;
 

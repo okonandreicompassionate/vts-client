@@ -15,7 +15,7 @@ export default function AuthCard({ mode, onSwitchMode }: AuthCardProps) {
       <div className="fixed top-4 right-4">
         <ThemeToggle />
       </div>
-      <div className={`w-full max-w-sm rounded-2xl p-6 sm:p-8 dark:border-slate-800 dark:bg-slate-950 dark:shadow-slate-950/50`}>
+      <div className={`w-full mx-auto max-w-sm rounded-2xl p-6 sm:p-8 dark:border-slate-800 dark:bg-slate-950 dark:shadow-slate-950/50`}>
         <AuthHeader mode={mode} />
         {mode === "login" ? <LoginForm /> : <SignupForm />}
         <AuthFooter mode={mode} onSwitchMode={onSwitchMode} />

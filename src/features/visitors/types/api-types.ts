@@ -3,6 +3,40 @@ export interface VerifyIdentityPayload {
   phoneNumber?: string;
 }
 
+export interface VisitListResponse {
+  data?: VisitRecord[];
+  visits?: VisitRecord[];
+  total?: number;
+  totalItems?: number;
+  count?: number;
+  page?: number;
+  limit?: number;
+
+  meta: {
+    total?: number;
+    totalItems?: number;
+    count?: number;
+    page?: number;
+    limit?: number;
+  };
+
+  pagination?: {
+    total?: number;
+    totalItems?: number;
+    count?: number;
+    page?: number;
+    limit?: number;
+  };
+}
+
+export interface VisitStats {
+  total: number;
+  signedIn: number;
+  signedOff: number;
+  pending: number;
+  rejected: number;
+}
+
 export interface VerifyIdentityResponse {
   exists: boolean;
   visitor: {
@@ -67,4 +101,28 @@ export interface VisitResponse {
   badgeNumber?: string;
   rejectionReason?: string;
   reason?: string;
+}
+
+export interface VisitRecord {
+  id?: string;
+  referenceId?: string;
+  fullName?: string;
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  hostName?: string;
+  host?: string;
+  department?: string;
+  purposeOfVisit?: string;
+  purpose?: string;
+  status?: string;
+  time?: string;
+  registeredAt?: string;
+  reviewedAt?: string | null;
+  checkIn?: string;
+  checkInTime?: string | null;
+  checkOut?: string;
+  checkOutTime?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
