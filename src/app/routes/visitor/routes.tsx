@@ -1,5 +1,4 @@
 import type { RouteObject } from "react-router-dom";
-
 import { paths } from "@/config/paths";
 import { ProtectedRoute } from "@/app/protected-route";
 
@@ -8,7 +7,7 @@ export const visitorRoutes: RouteObject[] = [
     path: paths.home.path,
     lazy: async () => {
       const { default: Landing } = await import(
-        "@/features/visitors/components/landing-page"
+        "@/features/visits/components/landing-page"
       );
 
       return { Component: Landing };
@@ -29,7 +28,7 @@ export const visitorRoutes: RouteObject[] = [
         path: paths.verify.path,
         lazy: async () => {
           const { default: VerifyIdentity } = await import(
-            "@/features/visitors/components/verify-identity"
+            "@/features/visits/components/verify-identity"
           );
 
           return { Component: VerifyIdentity };
@@ -43,7 +42,7 @@ export const visitorRoutes: RouteObject[] = [
             path: paths.register.path,
             lazy: async () => {
               const { default: Registration } = await import(
-                "@/features/visitors/components/registration"
+                "@/features/visits/components/registration"
               );
 
               return { Component: Registration };
@@ -60,7 +59,7 @@ export const visitorRoutes: RouteObject[] = [
             path: paths.visitorProfile.path,
             lazy: async () => {
               const { default: VisitorProfile } = await import(
-                "@/features/visitors/components/visitor-profile"
+                "@/features/visits/components/visitor-profile"
               );
 
               return { Component: VisitorProfile };

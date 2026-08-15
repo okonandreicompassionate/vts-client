@@ -1,4 +1,4 @@
-import type { VisitorProfileStatus } from "../types/visitor-profile";
+import type { VisitorProfileStatus } from "./visitor-profile";
 
 export type StatusMeta = {
   subtitle: string;

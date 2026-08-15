@@ -13,7 +13,7 @@ import {
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 
 import { api } from "../api/base";
-import { visitorApi } from "@/features/visitors/api/visit-base";
+import { visitorApi } from "@/features/visits/api/visit-base";
 
 import authReducer from "@/features/auth/stores/admin-auth-slice";
 import visitorAuthReducer from "@/features/auth/stores/visitor-auth-slice";

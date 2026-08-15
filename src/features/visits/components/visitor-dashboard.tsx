@@ -3,9 +3,9 @@ import { TablePaginationFooter } from "../../../components/ui/table-pagination-f
 import AdminHeader from "../../../app/routes/admin/layout/dashboard-header.tsx";
 import TableComponent from "../../../components/ui/table.tsx";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits.ts";
-import { useVisitorTableData } from "@/features/visitors/hooks/use-visitor-table-data.ts";
-import { useVisitorRowClick } from "@/features/visitors/hooks/use-visitor-row-click.ts";
-import { useVisitorStats } from "@/features/visitors/hooks/use-visitor-stats.ts";
+import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data.ts";
+import { useVisitorRowClick } from "@/features/visits/hooks/use-visitor-row-click.ts";
+import { useVisitorStats } from "@/features/visits/hooks/use-visitor-stats.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { visitorColumns } from "./visitor-columns.tsx";
 import { statCards, type StatusFilter } from "./visitor-stat-cards.tsx";

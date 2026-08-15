@@ -1,5 +1,4 @@
 import type { RouteObject } from "react-router-dom";
-
 import { paths } from "@/config/paths";
 import { ProtectedRoute } from "@/app/protected-route";
 
@@ -23,7 +22,7 @@ export const adminRoutes: RouteObject[] = [
             path: paths.admin.dashboard.path,
             lazy: async () => {
               const { default: Dashboard } = await import(
-                "@/features/visitors/components/visitor-dashboard"
+                "@/features/visits/components/visitor-dashboard"
               );
 
               return {
@@ -36,7 +35,7 @@ export const adminRoutes: RouteObject[] = [
             path: paths.admin.visitors.path,
             lazy: async () => {
               const { default: Visitors } = await import(
-                "@/features/visitors/components/visitors-page"
+                "@/features/visits/components/visitors-page"
               );
 
               return {
@@ -49,7 +48,7 @@ export const adminRoutes: RouteObject[] = [
             path: paths.admin.visitorDetails.path,
             lazy: async () => {
               const { default: VisitorDetails } = await import(
-                "@/features/visitors/components/visitor-details"
+                "@/features/visits/components/visitor-details"
               );
 
               return {

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import type { VisitorRow } from "../../visitors/utils/visits";
+import type { VisitorRow } from "../utils/visits";
 import { paths } from "../../../config/paths";
 import {useTenant} from '../../../lib/tenant'
 

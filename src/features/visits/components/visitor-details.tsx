@@ -15,7 +15,7 @@ import {
   useApproveVisitMutation,
   useRejectVisitMutation,
   useSignoffVisitMutation,
-} from "@/features/visitors/api/visit-api-slice.ts";
+} from "@/features/visits/api/visit-api-slice.ts";
 
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";

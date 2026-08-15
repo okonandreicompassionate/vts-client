@@ -1,5 +1,5 @@
 
-import { visitorApi } from "@/features/visitors/api/visit-base";
+import { visitorApi } from "@/features/visits/api/visit-base";
 
 import type {
   CreateVisitPayload,

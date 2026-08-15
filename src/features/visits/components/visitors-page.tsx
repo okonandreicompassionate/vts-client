@@ -7,8 +7,8 @@ import TableComponent from "../../../components/ui/table";
 import { TablePaginationFooter } from "../../../components/ui/table-pagination-footer";
 import type { VisitorStatus } from "./visit-status-pill";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits";
-import { useVisitorTableData } from "@/features/visitors/hooks/use-visitor-table-data";
-import { useVisitorRowClick } from "@/features/visitors/hooks/use-visitor-row-click";
+import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data";
+import { useVisitorRowClick } from "@/features/visits/hooks/use-visitor-row-click";
 import { visitorColumns } from "./visitor-columns";
 
 type FilterTab = "All" | VisitorStatus;
