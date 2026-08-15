@@ -1,10 +1,6 @@
 import { api } from "@/lib/api/base";
 
-import type {
-  LoginPayload,
-  MicrosoftLoginPayload,
-  LoginResponse,
-} from "../types/api-types";
+import type { LoginPayload, MicrosoftLoginPayload, LoginResponse } from "../types/api-types";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -16,8 +12,6 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-
-
     microsoftLogin: builder.mutation<LoginResponse, MicrosoftLoginPayload>({
       query: (body) => ({
         url: "/auth/microsoft",
@@ -25,11 +19,7 @@ export const authApi = api.injectEndpoints({
         body,
       }),
     }),
-
   }),
 });
 
-export const {
-  useLoginMutation,
-  useMicrosoftLoginMutation,
-} = authApi;
+export const { useLoginMutation, useMicrosoftLoginMutation } = authApi;

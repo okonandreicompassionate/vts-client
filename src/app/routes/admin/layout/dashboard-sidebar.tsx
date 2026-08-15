@@ -33,6 +33,13 @@ export default function Sidebar() {
       href: paths.admin.settings.getHref(orgSlug),
       icon: <SettingOutlined />,
     },
+    {
+      key: "employees",
+      label: "Employees",
+      href: paths.admin.employees.getHref(orgSlug),
+      icon: "/visitors.svg",
+    },
+
   ];
 
   const go = (href: string) => {

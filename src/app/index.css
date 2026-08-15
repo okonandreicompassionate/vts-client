@@ -133,3 +133,9 @@ td.ant-table-cell {
   padding-top: 4px !important;
   padding-bottom: 4px !important;
 }
+
+.employee-autocomplete-option {
+  padding: 5px 10px !important;
+  min-height: auto !important;
+  line-height: 1.4 !important;
+}

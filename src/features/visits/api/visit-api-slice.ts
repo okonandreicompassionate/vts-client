@@ -1,6 +1,4 @@
 
-import { visitorApi } from "@/features/visits/api/visit-base";
-
 import type {
   CreateVisitPayload,
   CreateVisitResponse,
@@ -10,8 +8,9 @@ import type {
   VisitResponse,
   VisitStats,
 } from "../types/api-types";
+import { api } from "@/lib/api/base";
 
-export const visitsApi = visitorApi.injectEndpoints({
+export const visitsApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createVisit: builder.mutation<CreateVisitResponse, CreateVisitPayload>({
       query: (body) => ({

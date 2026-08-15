@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { message } from "antd";
 
 import { useAppDispatch } from "@/lib/stores/hooks";
-import { adminApi } from "../../settings/api/settings-api-slice";
+import {settingsApi } from "../../settings/api/settings-api-slice";
 import {
   connectNotificationSocket,
   disconnectNotificationSocket,
@@ -55,7 +55,7 @@ export function useNotificationSocket({
     const handlePendingVisit = (
       notification: PendingVisitNotification,
     ) => {
-      dispatch(adminApi.util.invalidateTags(["Visits"]));
+      dispatch(settingsApi.util.invalidateTags(["Visits"]));
 
       message.success({
         content: notification.message || "New visit registered",

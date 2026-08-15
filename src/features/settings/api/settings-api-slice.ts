@@ -7,18 +7,18 @@ import type {
   UpdateProfilePayload,
 } from "../types/api-types";
 
-export const adminApi = api.injectEndpoints({
+export const settingsApi = api.injectEndpoints({
   endpoints: (builder) => ({
 
     getProfile: builder.query<UserProfile, void>({
       query: () => "/auth/profile",
-      providesTags: [{ type: "Admins", id: "PROFILE" }],
+      providesTags: [{ type: "Settings", id: "PROFILE" }],
       keepUnusedDataFor: 0,
     }),
 
     getSettings: builder.query<SettingsResponse, void>({
       query: () => "/auth/settings",
-      providesTags: [{ type: "Admins", id: "SETTINGS" }],
+      providesTags: [{ type: "Settings", id: "SETTINGS" }],
     }),
 
     updateProfile: builder.mutation<UserProfile, UpdateProfilePayload>({
@@ -27,7 +27,7 @@ export const adminApi = api.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: [{ type: "Admins", id: "PROFILE" }],
+      invalidatesTags: [{ type: "Settings", id: "PROFILE" }],
     }),
 
     updatePassword: builder.mutation<{ success: boolean }, UpdatePasswordPayload>({
@@ -45,8 +45,8 @@ export const adminApi = api.injectEndpoints({
         body,
       }),
       invalidatesTags: [
-        { type: "Admins", id: "PROFILE" },
-        { type: "Admins", id: "SETTINGS" },
+        { type: "Settings", id: "PROFILE" },
+        { type: "Settings", id: "SETTINGS" },
       ],
     }),
 
@@ -60,4 +60,4 @@ export const {
   useUpdateProfileMutation,
   useUpdatePasswordMutation,
   useUpdateSettingsMutation,
-} = adminApi;
+} = settingsApi;

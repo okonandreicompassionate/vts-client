@@ -1,4 +1,4 @@
-import { Button, Form, Input, message } from "antd";
+import { AutoComplete, Button, Form, Input, message } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,8 @@ import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
 import { setVisitorSession } from "../../auth/stores/visitor-auth-slice";
+import { useGetEmployeeNamesQuery } from "@/features/employees/api/employees-api-slice";
+import { Spinner } from "@/components/ui/spinner";
 
 const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
 
@@ -21,7 +23,8 @@ export default function Registration() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [createVisit] = useCreateVisitMutation();
-
+  const { data: employeeNames = [], isLoading: isLoadingEmployeeNames } =
+    useGetEmployeeNamesQuery();
   const purposeOfVisitValue = Form.useWatch("purposeOfVisit", form);
   const purposeOfVisitLength = purposeOfVisitValue?.length ?? 0;
 
@@ -128,7 +131,7 @@ export default function Registration() {
   return (
     <div className="flex w-full flex-col items-center md:justify-center dark:bg-slate-900">
       <div className="flex w-full flex-1 flex-col md:max-w-lg md:flex-none md:overflow-y-auto">
-        <header className=" flex items-center -mb-3 justify-between border-b border-slate-200 px-5 md:mt-0 dark:border-slate-700">
+        <header className="-mb-3 flex items-center justify-between border-b border-slate-200 px-5 md:mt-0 dark:border-slate-700">
           <h1 className="text-md font-bold text-slate-900 dark:text-slate-100">Registration</h1>
         </header>
 
@@ -142,7 +145,7 @@ export default function Registration() {
             phoneNo: existingIdentity?.phoneNo,
           }}
           onFinish={handleFinish}
-          className="flex flex-col px-5 pt-6  md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
+          className="flex flex-col px-5 pt-6 md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
         >
           <Form.Item
             name="name"
@@ -182,11 +185,35 @@ export default function Registration() {
           <Form.Item
             name="hostName"
             label="Host Name"
-            rules={[{ required: true, message: "Please enter the host name" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please enter the host name",
+              },
+            ]}
           >
-            <Input
+            <AutoComplete
+              options={employeeNames.map((employee) => ({
+                value: employee.name,
+                label: employee.name,
+              }))}
+              showSearch={{
+                filterOption: (inputValue, option) =>
+                  String(option?.value ?? "")
+                    .toLowerCase()
+                    .includes(inputValue.toLowerCase()),
+              }}
+              allowClear
+              placeholder="Search or enter host name"
               size="large"
-              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+              className="w-full cursor-pointer"
+              getPopupContainer={(triggerNode) => triggerNode.parentElement!}
+              suffixIcon={isLoadingEmployeeNames ? <Spinner variant="inline" /> : undefined}
+              classNames={{
+                popup: {
+                  listItem: "employee-autocomplete-option",
+                },
+              }}
             />
           </Form.Item>
 
@@ -230,7 +257,6 @@ export default function Registration() {
               className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             />
           </Form.Item>
-
 
           <Form.Item className="mb-0 md:mt-4">
             <Button

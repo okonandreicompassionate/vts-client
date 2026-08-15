@@ -29,7 +29,7 @@ export const authBaseQuery: BaseQueryFn<
       const [, orgSlug] = window.location.pathname.split("/");
 
       if (orgSlug) {
-        window.location.href = `/${orgSlug}/admin`;
+        window.location.href = `/${orgSlug}/login`;
       }
     }
   }

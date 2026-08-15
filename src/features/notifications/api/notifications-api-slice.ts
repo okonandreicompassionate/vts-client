@@ -4,11 +4,11 @@ import type {
   UpdateNotificationSettingsPayload,
 } from "../types/notifications-api.types";
 
-export const adminApi = api.injectEndpoints({
+export const notificationsApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getNotificationSettings: builder.query<NotificationSettingsResponse, void>({
       query: () => "/notifications/settings",
-      providesTags: [{ type: "Admins", id: "NOTIFICATION_SETTINGS" }],
+      providesTags: [{ type: "Notifications", id: "NOTIFICATION_SETTINGS" }],
     }),
 
     updateNotificationSettings: builder.mutation<
@@ -20,9 +20,9 @@ export const adminApi = api.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: [{ type: "Admins", id: "NOTIFICATION_SETTINGS" }],
+      invalidatesTags: [{ type: "Notifications", id: "NOTIFICATION_SETTINGS" }],
     }),
   }),
 });
 
-export const { useGetNotificationSettingsQuery, useUpdateNotificationSettingsMutation } = adminApi;
+export const { useGetNotificationSettingsQuery, useUpdateNotificationSettingsMutation } = notificationsApi;

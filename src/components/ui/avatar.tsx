@@ -5,10 +5,15 @@ interface VisitorAvatarProps {
   src?: string;
 }
 
-function getInitials(name: string): string {
+function getInitials(name?: string | null): string {
+  if (!name?.trim()) {
+    return "?";
+  }
+
   return name
-    .split(" ")
-    .map((word) => word[0]?.toUpperCase())
+    .trim()
+    .split(/\s+/)
+    .map((word) => word[0]?.toUpperCase() ?? "")
     .join("")
     .slice(0, 2);
 }
@@ -52,7 +57,7 @@ export function Avatar({ name, size = "md", className = "", src }: VisitorAvatar
 
   return (
     <div
-      className={`flex items-center justify-center rounded-full font-semibold text-white ${bgColor} ${sizeClasses[size]} ${className}`}
+      className={`flex items-center justify-center rounded-full font-medium text-white ${bgColor} ${sizeClasses[size]} ${className}`}
       title={name}
     >
       {initials}
