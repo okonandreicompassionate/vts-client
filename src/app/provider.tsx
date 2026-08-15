@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import { useMemo } from "react";
 import { getThemeConfig } from "./theme";
 import { PopupProvider } from "../lib/contexts/popup/popup-provider";
-import { msalConfig } from "../lib/api/msal";
+import { msalConfig } from "../features/auth/api/msal-client";
 import { store } from "../lib/stores/store";
 import { ThemeProvider } from "../lib/contexts/theme/theme-provider";
 import { useTheme } from "../lib/contexts/theme/use-theme";
@@ -31,10 +31,12 @@ function AppProviderContent({ children }: { children: ReactNode }) {
 
 export function AppProvider({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider>
-      <MsalProvider instance={msalInstance}>
-        <AppProviderContent>{children}</AppProviderContent>
-      </MsalProvider>
-    </ThemeProvider>
+    <PopupProvider>
+      <ThemeProvider>
+        <MsalProvider instance={msalInstance}>
+          <AppProviderContent>{children}</AppProviderContent>
+        </MsalProvider>
+      </ThemeProvider>
+    </PopupProvider>
   );
 }

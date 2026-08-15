@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, message } from "antd";
 import { useMicrosoftLoginMutation } from "../api/auth-api-slice";
-import { useMsalAuth } from "../../../lib/api/msal";
+import { useMsalAuth } from "../api/msal-client";
 import { useCompleteLogin } from "../hooks/use-complete-login";
 
 export default function MicrosoftLogin() {
