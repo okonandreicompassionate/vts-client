@@ -37,14 +37,10 @@ export const visitorRoutes: RouteObject[] = [
       },
 
       {
-        path: paths.register.path,
-        element: (
-          <ProtectedRoute requiredAuth="visitor-verified">
-            <div />
-          </ProtectedRoute>
-        ),
+        element: <ProtectedRoute requiredAuth="visitor-verified" />,
         children: [
           {
+            path: paths.register.path,
             lazy: async () => {
               const { default: Registration } = await import(
                 "@/features/visitors/components/registration"
@@ -56,15 +52,12 @@ export const visitorRoutes: RouteObject[] = [
         ],
       },
 
+      // Protected visitor profile route
       {
-        path: paths.visitorProfile.path,
-        element: (
-          <ProtectedRoute requiredAuth="visitor">
-            <div />
-          </ProtectedRoute>
-        ),
+        element: <ProtectedRoute requiredAuth="visitor" />,
         children: [
           {
+            path: paths.visitorProfile.path,
             lazy: async () => {
               const { default: VisitorProfile } = await import(
                 "@/features/visitors/components/visitor-profile"

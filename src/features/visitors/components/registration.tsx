@@ -126,9 +126,9 @@ export default function Registration() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center md:justify-center dark:bg-slate-900">
-      <div className="flex w-full flex-1 flex-col md:max-h-[90vh] md:max-w-lg md:flex-none md:overflow-y-auto">
-        <header className=" flex items-center justify-between border-b border-slate-200 px-5 md:mt-0 dark:border-slate-700">
+    <div className="flex w-full flex-col items-center md:justify-center dark:bg-slate-900">
+      <div className="flex w-full flex-1 flex-col md:max-w-lg md:flex-none md:overflow-y-auto">
+        <header className=" flex items-center -mb-3 justify-between border-b border-slate-200 px-5 md:mt-0 dark:border-slate-700">
           <h1 className="text-md font-bold text-slate-900 dark:text-slate-100">Registration</h1>
         </header>
 
@@ -142,7 +142,7 @@ export default function Registration() {
             phoneNo: existingIdentity?.phoneNo,
           }}
           onFinish={handleFinish}
-          className="flex flex-col px-5 pt-6 pb-4 md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
+          className="flex flex-col px-5 pt-6  md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
         >
           <Form.Item
             name="name"
@@ -231,7 +231,6 @@ export default function Registration() {
             />
           </Form.Item>
 
-          <div className="flex-1 md:hidden" />
 
           <Form.Item className="mb-0 md:mt-4">
             <Button

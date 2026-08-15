@@ -1,5 +1,10 @@
 import { Outlet } from "react-router-dom";
+import { PopupProvider } from "@/lib/contexts/popup/popup-provider";
 
 export function TenantLayout() {
-  return <Outlet />;
+  return (
+    <PopupProvider>
+      <Outlet />
+    </PopupProvider>
+  );
 }
