@@ -181,14 +181,14 @@ export default function VisitorProfile() {
             Visitor session not found.
           </p>
 
-          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
             Please complete identity verification again to continue.
           </p>
 
           <Button
             type="primary"
             size="large"
-            className="mt-6"
+            className="mt-6 font-semibold"
             onClick={() => navigate(paths.verify.getHref(orgSlug))}
           >
             Return to verification

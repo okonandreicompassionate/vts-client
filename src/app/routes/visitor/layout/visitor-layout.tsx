@@ -7,7 +7,7 @@ const VisitorLayout = () => {
     <div className="flex min-h-screen w-full">
       <LeftLayout />
 
-      <div className="flex min-h-screen w-full flex-col bg-white sm:px-6 md:px-10 lg:px-14 dark:bg-slate-900">
+      <div className="flex mt-4 min-h-screen w-full flex-col bg-white sm:px-6 md:px-10 lg:px-14 dark:bg-slate-900">
         <Header />
 
         <main className="flex min-h-0 flex-1 w-full justify-center px-4 pt-6 sm:px-6 sm:pt-8 md:items-center md:px-10 md:pt-0">
