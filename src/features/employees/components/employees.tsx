@@ -33,7 +33,7 @@ export default function Employees() {
     <div className="flex h-full min-h-0 flex-col">
       <AdminHeader title="Employees" />
 
-      <main className="flex-1 px-3 pb-3 sm:px-4 md:px-8 md:py-6">
+      <main className="flex-1 pb-3 sm:px-3 md:px-3 md:py-6">
         <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
           <div className="flex items-center justify-between py-3 pe-3">
             <div className="shrink-0 px-3">
