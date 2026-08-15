@@ -1,10 +1,18 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "antd";
-import { AppstoreOutlined, SettingOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  AppstoreOutlined,
+  SettingOutlined,
+  MenuOutlined,
+  CloseOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { paths } from "../../../../config/paths";
 import { useTenant } from "@/lib/tenant";
+import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -13,6 +21,14 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { orgSlug } = useTenant();
+
+  const { data: profile } =
+    useGetProfileQuery(undefined, {
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+    });
+
+  const isSuperAdmin = profile?.role === "SUPERADMIN";
 
   const navItems = [
     {
@@ -37,17 +53,25 @@ export default function Sidebar() {
       key: "employees",
       label: "Employees",
       href: paths.admin.employees.getHref(orgSlug),
-      icon: "/visitors.svg",
+      icon: <TeamOutlined />,
     },
 
+    ...(isSuperAdmin
+      ? [
+          {
+            key: "users",
+            label: "Users",
+            href: paths.admin.users.getHref(orgSlug),
+            icon: <UserOutlined />,
+          },
+        ]
+      : []),
   ];
 
   const go = (href: string) => {
     navigate(href);
     setMobileOpen(false);
   };
-
-;
 
   return (
     <>
@@ -76,14 +100,24 @@ export default function Sidebar() {
       >
         <div>
           <div className="flex h-16 items-center justify-between px-5">
-            {!collapsed && <img src="/logo.svg" className="h-3 md:block border-0! outline-none! shadow-none!" alt="Logo" />}
+            {!collapsed && (
+              <img
+                src="/logo.svg"
+                className="h-3 border-0! outline-none! shadow-none! md:block"
+                alt="Logo"
+              />
+            )}
 
             <Button
               type="text"
               onClick={() => setCollapsed((c) => !c)}
               aria-label="Toggle sidebar"
               icon={
-                <img src={collapsed ? "/expand.svg" : "/collapse.svg"} alt="" className="h-4 w-4" />
+                <img
+                  src={collapsed ? "/expand.svg" : "/collapse.svg"}
+                  alt=""
+                  className="h-4 w-4"
+                />
               }
               className="hidden! h-7! w-7! text-slate-400! md:inline-flex! dark:text-slate-500!"
             />
@@ -117,21 +151,23 @@ export default function Sidebar() {
                       <img
                         src={item.icon}
                         alt=""
-                        className={`h-4 w-4 ${isActive ? "brightness-0 invert" : ""}`}
+                        className={`h-4 w-4 ${
+                          isActive ? "brightness-0 invert" : ""
+                        }`}
                       />
                     ) : (
                       item.icon
                     )}
                   </span>
 
-                  <span className={collapsed ? "md:hidden" : ""}>{item.label}</span>
+                  <span className={collapsed ? "md:hidden" : ""}>
+                    {item.label}
+                  </span>
                 </Button>
               );
             })}
           </nav>
         </div>
-
-       
       </aside>
     </>
   );

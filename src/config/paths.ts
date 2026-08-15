@@ -53,5 +53,9 @@ export const paths = {
       path: "/:orgSlug/employees",
       getHref: (orgSlug: string) => tenantPath(orgSlug, "/employees"),
     },
+    users: {
+      path: "/:orgSlug/users",
+      getHref: (orgSlug: string) => tenantPath(orgSlug, "/users"),
+    },
   },
 } as const;

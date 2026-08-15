@@ -81,6 +81,18 @@ export const adminRoutes: RouteObject[] = [
               };
             },
           },
+          {
+            path: paths.admin.users.path,
+            lazy: async () => {
+              const { default: Users } = await import(
+                "@/features/users/components/users"
+              );
+
+              return {
+                Component: Users,
+              };
+            },
+          },
         ],
       },
     ],
