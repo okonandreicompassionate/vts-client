@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { api } from "@/lib/api/base";
+import { adminApi } from "@/lib/api/admin/admin-api";
 import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
 import { useTenant } from "@/lib/tenant";
@@ -14,7 +14,7 @@ export function useLogout() {
   return () => {
     dispatch(clearAuth());
 
-    dispatch(api.util.resetApiState());
+    dispatch(adminApi.util.resetApiState());
 
     localStorage.removeItem("visitorId");
     localStorage.removeItem("visitorVerified");

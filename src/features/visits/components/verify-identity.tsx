@@ -1,12 +1,11 @@
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
-
 import { paths } from "@/config/paths";
 import { useTenant } from "@/lib/tenant";
 import { useAppDispatch } from "@/lib/stores/hooks";
 import { setVisitorSession, setVisitorVerified } from "../../auth/stores/visitor-auth-slice";
-import { useVerifyVisitIdentityMutation } from "../api/visit-api-slice";
+import { useVerifyVisitIdentityMutation } from "../api/public-visits-api-slice";
 
 export default function VerifyIdentity() {
   const navigate = useNavigate();

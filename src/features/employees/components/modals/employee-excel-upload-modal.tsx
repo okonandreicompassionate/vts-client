@@ -4,8 +4,7 @@ import { useState } from "react";
 
 import CustomModal from "@/components/ui/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
-
-import { useUploadEmployeeExcelSheetMutation } from "../../api/employees-api-slice";
+import { useUploadEmployeeExcelSheetMutation } from "../../api/admin-employees-api-slice";
 
 export default function EmployeeExcelUploadModal() {
   const { closeModal } = usePopup();

@@ -1,8 +1,8 @@
-import { api } from "@/lib/api/base";
+import { adminApi } from "@/lib/api/admin/admin-api";
 
 import type { LoginPayload, MicrosoftLoginPayload, LoginResponse } from "../types/api-types";
 
-export const authApi = api.injectEndpoints({
+export const authApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
     Login: builder.mutation<LoginResponse, LoginPayload>({
       query: (body) => ({

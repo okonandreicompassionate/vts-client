@@ -1,4 +1,4 @@
-import { useGetVisitStatsQuery } from "../api/visit-api-slice";
+import { useGetVisitStatsQuery } from "../api/admins-visit-api-slice";
 
 export function useVisitorStats() {
   const { data } = useGetVisitStatsQuery();

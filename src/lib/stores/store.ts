@@ -11,16 +11,15 @@ import {
   REGISTER,
 } from "redux-persist";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
-
-import { api } from "../api/base";
-import { visitorApi } from "@/features/visits/api/visit-base";
-
+import { adminApi } from "@/lib/api/admin/admin-api";
+import { visitorApi } from "@/lib/api/visitor/visitor-api";
+import { publicApi } from "@/lib/api/public/public-api";
 import authReducer from "@/features/auth/stores/admin-auth-slice";
 import visitorAuthReducer from "@/features/auth/stores/visitor-auth-slice";
 
 const storage = createWebStorage("local");
 
-const authPersistConfig = {
+const adminAuthPersistConfig = {
   key: "adminAuth",
   storage,
 };
@@ -31,7 +30,7 @@ const visitorAuthPersistConfig = {
 };
 
 const persistedAdminAuthReducer = persistReducer(
-  authPersistConfig,
+  adminAuthPersistConfig,
   authReducer,
 );
 
@@ -42,11 +41,10 @@ const persistedVisitorAuthReducer = persistReducer(
 
 export const store = configureStore({
   reducer: {
-    // Admin/general RTK Query
-    [api.reducerPath]: api.reducer,
-
-    // Visitor RTK Query
+    // RTK Query APIs
+    [adminApi.reducerPath]: adminApi.reducer,
     [visitorApi.reducerPath]: visitorApi.reducer,
+    [publicApi.reducerPath]: publicApi.reducer,
 
     // Authentication
     adminAuth: persistedAdminAuthReducer,
@@ -66,8 +64,9 @@ export const store = configureStore({
         ],
       },
     }).concat(
-      api.middleware,
+      adminApi.middleware,
       visitorApi.middleware,
+      publicApi.middleware,
     ),
 });
 

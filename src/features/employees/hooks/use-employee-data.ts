@@ -1,4 +1,4 @@
-import { useGetEmployeesQuery } from "../api/employees-api-slice";
+import { useGetEmployeesQuery } from "../api/admin-employees-api-slice";
 import type { EmployeeRow } from "../types/types";
 
 interface UseEmployeeTableDataParams {

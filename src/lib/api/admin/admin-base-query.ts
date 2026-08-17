@@ -4,10 +4,12 @@ import {
   type FetchArgs,
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
-import { type RootState } from "../stores/store";
-import { tenantPath } from "../tenant/tenant-path";
 
-const rawBaseQuery = fetchBaseQuery({
+import { clearAuth } from "@/features/auth/stores/admin-auth-slice";
+import { type RootState } from "@/lib/stores/store";
+import { tenantPath } from "@/lib/tenant/tenant-path";
+
+const rawAdminBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
 
   prepareHeaders(headers, { getState }) {
@@ -21,7 +23,7 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
-export const tenantBaseQuery: BaseQueryFn<
+export const adminBaseQuery: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
@@ -45,5 +47,27 @@ export const tenantBaseQuery: BaseQueryFn<
           url: tenantPath(orgSlug, args.url),
         };
 
-  return rawBaseQuery(request, api, extraOptions);
+  const result = await rawAdminBaseQuery(
+    request,
+    api,
+    extraOptions,
+  );
+
+  if (result.error?.status === 401) {
+    const requestUrl =
+      typeof args === "string"
+        ? args
+        : args.url;
+
+    const isLoginRequest =
+      requestUrl.includes("/auth/login");
+
+    if (!isLoginRequest) {
+      api.dispatch(clearAuth());
+
+      window.location.href = `/${orgSlug}/login`;
+    }
+  }
+
+  return result;
 };

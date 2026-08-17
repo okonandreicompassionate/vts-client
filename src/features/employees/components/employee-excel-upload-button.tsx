@@ -2,8 +2,8 @@ import { Alert, Button, Modal, Upload, message, Typography } from "antd";
 import type { UploadFile } from "antd";
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { useUploadEmployeeExcelSheetMutation } from "../api/admin-employees-api-slice";
 
-import { useUploadEmployeeExcelSheetMutation } from "../api/employees-api-slice";
 
 const { Text } = Typography;
 const { Dragger } = Upload;

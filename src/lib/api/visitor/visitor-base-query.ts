@@ -4,7 +4,6 @@ import {
   type FetchArgs,
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
-import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { type RootState } from "@/lib/stores/store";
 import { tenantPath } from "@/lib/tenant/tenant-path";
@@ -23,7 +22,7 @@ const rawVisitorBaseQuery = fetchBaseQuery({
   },
 });
 
-const visitorBaseQuery: BaseQueryFn<
+export const visitorBaseQuery: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
@@ -41,9 +40,7 @@ const visitorBaseQuery: BaseQueryFn<
 
   const request =
     typeof args === "string"
-      ? {
-          url: tenantPath(orgSlug, args),
-        }
+      ? tenantPath(orgSlug, args)
       : {
           ...args,
           url: tenantPath(orgSlug, args.url),
@@ -51,27 +48,3 @@ const visitorBaseQuery: BaseQueryFn<
 
   return rawVisitorBaseQuery(request, api, extraOptions);
 };
-
-const getCurrentOrgSlug = () => {
-  const [, orgSlug] = window.location.pathname.split("/");
-
-  return orgSlug || "no-tenant";
-};
-
-export const visitorApi = createApi({
-  reducerPath: "visitorApi",
-
-  baseQuery: visitorBaseQuery,
-
-  tagTypes: ["Visits"],
-
-  serializeQueryArgs: ({ endpointName, queryArgs }) => {
-    const orgSlug = getCurrentOrgSlug();
-
-    return `${orgSlug}:${endpointName}:${JSON.stringify(
-      queryArgs ?? null,
-    )}`;
-  },
-
-  endpoints: () => ({}),
-});

@@ -6,12 +6,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import LoadingRing from "../animations/loading-ring";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
-import { useGetVisitQuery } from "../api/visit-api-slice";
 import type { VisitorProfileStatus, VisitorRegistration } from "../types/visitor-profile";
 import { useVisitorSocket } from "../hooks/use-visitor-socket";
 import { useAppSelector } from "@/lib/stores/hooks";
 import MetaItem from "./profile-meta-item";
 import { statusMeta } from "../types/status-meta";
+import { useGetVisitQuery } from "../api/visitor-vists-api";
 
 export default function VisitorProfile() {
   const { orgSlug } = useTenant();

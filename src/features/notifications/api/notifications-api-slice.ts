@@ -1,10 +1,10 @@
-import { api } from "../../../lib/api/base";
+import { adminApi } from "../../../lib/api/admin/admin-api";
 import type {
   NotificationSettingsResponse,
   UpdateNotificationSettingsPayload,
 } from "../types/notifications-api.types";
 
-export const notificationsApi = api.injectEndpoints({
+export const notificationsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
     getNotificationSettings: builder.query<NotificationSettingsResponse, void>({
       query: () => "/notifications/settings",

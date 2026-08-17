@@ -1,4 +1,4 @@
-import { api } from "../../../lib/api/base";
+import { adminApi } from "../../../lib/api/admin/admin-api";
 import type {
   UserProfile,
   SettingsResponse,
@@ -7,7 +7,7 @@ import type {
   UpdateProfilePayload,
 } from "../types/api-types";
 
-export const settingsApi = api.injectEndpoints({
+export const settingsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
 
     getProfile: builder.query<UserProfile, void>({

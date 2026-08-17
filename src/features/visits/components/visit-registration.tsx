@@ -4,15 +4,15 @@ import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { useAppDispatch } from "@/lib/stores/hooks";
-import { useCreateVisitMutation } from "../api/visit-api-slice";
 import RegistrationModal from "./modals/registration-modal";
 import RegistrationSuccessModal from "./modals/registration-success-modal";
 import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
 import { setVisitorSession } from "../../auth/stores/visitor-auth-slice";
-import { useGetEmployeeNamesQuery } from "@/features/employees/api/employees-api-slice";
+import { useGetEmployeeNamesQuery } from "@/features/employees/api/public-employees-api-slice";
 import { Spinner } from "@/components/ui/spinner";
+import { useCreateVisitMutation } from "../api/public-visits-api-slice";
 
 const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
 

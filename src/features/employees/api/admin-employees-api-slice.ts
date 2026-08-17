@@ -1,7 +1,7 @@
+import { adminApi } from "@/lib/api/admin/admin-api";
 import type { EmployeeListResponse, EmployeeUploadResponse } from "../types/api-types";
-import { api } from "@/lib/api/base";
 
-export const employeesApiSlice = api.injectEndpoints({
+export const adminEmployeesApiSlice = adminApi.injectEndpoints({
   endpoints: (builder) => ({
     getEmployees: builder.query<EmployeeListResponse, { page: number; limit: number }>({
       query: ({ page, limit }) => ({
@@ -24,17 +24,11 @@ export const employeesApiSlice = api.injectEndpoints({
       invalidatesTags: ["Employees"],
     }),
 
-    getEmployeeNames: builder.query<{ name: string }[], void>({
-      query: () => ({
-        url: "/employees/names",
-        method: "GET",
-      }),
-    }),
+
   }),
 });
 
 export const {
   useGetEmployeesQuery,
   useUploadEmployeeExcelSheetMutation,
-  useGetEmployeeNamesQuery,
-} = employeesApiSlice;
+} = adminEmployeesApiSlice;

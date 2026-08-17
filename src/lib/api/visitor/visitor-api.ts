@@ -1,22 +1,26 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { authBaseQuery } from "../../features/auth/api/auth-base-query";
+
+import { visitorBaseQuery } from "./visitor-base-query";
+
 const getCurrentOrgSlug = () => {
   const [, orgSlug] = window.location.pathname.split("/");
 
   return orgSlug || "no-tenant";
 };
 
-export const api = createApi({
-  reducerPath: "api",
+export const visitorApi = createApi({
+  reducerPath: "visitorApi",
 
-  baseQuery: authBaseQuery,
+  baseQuery: visitorBaseQuery,
 
-  tagTypes: ["Settings", "Visits", "Employees", "Notifications", "Users"],
+  tagTypes: ["Visits"],
 
   serializeQueryArgs: ({ endpointName, queryArgs }) => {
     const orgSlug = getCurrentOrgSlug();
 
-    return `${orgSlug}:${endpointName}:${JSON.stringify(queryArgs ?? null)}`;
+    return `${orgSlug}:${endpointName}:${JSON.stringify(
+      queryArgs ?? null,
+    )}`;
   },
 
   endpoints: () => ({}),
