@@ -104,7 +104,6 @@ export default function VisitorDetails() {
         visitorName={visitor.name}
         purpose={visitor.purpose}
         hostName={visitor.host}
-        department={visitor.department}
         onConfirm={handleConfirmApprove}
       />,
     );
@@ -318,10 +317,6 @@ export default function VisitorDetails() {
     {
       label: "Host Name",
       value: visitor.host,
-    },
-    {
-      label: "Department",
-      value: visitor.department,
     },
     {
       label: "Purpose of Visit",

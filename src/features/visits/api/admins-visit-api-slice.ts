@@ -1,7 +1,7 @@
 import type { VisitListResponse, VisitStats } from "../types/api-types";
-import { visitorApi } from "../../../lib/api/visitor/visitor-api";
+import { adminApi } from "@/lib/api/admin/admin-api";
 
-export const visitsApi = visitorApi.injectEndpoints({
+export const visitsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
     approveVisit: builder.mutation<void, string>({
       query: (id) => ({

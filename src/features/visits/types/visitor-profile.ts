@@ -6,7 +6,6 @@ export type VisitorRegistration = {
   name: string;
   purposeOfVisit: string;
   hostName: string;
-  department: string;
   phoneNo: string;
   email: string;
   status?: VisitorProfileStatus;

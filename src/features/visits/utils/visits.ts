@@ -22,8 +22,6 @@ export interface VisitorRow {
   checkIn: string;
   checkInDate?: string;
   checkOut: string;
-
-  department: string;
 }
 
 export function toVisitorStatus(status?: string): VisitorStatus {
@@ -203,9 +201,6 @@ export function toVisitorRow(
       ? formatVisitTime(resolvedCheckOut)
       : "Pending",
 
-    department:
-      visit.department ??
-      "N/A",
   };
 }
 

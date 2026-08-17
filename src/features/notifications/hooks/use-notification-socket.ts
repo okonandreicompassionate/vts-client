@@ -28,7 +28,6 @@ type PendingVisitNotification = {
     referenceId: string;
     hostName: string;
     visitorName?: string;
-    department?: string | null;
     reason?: string;
   };
 };

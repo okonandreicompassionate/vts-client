@@ -80,7 +80,6 @@ export default function Registration() {
               email: values.email,
               phoneNumber: values.phoneNo,
               hostName: values.hostName,
-              department: values.department,
               purposeOfVisit: values.purposeOfVisit,
             }).unwrap();
 
@@ -232,16 +231,7 @@ export default function Registration() {
             />
           </Form.Item>
 
-          <Form.Item
-            name="department"
-            label="Department"
-            rules={[{ required: true, message: "Please enter your department" }]}
-          >
-            <Input
-              size="large"
-              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-            />
-          </Form.Item>
+         
 
           <Form.Item
             name="phoneNo"

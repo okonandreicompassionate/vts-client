@@ -7,7 +7,6 @@ type ApproveAccessModalProps = {
    visitorName: string;
   purpose: string;
   hostName: string;
-  department: string;
   onConfirm?: () => void | Promise<void>;
   onCancel?: () => void;
 };
@@ -16,7 +15,6 @@ export default function ApproveAccessModal({
  visitorName,
   purpose,
   hostName,
-  department,
   onConfirm,
   onCancel,
 }: ApproveAccessModalProps) {
@@ -34,10 +32,7 @@ export default function ApproveAccessModal({
       label: "Host Name",
       value: hostName,
     },
-    {
-      label: "Department",
-      value: department,
-    },
+
   ];
 
   const handleCancel = () => {

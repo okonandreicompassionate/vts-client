@@ -11,7 +11,6 @@ type Props = {
 const details = [
   { label: "Purpose of Visit", field: "purposeOfVisit" },
   { label: "Host", field: "hostName" },
-  { label: "Department", field: "department" },
   { label: "Phone Number", field: "phoneNo" },
 ] as const;
 

@@ -91,8 +91,6 @@ export default function VisitorProfile() {
 
         hostName: visitData.hostName ?? visitData.host ?? storedRegistration?.hostName ?? "",
 
-        department: visitData.department ?? storedRegistration?.department ?? "",
-
         phoneNo: visitData.phoneNumber ?? visitData.phone ?? storedRegistration?.phoneNo ?? "",
 
         email: visitData.email ?? storedRegistration?.email ?? "",
@@ -274,7 +272,6 @@ export default function VisitorProfile() {
           <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 border-t border-slate-200 pt-3 dark:border-slate-700">
             <MetaItem label="Host" value={registration.hostName || "Pending"} />
 
-            <MetaItem label="Department" value={registration.department || "Pending"} />
 
             <MetaItem label="Date" value={createdDate} />
 

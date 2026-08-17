@@ -54,7 +54,6 @@ export interface CreateVisitPayload {
   email: string;
   phoneNumber: string;
   hostName: string;
-  department: string;
   purposeOfVisit: string;
 }
 
@@ -64,7 +63,6 @@ export interface CreateVisitResponse {
   visitorId: string;
   visitorName: string;
   hostName: string;
-  department: string;
   purposeOfVisit: string;
   status: string;
   checkInTime: string | null;
@@ -93,7 +91,6 @@ export interface VisitResponse {
   phone?: string;
   hostName?: string;
   host?: string;
-  department?: string;
   purposeOfVisit?: string;
   purpose?: string;
   status?: string;
@@ -112,7 +109,6 @@ export interface VisitRecord {
   phoneNumber?: string;
   hostName?: string;
   host?: string;
-  department?: string;
   purposeOfVisit?: string;
   purpose?: string;
   status?: string;
