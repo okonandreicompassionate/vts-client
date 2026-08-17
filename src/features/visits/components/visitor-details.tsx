@@ -336,12 +336,12 @@ export default function VisitorDetails() {
     <>
       <AdminHeader title="Visitor Details" />
 
-      <main className="flex-1 px-3 pt-2 pb-3 sm:px-4 md:px-8 md:py-4 xl:px-12 2xl:px-20">
+      <main className="flex-1 px-3 w-full sm:px-4 md:py-2 xl:px-8 2xl:px-20">
         {BackButton}
 
-        <div className="xl:flex xl:min-h-[calc(100vh-3.25rem)] xl:items-center xl:justify-center">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start xl:w-full xl:h-screen xl:gap-8 2xl:gap-10">
-            <div className="w-full xl:h-full rounded-xl border border-slate-100 bg-white px-4 py-5 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:px-10 xl:py-8 2xl:px-12 2xl:py-10">
+        <div className="xl:flex w-full xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">
+          <div className="flex min-w-0 flex-col lg:flex-row xl:w-full xl:h-full xl:gap-8 2xl:gap-10">
+            <div className="min-w-0 w-full xl:h-full rounded-xl border border-slate-100 bg-white px-4 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:px-10 xl:py-8 2xl:px-12 2xl:py-10">
               <div className="mb-6 flex flex-col items-center text-center">
                 <div className="mb-2.5">
                   <Avatar name={visitor.name} size="md" />
@@ -362,7 +362,7 @@ export default function VisitorDetails() {
                 {detailRows.map((row, idx) => (
                   <div
                     key={row.label}
-                    className={`flex flex-col gap-1 xl:gap-80 xl:ps-10 px-4 py-2.5 sm:flex-row sm:items-center sm:px-5 xl:px-6 xl:py-3 ${
+                    className={`flex min-w-0 flex-col gap-1 xl:gap-0 xl:ps-10 px-4 py-2.5 sm:flex-row sm:items-center sm:px-5 xl:px-6 xl:py-3 ${
                       idx !== detailRows.length - 1
                         ? "border-b border-slate-100 dark:border-slate-700"
                         : ""
@@ -372,7 +372,9 @@ export default function VisitorDetails() {
                       {row.label}
                     </span>
 
-                    <span className="text-xs text-slate-700 dark:text-slate-200">{row.value}</span>
+                    <span className="min-w-0 wrap-break-word text-xs text-slate-700 dark:text-slate-200">
+                      {row.value}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -391,7 +393,7 @@ export default function VisitorDetails() {
               ) : null}
             </div>
 
-            <div className="w-full rounded-lg border border-slate-100 bg-white px-4 py-3 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-80 lg:shrink-0 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:w-96 xl:px-6 xl:py-6 2xl:w-104">
+            <div className="min-w-0 w-full rounded-lg border border-slate-100 bg-white px-4 py-3 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-80 lg:shrink-0 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:w-96 xl:px-6 xl:py-6 2xl:w-104">
               <h3 className="mb-2.5 text-sm font-bold text-slate-800 dark:text-slate-100">
                 Visit Timeline
               </h3>
