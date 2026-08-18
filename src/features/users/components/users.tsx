@@ -100,7 +100,7 @@ export default function UsersPage() {
           })}
         />
 
-        {isLoading && <Spinner variant="inline" overlay />}
+        {isLoading && <Spinner variant="inline" overlay className="bg-white/150 backdrop-blur-[1px] dark:bg-slate-900/70" />}
       </div>
 
       <AddUserModal open={isInviteModalOpen} onCancel={() => setInviteModalOpen(false)} />

@@ -23,7 +23,7 @@ export const Spinner = ({
   overlay = false,
 }: SpinnerProps) => {
   const containerClasses = overlay
-    ? "absolute inset-0 z-20 flex items-center justify-center bg-white/150 backdrop-blur-[1px] dark:bg-slate-900/70"
+    ? "absolute inset-0 z-20 flex items-center justify-center"
     : variantClasses[variant];
 
   return (
