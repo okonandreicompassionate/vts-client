@@ -13,7 +13,7 @@ interface SignupFormValues {
 }
 
 const inputClass =
-  "rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!";
+  "rounded-lg! h-8 border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! -mt-2 dark:focus:bg-slate-800!";
 
 export default function SignupForm({ inviteToken }: { inviteToken: string }) {
   const [form] = Form.useForm<SignupFormValues>();
@@ -53,16 +53,16 @@ export default function SignupForm({ inviteToken }: { inviteToken: string }) {
   return (
     <Form form={form} layout="vertical" onFinish={handleSubmit} requiredMark={false}>
       <Form.Item
-        label={<span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Full Name</span>}
+        label={<span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Full Name</span>}
         name="fullName"
         rules={[{ required: true, message: "Please enter your full name" }]}
-        className="mb-4!"
+        className="mb-2!"
       >
         <Input size="small" className={inputClass} />
       </Form.Item>
 
       <Form.Item
-        label={<span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Phone Number</span>}
+        label={<span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Phone Number</span>}
         name="phoneNumber"
         rules={[{ required: true, message: "Please enter your phone number" }]}
         className="mb-4!"
@@ -71,7 +71,7 @@ export default function SignupForm({ inviteToken }: { inviteToken: string }) {
       </Form.Item>
 
       <Form.Item
-        label={<span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Password</span>}
+        label={<span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Password</span>}
         name="password"
         rules={getPasswordRules({ minLength: 8 })}
         hasFeedback
@@ -81,7 +81,7 @@ export default function SignupForm({ inviteToken }: { inviteToken: string }) {
       </Form.Item>
 
       <Form.Item
-        label={<span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Confirm Password</span>}
+        label={<span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Confirm Password</span>}
         name="confirmPassword"
         dependencies={["password"]}
         hasFeedback
@@ -98,7 +98,7 @@ export default function SignupForm({ inviteToken }: { inviteToken: string }) {
           block
           size="large"
           loading={isLoading}
-          className="h-11! rounded-lg! border-0! bg-sky-500! font-semibold! shadow-md! hover:bg-sky-600! hover:shadow-lg!"
+          className="h-9! rounded-lg! border-0! bg-sky-500! font-semibold! shadow-md! hover:bg-sky-600! hover:shadow-lg!"
         >
           Sign Up
         </Button>
