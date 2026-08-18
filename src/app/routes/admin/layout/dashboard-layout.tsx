@@ -23,7 +23,9 @@ const Layout = () => {
           <Outlet />
         </main>
 
-        <Footer className="w-full bg-white text-left ps-2 fixed bottom-0 dark:bg-slate-950/95 dark:text-white" />
+        <div className="w-full bg-white text-left ps-2 fixed bottom-0 dark:bg-slate-950/95 dark:text-white">
+          <Footer />
+        </div>
       </div>
     </div>
   );
