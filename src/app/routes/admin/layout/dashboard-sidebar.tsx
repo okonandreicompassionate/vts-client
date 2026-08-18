@@ -22,11 +22,10 @@ export default function Sidebar() {
   const location = useLocation();
   const { orgSlug } = useTenant();
 
-  const { data: profile } =
-    useGetProfileQuery(undefined, {
-      refetchOnMountOrArgChange: true,
-      refetchOnFocus: true,
-    });
+  const { data: profile } = useGetProfileQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+  });
 
   const isSuperAdmin = profile?.role === "SUPERADMIN";
 
@@ -42,12 +41,6 @@ export default function Sidebar() {
       label: "Visitors",
       href: paths.admin.visitors.getHref(orgSlug),
       icon: "/visitors.svg",
-    },
-    {
-      key: "settings",
-      label: "Settings",
-      href: paths.admin.settings.getHref(orgSlug),
-      icon: <SettingOutlined />,
     },
     {
       key: "employees",
@@ -66,6 +59,12 @@ export default function Sidebar() {
           },
         ]
       : []),
+    {
+      key: "settings",
+      label: "Settings",
+      href: paths.admin.settings.getHref(orgSlug),
+      icon: <SettingOutlined />,
+    },
   ];
 
   const go = (href: string) => {
@@ -103,7 +102,7 @@ export default function Sidebar() {
             {!collapsed && (
               <img
                 src="/logo.svg"
-                className="h-3 border-0! outline-none! shadow-none! md:block"
+                className="h-3 border-0! shadow-none! outline-none! md:block"
                 alt="Logo"
               />
             )}
@@ -113,11 +112,7 @@ export default function Sidebar() {
               onClick={() => setCollapsed((c) => !c)}
               aria-label="Toggle sidebar"
               icon={
-                <img
-                  src={collapsed ? "/expand.svg" : "/collapse.svg"}
-                  alt=""
-                  className="h-4 w-4"
-                />
+                <img src={collapsed ? "/expand.svg" : "/collapse.svg"} alt="" className="h-4 w-4" />
               }
               className="hidden! h-7! w-7! text-slate-400! md:inline-flex! dark:text-slate-500!"
             />
@@ -151,18 +146,14 @@ export default function Sidebar() {
                       <img
                         src={item.icon}
                         alt=""
-                        className={`h-4 w-4 ${
-                          isActive ? "brightness-0 invert" : ""
-                        }`}
+                        className={`h-4 w-4 ${isActive ? "brightness-0 invert" : ""}`}
                       />
                     ) : (
                       item.icon
                     )}
                   </span>
 
-                  <span className={collapsed ? "md:hidden" : ""}>
-                    {item.label}
-                  </span>
+                  <span className={collapsed ? "md:hidden" : ""}>{item.label}</span>
                 </Button>
               );
             })}

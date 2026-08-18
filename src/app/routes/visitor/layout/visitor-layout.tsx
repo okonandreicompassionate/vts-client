@@ -4,7 +4,7 @@ import Header from "../../../../components/layout/header";
 
 const VisitorLayout = () => {
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex min-h-screen w-full md:flex-row">
       <LeftLayout />
 
       <div className="flex mt-4 min-h-screen w-full flex-col bg-white sm:px-6 md:px-10 lg:px-14 dark:bg-slate-900">
