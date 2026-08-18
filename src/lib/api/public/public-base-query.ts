@@ -8,6 +8,7 @@ import { tenantPath } from "@/lib/tenant/tenant-path";
 
 const rawPublicBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
+  credentials: "include",
 });
 
 export const publicBaseQuery: BaseQueryFn<

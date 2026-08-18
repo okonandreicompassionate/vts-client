@@ -11,6 +11,7 @@ import { tenantPath } from "@/lib/tenant/tenant-path";
 
 const rawAdminBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
+  credentials: "include",
 
   prepareHeaders(headers, { getState }) {
     const token = (getState() as RootState).adminAuth.token;
