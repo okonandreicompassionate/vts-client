@@ -6,22 +6,11 @@ import {
 } from "@reduxjs/toolkit/query";
 
 import { clearAuth } from "@/features/auth/stores/admin-auth-slice";
-import { type RootState } from "@/lib/stores/store";
 import { tenantPath } from "@/lib/tenant/tenant-path";
 
 const rawAdminBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
   credentials: "include",
-
-  prepareHeaders(headers, { getState }) {
-    const token = (getState() as RootState).adminAuth.token;
-
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-
-    return headers;
-  },
 });
 
 export const adminBaseQuery: BaseQueryFn<
@@ -56,9 +45,7 @@ export const adminBaseQuery: BaseQueryFn<
 
   if (result.error?.status === 401) {
     const requestUrl =
-      typeof args === "string"
-        ? args
-        : args.url;
+      typeof args === "string" ? args : args.url;
 
     const isLoginRequest =
       requestUrl.includes("/auth/login");

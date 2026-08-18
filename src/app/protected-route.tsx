@@ -1,7 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
+
 import { paths } from "../config/paths";
-import { useAppSelector } from "../lib/stores/hooks";
 import { useTenant } from "../lib/tenant";
+import { Spinner } from "@/components/ui/spinner";
+import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
 
 interface ProtectedRouteProps {
   requiredAuth?: "admin" | "visitor" | "visitor-verified";
@@ -12,34 +14,27 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { orgSlug } = useTenant();
 
-  const adminAuth = useAppSelector((state) => state.adminAuth);
-  const visitorAuth = useAppSelector((state) => state.visitorAuth);
+  const {
+    data: user,
+    isLoading,
+    isError,
+  } = useGetProfileQuery(undefined, {
+    skip: requiredAuth !== "admin",
+  });
 
-  if (requiredAuth === "admin" && !adminAuth.isAuthenticated) {
-    return (
-      <Navigate
-        to={paths.admin.login.getHref(orgSlug)}
-        replace
-      />
-    );
-  }
+  if (requiredAuth === "admin") {
+    if (isLoading) {
+      return <Spinner variant="screen" />;
+    }
 
-  if (requiredAuth === "visitor" && !visitorAuth.isAuthenticated) {
-    return (
-      <Navigate
-        to={paths.verify.getHref(orgSlug)}
-        replace
-      />
-    );
-  }
-
-  if (requiredAuth === "visitor-verified" && !visitorAuth.isVerified) {
-    return (
-      <Navigate
-        to={paths.verify.getHref(orgSlug)}
-        replace
-      />
-    );
+    if (isError || !user) {
+      return (
+        <Navigate
+          to={paths.admin.login.getHref(orgSlug)}
+          replace
+        />
+      );
+    }
   }
 
   return <Outlet />;
