@@ -1,5 +1,9 @@
 import { Form, Input, Button, message } from "antd";
 import { getPasswordRules, getConfirmPasswordRules } from "../utils/validation";
+import { useJoinOrganizationWithPasswordMutation } from "../api/auth-api-slice";
+import { useNavigate } from "react-router-dom";
+import { useTenant } from "@/lib/tenant";
+import { paths } from "@/config/paths";
 
 interface SignupFormValues {
   fullName: string;
@@ -11,13 +15,39 @@ interface SignupFormValues {
 const inputClass =
   "rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!";
 
-export default function SignupForm() {
+export default function SignupForm({ inviteToken }: { inviteToken: string }) {
   const [form] = Form.useForm<SignupFormValues>();
+  const [joinWithPassword, { isLoading }] = useJoinOrganizationWithPasswordMutation();
+  const navigate = useNavigate();
+  const { orgSlug } = useTenant();
 
   const handleSubmit = async (values: SignupFormValues) => {
-    // TODO: wire up signup API call here once available
-    console.log("Signup values:", values);
-    message.info("Signup functionality coming soon. Please contact your administrator.");
+    if (!inviteToken) {
+      message.error("This invite link is missing or invalid. Please request a new invite.");
+      return;
+    }
+
+    try {
+      await joinWithPassword({
+        fullName: values.fullName,
+        phoneNumber: values.phoneNumber,
+        password: values.password,
+        inviteToken,
+      }).unwrap();
+
+      message.success("Account created successfully.");
+      navigate(paths.admin.dashboard.getHref(orgSlug), { replace: true });
+    } catch (error) {
+      const status = (error as { status?: number })?.status;
+
+      if (status === 409) {
+        message.error("This invitation has already been used, or an account already exists.");
+      } else if (status === 403) {
+        message.error("This invitation is invalid or has expired.");
+      } else {
+        message.error("Something went wrong. Please try again.");
+      }
+    }
   };
 
   return (
@@ -31,9 +61,9 @@ export default function SignupForm() {
         <Input size="small" className={inputClass} />
       </Form.Item>
 
-   <Form.Item
+      <Form.Item
         label={<span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">Phone Number</span>}
-        name="phoneNo"
+        name="phoneNumber"
         rules={[{ required: true, message: "Please enter your phone number" }]}
         className="mb-4!"
       >
@@ -67,6 +97,7 @@ export default function SignupForm() {
           htmlType="submit"
           block
           size="large"
+          loading={isLoading}
           className="h-11! rounded-lg! border-0! bg-sky-500! font-semibold! shadow-md! hover:bg-sky-600! hover:shadow-lg!"
         >
           Sign Up

@@ -5,7 +5,12 @@ import type {
   JoinOrganizationWithPasswordPayload,
   JoinOrganizationWithPasswordResponse,
 } from "@/features/users/types/api-types";
-import type { LoginPayload, MicrosoftLoginPayload, LoginResponse } from "../types/api-types";
+
+import type {
+  LoginPayload,
+  MicrosoftLoginPayload,
+  LoginResponse,
+} from "../types/api-types";
 
 export const authApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -34,7 +39,7 @@ export const publicAuthApi = publicApi.injectEndpoints({
       JoinOrganizationWithPasswordPayload
     >({
       query: (body) => ({
-        url: "/auth/join/passwordAuth",
+        url: "/auth/join/password",
         method: "POST",
         body,
       }),
@@ -42,5 +47,11 @@ export const publicAuthApi = publicApi.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useMicrosoftLoginMutation } = authApi;
-export const { useJoinOrganizationWithPasswordMutation } = publicAuthApi;
+export const {
+  useLoginMutation,
+  useMicrosoftLoginMutation,
+} = authApi;
+
+export const {
+  useJoinOrganizationWithPasswordMutation,
+} = publicAuthApi;
