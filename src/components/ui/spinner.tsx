@@ -22,14 +22,12 @@ export const Spinner = ({
   className = "",
   overlay = false,
 }: SpinnerProps) => {
-  const overlayClasses = overlay
-    ? "absolute inset-0 z-20 bg-white/70 backdrop-blur-[1px] dark:bg-slate-900/70"
-    : "";
+  const containerClasses = overlay
+    ? "absolute inset-0 z-20 flex items-center justify-center bg-white/150 backdrop-blur-[1px] dark:bg-slate-900/70"
+    : variantClasses[variant];
 
   return (
-    <div
-      className={`w-full ${variantClasses[variant]} ${overlayClasses} ${className}`}
-    >
+    <div className={`w-full ${containerClasses} ${className}`}>
       <div className="flex flex-col items-center justify-center gap-3">
         <Spin size="medium" />
 

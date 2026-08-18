@@ -8,7 +8,7 @@ import AdminHeader from "@/app/routes/admin/layout/dashboard-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetAdminByIdQuery } from "@/features/users/api/users-api-slice";
-import { useTenant } from "@/lib/tenant";
+// import { useTenant } from "@/lib/tenant";
 
 function getErrorStatus(error: unknown): number | string | undefined {
   if (error && typeof error === "object" && "status" in error) {
@@ -21,7 +21,7 @@ function getErrorStatus(error: unknown): number | string | undefined {
 export default function UserDetailsPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { orgSlug } = useTenant();
+  // const { orgSlug } = useTenant();
 
   const {
     data: admin,
@@ -38,9 +38,8 @@ export default function UserDetailsPage() {
       { label: "Email Address", value: admin?.email ?? "-" },
       { label: "Phone Number", value: admin?.phoneNumber ?? "-" },
       { label: "Role", value: admin?.role ?? "-" },
-      { label: "Organization", value: admin?.orgSlug ?? orgSlug },
     ],
-    [admin, orgSlug],
+    [admin],
   );
 
   const BackButton = (
@@ -133,7 +132,7 @@ export default function UserDetailsPage() {
     return (
       <>
         <AdminHeader title="Admin Details" />
-        <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+        <main className="flex-1 px-3 pt-2 pb-3 sm:px-4 md:px-8 md:py-4">
           {BackButton}
           <Alert
             type="error"
@@ -223,12 +222,7 @@ export default function UserDetailsPage() {
 
               <div className="space-y-3">
                 {[
-                  {
-                    key: "1",
-                    title: "Organization",
-                    time: admin.orgSlug ?? orgSlug,
-                    status: "done-blue",
-                  },
+
                   { key: "2", title: "Role level", time: admin.role, status: "done-green" },
                   { key: "3", title: "Primary contact", time: admin.email, status: "done-orange" },
                 ].map((step, idx) => (
@@ -259,13 +253,8 @@ export default function UserDetailsPage() {
                 ))}
               </div>
 
-              <Button
-                type="primary"
-                className="mt-6 h-10! w-full bg-sky-500! px-5! font-semibold"
-                onClick={() => navigate(-1)}
-              >
-                Back to Users
-              </Button>
+             
+
             </div>
           </div>
         </div>
