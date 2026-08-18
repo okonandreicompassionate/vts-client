@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined, CheckOutlined } from "@ant-design/icons";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { Alert, Button, message } from "antd";
+import { Alert, Button } from "antd";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
