@@ -27,7 +27,6 @@ const AdminHeader = ({ title }: { title: string }) => {
   };
 
   const handleUpdateSystemSettings = () => {
-     console.log("Opening system settings");
     openModal(<SystemSettingsModal />);
   };
 

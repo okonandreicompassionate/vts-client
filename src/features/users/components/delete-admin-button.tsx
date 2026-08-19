@@ -1,7 +1,6 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
-
 import DeleteAdminModal from "./modals/delete-admin-modal";
 import { useDeleteAdminMutation } from "../api/users-api-slice";
 import { useTenant } from "@/lib/tenant";
