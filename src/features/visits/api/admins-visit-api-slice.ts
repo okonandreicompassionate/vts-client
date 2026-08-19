@@ -1,7 +1,7 @@
-import type { VisitListResponse, VisitStats } from "../types/api-types";
-import { adminApi } from "@/lib/api/admin/admin-api";
+import type { VisitListResponse, VisitStats, VisitResponse } from "../types/api-types";
+import { adminApi  } from "@/lib/api/admin/admin-api";
 
-export const visitsApi = adminApi.injectEndpoints({
+export const adminVisitsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
     approveVisit: builder.mutation<void, string>({
       query: (id) => ({
@@ -44,6 +44,11 @@ export const visitsApi = adminApi.injectEndpoints({
       }),
       providesTags: ["Visits"],
     }),
+
+    getVisit: builder.query<VisitResponse, string>({
+      query: (id) => `/visits/${id}`,
+      providesTags: (_result, _error, id) => [{ type: "Visits", id }],
+    }),
   }),
 });
 
@@ -53,4 +58,5 @@ export const {
   useRejectVisitMutation,
   useGetVisitStatsQuery,
   useGetVisitsQuery,
-} = visitsApi;
+  useGetVisitQuery,
+} = adminVisitsApi;
