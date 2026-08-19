@@ -3,13 +3,13 @@ import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Alert, Button } from "antd";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import AdminHeader from "@/app/routes/admin/layout/dashboard-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  useGetAdminByIdQuery,
-} from "@/features/users/api/users-api-slice";
-import { DeleteAdmin } from "@/features/users/components/delete-admin-button";
+import { useGetAdminByIdQuery } from "@/features/users/api/users-api-slice";
+
+import { DeleteAdmin } from "../components/delete-admin-button";
 
 function getErrorStatus(error: unknown): number | string | undefined {
   if (error && typeof error === "object" && "status" in error) {
@@ -34,10 +34,22 @@ export default function UserDetailsPage() {
 
   const detailRows = useMemo(
     () => [
-      { label: "Full Name", value: admin?.fullName ?? "-" },
-      { label: "Email Address", value: admin?.email ?? "-" },
-      { label: "Phone Number", value: admin?.phoneNumber ?? "-" },
-      { label: "Role", value: admin?.role ?? "-" },
+      {
+        label: "Full Name",
+        value: admin?.fullName ?? "-",
+      },
+      {
+        label: "Email Address",
+        value: admin?.email ?? "-",
+      },
+      {
+        label: "Phone Number",
+        value: admin?.phoneNumber ?? "-",
+      },
+      {
+        label: "Role",
+        value: admin?.role ?? "-",
+      },
     ],
     [admin],
   );
@@ -118,7 +130,7 @@ export default function UserDetailsPage() {
               type="error"
               showIcon
               title="Access denied"
-              description="Only SUPERADMIN users can view admin details."
+              description="Only authorized users can view admin details."
             />
           </main>
         </>
@@ -137,7 +149,7 @@ export default function UserDetailsPage() {
               type="warning"
               showIcon
               title="Admin not found"
-              description="This admin may not exist, may not be an admin-tier user, or may belong to another organization."
+              description="This user may not exist or may belong to another organization."
             />
           </main>
         </>
@@ -190,25 +202,21 @@ export default function UserDetailsPage() {
 
   const roleBadge =
     admin.role === "SUPERADMIN"
-      ? "bg-violet-50 text-violet-600 border border-violet-200 dark:bg-violet-950/40 dark:text-violet-400 dark:border-violet-800"
-      : "bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800";
+      ? "border border-violet-200 bg-violet-50 text-violet-600 dark:border-violet-800 dark:bg-violet-950/40 dark:text-violet-400"
+      : "border border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400";
 
   return (
     <>
       <AdminHeader title="Admin Details" />
 
       <main className="w-full flex-1 px-3 sm:px-4 md:py-2 xl:px-8 2xl:px-20">
-        <div className="flex items-center justify-between">
+        <div className="mb-1">
           {BackButton}
-
-          <DeleteAdmin
-            adminId={id}
-            role={admin.role}
-          />
         </div>
 
         <div className="w-full xl:flex xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">
           <div className="flex min-w-0 flex-col gap-4 lg:flex-row xl:h-full xl:w-full xl:gap-8 2xl:gap-10">
+            {/* Admin information */}
             <div className="w-full min-w-0 rounded-xl border border-slate-100 bg-white px-4 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1 xl:h-full xl:px-10 xl:py-8 2xl:px-12 2xl:py-10 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
               <div className="mb-6 flex flex-col items-center text-center">
                 <div className="mb-2.5">
@@ -251,6 +259,7 @@ export default function UserDetailsPage() {
               </div>
             </div>
 
+            {/* Access + actions */}
             <div className="w-full min-w-0 rounded-lg border border-slate-100 bg-white px-4 py-3 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-80 lg:shrink-0 xl:w-96 xl:px-6 xl:py-6 2xl:w-104 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
               <h3 className="mb-2.5 text-sm font-bold text-slate-800 dark:text-slate-100">
                 Admin Access
@@ -259,15 +268,15 @@ export default function UserDetailsPage() {
               <div className="space-y-3">
                 {[
                   {
-                    key: "2",
+                    key: "role",
                     title: "Role level",
-                    time: admin.role,
+                    value: admin.role,
                     status: "done-green",
                   },
                   {
-                    key: "3",
+                    key: "contact",
                     title: "Primary contact",
-                    time: admin.email,
+                    value: admin.email,
                     status: "done-orange",
                   },
                 ].map((step, idx) => (
@@ -278,11 +287,9 @@ export default function UserDetailsPage() {
                     <div className="flex flex-col items-center">
                       <span
                         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] text-white ${
-                          step.status === "done-blue"
-                            ? "bg-sky-500"
-                            : step.status === "done-green"
-                              ? "bg-emerald-500"
-                              : "bg-orange-400"
+                          step.status === "done-green"
+                            ? "bg-emerald-500"
+                            : "bg-orange-400"
                         }`}
                       >
                         <CheckOutlined />
@@ -299,11 +306,27 @@ export default function UserDetailsPage() {
                       </p>
 
                       <p className="mt-0.5 text-xs text-slate-400">
-                        {step.time}
+                        {step.value}
                       </p>
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Danger zone */}
+              <div className="mt-4 border-t border-slate-100 pt-5 dark:border-slate-700">
+                <div className="mb-2">
+                  <p className="text-[13px]  font-semibold text-red-600 dark:text-red-400">
+                    Danger Zone
+                  </p>
+
+                  <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                    Remove this administrator and revoke their
+                    administrative access to this organization.
+                  </p>
+                </div>
+
+                <DeleteAdmin adminId={id} />
               </div>
             </div>
           </div>

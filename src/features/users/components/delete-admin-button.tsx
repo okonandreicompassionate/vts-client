@@ -1,13 +1,14 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, message } from "antd";
+import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
+import DeleteAdminModal from "./modals/delete-admin-modal";
 import { useDeleteAdminMutation } from "../api/users-api-slice";
 import { useTenant } from "@/lib/tenant";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 interface DeleteAdminProps {
   adminId: string;
-  role: string;
 }
 
 function getErrorStatus(error: unknown): number | string | undefined {
@@ -18,19 +19,16 @@ function getErrorStatus(error: unknown): number | string | undefined {
   return undefined;
 }
 
-export const DeleteAdmin = ({
-  adminId,
-  role,
-}: DeleteAdminProps) => {
+export const DeleteAdmin = ({ adminId }: DeleteAdminProps) => {
   const navigate = useNavigate();
   const { orgSlug } = useTenant();
+  const { openModal } = usePopup();
 
-  const [deleteAdmin, { isLoading: isDeleting }] =
-    useDeleteAdminMutation();
+  const [deleteAdmin, { isLoading: isDeleting }] = useDeleteAdminMutation();
 
   const handleDelete = async () => {
     if (!adminId || !orgSlug) {
-      message.error("Unable to delete this admin.");
+      message.error("Unable to remove this admin.");
       return;
     }
 
@@ -40,15 +38,13 @@ export const DeleteAdmin = ({
         adminId,
       }).unwrap();
 
-      message.success("Admin deleted successfully.");
+      message.success("Admin removed successfully.");
       navigate(-1);
     } catch (error) {
       const status = getErrorStatus(error);
 
       if (status === 403) {
-        message.error(
-          "You do not have permission to delete this admin.",
-        );
+        message.error("You do not have permission to remove this admin.");
         return;
       }
 
@@ -57,37 +53,24 @@ export const DeleteAdmin = ({
         return;
       }
 
-      message.error(
-        "Failed to delete admin. Please try again.",
-      );
+      message.error("Admin could not be removed. Please try again.");
     }
   };
 
-  if (role !== "ADMIN") {
-    return null;
-  }
+  const handleOpenModal = () => {
+    openModal(<DeleteAdminModal onConfirm={handleDelete} loading={isDeleting} />);
+  };
 
   return (
-    <Popconfirm
-      title="Delete this admin?"
-      description="This action cannot be undone."
-      okText="Delete"
-      cancelText="Cancel"
-      okButtonProps={{
-        danger: true,
-        loading: isDeleting,
-      }}
-      onConfirm={handleDelete}
-      disabled={isDeleting}
+    <Button
+      danger
+      type="primary"
+      icon={<DeleteOutlined />}
+      loading={isDeleting}
+      onClick={handleOpenModal}
+      className="my-auto inline-flex h-7 gap-1 items-center justify-center leading-none"
     >
-      <Button
-        danger
-        type="default"
-        icon={<DeleteOutlined />}
-        loading={isDeleting}
-      >
-        Delete Admin
-      </Button>
-    </Popconfirm>
+      Remove Admin
+    </Button>
   );
 };

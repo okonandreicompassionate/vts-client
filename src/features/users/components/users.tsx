@@ -14,7 +14,7 @@ import type { AdminRole, AdminUserItem } from "@/features/users/types/api-types"
 import type { User } from "../types/types";
 import UserIdentityCell from "./user-identity-cell";
 import StatusPill from "../components/status-pill";
-import AddUserModal from "./modal/add-user-modal";
+import AddUserModal from "./modals/add-user-modal";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function UsersPage() {
