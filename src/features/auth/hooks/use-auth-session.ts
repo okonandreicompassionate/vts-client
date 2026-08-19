@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { useAppDispatch } from "@/lib/stores/hooks";
 import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";

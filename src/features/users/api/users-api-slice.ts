@@ -32,10 +32,17 @@ export const usersApi = adminApi.injectEndpoints({
       query: (id) => `/auth/admin/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Users", id }],
     }),
+
+    deleteAdmin: builder.mutation<void, { orgSlug: string; adminId: string }>({
+      query: ({ orgSlug, adminId }) => ({
+        url: `/${orgSlug}/users/admins/${adminId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useCreateInviteMutation, useGetAdminsQuery, useGetAdminByIdQuery } = usersApi;
+export const { useCreateInviteMutation, useGetAdminsQuery, useGetAdminByIdQuery, useDeleteAdminMutation } = usersApi;
 
 export type {
   AdminRole,
