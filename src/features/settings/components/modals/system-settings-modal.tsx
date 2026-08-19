@@ -2,7 +2,6 @@ import { Button, Input, message } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 
 import CustomModal from "../../../../components/ui/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
@@ -15,9 +14,6 @@ import { switchTenantPath } from "@/lib/tenant";
 function SystemSettingsModal() {
   const [form] = useForm();
   const { closeModal } = usePopup();
-
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const {
     data: settings,
@@ -34,8 +30,7 @@ function SystemSettingsModal() {
       name: settings.name ?? "",
       slug: settings.slug ?? "",
       badgePrefix: settings.visitorBadgePrefix ?? "",
-      maxCapacity:
-        settings.maxVisitorsPerDay?.toString() ?? "",
+      maxCapacity: settings.maxVisitorsPerDay?.toString() ?? "",
     });
   }, [settings, form]);
 
@@ -52,8 +47,7 @@ function SystemSettingsModal() {
         maxVisitorsPerDay: values.maxCapacity
           ? Number(values.maxCapacity)
           : undefined,
-        visitorBadgePrefix:
-          values.badgePrefix?.trim() || undefined,
+        visitorBadgePrefix: values.badgePrefix?.trim() || undefined,
       }).unwrap();
 
       message.success("System settings updated successfully.");
@@ -61,10 +55,14 @@ function SystemSettingsModal() {
       const currentSlug = settings?.slug;
 
       if (currentSlug && currentSlug !== newSlug) {
-        navigate(
-          switchTenantPath(location.pathname, newSlug),
-          { replace: true },
+        const newPath = switchTenantPath(
+          window.location.pathname,
+          newSlug,
         );
+
+        window.history.replaceState(null, "", newPath);
+        window.location.reload();
+        return;
       }
 
       closeModal();
