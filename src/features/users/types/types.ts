@@ -12,5 +12,4 @@ export interface User {
   name: string;
   email: string;
   role: AdminRole;
-  status: UserStatus;
 }

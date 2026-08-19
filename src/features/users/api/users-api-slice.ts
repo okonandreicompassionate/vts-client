@@ -38,11 +38,17 @@ export const usersApi = adminApi.injectEndpoints({
         url: `/users/admins/${adminId}`,
         method: "DELETE",
       }),
+      invalidatesTags: [{ type: "Users", id: "LIST" }],
     }),
   }),
 });
 
-export const { useCreateInviteMutation, useGetAdminsQuery, useGetAdminByIdQuery, useDeleteAdminMutation } = usersApi;
+export const {
+  useCreateInviteMutation,
+  useGetAdminsQuery,
+  useGetAdminByIdQuery,
+  useDeleteAdminMutation,
+} = usersApi;
 
 export type {
   AdminRole,
