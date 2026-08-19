@@ -2,40 +2,24 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface VisitorAuthState {
   visitorId: string | null;
-  accessToken: string | null;
+
+  verifiedName: string | null;
+  verifiedEmail: string | null;
+  verifiedPhoneNumber: string | null;
+
   isAuthenticated: boolean;
   isVerified: boolean;
-  verifiedEmail: string | null;
 }
-
-interface StoredVisitorSession {
-  visitorId: string;
-  accessToken: string;
-}
-
-const getStoredVisitorSession = (): StoredVisitorSession | null => {
-  try {
-    const storedSession = localStorage.getItem("visitorSession");
-
-    if (!storedSession) {
-      return null;
-    }
-
-    return JSON.parse(storedSession) as StoredVisitorSession;
-  } catch {
-    localStorage.removeItem("visitorSession");
-    return null;
-  }
-};
-
-const storedSession = getStoredVisitorSession();
 
 const initialState: VisitorAuthState = {
-  visitorId: storedSession?.visitorId ?? null,
-  accessToken: storedSession?.accessToken ?? null,
-  isAuthenticated: !!storedSession?.accessToken,
-  isVerified: !!storedSession?.accessToken,
+  visitorId: null,
+
+  verifiedName: null,
   verifiedEmail: null,
+  verifiedPhoneNumber: null,
+
+  isAuthenticated: false,
+  isVerified: false,
 };
 
 const visitorAuthSlice = createSlice({
@@ -44,28 +28,29 @@ const visitorAuthSlice = createSlice({
   initialState,
 
   reducers: {
+    // Reflects the visitor session established by the HttpOnly cookie.
     setVisitorSession: (
       state,
       action: PayloadAction<{
         visitorId: string;
-        accessToken: string;
+        fullName?: string | null;
+        email?: string | null;
+        phoneNumber?: string | null;
       }>,
     ) => {
-      const { visitorId, accessToken } = action.payload;
+      state.visitorId = action.payload.visitorId;
 
-      state.visitorId = visitorId;
-      state.accessToken = accessToken;
+      state.verifiedName =
+        action.payload.fullName ?? null;
+
+      state.verifiedEmail =
+        action.payload.email ?? null;
+
+      state.verifiedPhoneNumber =
+        action.payload.phoneNumber ?? null;
+
       state.isAuthenticated = true;
       state.isVerified = true;
-      state.verifiedEmail = null;
-
-      localStorage.setItem(
-        "visitorSession",
-        JSON.stringify({
-          visitorId,
-          accessToken,
-        }),
-      );
     },
 
     setVisitorVerified: (
@@ -75,22 +60,24 @@ const visitorAuthSlice = createSlice({
       }>,
     ) => {
       state.visitorId = null;
-      state.accessToken = null;
+
+      state.verifiedName = null;
+      state.verifiedEmail = action.payload.email;
+      state.verifiedPhoneNumber = null;
+
       state.isAuthenticated = false;
       state.isVerified = true;
-      state.verifiedEmail = action.payload.email;
-
-      localStorage.removeItem("visitorSession");
     },
 
     clearVisitorAuth: (state) => {
       state.visitorId = null;
-      state.accessToken = null;
+
+      state.verifiedName = null;
+      state.verifiedEmail = null;
+      state.verifiedPhoneNumber = null;
+
       state.isAuthenticated = false;
       state.isVerified = false;
-      state.verifiedEmail = null;
-
-      localStorage.removeItem("visitorSession");
     },
   },
 });

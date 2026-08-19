@@ -5,21 +5,12 @@ import {
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-import { type RootState } from "@/lib/stores/store";
 import { tenantPath } from "@/lib/tenant/tenant-path";
 
 const rawVisitorBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
 
-  prepareHeaders(headers, { getState }) {
-    const token = (getState() as RootState).visitorAuth.accessToken;
-
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-
-    return headers;
-  },
+  credentials: "include",
 });
 
 export const visitorBaseQuery: BaseQueryFn<
@@ -46,5 +37,9 @@ export const visitorBaseQuery: BaseQueryFn<
           url: tenantPath(orgSlug, args.url),
         };
 
-  return rawVisitorBaseQuery(request, api, extraOptions);
+  return rawVisitorBaseQuery(
+    request,
+    api,
+    extraOptions,
+  );
 };

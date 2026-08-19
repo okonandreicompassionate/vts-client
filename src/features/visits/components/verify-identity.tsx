@@ -1,10 +1,14 @@
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
+
 import { paths } from "@/config/paths";
 import { useTenant } from "@/lib/tenant";
 import { useAppDispatch } from "@/lib/stores/hooks";
-import { setVisitorSession, setVisitorVerified } from "../../auth/stores/visitor-auth-slice";
+import {
+  setVisitorSession,
+  setVisitorVerified,
+} from "../../auth/stores/visitor-auth-slice";
 import { useVerifyVisitIdentityMutation } from "../api/public-visits-api-slice";
 
 export default function VerifyIdentity() {
@@ -12,7 +16,8 @@ export default function VerifyIdentity() {
   const { orgSlug } = useTenant();
   const dispatch = useAppDispatch();
 
-  const [verifyVisitIdentity] = useVerifyVisitIdentityMutation();
+  const [verifyVisitIdentity] =
+    useVerifyVisitIdentityMutation();
 
   const handleFinish = async (value: { email: string }) => {
     try {
@@ -22,41 +27,38 @@ export default function VerifyIdentity() {
         email,
       }).unwrap();
 
-      if (response.exists && response.visitor && response.accessToken) {
-        window.localStorage.setItem(
-          "visitorId",
-          JSON.stringify({
-            visitorId: response.visitor.id,
-            name: response.visitor.fullName,
-            email: response.visitor.email,
-            phoneNo: response.visitor.phoneNumber,
-          }),
-        );
-
+      if (response.exists && response.visitor) {
         dispatch(
           setVisitorSession({
             visitorId: response.visitor.id,
-            accessToken: response.accessToken,
+            fullName: response.visitor.fullName,
+            email: response.visitor.email,
+            phoneNumber: response.visitor.phoneNumber,
           }),
         );
 
-        window.localStorage.setItem("visitorVerified", "true");
-      } else {
-        dispatch(setVisitorVerified({ email }));
+        navigate(paths.register.getHref(orgSlug), {
+          replace: true,
+        });
 
-        window.localStorage.setItem(
-          "visitorId",
-          JSON.stringify({
-            email,
-          }),
-        );
+        return;
       }
 
-      navigate(paths.register.getHref(orgSlug), { replace: true });
+      dispatch(
+        setVisitorVerified({
+          email,
+        }),
+      );
+
+      navigate(paths.register.getHref(orgSlug), {
+        replace: true,
+      });
     } catch (error) {
       console.error("Verify identity failed:", error);
 
-      message.error("We couldn't verify your identity. Please try again.");
+      message.error(
+        "We couldn't verify your identity. Please try again.",
+      );
     }
   };
 
@@ -70,7 +72,12 @@ export default function VerifyIdentity() {
       >
         <div className="md:flex md:flex-col md:items-center">
           <div className="flex justify-center">
-            <img src="/padlock.svg" alt="" className="w-17" loading="lazy" />
+            <img
+              src="/padlock.svg"
+              alt=""
+              className="w-17"
+              loading="lazy"
+            />
           </div>
 
           <div className="mt-1 text-center">
@@ -100,11 +107,14 @@ export default function VerifyIdentity() {
                     return Promise.resolve();
                   }
 
-                  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                  const isEmail =
+                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
                   return isEmail
                     ? Promise.resolve()
-                    : Promise.reject(new Error("Enter a valid email address"));
+                    : Promise.reject(
+                        new Error("Enter a valid email address"),
+                      );
                 },
               },
             ]}

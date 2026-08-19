@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { message } from "antd";
 
 import { useAppDispatch } from "@/lib/stores/hooks";
-import {settingsApi } from "../../settings/api/settings-api-slice";
+import { settingsApi } from "../../settings/api/settings-api-slice";
 import {
   connectNotificationSocket,
   disconnectNotificationSocket,
@@ -33,40 +33,47 @@ type PendingVisitNotification = {
 };
 
 type UseNotificationSocketOptions = {
-  token?: string;
-  onPendingVisit?: (notification: PendingVisitNotification) => void;
+  onPendingVisit?: (
+    notification: PendingVisitNotification,
+  ) => void;
 };
 
 export function useNotificationSocket({
-  token,
   onPendingVisit,
 }: UseNotificationSocketOptions = {}) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!token) {
-      disconnectNotificationSocket();
-      return;
-    }
-
-    const socket = connectNotificationSocket(token);
+    const socket = connectNotificationSocket();
 
     const handlePendingVisit = (
       notification: PendingVisitNotification,
     ) => {
-      dispatch(settingsApi.util.invalidateTags(["Visits"]));
+      dispatch(
+        settingsApi.util.invalidateTags(["Visits"]),
+      );
 
       message.success({
-        content: notification.message || "New visit registered",
+        content:
+          notification.message ||
+          "New visit registered",
       });
 
       onPendingVisit?.(notification);
     };
 
-    socket.on("visit.pending", handlePendingVisit);
+    socket.on(
+      "visit.pending",
+      handlePendingVisit,
+    );
 
     return () => {
-      socket.off("visit.pending", handlePendingVisit);
+      socket.off(
+        "visit.pending",
+        handlePendingVisit,
+      );
+
+      disconnectNotificationSocket();
     };
-  }, [token, onPendingVisit, dispatch]);
+  }, [dispatch, onPendingVisit]);
 }

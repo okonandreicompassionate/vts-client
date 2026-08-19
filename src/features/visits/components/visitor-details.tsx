@@ -341,7 +341,7 @@ export default function VisitorDetails() {
 
         <div className="xl:flex w-full xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">
           <div className="flex min-w-0 flex-col gap-1.5 lg:flex-row xl:w-full xl:h-full xl:gap-8 2xl:gap-10">
-            <div className="min-w-0 w-full xl:h-full rounded-xl border border-slate-100 bg-white px-4 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:px-10 xl:py-8 2xl:px-12 2xl:py-10">
+            <div className="min-w-0 w-full xl:h-full rounded-xl border border-slate-100 bg-white px-4 shadow-sm shadow-slate-100 sm:px-6 py-6 md:px-8 md:py-8 lg:flex-1 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:px-10 xl:py-8 2xl:px-12 2xl:py-10">
               <div className="mb-6 flex flex-col items-center text-center">
                 <div className="mb-2.5">
                   <Avatar name={visitor.name} size="md" />

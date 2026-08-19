@@ -6,17 +6,15 @@ type VisitorSocket = Socket;
 
 let socket: VisitorSocket | null = null;
 
-export function connectVisitorSocket(
-  token: string,
-): VisitorSocket {
+export function connectVisitorSocket(): VisitorSocket {
   if (socket?.connected) {
     return socket;
   }
 
   socket = io(`${API_URL}/visits`, {
-    auth: {
-      token,
-    },
+    transports: ["polling", "websocket"],
+    withCredentials: true,
+    reconnection: false,
   });
 
   return socket;

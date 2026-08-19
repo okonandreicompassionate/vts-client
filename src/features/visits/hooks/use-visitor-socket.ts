@@ -7,26 +7,17 @@ type StatusChangedPayload = {
 };
 
 type UseVisitorSocketOptions = {
-  token?: string;
   onStatusChanged?: (data: StatusChangedPayload) => void;
 };
 
 const SOCKET_URL = import.meta.env.VITE_API_URL;
 
 export function useVisitorSocket({
-  token,
   onStatusChanged,
 }: UseVisitorSocketOptions = {}) {
   useEffect(() => {
-    if (!token) {
-      return;
-    }
-
     const socket: Socket = io(`${SOCKET_URL}/visits`, {
       transports: ["polling", "websocket"],
-      auth: {
-        token,
-      },
       withCredentials: true,
       reconnection: false,
     });
@@ -87,5 +78,5 @@ export function useVisitorSocket({
 
       socket.disconnect();
     };
-  }, [token, onStatusChanged]);
+  }, [onStatusChanged]);
 }

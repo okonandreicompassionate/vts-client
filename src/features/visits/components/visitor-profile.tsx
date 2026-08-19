@@ -1,55 +1,80 @@
-﻿import { Info } from "lucide-react";
-import { Button } from "antd";
+﻿import { Button } from "antd";
 import { useCallback, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import LoadingRing from "../animations/loading-ring";
 import { paths } from "../../../config/paths";
 import { useTenant } from "../../../lib/tenant";
-import type { VisitorProfileStatus, VisitorRegistration } from "../types/visitor-profile";
+import type {
+  VisitorProfileStatus,
+  VisitorRegistration,
+} from "../types/visitor-profile";
 import { useVisitorSocket } from "../hooks/use-visitor-socket";
 import { useAppSelector } from "@/lib/stores/hooks";
 import MetaItem from "./profile-meta-item";
 import { statusMeta } from "../types/status-meta";
 import { useGetVisitQuery } from "../api/visitor-vists-api";
+import type { VisitResponse } from "../types/api-types";
 
 export default function VisitorProfile() {
   const { orgSlug } = useTenant();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const visitorAuth = useAppSelector((state) => state.visitorAuth);
+  const visitorAuth = useAppSelector(
+    (state) => state.visitorAuth,
+  );
 
-  const storedRegistration = useMemo<VisitorRegistration | null>(() => {
-    if (typeof window === "undefined") {
-      return null;
-    }
-    const stored = window.localStorage.getItem("visitorRegistration");
-    if (!stored) {
-      return null;
-    }
-    try {
-      return JSON.parse(stored) as VisitorRegistration;
-    } catch {
-      return null;
-    }
-  }, []);
+  const storedRegistration =
+    useMemo<VisitorRegistration | null>(() => {
+      if (typeof window === "undefined") {
+        return null;
+      }
+
+      const stored = window.localStorage.getItem(
+        "visitorRegistration",
+      );
+
+      if (!stored) {
+        return null;
+      }
+
+      try {
+        return JSON.parse(stored) as VisitorRegistration;
+      } catch {
+        return null;
+      }
+    }, []);
 
   const visitId = storedRegistration?.id;
 
-  const normalizeStatus = useCallback((status?: string | null): VisitorProfileStatus => {
-    const normalized = status?.toLowerCase().replace(/[_-]/g, " ").trim();
+  const normalizeStatus = useCallback(
+    (
+      status?: string | null,
+    ): VisitorProfileStatus => {
+      const normalized = status
+        ?.toLowerCase()
+        .replace(/[_-]/g, " ")
+        .trim();
 
-    if (normalized === "approved" || normalized === "signed in") {
-      return "approved";
-    }
+      if (
+        normalized === "approved" ||
+        normalized === "signed in"
+      ) {
+        return "approved";
+      }
 
-    if (normalized === "rejected" || normalized === "declined") {
-      return "rejected";
-    }
+      if (
+        normalized === "rejected" ||
+        normalized === "declined"
+      ) {
+        return "rejected";
+      }
 
-    return "pending";
-  }, []);
+      return "pending";
+    },
+    [],
+  );
 
   const {
     data: visitData,
@@ -57,15 +82,23 @@ export default function VisitorProfile() {
     isFetching: isVisitFetching,
     refetch: refetchVisit,
   } = useGetVisitQuery(visitId ?? "", {
-    skip: !visitId || !visitorAuth.accessToken,
+    skip:
+      !visitId ||
+      !visitorAuth.isAuthenticated,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     refetchOnReconnect: true,
   });
 
   const handleStatusChanged = useCallback(
-    (data: { visitId: string; status: string }) => {
-      if (!visitId || data.visitId !== visitId) {
+    (data: {
+      visitId: string;
+      status: string;
+    }) => {
+      if (
+        !visitId ||
+        data.visitId !== visitId
+      ) {
         return;
       }
 
@@ -75,40 +108,54 @@ export default function VisitorProfile() {
   );
 
   useVisitorSocket({
-    token: visitorAuth.accessToken ?? undefined,
     onStatusChanged: handleStatusChanged,
   });
 
-  const displayedRegistration = useMemo<VisitorRegistration | null>(() => {
-    if (visitData) {
+  const displayedRegistration =
+    useMemo<VisitorRegistration | null>(() => {
+      if (!visitData) {
+        return storedRegistration;
+      }
+
+      const response = visitData as VisitResponse;
+
       return {
-        id: visitData.id ?? storedRegistration?.id,
-
-        name: visitData.fullName ?? visitData.name ?? storedRegistration?.name ?? "Visitor",
-
+        id: response.id,
+        name:
+          response.fullName ??
+          storedRegistration?.name ??
+          "Visitor",
         purposeOfVisit:
-          visitData.purposeOfVisit ?? visitData.purpose ?? storedRegistration?.purposeOfVisit ?? "",
-
-        hostName: visitData.hostName ?? visitData.host ?? storedRegistration?.hostName ?? "",
-
-        phoneNo: visitData.phoneNumber ?? visitData.phone ?? storedRegistration?.phoneNo ?? "",
-
-        email: visitData.email ?? storedRegistration?.email ?? "",
-
-        status: normalizeStatus(visitData.status ?? storedRegistration?.status),
-
-        requestId: visitData.referenceId ?? visitData.id ?? storedRegistration?.requestId,
-
-        createdAt: visitData.createdAt ?? storedRegistration?.createdAt,
-
-        badgeNumber: visitData.badgeNumber ?? storedRegistration?.badgeNumber,
-
-        reason: visitData.rejectionReason ?? visitData.reason ?? storedRegistration?.reason,
+          response.purpose ??
+          storedRegistration?.purposeOfVisit ??
+          "",
+        hostName:
+          response.hostName ??
+          storedRegistration?.hostName ??
+          "",
+        phoneNo:
+          response.phoneNumber ??
+          storedRegistration?.phoneNo ??
+          "",
+        email:
+          response.email ??
+          storedRegistration?.email ??
+          "",
+        status: normalizeStatus(response.status),
+        requestId:
+          response.referenceId ??
+          response.id ??
+          storedRegistration?.requestId,
+        createdAt:
+          response.createdAt ??
+          response.registeredAt ??
+          storedRegistration?.createdAt,
       };
-    }
-
-    return storedRegistration;
-  }, [visitData, storedRegistration, normalizeStatus]);
+    }, [
+      visitData,
+      storedRegistration,
+      normalizeStatus,
+    ]);
 
   const formatDate = (value?: string) => {
     if (!value) {
@@ -148,30 +195,35 @@ export default function VisitorProfile() {
 
   const registration = displayedRegistration;
 
-  const status = normalizeStatus(registration?.status ?? searchParams.get("status"));
+  const status = normalizeStatus(
+    registration?.status ??
+      searchParams.get("status"),
+  );
 
   const meta = statusMeta[status];
-
   const isPending = status === "pending";
 
-  const requestId = registration?.requestId ? `#${registration.requestId}` : "Pending";
+  const requestId = registration?.requestId
+    ? `#${registration.requestId}`
+    : "Pending";
 
-  const createdDate = formatDate(registration?.createdAt);
-  const createdTime = formatTime(registration?.createdAt);
+  const createdDate = formatDate(
+    registration?.createdAt,
+  );
 
-  const reason = registration?.reason;
+  const createdTime = formatTime(
+    registration?.createdAt,
+  );
 
-  const actionPath = (() => {
-    switch (status) {
-      case "rejected":
-        return paths.register.getHref(orgSlug);
+  const actionPath =
+    status === "rejected"
+      ? paths.register.getHref(orgSlug)
+      : paths.home.getHref(orgSlug);
 
-      default:
-        return paths.home.getHref(orgSlug);
-    }
-  })();
-
-  if (!visitorAuth.accessToken && !registration) {
+  if (
+    !visitorAuth.isAuthenticated &&
+    !registration
+  ) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="text-center">
@@ -180,14 +232,19 @@ export default function VisitorProfile() {
           </p>
 
           <p className="mt-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-            Please complete identity verification again to continue.
+            Please complete identity verification again to
+            continue.
           </p>
 
           <Button
             type="primary"
             size="large"
             className="mt-6 font-semibold"
-            onClick={() => navigate(paths.verify.getHref(orgSlug))}
+            onClick={() =>
+              navigate(
+                paths.verify.getHref(orgSlug),
+              )
+            }
           >
             Return to verification
           </Button>
@@ -213,14 +270,19 @@ export default function VisitorProfile() {
           </p>
 
           <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-            Please complete registration again to view your visitor request status.
+            Please complete registration again to view your
+            visitor request status.
           </p>
 
           <Button
             type="primary"
             size="large"
             className="mt-6"
-            onClick={() => navigate(paths.register.getHref(orgSlug))}
+            onClick={() =>
+              navigate(
+                paths.register.getHref(orgSlug),
+              )
+            }
           >
             Return to registration
           </Button>
@@ -242,20 +304,6 @@ export default function VisitorProfile() {
           </p>
         </div>
 
-        {status === "rejected" && reason && (
-          <div className="mt-4 w-full rounded-2xl border border-slate-200 bg-slate-50 p-2 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-            <p className="text-xs font-medium text-slate-400">Reason for refusal</p>
-
-            <div className="mt-2 flex items-start gap-2">
-              <Info className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" strokeWidth={2} />
-
-              <p className="text-[15px] leading-snug font-semibold text-slate-800 dark:text-slate-100">
-                {reason}
-              </p>
-            </div>
-          </div>
-        )}
-
         <section className="mt-6 w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left shadow-sm md:p-6 dark:border-slate-700 dark:bg-slate-900">
           <div className="flex items-start justify-between gap-1">
             <div>
@@ -263,19 +311,36 @@ export default function VisitorProfile() {
                 {registration.name}
               </p>
 
-              <p className="mt-1 text-sm text-slate-400">ID: {requestId}</p>
+              <p className="mt-1 text-sm text-slate-400">
+                ID: {requestId}
+              </p>
             </div>
 
-            {isVisitFetching && <span className="text-xs text-slate-400">Updating...</span>}
+            {isVisitFetching && (
+              <span className="text-xs text-slate-400">
+                Updating...
+              </span>
+            )}
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 border-t border-slate-200 pt-3 dark:border-slate-700">
-            <MetaItem label="Host" value={registration.hostName || "Pending"} />
+          <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-slate-200 pt-3 dark:border-slate-700">
+            <MetaItem
+              label="Host"
+              value={
+                registration.hostName ||
+                "Pending"
+              }
+            />
 
+            <MetaItem
+              label="Date"
+              value={createdDate}
+            />
 
-            <MetaItem label="Date" value={createdDate} />
-
-            <MetaItem label="Time" value={createdTime} />
+            <MetaItem
+              label="Time"
+              value={createdTime}
+            />
 
             <MetaItem
               label="Status"
@@ -288,11 +353,28 @@ export default function VisitorProfile() {
               }
             />
 
-            <MetaItem label="Phone No" value={registration.phoneNo || "Pending"} />
+            <MetaItem
+              label="Phone No"
+              value={
+                registration.phoneNo ||
+                "Pending"
+              }
+            />
+
+            <MetaItem
+              label="Email"
+              value={
+                registration.email ||
+                "Pending"
+              }
+            />
 
             <MetaItem
               label="Purpose of Visit"
-              value={registration.purposeOfVisit || "Pending"}
+              value={
+                registration.purposeOfVisit ||
+                "Pending"
+              }
               className="col-span-2"
             />
           </div>
@@ -305,7 +387,9 @@ export default function VisitorProfile() {
               block
               size="large"
               className="h-12! rounded-xl! bg-sky-400! text-[15px]! font-semibold hover:bg-sky-500! disabled:opacity-50!"
-              onClick={() => navigate(actionPath)}
+              onClick={() =>
+                navigate(actionPath)
+              }
             >
               Register Again
             </Button>

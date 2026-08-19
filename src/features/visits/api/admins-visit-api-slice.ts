@@ -46,7 +46,7 @@ export const adminVisitsApi = adminApi.injectEndpoints({
     }),
 
     getVisit: builder.query<VisitResponse, string>({
-      query: (id) => `/visits/${id}`,
+      query: (id) => `/visits/admin/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Visits", id }],
     }),
   }),

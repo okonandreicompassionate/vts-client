@@ -81,23 +81,30 @@ export interface CreateVisitResponse {
   visitorSocketToken: string;
 }
 
+export interface VisitorMeResponse {
+  visitorId: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string | null;
+  orgId: string;
+  orgSlug: string;
+}
+
 export interface VisitResponse {
-  id?: string;
-  referenceId?: string;
-  fullName?: string;
-  name?: string;
-  email?: string;
-  phoneNumber?: string;
-  phone?: string;
-  hostName?: string;
-  host?: string;
-  purposeOfVisit?: string;
-  purpose?: string;
-  status?: string;
-  createdAt?: string;
-  badgeNumber?: string;
-  rejectionReason?: string;
-  reason?: string;
+  id: string;
+  visitorId: string;
+  referenceId: string;
+  fullName: string;
+  createdAt: string;
+  email: string;
+  phoneNumber: string;
+  hostName: string;
+  purpose: string;
+  status: "PENDING" | "SIGNED_IN" | "REJECTED" | "SIGNED_OFF";
+  checkInTime: string | null;
+  checkOutTime: string | null;
+  registeredAt: string;
+  reviewedAt: string | null;
 }
 
 export interface VisitRecord {

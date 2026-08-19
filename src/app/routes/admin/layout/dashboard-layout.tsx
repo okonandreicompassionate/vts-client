@@ -1,18 +1,14 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "@/app/routes/admin/layout/dashboard-sidebar";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
-import { useAppSelector } from "@/lib/stores/hooks";
 import { useNotificationSocket } from "../../../../features/notifications/hooks/use-notification-socket";
 import Footer from "@/components/layout/footer";
 
 const Layout = () => {
   useAdminAuthSession();
 
-  const token = useAppSelector((state) => state.adminAuth.token);
 
-  useNotificationSocket({
-    token: token ?? undefined,
-  });
+  useNotificationSocket();
 
   return (
     <div className="flex min-h-screen bg-[#EEF2F7] dark:bg-slate-900">

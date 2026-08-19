@@ -1,9 +1,10 @@
 import { AutoComplete, Button, Form, Input, message } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { usePopup } from "@/lib/contexts/popup/use-popup";
-import { useAppDispatch } from "@/lib/stores/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
 import RegistrationModal from "./modals/registration-modal";
 import RegistrationSuccessModal from "./modals/registration-success-modal";
 import type { RegistrationValues } from "../types/registration-values";
@@ -21,61 +22,87 @@ export default function Registration() {
   const [form] = Form.useForm<RegistrationValues>();
   const { openModal, closeModal } = usePopup();
   const navigate = useNavigate();
+
   const dispatch = useAppDispatch();
+
+  const {
+    visitorId,
+    verifiedName,
+    verifiedEmail,
+    verifiedPhoneNumber,
+  } = useAppSelector((state) => state.visitorAuth);
+
   const [createVisit] = useCreateVisitMutation();
-  const { data: employeeNames = [], isLoading: isLoadingEmployeeNames } =
-    useGetEmployeeNamesQuery();
-  const purposeOfVisitValue = Form.useWatch("purposeOfVisit", form);
-  const purposeOfVisitLength = purposeOfVisitValue?.length ?? 0;
 
-  const existingIdentity = useMemo(() => {
-    if (typeof window === "undefined") return null;
+  const {
+    data: employeeNames = [],
+    isLoading: isLoadingEmployeeNames,
+  } = useGetEmployeeNamesQuery();
 
-    const stored = localStorage.getItem("visitorId");
-    if (!stored) return null;
+  const purposeOfVisitValue = Form.useWatch(
+    "purposeOfVisit",
+    form,
+  );
 
-    try {
-      return JSON.parse(stored) as {
-        visitorId?: string;
-        name?: string;
-        email?: string;
-        phoneNo?: string;
-      };
-    } catch {
-      return null;
-    }
-  }, []);
+  const purposeOfVisitLength =
+    purposeOfVisitValue?.length ?? 0;
 
   useEffect(() => {
-    if (!existingIdentity) return;
     form.setFieldsValue({
-      name: existingIdentity.name ?? undefined,
-      email: existingIdentity.email ?? undefined,
-      phoneNo: existingIdentity.phoneNo ?? undefined,
+      name: verifiedName ?? undefined,
+      email: verifiedEmail ?? undefined,
+      phoneNo: verifiedPhoneNumber ?? undefined,
     });
-  }, [existingIdentity, form]);
+  }, [
+    verifiedName,
+    verifiedEmail,
+    verifiedPhoneNumber,
+    form,
+  ]);
 
   const normalizeVisitStatus = (status?: string) => {
-    const normalized = status?.toLowerCase().replace(/[_-]/g, " ").trim();
-    if (normalized === "approved" || normalized === "signed in") return "approved";
-    if (normalized === "rejected" || normalized === "declined") return "rejected";
+    const normalized = status
+      ?.toLowerCase()
+      .replace(/[_-]/g, " ")
+      .trim();
+
+    if (
+      normalized === "approved" ||
+      normalized === "signed in"
+    ) {
+      return "approved";
+    }
+
+    if (
+      normalized === "rejected" ||
+      normalized === "declined"
+    ) {
+      return "rejected";
+    }
+
     return "pending";
   };
 
-  const handleFinish = async (values: RegistrationValues) => {
+  const handleFinish = async (
+    values: RegistrationValues,
+  ) => {
     openModal(
       <RegistrationModal
         onSubmit={async () => {
           openModal(
             <RegistrationSuccessModal
               loading
-              onOk={() => navigate(paths.visitorProfile.getHref(orgSlug))}
+              onOk={() =>
+                navigate(
+                  paths.visitorProfile.getHref(orgSlug),
+                )
+              }
             />,
           );
 
           try {
             const response = await createVisit({
-              visitorId: existingIdentity?.visitorId,
+              visitorId: visitorId ?? undefined,
               fullName: values.name,
               email: values.email,
               phoneNumber: values.phoneNo,
@@ -83,30 +110,50 @@ export default function Registration() {
               purposeOfVisit: values.purposeOfVisit,
             }).unwrap();
 
-            const createdAt = response?.createdAt ?? new Date().toISOString();
-            const status = normalizeVisitStatus(response?.status);
-            const visitId = response?.id ?? response?.referenceId;
-            const requestId = response?.referenceId ?? response?.id;
-            const visitorId = response.visitorId ?? existingIdentity?.visitorId;
+            const createdAt =
+              response?.createdAt ??
+              new Date().toISOString();
 
-            dispatch(
-              setVisitorSession({
-                visitorId,
-                accessToken: response.visitorSocketToken,
-              }),
+            const status = normalizeVisitStatus(
+              response?.status,
             );
 
-            window.localStorage.setItem(
+            const visitId =
+              response?.id ??
+              response?.referenceId;
+
+            const requestId =
+              response?.referenceId ??
+              response?.id;
+
+            const resolvedVisitorId =
+              response?.visitorId ?? visitorId;
+
+            if (resolvedVisitorId) {
+              dispatch(
+                setVisitorSession({
+                  visitorId: resolvedVisitorId,
+                  fullName: values.name,
+                  email: values.email,
+                  phoneNumber: values.phoneNo,
+                }),
+              );
+            }
+
+            localStorage.setItem(
               "visitorRegistration",
               JSON.stringify({
                 id: visitId,
-                visitorId,
-                ...values,
+                visitorId: resolvedVisitorId,
+                name: values.name,
                 email: values.email,
+                phoneNo: values.phoneNo,
+                hostName: values.hostName,
+                purposeOfVisit:
+                  values.purposeOfVisit,
                 status,
                 requestId,
                 createdAt,
-                visitorToken: response.visitorSocketToken,
               }),
             );
 
@@ -115,12 +162,26 @@ export default function Registration() {
             openModal(
               <RegistrationSuccessModal
                 loading={false}
-                onOk={() => navigate(paths.visitorProfile.getHref(orgSlug))}
+                onOk={() =>
+                  navigate(
+                    paths.visitorProfile.getHref(
+                      orgSlug,
+                    ),
+                  )
+                }
               />,
             );
-          } catch {
+          } catch (error) {
+            console.error(
+              "Registration failed:",
+              error,
+            );
+
             closeModal();
-            message.error("Registration could not be submitted. Please try again.");
+
+            message.error(
+              "Registration could not be submitted. Please try again.",
+            );
           }
         }}
       />,
@@ -131,29 +192,30 @@ export default function Registration() {
     <div className="flex w-full flex-col items-center md:justify-center dark:bg-slate-900">
       <div className="flex w-full flex-1 flex-col md:max-w-lg md:flex-none md:overflow-y-auto">
         <header className="-mb-3 flex items-center justify-between border-b border-slate-200 px-5 md:mt-0 dark:border-slate-700">
-          <h1 className="text-md font-bold text-slate-900 dark:text-slate-100">Registration</h1>
+          <h1 className="text-md font-bold text-slate-900 dark:text-slate-100">
+            Registration
+          </h1>
         </header>
 
         <Form
           form={form}
           layout="vertical"
           requiredMark={false}
-          initialValues={{
-            name: existingIdentity?.name,
-            email: existingIdentity?.email,
-            phoneNo: existingIdentity?.phoneNo,
-          }}
           onFinish={handleFinish}
           className="flex flex-col px-5 pt-6 md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
         >
           <Form.Item
             name="name"
             label="Name"
-            rules={[{ required: true, message: "Please enter your name" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please enter your name",
+              },
+            ]}
           >
             <Input
               size="large"
-              placeholder=""
               className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             />
           </Form.Item>
@@ -162,7 +224,10 @@ export default function Registration() {
             name="purposeOfVisit"
             label="Purpose of Visit"
             rules={[
-              { required: true, message: "Please select a purpose" },
+              {
+                required: true,
+                message: "Please select a purpose",
+              },
               {
                 max: PURPOSE_OF_VISIT_MAX_LENGTH,
                 message: `Purpose of visit can't exceed ${PURPOSE_OF_VISIT_MAX_LENGTH} characters`,
@@ -171,13 +236,14 @@ export default function Registration() {
           >
             <Input
               size="large"
-              placeholder=""
               maxLength={PURPOSE_OF_VISIT_MAX_LENGTH}
               className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             />
           </Form.Item>
+
           <p className="-mt-2 mb-2 text-xs text-slate-400 dark:text-slate-500">
-            Keep it brief, e.g. "Job interview" ({purposeOfVisitLength}/
+            Keep it brief, e.g. "Job interview" (
+            {purposeOfVisitLength}/
             {PURPOSE_OF_VISIT_MAX_LENGTH})
           </p>
 
@@ -197,20 +263,32 @@ export default function Registration() {
                 label: employee.name,
               }))}
               showSearch={{
-                filterOption: (inputValue, option) =>
+                filterOption: (
+                  inputValue,
+                  option,
+                ) =>
                   String(option?.value ?? "")
                     .toLowerCase()
-                    .includes(inputValue.toLowerCase()),
+                    .includes(
+                      inputValue.toLowerCase(),
+                    ),
               }}
               allowClear
               placeholder="Search or enter host name"
               size="large"
               className="w-full cursor-pointer"
-              getPopupContainer={(triggerNode) => triggerNode.parentElement!}
-              suffixIcon={isLoadingEmployeeNames ? <Spinner variant="inline" /> : undefined}
+              getPopupContainer={(triggerNode) =>
+                triggerNode.parentElement!
+              }
+              suffixIcon={
+                isLoadingEmployeeNames ? (
+                  <Spinner variant="inline" />
+                ) : undefined
+              }
               classNames={{
                 popup: {
-                  listItem: "employee-autocomplete-option",
+                  listItem:
+                    "employee-autocomplete-option",
                 },
               }}
             />
@@ -220,8 +298,16 @@ export default function Registration() {
             name="email"
             label="Email Address"
             rules={[
-              { required: true, message: "Please enter your email address" },
-              { type: "email", message: "Please enter a valid email address" },
+              {
+                required: true,
+                message:
+                  "Please enter your email address",
+              },
+              {
+                type: "email",
+                message:
+                  "Please enter a valid email address",
+              },
             ]}
           >
             <Input
@@ -231,14 +317,20 @@ export default function Registration() {
             />
           </Form.Item>
 
-         
-
           <Form.Item
             name="phoneNo"
             label="Phone Number"
             rules={[
-              { required: true, message: "Please enter your phone number" },
-              { pattern: /^[0-9+\-\s]{7,15}$/, message: "Please enter a valid phone number" },
+              {
+                required: true,
+                message:
+                  "Please enter your phone number",
+              },
+              {
+                pattern: /^[0-9+\-\s]{7,15}$/,
+                message:
+                  "Please enter a valid phone number",
+              },
             ]}
           >
             <Input
