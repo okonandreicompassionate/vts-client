@@ -34,8 +34,8 @@ export const usersApi = adminApi.injectEndpoints({
     }),
 
     deleteAdmin: builder.mutation<void, { orgSlug: string; adminId: string }>({
-      query: ({ orgSlug, adminId }) => ({
-        url: `/${orgSlug}/users/admins/${adminId}`,
+      query: ({ adminId }) => ({
+        url: `/users/admins/${adminId}`,
         method: "DELETE",
       }),
     }),
