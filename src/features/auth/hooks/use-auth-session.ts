@@ -1,71 +1,58 @@
 import { useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
-import { clearAuth } from "../stores/admin-auth-slice";
-import { useTenant } from "@/lib/tenant";
-import { paths } from "@/config/paths";
 
-interface JwtPayload {
-  exp?: number;
-}
+import { useAppDispatch } from "@/lib/stores/hooks";
+import { clearAuth } from "../stores/admin-auth-slice";
+import { paths } from "@/config/paths";
+import { useTenant } from "@/lib/tenant";
+import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
 
 export function useAdminAuthSession() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { orgSlug } = useTenant();
 
-  const token = useAppSelector(
-    (state) => state.adminAuth.token,
-  );
+  const {
+    data: profile,
+    isError,
+    error,
+    isLoading,
+  } = useGetProfileQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+  });
 
   useEffect(() => {
-    if (!token) {
+    if (isLoading) {
       return;
     }
 
-    try {
-      const decoded = jwtDecode<JwtPayload>(token);
+    if (profile) {
+      return;
+    }
 
-      if (!decoded.exp) {
-        return;
-      }
+    if (isError) {
+      const status =
+        typeof error === "object" &&
+        error !== null &&
+        "status" in error
+          ? error.status
+          : undefined;
 
-      const expiresAt = decoded.exp * 1000;
-      const remainingTime = expiresAt - Date.now();
-
-      const logout = () => {
+      if (status === 401) {
         dispatch(clearAuth());
 
         navigate(
           paths.admin.login.getHref(orgSlug),
           { replace: true },
         );
-      };
-
-      if (remainingTime <= 0) {
-        logout();
-        return;
       }
-
-      const timeout = window.setTimeout(
-        logout,
-        remainingTime,
-      );
-
-      return () => {
-        window.clearTimeout(timeout);
-      };
-    } catch {
-      dispatch(clearAuth());
-
-      navigate(
-        paths.admin.login.getHref(orgSlug),
-        { replace: true },
-      );
     }
   }, [
-    token,
+    profile,
+    isError,
+    error,
+    isLoading,
     dispatch,
     navigate,
     orgSlug,
