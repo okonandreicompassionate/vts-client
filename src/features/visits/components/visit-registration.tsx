@@ -248,7 +248,7 @@ export default function Registration() {
             />
           </Form.Item>
 
-          <Form.Item className="mb-0 md:mt-4">
+          <Form.Item className="mb-0 mt-4">
             <Button
               type="primary"
               htmlType="submit"
