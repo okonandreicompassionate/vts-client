@@ -46,7 +46,7 @@ export default function AdminSettings() {
     {
       key: "security",
       title: "Security",
-      description: "Change password and two-factor authentication",
+      description: "Change your password",
       icon: <img src="/padlock2.svg" alt="Security" />,
       iconBg: "bg-emerald-50",
       iconColor: "text-emerald-500",
