@@ -5,7 +5,6 @@
 
 * {
   font-family: "Raleway Variable", sans-serif;
-  font: size 10px !important;
 }
 
 .dark .ant-btn,
@@ -135,7 +134,62 @@ td.ant-table-cell {
 }
 
 .employee-autocomplete-option {
-  padding: 5px 10px !important;
+  padding: 5px 7px !important;
   min-height: auto !important;
   line-height: 1.4 !important;
+}
+
+.ant-table-selection-column .ant-checkbox-inner {
+  width: 9px !important;
+  height: 2px !important;
+}
+
+.ant-table-selection-column .ant-checkbox-inner::after {
+  width: 2px;
+  height: 4px;
+  top: 1px;
+  left: 4px;
+}
+
+.ant-table-selection-column {
+  padding-inline: 4px !important;
+}
+
+.selection-delete-btn {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.selection-delete-btn::before,
+.selection-delete-btn::after {
+  display: none !important;
+  background: transparent !important;
+}
+
+.selection-delete-btn:hover,
+.selection-delete-btn:focus,
+.selection-delete-btn:focus-visible,
+.selection-delete-btn:active {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.selection-delete-active {
+  color: #dc2626 !important;
+}
+
+.selection-delete-active:hover {
+  color: #b91c1c !important;
+  background: transparent !important;
+}
+
+.selection-delete-disabled {
+  color: #94a3b8 !important;
+  cursor: default !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }

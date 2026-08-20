@@ -57,3 +57,12 @@ export type GetAdminsResponse = AdminUserItem[];
 export type GetAdminByIdResponse = Omit<AdminUserItem, "organization"> & {
   orgSlug: string;
 };
+
+export interface BulkDeleteAdminsPayload {
+  ids: string[];
+}
+
+export interface BulkDeleteAdminsResponse {
+  count: number;
+  deletedIds: string[];
+}

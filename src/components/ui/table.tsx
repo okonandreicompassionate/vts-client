@@ -1,4 +1,5 @@
 import { Table } from "antd";
+
 import type {
   ColumnsType,
   TablePaginationConfig,
@@ -16,6 +17,7 @@ type TableComponentProps<T extends object> = {
   serialNumberTitle?: string;
   startIndex?: number;
   onRow?: TableProps<T>["onRow"];
+  rowSelection?: TableProps<T>["rowSelection"];
 };
 
 function TableComponent<T extends object>({
@@ -29,6 +31,7 @@ function TableComponent<T extends object>({
   serialNumberTitle = "SN",
   startIndex = 1,
   onRow,
+  rowSelection,
 }: TableComponentProps<T>) {
   const finalColumns = showSerialNumber
     ? [
@@ -59,6 +62,7 @@ function TableComponent<T extends object>({
       pagination={pagination === true ? undefined : pagination}
       rowKey={rowKey}
       className={className}
+      rowSelection={rowSelection}
       onRow={onRow}
     />
   );

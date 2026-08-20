@@ -260,7 +260,7 @@ export default function UserDetailsPage() {
             </div>
 
             {/* Access + actions */}
-            <div className="w-full min-w-0 rounded-lg border border-slate-100 bg-white px-4 py-3 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-80 lg:shrink-0 xl:w-96 xl:px-6 xl:py-6 2xl:w-104 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
+            <div className="w-full min-w-0 rounded-lg border border-slate-100 bg-white px-4 pt-3 shadow-sm shadow-slate-100 sm:px-6 sm:pt-6 lg:w-80 lg:shrink-0 xl:w-96 xl:px-6 xl:pt-6 2xl:w-104 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
               <h3 className="mb-2.5 text-sm font-bold text-slate-800 dark:text-slate-100">
                 Admin Access
               </h3>
@@ -314,13 +314,13 @@ export default function UserDetailsPage() {
               </div>
 
               {/* Danger zone */}
-              <div className="mt-4 border-t border-slate-100 pt-5 dark:border-slate-700">
-                <div className="mb-2">
+              <div className="mt-4 flex flex-col xl:gap-5 border-t border-slate-100 pt-5 dark:border-slate-700">
+                <div className="flex flex-col xl:gap-2">
                   <p className="text-[13px]  font-semibold text-red-600 dark:text-red-400">
                     Danger Zone
                   </p>
 
-                  <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                  <p className="text-xs xl:text-[12px] leading-relaxed text-slate-400">
                     Remove this administrator and revoke their
                     administrative access to this organization.
                   </p>
