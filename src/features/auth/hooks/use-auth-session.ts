@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 import { useAppDispatch } from "@/lib/stores/hooks";
 import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
@@ -22,38 +23,30 @@ export function useAdminAuthSession() {
   });
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || profile) {
       return;
     }
 
-    if (profile) {
+    if (!isError) {
       return;
     }
 
-    if (isError) {
-      const status =
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error
-          ? error.status
-          : undefined;
+    const status =
+      typeof error === "object" && error !== null && "status" in error ? error.status : undefined;
 
-      if (status === 401) {
-        dispatch(clearAuth());
-
-        navigate(
-          paths.admin.login.getHref(orgSlug),
-          { replace: true },
-        );
-      }
+    if (status !== 401) {
+      return;
     }
-  }, [
-    profile,
-    isError,
-    error,
-    isLoading,
-    dispatch,
-    navigate,
-    orgSlug,
-  ]);
+
+    const errorData =
+      typeof error === "object" && error !== null && "data" in error
+        ? (error.data as { message?: string } | undefined)
+        : undefined;
+
+    dispatch(clearAuth());
+
+    message.info(errorData?.message ?? "Your session has ended. Please log in again.");
+
+    navigate(paths.admin.login.getHref(orgSlug), { replace: true });
+  }, [profile, isError, error, isLoading, dispatch, navigate, orgSlug]);
 }
