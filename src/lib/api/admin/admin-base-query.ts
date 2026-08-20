@@ -5,7 +5,6 @@ import {
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-import { clearAuth } from "@/features/auth/stores/admin-auth-slice";
 import { tenantPath } from "@/lib/tenant/tenant-path";
 
 const rawAdminBaseQuery = fetchBaseQuery({
@@ -37,25 +36,5 @@ export const adminBaseQuery: BaseQueryFn<
           url: tenantPath(orgSlug, args.url),
         };
 
-  const result = await rawAdminBaseQuery(
-    request,
-    api,
-    extraOptions,
-  );
-
-  if (result.error?.status === 401) {
-    const requestUrl =
-      typeof args === "string" ? args : args.url;
-
-    const isLoginRequest =
-      requestUrl.includes("/auth/login");
-
-    if (!isLoginRequest) {
-      api.dispatch(clearAuth());
-
-      window.location.href = `/${orgSlug}/login`;
-    }
-  }
-
-  return result;
+  return rawAdminBaseQuery(request, api, extraOptions);
 };
