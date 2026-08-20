@@ -3,17 +3,14 @@ import { DownOutlined, SettingOutlined } from "@ant-design/icons";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { Spinner } from "@/components/ui/spinner";
 import { ThemeToggle } from "../../../../components/ui/theme-toggle";
-import { useGetProfileQuery } from "../../../../features/settings/api/settings-api-slice";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { Avatar } from "../../../../components/ui/avatar";
 import EditProfileModal from "@/features/settings/components/modals/edit-profile-modal";
 import SystemSettingsModal from "../../../../features/settings/components/modals/system-settings-modal";
+import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 
 const AdminHeader = ({ title }: { title: string }) => {
-  const { data: profile, isLoading } = useGetProfileQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-    refetchOnFocus: true,
-  });
+const { data: profile, isLoading } = useAdminAuthSession();
 
   const { openModal } = usePopup();
 
