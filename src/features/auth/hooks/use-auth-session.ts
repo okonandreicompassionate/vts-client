@@ -12,15 +12,13 @@ export function useAdminAuthSession() {
   const navigate = useNavigate();
   const { orgSlug } = useTenant();
 
-  const {
-    data: profile,
-    isError,
-    error,
-    isLoading,
-  } = useGetProfileQuery(undefined, {
+  
+  const profileQuery = useGetProfileQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
   });
+
+  const { data: profile, isError, error, isLoading } = profileQuery;
 
   useEffect(() => {
     if (isLoading || profile) {
@@ -49,4 +47,6 @@ export function useAdminAuthSession() {
 
     navigate(paths.admin.login.getHref(orgSlug), { replace: true });
   }, [profile, isError, error, isLoading, dispatch, navigate, orgSlug]);
+
+  return profileQuery;
 }
