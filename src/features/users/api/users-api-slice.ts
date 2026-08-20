@@ -3,6 +3,8 @@ import { adminApi } from "@/lib/api/admin/admin-api";
 import type {
   AdminRole,
   AdminUserItem,
+  BulkDeleteAdminsPayload,
+  BulkDeleteAdminsResponse,
   GetAdminByIdResponse,
   GetAdminsResponse,
   InviteAdminPayload,
@@ -40,6 +42,15 @@ export const usersApi = adminApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: "Users", id: "LIST" }],
     }),
+
+    bulkDeleteAdmins: builder.mutation<BulkDeleteAdminsResponse, BulkDeleteAdminsPayload>({
+      query: ({ ids }) => ({
+        url: "/users/admins/bulk-delete",
+        method: "POST",
+        body: { ids },
+      }),
+      invalidatesTags: [{ type: "Users", id: "LIST" }],
+    }),
   }),
 });
 
@@ -48,6 +59,7 @@ export const {
   useGetAdminsQuery,
   useGetAdminByIdQuery,
   useDeleteAdminMutation,
+  useBulkDeleteAdminsMutation,
 } = usersApi;
 
 export type {

@@ -96,7 +96,10 @@ export const getThemeConfig = (isDark: boolean) => {
         defaultBg: "#ffffff",
         defaultColor: "#1f2937",
         defaultBorderColor: "#d1d5db",
-
+        colorBgTextHover: "transparent",
+        colorBgTextActive: "transparent",
+        colorBgText: "transparent",
+        defaultBgDisabled: "transparent",
         defaultHoverBg: "#f9fafb",
         defaultHoverColor: "#111827",
         defaultHoverBorderColor: "#9ca3af",

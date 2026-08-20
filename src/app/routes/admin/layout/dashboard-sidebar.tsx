@@ -5,7 +5,6 @@ import {
   MenuOutlined,
   CloseOutlined,
   TeamOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -46,7 +45,7 @@ export default function Sidebar() {
       key: "employees",
       label: "Employees",
       href: paths.admin.employees.getHref(orgSlug),
-      icon: <TeamOutlined />,
+      icon: '/staff.svg',
     },
 
     ...(isSuperAdmin
@@ -55,7 +54,7 @@ export default function Sidebar() {
             key: "users",
             label: "Users",
             href: paths.admin.users.getHref(orgSlug),
-            icon: <UserOutlined />,
+            icon: <TeamOutlined />,
           },
         ]
       : []),

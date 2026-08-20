@@ -64,10 +64,10 @@ export const DeleteAdmin = ({ adminId }: DeleteAdminProps) => {
     <Button
       danger
       type="primary"
-      icon={<DeleteOutlined />}
+      icon={<DeleteOutlined className="align-middle" />}
       loading={isDeleting}
       onClick={handleOpenModal}
-      className="my-auto inline-flex h-7 gap-1 items-center justify-center leading-none"
+      className="my-auto inline-flex h-7 w-30 gap-1 items-center justify-center"
     >
       Remove Admin
     </Button>
