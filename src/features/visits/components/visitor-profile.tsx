@@ -9,12 +9,12 @@ import type {
   VisitorProfileStatus,
   VisitorRegistration,
 } from "../types/visitor-profile";
-import { useVisitorSocket } from "../hooks/use-visitor-socket";
 import { useAppSelector } from "@/lib/stores/hooks";
 import MetaItem from "./profile-meta-item";
 import { statusMeta } from "../types/status-meta";
 import { useGetVisitQuery } from "../api/visitor-vists-api";
 import type { VisitResponse } from "../types/api-types";
+import { useVisitorSse } from "../hooks/use-visitor-sse";
 
 export default function VisitorProfile() {
   const { orgSlug } = useTenant();
@@ -107,7 +107,7 @@ export default function VisitorProfile() {
     [visitId, refetchVisit],
   );
 
-  useVisitorSocket({
+  useVisitorSse({
     onStatusChanged: handleStatusChanged,
   });
 
