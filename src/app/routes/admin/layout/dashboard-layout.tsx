@@ -1,14 +1,15 @@
 import { Outlet } from "react-router-dom";
+
 import Sidebar from "@/app/routes/admin/layout/dashboard-sidebar";
-import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
-import { useNotificationSocket } from "../../../../features/notifications/hooks/use-notification-socket";
 import Footer from "@/components/layout/footer";
+
+import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { useNotificationSse } from "@/features/notifications/hooks/use-notification-sse";
 
 const Layout = () => {
   useAdminAuthSession();
 
-
-  useNotificationSocket();
+  useNotificationSse();
 
   return (
     <div className="flex min-h-screen bg-[#EEF2F7] dark:bg-slate-900">

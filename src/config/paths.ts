@@ -63,4 +63,14 @@ export const paths = {
         id ? tenantPath(orgSlug, `/users/${id}`) : tenantPath(orgSlug, "/users"),
     },
   },
+  notification: {
+    notificationStream: {
+      path: "/:orgSlug/notifications/stream",
+      getHref: (orgSlug: string) => tenantPath(orgSlug, "/notifications/stream"),
+    },
+    visitStream: {
+      path: "/:orgSlug/visits/stream",
+      getHref: (orgSlug: string) => tenantPath(orgSlug, "/visits/stream"),
+    },
+  },
 } as const;
