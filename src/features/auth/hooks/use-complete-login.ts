@@ -2,25 +2,30 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 
 import { paths } from "@/config/paths";
+import { useAppDispatch } from "@/lib/stores/hooks";
+import { setAdminToken } from "../stores/admin-auth-slice";
 import type { LoginResponse } from "../types/api-types";
 
 export const useCompleteLogin = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const completeLogin = ({ user }: LoginResponse) => {
+  const completeLogin = ({ accessToken, user }: LoginResponse) => {
     if (!user?.orgSlug) {
-      message.error(
-        "Login succeeded but organization information is missing.",
-      );
+      message.error("Login succeeded but organization information is missing.");
       return;
     }
 
-    navigate(
-      paths.admin.dashboard.getHref(user.orgSlug),
-      {
-        replace: true,
-      },
-    );
+    if (!accessToken) {
+      message.error("Login succeeded but no authentication token was returned.");
+      return;
+    }
+
+    dispatch(setAdminToken(accessToken));
+
+    navigate(paths.admin.dashboard.getHref(user.orgSlug), {
+      replace: true,
+    });
   };
 
   return completeLogin;

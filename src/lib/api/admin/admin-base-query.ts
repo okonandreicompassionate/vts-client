@@ -10,13 +10,25 @@ import { tenantPath } from "@/lib/tenant/tenant-path";
 const rawAdminBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
   credentials: "include",
+  prepareHeaders: (headers, { getState }) => {
+    const state = getState() as {
+      adminAuth?: { token?: string | null };
+    };
+    const token = state.adminAuth?.token;
+
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    return headers;
+  },
 });
 
-export const adminBaseQuery: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
+export const adminBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions,
+) => {
   const [, orgSlug] = window.location.pathname.split("/");
 
   if (!orgSlug) {
