@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import { useState } from "react";
-import AdminHeader from "@/app/routes/admin/layout/dashboard-header";
+import DashboardHeader from "@/app/routes/admin/layout/dashboard-header";
 import { Spinner } from "@/components/ui/spinner";
 import TableComponent from "@/components/ui/table";
 import { TablePaginationFooter } from "@/components/ui/table-pagination-footer";
@@ -31,7 +31,7 @@ export default function Employees() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <AdminHeader title="Employees" />
+      <DashboardHeader title="Employees" />
 
       <main className="flex-1 pb-3 sm:px-3 md:px-3 md:py-6">
         <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">

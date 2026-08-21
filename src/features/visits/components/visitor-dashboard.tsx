@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TablePaginationFooter } from "../../../components/ui/table-pagination-footer.tsx";
-import AdminHeader from "../../../app/routes/admin/layout/dashboard-header.tsx";
+import DashboardHeader from "../../../app/routes/admin/layout/dashboard-header.tsx";
 import TableComponent from "../../../components/ui/table.tsx";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits.ts";
 import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data.ts";
@@ -41,7 +41,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <AdminHeader title="Dashboard" />
+      <DashboardHeader title="Dashboard" />
 
       <main className="flex-1 px-2 pt-1 pb-3 sm:px-4 md:px-5 md:py-3">
         <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">

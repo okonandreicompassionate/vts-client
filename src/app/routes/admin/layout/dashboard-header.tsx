@@ -9,7 +9,7 @@ import EditProfileModal from "@/features/settings/components/modals/edit-profile
 import SystemSettingsModal from "../../../../features/settings/components/modals/system-settings-modal";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 
-const AdminHeader = ({ title }: { title: string }) => {
+const DashboardHeader = ({ title }: { title: string }) => {
 const { data: profile, isLoading } = useAdminAuthSession();
 
   const { openModal } = usePopup();
@@ -124,4 +124,4 @@ const { data: profile, isLoading } = useAdminAuthSession();
   );
 };
 
-export default AdminHeader;
+export default DashboardHeader;

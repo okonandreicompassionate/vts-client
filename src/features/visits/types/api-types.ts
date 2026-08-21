@@ -90,6 +90,10 @@ export interface VisitorMeResponse {
   orgSlug: string;
 }
 
+export interface BulkVisitIds {
+  visitIds: string[];
+}
+
 export interface VisitResponse {
   id: string;
   visitorId: string;

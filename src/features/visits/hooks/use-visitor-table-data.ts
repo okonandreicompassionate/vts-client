@@ -10,7 +10,7 @@ interface UseVisitorTableDataParams {
 }
 
 export function useVisitorTableData({ page, limit, status }: UseVisitorTableDataParams) {
-  const { data: visitsData, isLoading } = useGetVisitsQuery({
+  const { data: visitsData, isLoading, isError } = useGetVisitsQuery({
     page,
     limit,
     status,
@@ -29,5 +29,6 @@ export function useVisitorTableData({ page, limit, status }: UseVisitorTableData
     visitorRecords,
     totalEntries,
     isLoading,
+    isError,
   };
 }
