@@ -16,16 +16,16 @@ export default function AdminSettings() {
   const isSuperAdmin = profile?.role === "SUPERADMIN";
 
   if (isLoadingProfile) {
-  return (
-    <div>
-      <Header title="Settings" />
+    return (
+      <div>
+        <Header title="Settings" />
 
-      <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
-        <Spinner variant="page" />
-      </main>
-    </div>
-  );
-}
+        <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+          <Spinner variant="page" />
+        </main>
+      </div>
+    );
+  }
 
   const systemDescription = (
     <>
@@ -81,13 +81,13 @@ export default function AdminSettings() {
       <Header title="Settings" />
 
       <main className="flex-1 px-2 pt-1 pb-3 sm:px-4 md:px-5 md:py-3">
-        <div className="max-w-4xl md:max-w-full w-full space-y-3 sm:space-y-4">
+        <div className="w-full max-w-4xl space-y-3 sm:space-y-4 md:max-w-full">
           {settingsItems.map((item) => (
             <Button
               key={item.key}
               type="default"
               onClick={() => openModal(item.modal)}
-              className="flex! h-auto! w-full! items-center! justify-start! rounded-xl! border-slate-100! bg-white! px-4! py-3! text-left shadow-sm shadow-slate-100 hover:border-slate-200! sm:gap-4 sm:px-6! dark:border-slate-700! dark:bg-slate-800! dark:shadow-none dark:hover:border-slate-600!"
+              className="flex! h-auto! w-full! items-center! justify-center! rounded-xl! border-slate-100! bg-white! px-4! py-3! text-left! shadow-sm shadow-slate-100 hover:border-slate-200! sm:gap-4 sm:px-6! lg:justify-start! lg:text-left! dark:border-slate-700! dark:bg-slate-800! dark:shadow-none dark:hover:border-slate-600!"
             >
               <span
                 className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${item.iconBg} ${item.iconColor}`}

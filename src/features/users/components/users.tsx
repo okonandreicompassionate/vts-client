@@ -135,7 +135,7 @@ export default function UsersPage() {
               <button
                 type="button"
                 onClick={handleStartSelecting}
-                className="flex h-5.5 items-center justify-center rounded-sm bg-sky-500 px-2 text-[12px] leading-none font-medium text-white transition-colors hover:bg-sky-600 active:bg-sky-700"
+                className="flex h-5.5 items-center cursor-pointer justify-center rounded-sm bg-sky-500 px-2 text-[12px] leading-none font-medium text-white transition-colors hover:bg-sky-600 active:bg-sky-700"
               >
                 Select
               </button>
@@ -153,7 +153,7 @@ export default function UsersPage() {
               <button
                 type="button"
                 onClick={handleCancelSelecting}
-                className="flex h-6 items-center justify-center rounded text-[11px] leading-none font-medium text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+                className="flex h-6 cursor-pointer items-center justify-center rounded text-[11px] leading-none font-medium text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
               >
                 Cancel
               </button>

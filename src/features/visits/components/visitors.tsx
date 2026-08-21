@@ -259,7 +259,7 @@ export default function Visitors() {
             </div>
 
             {showFilters && (
-              <div className="overflow-x-auto rounded-lg border border-[#E6EAE8] bg-[#FAFAFA] p-1.5 dark:border-slate-700 dark:bg-slate-900">
+              <div className="overflow-x-auto rounded-lg border border-[#E6EAE8] bg-[#FAFAFA] p-1 dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex min-w-max items-center gap-1">
                   {filterTabs.map((tab) => {
                     const isActive = activeTab === tab;
