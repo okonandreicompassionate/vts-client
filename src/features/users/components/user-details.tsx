@@ -4,7 +4,7 @@ import { Alert, Button } from "antd";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import AdminHeader from "@/app/routes/admin/layout/dashboard-header";
+import DashboardHeader from "@/app/routes/admin/layout/dashboard-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetAdminByIdQuery } from "@/features/users/api/users-api-slice";
@@ -68,7 +68,7 @@ export default function UserDetailsPage() {
   if (!id) {
     return (
       <>
-        <AdminHeader title="Admin Details" />
+        <DashboardHeader title="Admin Details" />
 
         <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
           <Alert
@@ -84,7 +84,7 @@ export default function UserDetailsPage() {
   if (isLoading) {
     return (
       <>
-        <AdminHeader title="Admin Details" />
+        <DashboardHeader title="Admin Details" />
 
         <main className="flex flex-1 px-3 py-16">
           <Spinner
@@ -102,7 +102,7 @@ export default function UserDetailsPage() {
     if (status === 400) {
       return (
         <>
-          <AdminHeader title="Admin Details" />
+          <DashboardHeader title="Admin Details" />
 
           <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
             {BackButton}
@@ -121,7 +121,7 @@ export default function UserDetailsPage() {
     if (status === 403) {
       return (
         <>
-          <AdminHeader title="Admin Details" />
+          <DashboardHeader title="Admin Details" />
 
           <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
             {BackButton}
@@ -140,7 +140,7 @@ export default function UserDetailsPage() {
     if (status === 404) {
       return (
         <>
-          <AdminHeader title="Admin Details" />
+          <DashboardHeader title="Admin Details" />
 
           <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
             {BackButton}
@@ -158,7 +158,7 @@ export default function UserDetailsPage() {
 
     return (
       <>
-        <AdminHeader title="Admin Details" />
+        <DashboardHeader title="Admin Details" />
 
         <main className="flex-1 px-3 pt-2 pb-3 sm:px-4 md:px-8 md:py-4">
           {BackButton}
@@ -185,7 +185,7 @@ export default function UserDetailsPage() {
   if (!admin) {
     return (
       <>
-        <AdminHeader title="Admin Details" />
+        <DashboardHeader title="Admin Details" />
 
         <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
           {BackButton}
@@ -207,7 +207,7 @@ export default function UserDetailsPage() {
 
   return (
     <>
-      <AdminHeader title="Admin Details" />
+      <DashboardHeader title="Admin Details" />
 
       <main className="w-full flex-1 px-3 sm:px-4 md:py-2 xl:px-8 2xl:px-20">
         <div className="mb-1">

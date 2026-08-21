@@ -67,7 +67,7 @@ export const DeleteAdmin = ({ adminId }: DeleteAdminProps) => {
       icon={<DeleteOutlined className="align-middle" />}
       loading={isDeleting}
       onClick={handleOpenModal}
-      className="my-auto inline-flex h-7 w-30 gap-1 items-center justify-center"
+      className="my-auto inline-flex rounded-sm! h-6 w-30 gap-1 items-center justify-center"
     >
       Remove Admin
     </Button>

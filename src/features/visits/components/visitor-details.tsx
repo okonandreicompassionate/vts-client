@@ -4,7 +4,7 @@ import { Alert, Button, Input, message } from "antd";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import AdminHeader from "../../../app/routes/admin/layout/dashboard-header.tsx";
+import DashboardHeader from "../../../app/routes/admin/layout/dashboard-header.tsx";
 import ApproveAccessModal from "./modals/approve-access-modal.tsx";
 import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
 import { Avatar } from "../../../components/ui/avatar.tsx";
@@ -157,7 +157,7 @@ export default function VisitorDetails() {
   if (!id) {
     return (
       <>
-        <AdminHeader title="Visitor Details" />
+        <DashboardHeader title="Visitor Details" />
 
         <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
           <Alert type="error" showIcon title="No visitor ID was provided." />
@@ -169,7 +169,7 @@ export default function VisitorDetails() {
   if (isLoading) {
     return (
       <>
-        <AdminHeader title="Visitor Details" />
+        <DashboardHeader title="Visitor Details" />
 
         <main className="flex flex-1 px-3 py-16">
           <Spinner variant="page" label="Loading visitor..." />
@@ -184,7 +184,7 @@ export default function VisitorDetails() {
     if (status === 404) {
       return (
         <>
-          <AdminHeader title="Visitor Details" />
+          <DashboardHeader title="Visitor Details" />
 
           <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
             {BackButton}
@@ -203,7 +203,7 @@ export default function VisitorDetails() {
     if (status === 401 || status === 403) {
       return (
         <>
-          <AdminHeader title="Visitor Details" />
+          <DashboardHeader title="Visitor Details" />
 
           <main className="flex-1 px-2 pt-1 pb-3 sm:px-4 md:px-5 md:py-3">
             <Alert
@@ -219,7 +219,7 @@ export default function VisitorDetails() {
 
     return (
       <>
-        <AdminHeader title="Visitor Details" />
+        <DashboardHeader title="Visitor Details" />
 
         <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
           {BackButton}
@@ -243,7 +243,7 @@ export default function VisitorDetails() {
   if (!visitor) {
     return (
       <>
-        <AdminHeader title="Visitor Details" />
+        <DashboardHeader title="Visitor Details" />
 
         <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
           {BackButton}
@@ -334,7 +334,7 @@ export default function VisitorDetails() {
 
   return (
     <>
-      <AdminHeader title="Visitor Details" />
+      <DashboardHeader title="Visitor Details" />
 
       <main className="flex-1 px-3 w-full sm:px-4 md:py-2 xl:px-8 2xl:px-20">
         {BackButton}
