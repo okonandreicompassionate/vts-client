@@ -85,7 +85,7 @@ function SystemSettingsModal() {
       <CustomModal.Body loading={isLoadingSettings}>
         <Form
           form={form}
-          className="mt-4 space-y-1"
+          className="mt-2 space-y-1"
           layout="vertical"
           requiredMark={false}
         >
@@ -104,7 +104,7 @@ function SystemSettingsModal() {
             ]}
           >
             <Input
-              className="h-11! rounded-lg! border-slate-100! bg-slate-50! px-4!"
+              className="h-9! rounded-lg! border-slate-100! bg-slate-50! px-4!"
               placeholder="Organization name"
             />
           </FormItem>
@@ -124,7 +124,7 @@ function SystemSettingsModal() {
             ]}
           >
             <Input
-              className="h-11! rounded-lg! border-slate-100! bg-slate-50! px-4!"
+              className="h-9! rounded-lg! border-slate-100! bg-slate-50! px-4!"
               placeholder="e.g. zoracom"
             />
           </FormItem>
@@ -138,7 +138,7 @@ function SystemSettingsModal() {
             name="badgePrefix"
           >
             <Input
-              className="h-11! rounded-lg! border-slate-100! bg-slate-50! px-4!"
+              className="h-9! rounded-lg! border-slate-100! bg-slate-50! px-4!"
               placeholder="e.g. ZOR"
             />
           </FormItem>
@@ -160,7 +160,7 @@ function SystemSettingsModal() {
             <Input
               type="number"
               min={1}
-              className="h-11! rounded-lg! border-slate-100! bg-slate-50! px-4!"
+              className="h-9! rounded-lg! border-slate-100! bg-slate-50! px-4!"
               placeholder="Enter max capacity"
             />
           </FormItem>
@@ -171,7 +171,7 @@ function SystemSettingsModal() {
         <div className="mt-4 flex w-full items-center gap-3">
           <Button
             onClick={handleCancel}
-            className="h-11! flex-1! rounded-full! border-slate-200! bg-white! px-8! font-medium!"
+            className="h-9! flex-1! rounded-full! border-slate-200! bg-white! px-8! font-medium!"
           >
             Cancel
           </Button>
@@ -180,7 +180,7 @@ function SystemSettingsModal() {
             type="primary"
             onClick={handleSaveSettings}
             loading={isSaving}
-            className="h-11! flex-1! rounded-full! border-none! bg-sky-500! px-8! font-semibold!"
+            className="h-9! flex-1! rounded-full! border-none! bg-sky-500! px-8! font-semibold!"
           >
             Save Settings
           </Button>

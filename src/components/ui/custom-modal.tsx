@@ -94,7 +94,7 @@ CustomModal.Header = ({
   const { close } = UseModalCtx();
 
   return (
-    <div className="flex w-full items-center justify-between pb-2">
+    <div className="flex w-full items-center justify-between">
       <div className="text-left">
         {children ?? (
           <>
