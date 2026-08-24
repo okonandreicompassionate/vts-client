@@ -6,12 +6,9 @@ VTS(Visitor Tracking System) is a scalable application that Streamlines visitor 
 
 - **React Vite**: Modern Vite-based React application
 
-
 ## Setup Commands
 
 ```bash
-
-
 # Install dependencies
 pnpm install
 
@@ -33,12 +30,12 @@ The codebase follows a feature-based architecture organized as follows:
 src/
 ├── app/              # Application layer (routes, providers, router)
 ├── components/       # Shared UI components
-├── config/          # Global configurations and env variables
-├── features/        # Feature-based modules (admins, visitors, etc.)
-├── hooks/           # Shared React hooks
-├── lib/             # Preconfigured libraries (react-query, auth, etc.)
-├── types/           # Shared TypeScript types
-└── utils/           # Shared utility functions
+├── config/           # Global configurations and env variables
+├── features/         # Feature-based modules (admins, visitors, etc.)
+├── hooks/            # Shared React hooks
+├── lib/              # Preconfigured libraries (react-query, auth, etc.)
+├── types/            # Shared TypeScript types
+└── utils/            # Shared utility functions
 ```
 
 ### Feature Structure
@@ -47,7 +44,7 @@ Each feature should be self-contained:
 ```
 src/features/auth/
 ├── api/         # API calls and hooks for this feature
-├── components/  # Feature-specific components  
+├── components/  # Feature-specific components
 ├── hooks/       # Feature-specific hooks
 ├── stores/      # Feature-specific state
 ├── types/       # Feature-specific types
@@ -76,13 +73,13 @@ src/features/auth/
 
 ### Best Practices
 - **Composition over props** - Use children/slots instead of many props
-- **Single responsibility** - Each component should have one clear purpose  
+- **Single responsibility** - Each component should have one clear purpose
 - **Extract render functions** - Move complex JSX into separate components
 - **Limit prop count** - Consider composition if accepting too many props
 
 ### Styling
 - **Tailwind CSS** is the primary styling solution
-- **Headless UI components** using Radix UI primitives
+- **Headless UI components** use Ant Design and local shared primitives
 - **ShadCN/UI pattern** - Components are copied into codebase, not installed as packages
 
 ## State Management Strategy
@@ -91,141 +88,84 @@ src/features/auth/
 - Use `useState` for simple independent state
 - Use `useReducer` for complex state with multiple related updates
 
-### Application State  
-- **Redux Store** for global application state (modals, notifications, themes)
-- Keep state as close to usage as possible
-- Avoid premature globalization
+### Application State
+- Use Redux Toolkit only for shared client state, currently authentication state.
+- Use React context for theme, popup, and other cross-cutting context state.
+- Keep state as close to its usage as possible and avoid premature globalization.
 
 ### Server State
-- **RTK Query (TanStack Query)** for all server state management
+- Use RTK Query for all server state, caching, loading, refetching, and invalidation.
 
 ### Form State
-- **React Hook Form** for form management
-- **Zod** for form validation schemas
-- Create reusable Form and Input components
-
+- Use Ant Design `Form` components for form state and validation.
+- Keep reusable form and input behavior in shared components where appropriate.
 ## State Management (Redux)
 
 ### Principles
 
-- Use **Redux Toolkit** (`configureStore`), never the legacy `redux` `createStore` (deprecated).
-- **Server state** lives in **RTK Query** (cache, refetch, loading flags) — do not hand-write
-  slices for API data.
-- **Client/UI state only** (auth token, filters, toggles) lives in `createSlice` slices.
-- **One API slice per app** (`createApi`); split endpoints per feature with `injectEndpoints`.
-- **Never hand-write types.** Infer `RootState` / `AppDispatch` from the store and expose
-  pre-typed hooks.
+- Use **Redux Toolkit** (`configureStore` and `createSlice`), never legacy Redux APIs.
+- Keep server state in **RTK Query**. Do not duplicate API data in hand-written Redux slices.
+- Keep client state in slices only when it is shared across the app. The current slices are
+  `adminAuth` and `visitorAuth`; theme and modal state use React context providers.
+- The app intentionally uses three RTK Query API slices, separated by access context:
+  `adminApi`, `visitorApi`, and `publicApi`.
+- Infer `RootState` and `AppDispatch` from the configured store. Use the typed hooks from
+  `src/lib/stores/hooks.ts` when dispatching or selecting Redux state.
 
 ### File Placement
 
 | Concern | Location |
 |---|---|
-| Configured base API slice (`createApi`) | `lib/rtk-query.ts` |
-| Configured HTTP client (axios instance, if used) | `lib/api-client.ts` |
-| Store setup (`configureStore`, `RootState`, `AppDispatch`) | `stores/store.ts` |
-| Typed hooks (`useAppDispatch`, `useAppSelector`) | `stores/hooks.ts` |
-| Feature endpoints (`injectEndpoints`) + generated hooks | `features/<feature>/api/*.ts` |
-| Feature client-state slice | `features/<feature>/<feature>Slice.ts` |
-| Provider composition | `app/provider.tsx` |
+| Admin API slice | `src/lib/api/admin/admin-api.ts` |
+| Visitor API slice | `src/lib/api/visitor/visitor-api.ts` |
+| Public API slice | `src/lib/api/public/public-api.ts` |
+| Tenant-aware base queries | `src/lib/api/{admin,visitor,public}/*-base-query.ts` |
+| Store setup and inferred types | `src/lib/stores/store.ts` |
+| Typed Redux hooks | `src/lib/stores/hooks.ts` |
+| Feature RTK Query endpoints | `src/features/<feature>/api/*-api-slice.ts` |
+| Feature client-state slices | `src/features/<feature>/stores/` |
+| Context providers | `src/lib/contexts/` |
+| Provider composition | `src/app/provider.tsx` |
 
-> Rule of thumb: the **configured library instance** → `lib/`; the **actual requests + hooks**
-> → `features/<feature>/api/`; the **global store** → `stores/`.
+### API Slices
 
-### Base Slice
+Each access context owns one `createApi` slice with its own `reducerPath`, base query, and
+tag types. Feature API files extend the appropriate slice with `injectEndpoints`:
 
-The base slice holds the `baseQuery` and `tagTypes`; features inject their own endpoints.
+```ts
+import { adminApi } from "@/lib/api/admin/admin-api";
 
-// lib/rtk-query.ts
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-export const baseApi = createApi({
-reducerPath: "api",
-baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-tagTypes: ["Visitor"],
-endpoints: () => ({}), // features inject into this
+export const usersApi = adminApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getAdmins: builder.query<GetAdminsResponse, void>({
+      query: () => "/auth/admins",
+      providesTags: [{ type: "Users", id: "LIST" }],
+    }),
+  }),
 });
+```
 
+Use `adminApi` for authenticated admin operations, `visitorApi` for authenticated visitor
+operations, and `publicApi` for unauthenticated visitor-facing operations. Keep endpoint
+definitions, request/response types, generated hooks, and cache tags in the owning feature.
 
 ### Store & Typed Hooks
 
-Register `baseApi.reducer` + `baseApi.middleware`; infer types from the store.
+Register all three API reducers and middlewares in `src/lib/stores/store.ts`, along with the
+`adminAuth` and `visitorAuth` reducers. Call `setupListeners(store.dispatch)` for RTK Query
+focus/reconnect behavior. The store exports `RootState` and `AppDispatch`; the hooks module
+exports `useAppDispatch` and `useAppSelector`.
 
-// stores/store.ts
-import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
-import { baseApi } from "../lib/rtk-query";
-export const store = configureStore({
-reducer: { [baseApi.reducerPath]: baseApi.reducer },
-middleware: (getDefault) => getDefault().concat(baseApi.middleware),
-});
-setupListeners(store.dispatch); // refetchOnFocus / refetchOnReconnect
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-​
-// stores/hooks.ts
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "./store";
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector = useSelector.withTypes<RootState>();
+### Cache Tags
 
-### Feature Endpoints
+Declare tag types on the owning API slice. Queries use `providesTags` and mutations use
+`invalidatesTags`; collection tags use `id: "LIST"`, while individual records use their
+record ID. This keeps mutations scoped to the relevant API cache.
 
-Each feature injects its endpoints and re-exports the auto-generated hooks. Tag each item as
-`{ type, id }` and the collection as `{ type, id: 'LIST' }` so mutations refetch only what changed.
+### Forms and Context
 
-
-## API Layer
-
-> The shared `baseApi` slice is defined once in `lib/rtk-query.ts` — see the
-> **State Management** section. This section covers how features add endpoints to it.
-
-### Structure
-
-Use **one API slice per app** (`createApi`), and split endpoints by feature with
-`injectEndpoints` — do not create a separate API slice per resource.
-
-Each feature's `api/` folder should define:
-
-1. **Types** for request args and response data (plus optional `transformResponse` for validation/reshaping)
-2. **Endpoint definitions** (`build.query` / `build.mutation`) with cache **tags** for invalidation
-3. **Auto-generated hooks** exported from the slice (RTK Query generates these — never hand-write them)
-
-Cache invalidation uses the tag system: queries `providesTags`, mutations `invalidatesTags`.
-Tag each item as `{ type, id }` and the collection as `{ type, id: 'LIST' }` so mutations
-refetch only what actually changed.
-
-### Example Pattern
-
-​
-// features/discussions/api/discussions.ts
-import { baseApi } from "../../../lib/rtk-query";
-export type Discussion = { id: string; title: string; body: string };
-export type GetDiscussionsParams = { page?: number; search?: string };
-export const discussionsApi = baseApi.injectEndpoints({
-endpoints: (build) => ({
-getDiscussions: build.query<Discussion[], GetDiscussionsParams>({
-query: (params) => ({ url: "/discussions", params }),
-providesTags: (result) =>
-result
-? [
-...result.map(({ id }) => ({ type: "Discussion" as const, id })),
-{ type: "Discussion" as const, id: "LIST" },
-]
-: [{ type: "Discussion" as const, id: "LIST" }],
-}),
-createDiscussion: build.mutation<Discussion, Pick<Discussion, "title" | "body">>({
-query: (body) => ({ url: "/discussions", method: "POST", body }),
-invalidatesTags: [{ type: "Discussion", id: "LIST" }],
-}),
-}),
-});
-// Auto-generated hooks (replaces manual React Query hooks)
-export const { useGetDiscussionsQuery, useCreateDiscussionMutation } = discussionsApi;
-
-Remember to register each feature's tag names in `tagTypes` on the base slice
-(`lib/rtk-query.ts`), and import the endpoints file somewhere so `injectEn
-
-
-```
+Forms currently use Ant Design `Form`, `Input`, `Select`, and `Switch` components. Shared
+modal state, theme state, and popup state belong in `src/lib/contexts/`, not Redux slices.
 
 ## Security Considerations
 
