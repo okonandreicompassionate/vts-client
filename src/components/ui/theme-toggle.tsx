@@ -23,7 +23,7 @@ export function ThemeToggle() {
         <button
           type="button"
           aria-label="Toggle theme"
-          className="icon-button flex h-7 w-7 items-center justify-center rounded-md text-slate-600 outline-none hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
+          className="icon-button flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-slate-600 outline-none hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
         >
           {getIcon()}
         </button>
@@ -43,10 +43,6 @@ export function ThemeToggle() {
           <DropdownMenuRadioItem value="dark">
             <MoonOutlined />
             Dark
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="system">
-            <DesktopOutlined />
-            System
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
