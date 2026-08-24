@@ -176,41 +176,20 @@ export default function UsersPage() {
           )}
         </div>
 
-        {isSelecting && (
-          <div className="flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-1.5 dark:border-slate-700 dark:bg-slate-800/60">
-            <span className="px-1 text-[12px] font-medium text-slate-700 dark:text-slate-200">
-              {selectedRows.length} selected
-            </span>
-
-            <span className="mx-0.5 h-3.5 w-px bg-slate-300 dark:bg-slate-600" />
-
-            <Button
-              type="text"
-              size="small"
-              onClick={handleCancelSelecting}
-              className="selection-action-btn h-6! px-1! text-[11px]!"
-            >
-              Cancel
-            </Button>
-
-            <Button
-              type="text"
-              size="small"
-              loading={isDeleting}
-              onClick={
-                selectedRows.length > 0
-                  ? handleDeleteSelected
-                  : undefined
-              }
-              className={`selection-delete-btn h-6! px-1! text-[11px]! ${
-                selectedRows.length === 0
-                  ? "selection-delete-disabled"
-                  : "selection-delete-active"
-              }`}
-            >
-              Delete
-            </Button>
-          </div>
+        {!isSelecting && (
+          <Button
+            size="small"
+            type="primary"
+            className="flex h-7 gap-1 text-[13px]"
+            onClick={() => setInviteModalOpen(true)}
+          >
+            <img
+              src="/add-users.svg"
+              alt=""
+              className="inline-flex h-3 w-3 items-center"
+            />
+            <span className="text-xs">Invite User</span>
+          </Button>
         )}
       </div>
 
