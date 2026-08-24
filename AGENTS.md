@@ -45,7 +45,7 @@ src/
 Each feature should be self-contained:
 
 ```
-src/features/admin/
+src/features/auth/
 ├── api/         # API calls and hooks for this feature
 ├── components/  # Feature-specific components  
 ├── hooks/       # Feature-specific hooks
