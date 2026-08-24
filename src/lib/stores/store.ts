@@ -10,13 +10,12 @@ import visitorAuthReducer from "@/features/auth/stores/visitor-auth-slice";
 
 export const store = configureStore({
   reducer: {
-    // RTK Query APIs
+    
     [adminApi.reducerPath]: adminApi.reducer,
     [visitorApi.reducerPath]: visitorApi.reducer,
     [publicApi.reducerPath]: publicApi.reducer,
 
-    // Client-side auth/user state.
-    // Authentication itself is handled by the HttpOnly cookie.
+
     adminAuth: authReducer,
     visitorAuth: visitorAuthReducer,
   },

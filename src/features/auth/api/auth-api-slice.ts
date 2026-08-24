@@ -10,6 +10,7 @@ import type {
   LoginPayload,
   MicrosoftLoginPayload,
   LoginResponse,
+  RefreshResponse,
 } from "../types/api-types";
 
 export const authApi = adminApi.injectEndpoints({
@@ -27,6 +28,13 @@ export const authApi = adminApi.injectEndpoints({
         url: "/auth/microsoft",
         method: "POST",
         body,
+      }),
+    }),
+
+    refresh: builder.mutation<RefreshResponse, void>({
+      query: () => ({
+        url: "/auth/refresh",
+        method: "POST",
       }),
     }),
   }),
@@ -50,6 +58,7 @@ export const publicAuthApi = publicApi.injectEndpoints({
 export const {
   useLoginMutation,
   useMicrosoftLoginMutation,
+  useRefreshMutation,
 } = authApi;
 
 export const {

@@ -29,7 +29,10 @@ export interface UserProfile {
 }
 
 export interface LoginResponse {
-  accessToken: string;
   user: UserProfile;
+}
+
+export interface RefreshResponse {
+  success: boolean;
 }
 

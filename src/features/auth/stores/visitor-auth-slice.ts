@@ -28,7 +28,6 @@ const visitorAuthSlice = createSlice({
   initialState,
 
   reducers: {
-    // Reflects the visitor session established by the HttpOnly cookie.
     setVisitorSession: (
       state,
       action: PayloadAction<{

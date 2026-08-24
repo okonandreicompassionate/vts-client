@@ -1,7 +1,6 @@
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
-
 import { paths } from "@/config/paths";
 import { useTenant } from "@/lib/tenant";
 import { useAppDispatch } from "@/lib/stores/hooks";
@@ -16,7 +15,7 @@ export default function VerifyIdentity() {
   const { orgSlug } = useTenant();
   const dispatch = useAppDispatch();
 
-  const [verifyVisitIdentity] =
+  const [verifyVisitIdentity, {isLoading: isVerifying}] =
     useVerifyVisitIdentityMutation();
 
   const handleFinish = async (value: { email: string }) => {
@@ -134,6 +133,7 @@ export default function VerifyIdentity() {
             block
             icon={<ArrowRightOutlined />}
             iconPlacement="end"
+            loading={isVerifying}
           >
             Continue
           </Button>

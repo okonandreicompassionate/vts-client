@@ -385,7 +385,7 @@ export default function VisitorDetails() {
                   type="primary"
                   shape="round"
                   loading={isSigningOff}
-                  className="mt-6 h-10! w-full bg-[#EF4444]! px-5! font-semibold sm:w-auto"
+                  className="mt-6 h-7! w-full rounded-sm! bg-[#EF4444]! px-5! font-semibold sm:w-auto"
                   onClick={handleSignOff}
                 >
                   Sign Off Visitor

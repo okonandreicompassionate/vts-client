@@ -314,13 +314,13 @@ export default function UserDetailsPage() {
               </div>
 
               {/* Danger zone */}
-              <div className="mt-4 flex flex-col xl:gap-5 border-t border-slate-100 pt-5 dark:border-slate-700">
+              <div className="mt-2 flex flex-col xl:gap-5 border-t border-slate-100 pt-5 dark:border-slate-700 mb-4">
                 <div className="flex flex-col xl:gap-2">
                   <p className="text-[13px]  font-semibold text-red-600 dark:text-red-400">
                     Danger Zone
                   </p>
 
-                  <p className="text-xs xl:text-[12px] leading-relaxed text-slate-400">
+                  <p className="text-xs xl:text-[12px] leading-relaxed text-slate-400 mb-2">
                     Remove this administrator and revoke their
                     administrative access to this organization.
                   </p>
