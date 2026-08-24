@@ -40,10 +40,8 @@ export default function LandingPage() {
         </header>
 
         <div className="relative w-full rounded-2xl border border-black/5 bg-white/85 p-3 shadow-[0_30px_80px_-20px_rgba(16,36,28,0.22)] backdrop-blur-xl md:p-4 dark:border-slate-800 dark:bg-slate-800/85">
-          <div className="absolute top-0 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white ring-1 ring-black/5" />
-          <div className="absolute top-2 left-1/2 h-px w-[85%] -translate-x-1/2 border-t border-dashed border-black/10" />
 
-          <div className="overflow-hidden rounded-xl ring-1 ring-black/5">
+          <div className="overflow-hidden rounded-xl">
             <img
               src="/nsoc-building.png"
               alt="Zoracom NSOC building"
