@@ -79,7 +79,11 @@ src/features/auth/
 
 ### Styling
 - **Tailwind CSS** is the primary styling solution
-- **Headless UI components** use Ant Design and local shared primitives
+- Use **Radix UI** for headless interaction primitives such as dialogs, dropdown menus,
+  popovers, tooltips, menus, and selects. Wrap Radix primitives in shared local components
+  before using them across features.
+- Keep **Ant Design** for complex data-oriented controls already established in the app,
+  including tables, forms, pagination, notifications, and message feedback.
 - **ShadCN/UI pattern** - Components are copied into codebase, not installed as packages
 
 ## State Management Strategy
@@ -252,7 +256,8 @@ modal state, theme state, and popup state belong in `src/lib/contexts/`, not Red
 
 ### UI & Styling  
 - **Tailwind CSS** for styling
-- **Radix UI** for headless components
+- **Radix UI** for headless interaction primitives
+- **Ant Design** for complex data and form controls
 - **Lucide React/ ant design icons** for icons
 
 
