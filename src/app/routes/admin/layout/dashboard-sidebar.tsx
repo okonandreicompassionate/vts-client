@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { paths } from "../../../../config/paths";
 import { useTenant } from "@/lib/tenant";
 import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
+import { useTheme } from "@/lib/contexts/theme/use-theme";
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -20,6 +21,7 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { orgSlug } = useTenant();
+  const { isDark } = useTheme();
 
   const { data: profile } = useGetProfileQuery(undefined, {
     refetchOnMountOrArgChange: true,
@@ -111,7 +113,19 @@ export default function Sidebar() {
               onClick={() => setCollapsed((c) => !c)}
               aria-label="Toggle sidebar"
               icon={
-                <img src={collapsed ? "/expand.svg" : "/collapse.svg"} alt="" className="h-4 w-4" />
+                <img
+                  src={
+                    collapsed
+                      ? isDark
+                        ? "/expand-dark.svg"
+                        : "/expand.svg"
+                      : isDark
+                        ? "/collapse-dark.svg"
+                        : "/collapse.svg"
+                  }
+                  alt=""
+                  className="h-4 w-4"
+                />
               }
               className="hidden! h-7! w-7! text-slate-400! md:inline-flex! dark:text-slate-500!"
             />

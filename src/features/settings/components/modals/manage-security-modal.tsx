@@ -43,18 +43,18 @@ function ManageSecurityModal() {
           initialValues={{ twoFactorEnabled: true }}
         >
           <FormItem
-            label={<span className="text-xs font-semibold text-slate-800">Current Password</span>}
+            label={<span className="text-xs font-semibold text-slate-800 dark:text-slate-200">Current Password</span>}
             name="currentPassword"
             rules={[{ required: true, message: "Please enter your current password" }]}
           >
             <Input.Password
-              className="h-9! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[12px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
+              className="h-9! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[12px]! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-300!"
               placeholder="Enter current password"
             />
           </FormItem>
 
           <FormItem
-            label={<span className="text-xs font-semibold text-slate-800">New Password</span>}
+            label={<span className="text-xs font-semibold text-slate-800 dark:text-slate-200">New Password</span>}
             name="newPassword"
             rules={[
               { required: true, message: "Please enter a new password" },
@@ -62,14 +62,14 @@ function ManageSecurityModal() {
             ]}
           >
             <Input.Password
-              className="h-9! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[12px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
+              className="h-9! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[12px]! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-300!"
               placeholder="Enter new password"
             />
           </FormItem>
 
           <FormItem
             label={
-              <span className="text-xs font-semibold text-slate-800">Confirm New Password</span>
+              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">Confirm New Password</span>
             }
             name="confirmPassword"
             dependencies={["newPassword"]}
@@ -86,7 +86,7 @@ function ManageSecurityModal() {
             ]}
           >
             <Input.Password
-              className="h-9! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[12px]! placeholder:text-slate-400! dark:placeholder:text-slate-300!"
+              className="h-9! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-[12px]! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-300!"
               placeholder="Re-enter new password"
             />
           </FormItem>

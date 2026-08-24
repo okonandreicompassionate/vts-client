@@ -1,3 +1,5 @@
+import { theme as antdTheme } from "antd";
+
 const globalFontSize = 12;
 const globalFormFieldHeight = 40;
 
@@ -145,6 +147,8 @@ export const getThemeConfig = (isDark: boolean) => {
   };
 
   const darkTheme = {
+    algorithm: antdTheme.darkAlgorithm,
+
     token: {
       ...globalTypographyTokens,
       ...globalFormFieldHeightTokens,
@@ -252,6 +256,19 @@ export const getThemeConfig = (isDark: boolean) => {
         colorBgContainer: "#1e293b",
         rowHoverBg: "#334155",
         borderColor: "#334155",
+      },
+
+      Layout: {
+        colorBgHeader: "#1e293b",
+        colorBgBody: "#0f172a",
+        colorBgTrigger: "#334155",
+        bodyBg: "#0f172a",
+        headerBg: "#1e293b",
+        headerHeight: 64,
+        headerPadding: "0 24px",
+        headerColor: "#e2e8f0",
+        footerBg: "#1e293b",
+        footerPadding: "24px 50px",
       },
     },
   };

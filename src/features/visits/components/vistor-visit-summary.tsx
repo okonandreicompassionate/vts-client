@@ -47,7 +47,7 @@ export default function VisitorDetailsCard({ registration, requestId, status, re
             className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
           >
             <span className="shrink-0 text-sm text-slate-500">{item.label}</span>
-            <span className="truncate text-right text-sm font-semibold text-slate-900">
+            <span className="truncate text-right text-sm font-semibold text-slate-900 dark:text-slate-100">
               {registration[item.field]}
             </span>
           </div>

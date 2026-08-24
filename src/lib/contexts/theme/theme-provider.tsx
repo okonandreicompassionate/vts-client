@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { type Theme, ThemeContext } from "./theme-context";
 
+function resolveIsDark(theme: Theme) {
+  return theme === "system"
+    ? window.matchMedia("(prefers-color-scheme: dark)").matches
+    : theme === "dark";
+}
+
 export function ThemeProvider({
   children,
 }: {
@@ -14,14 +20,13 @@ export function ThemeProvider({
       : "system";
   });
 
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => resolveIsDark(theme));
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyTheme = () => {
-      const dark =
-        theme === "system" ? mediaQuery.matches : theme === "dark";
+      const dark = theme === "system" ? mediaQuery.matches : theme === "dark";
 
       document.documentElement.classList.toggle("dark", dark);
       document.documentElement.style.colorScheme = dark ? "dark" : "light";

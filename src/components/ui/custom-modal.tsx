@@ -100,7 +100,7 @@ CustomModal.Header = ({
           <>
             <p
               className={twMerge(
-                "text-lg! font-semibold capitalize",
+                "text-lg! font-semibold capitalize text-slate-900 dark:text-slate-100",
                 !subtitle && "text-base!",
               )}
             >
@@ -219,7 +219,7 @@ CustomModal.Footer = ({
     <div className="mt-2 flex w-full items-center justify-center gap-3">
       {!hideCancel && (
         <Button
-          className="h-9 w-full bg-[#F5FBFE]! px-6! text-sm!"
+          className="h-9 w-full bg-[#F5FBFE]! px-6! text-sm! dark:border-slate-600! dark:bg-slate-700! dark:text-slate-200!"
           onClick={onCancel ?? close}
         >
           Cancel

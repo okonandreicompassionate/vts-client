@@ -98,7 +98,7 @@ export default function AdminSettings() {
                 <span className="block text-[13px] font-bold text-slate-800 dark:text-slate-100">
                   {item.title}
                 </span>
-                <span className="mt-0.5 block text-xs font-normal text-slate-400">
+                <span className="mt-0.5 block text-xs font-normal text-slate-400 dark:text-slate-400">
                   {item.description}
                 </span>
               </span>

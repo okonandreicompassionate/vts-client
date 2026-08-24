@@ -39,28 +39,28 @@ export default function AccessRejectedModal({
             type="text"
             shape="circle"
             icon={<CloseOutlined className="text-sm text-slate-500" />}
-            className="absolute top-0 right-0 flex h-9 w-9 items-center justify-center bg-slate-100"
+            className="absolute top-0 right-0 flex h-9 w-9 items-center justify-center bg-slate-100 dark:bg-slate-700"
           />
 
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 dark:bg-red-400/10">
             <CloseCircleOutlined className="text-3xl text-red-500" />
           </div>
 
-          <h3 className="text-xl font-bold text-slate-900">Access Rejected</h3>
-          <p className="mt-1.5 text-sm text-slate-400">Visitor access has been denied.</p>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">Access Rejected</h3>
+          <p className="mt-1.5 text-sm text-slate-400 dark:text-slate-400">Visitor access has been denied.</p>
 
-          <div className="mt-6 rounded-xl bg-[#FEE2E2] px-5 py-4 text-left">
-            <div className="border-b border-red-200 pb-3">
-              <p className="text-sm text-[#991B1B]">Reason</p>
-              <p className="mt-1 text-sm font-bold text-[#991B1B]">{reason}</p>
+          <div className="mt-6 rounded-xl bg-[#FEE2E2] px-5 py-4 text-left dark:bg-red-950/50">
+            <div className="border-b border-red-200 pb-3 dark:border-red-900">
+              <p className="text-sm text-[#991B1B] dark:text-red-200">Reason</p>
+              <p className="mt-1 text-sm font-bold text-[#991B1B] dark:text-red-200">{reason}</p>
             </div>
             <div className="flex items-center justify-between gap-4 pt-3">
-              <span className="text-sm text-[#991B1B]">Rejected By</span>
-              <span className="text-sm font-bold text-[#991B1B]">{rejectedBy}</span>
+              <span className="text-sm text-[#991B1B] dark:text-red-200">Rejected By</span>
+              <span className="text-sm font-bold text-[#991B1B] dark:text-red-200">{rejectedBy}</span>
             </div>
             <div className="flex items-center justify-between gap-4 pt-3">
-              <span className="text-sm text-[#991B1B]">Date</span>
-              <span className="text-sm font-bold text-[#991B1B]">{date}</span>
+              <span className="text-sm text-[#991B1B] dark:text-red-200">Date</span>
+              <span className="text-sm font-bold text-[#991B1B] dark:text-red-200">{date}</span>
             </div>
           </div>
         </div>

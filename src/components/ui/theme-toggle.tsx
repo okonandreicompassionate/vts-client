@@ -41,7 +41,7 @@ export function ThemeToggle() {
       <Button
         type="text"
         icon={getIcon()}
-        className="flex h-7! w-4! items-center justify-center text-slate-600! hover:bg-slate-100!"
+        className="flex h-7! w-4! items-center justify-center text-slate-600! hover:bg-slate-100! dark:text-slate-300! dark:hover:bg-slate-700!"
         title="Toggle theme"
       />
     </Dropdown>

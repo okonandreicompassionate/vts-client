@@ -37,7 +37,7 @@ export default function MicrosoftLogin() {
       icon={<img src="/microsoft.png" className="h-4 w-4" />}
       loading={isPopupOpen || isLoading}
       onClick={handleClick}
-      className="h-11! rounded-lg! border-slate-200! font-semibold! hover:border-slate-300! hover:bg-slate-50!"
+      className="h-11! rounded-lg! border-slate-200! font-semibold! hover:border-slate-300! hover:bg-slate-50! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:hover:border-slate-500! dark:hover:bg-slate-700!"
     >
       Sign in with Microsoft
     </Button>

@@ -7,6 +7,21 @@
   font-family: "Raleway Variable", sans-serif;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.dark,
+.dark body,
+.dark #root {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
 .dark .ant-btn,
 .dark .ant-btn-default,
 .dark .ant-btn-primary {
@@ -28,6 +43,19 @@
 
 .dark .ant-btn-primary {
   border-color: transparent !important;
+}
+
+.dark .ant-btn.ant-btn-text,
+.dark .ant-btn.ant-btn-link {
+  border: 0 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.dark .ant-dropdown-menu,
+.dark .ant-popover-inner,
+.dark .ant-tooltip-inner {
+  background: #1e293b !important;
 }
 
 @media (max-width: 768px) {

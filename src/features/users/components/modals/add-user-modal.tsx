@@ -60,7 +60,7 @@ export default function AddUserModal({
         >
           <Form.Item
             label={
-              <span className="text-xs font-semibold text-slate-800">
+              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 Email
               </span>
             }
@@ -78,13 +78,13 @@ export default function AddUserModal({
           >
             <Input
               placeholder="user@example.com"
-              className="h-8! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-xs! placeholder:text-slate-400!"
+              className="h-8! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-xs! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-300!"
             />
           </Form.Item>
 
           <Form.Item
             label={
-              <span className="text-xs font-semibold text-slate-800">
+              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 Role
               </span>
             }
@@ -123,7 +123,7 @@ export default function AddUserModal({
         <div className="mt-4 flex w-full items-center gap-3">
           <Button
             onClick={handleClose}
-            className="h-8! flex-1! rounded-full! border-slate-100! bg-slate-50! px-8! font-medium! text-slate-400! hover:bg-slate-100! hover:text-slate-500!"
+            className="h-8! flex-1! rounded-full! border-slate-100! bg-slate-50! px-8! font-medium! text-slate-400! hover:bg-slate-100! hover:text-slate-500! dark:border-slate-600! dark:bg-slate-700! dark:text-slate-200! dark:hover:bg-slate-600! dark:hover:text-slate-100!"
           >
             Cancel
           </Button>
