@@ -2,7 +2,7 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/config/paths";
-import { useTenant } from "@/lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import { useAppDispatch } from "@/lib/stores/hooks";
 import {
   setVisitorSession,
@@ -12,7 +12,7 @@ import { useVerifyVisitIdentityMutation } from "../api/public-visits-api-slice";
 
 export default function VerifyIdentity() {
   const navigate = useNavigate();
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
   const dispatch = useAppDispatch();
 
   const [verifyVisitIdentity, {isLoading: isVerifying}] =

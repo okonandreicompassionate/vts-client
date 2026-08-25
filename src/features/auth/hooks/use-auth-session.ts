@@ -4,13 +4,13 @@ import { message } from "antd";
 import { useAppDispatch } from "@/lib/stores/hooks";
 import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
-import { useTenant } from "@/lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
 
 export function useAdminAuthSession() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
 
   
   const profileQuery = useGetProfileQuery(undefined, {

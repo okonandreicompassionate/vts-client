@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 import { paths } from "../config/paths";
-import { useTenant } from "../lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
 
@@ -12,7 +12,7 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({
   requiredAuth = "admin",
 }: ProtectedRouteProps) {
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
 
   const {
     data: user,

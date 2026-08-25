@@ -3,7 +3,7 @@ import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import DeleteAdminModal from "./modals/delete-admin-modal";
 import { useDeleteAdminMutation } from "../api/users-api-slice";
-import { useTenant } from "@/lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 interface DeleteAdminProps {
@@ -20,7 +20,7 @@ function getErrorStatus(error: unknown): number | string | undefined {
 
 export const DeleteAdmin = ({ adminId }: DeleteAdminProps) => {
   const navigate = useNavigate();
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
   const { openModal } = usePopup();
 
   const [deleteAdmin, { isLoading: isDeleting }] = useDeleteAdminMutation();

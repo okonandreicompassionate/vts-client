@@ -3,12 +3,12 @@ import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { LandingPageBackground } from "../animations/landing-page-background";
 import { paths } from "../../../config/paths";
-import { useTenant } from "../../../lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import { ThemeToggle } from "../../../components/ui/theme-toggle";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
 
   return (
     <div

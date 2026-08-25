@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { createVisitSse } from "../api/sse/visitor-sse";
 
-import { useTenant } from "@/lib/tenant";
+import { useOrganization } from "@/features/organizations";
 
 interface VisitStatusChangedData {
   visitId: string;
@@ -14,7 +14,7 @@ interface UseVisitorSseOptions {
 }
 
 export function useVisitorSse({ onStatusChanged }: UseVisitorSseOptions = {}) {
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
 
   useEffect(() => {
     if (!orgSlug) {

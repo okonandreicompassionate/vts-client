@@ -5,7 +5,7 @@ import {
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-import { tenantPath } from "@/lib/tenant/tenant-path";
+import { organizationPath } from "@/features/organizations";
 
 const rawVisitorBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
@@ -31,10 +31,10 @@ export const visitorBaseQuery: BaseQueryFn<
 
   const request =
     typeof args === "string"
-      ? tenantPath(orgSlug, args)
+      ? organizationPath(orgSlug, args)
       : {
           ...args,
-          url: tenantPath(orgSlug, args.url),
+          url: organizationPath(orgSlug, args.url),
         };
 
   return rawVisitorBaseQuery(

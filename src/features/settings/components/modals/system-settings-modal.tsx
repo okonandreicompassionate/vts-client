@@ -9,7 +9,7 @@ import {
   useGetSettingsQuery,
   useUpdateSettingsMutation,
 } from "../../api/settings-api-slice";
-import { switchTenantPath } from "@/lib/tenant";
+import { switchOrganizationPath } from "@/features/organizations";
 
 function SystemSettingsModal() {
   const [form] = useForm();
@@ -55,7 +55,7 @@ function SystemSettingsModal() {
       const currentSlug = settings?.slug;
 
       if (currentSlug && currentSlug !== newSlug) {
-        const newPath = switchTenantPath(
+        const newPath = switchOrganizationPath(
           window.location.pathname,
           newSlug,
         );

@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import { paths } from "@/config/paths";
-import { TenantLayout } from "@/lib/tenant/tenant-layout";
+import { OrganizationLayout } from "@/features/organizations";
 import { adminRoutes } from "./routes/admin/routes";
 import { visitorRoutes } from "./routes/visitor/routes";
 import { Spinner } from "@/components/ui/spinner";
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
   {
     HydrateFallback: () => <Spinner variant="screen" />,
     errorElement: <RouteError />,
-    element: <TenantLayout />,
+    element: <OrganizationLayout />,
     children: [
       ...visitorRoutes,
 

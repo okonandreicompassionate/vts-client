@@ -5,7 +5,7 @@ import {
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-import { tenantPath } from "@/lib/tenant/tenant-path";
+import { organizationPath } from "@/features/organizations";
 import { clearAuth } from "@/features/auth/stores/admin-auth-slice";
 
 const rawAdminBaseQuery = fetchBaseQuery({
@@ -33,7 +33,7 @@ const refreshAdminSession = async (
 ): Promise<boolean> => {
   const refreshResult = await rawAdminBaseQuery(
     {
-      url: tenantPath(orgSlug, "/auth/refresh"),
+      url: organizationPath(orgSlug, "/auth/refresh"),
       method: "POST",
     },
     api,
@@ -61,10 +61,10 @@ export const adminBaseQuery: BaseQueryFn<
 
   const request =
     typeof args === "string"
-      ? tenantPath(orgSlug, args)
+      ? organizationPath(orgSlug, args)
       : {
           ...args,
-          url: tenantPath(orgSlug, args.url),
+          url: organizationPath(orgSlug, args.url),
         };
 
   const result = await rawAdminBaseQuery(

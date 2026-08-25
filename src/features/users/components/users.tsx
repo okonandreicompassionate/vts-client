@@ -8,7 +8,7 @@ import {
   useGetAdminsQuery,
   useBulkDeleteAdminsMutation,
 } from "@/features/users/api/users-api-slice";
-import { useTenant } from "@/lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import { Spinner } from "@/components/ui/spinner";
 import type { AdminUserItem } from "@/features/users/types/api-types";
 import type { User } from "../types/types";
@@ -28,7 +28,7 @@ export default function UsersPage() {
 
   const navigate = useNavigate();
 
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
 
   useUsersSSE();
 

@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "@/lib/stores/hooks";
-import { useTenant } from "@/lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import { usersApi } from "../api/users-api-slice";
 
 export function useUsersSSE() {
   const dispatch = useAppDispatch();
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
 
   useEffect(() => {
     if (!orgSlug) return;

@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { adminApi } from "@/lib/api/admin/admin-api";
 import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
-import { useTenant } from "@/lib/tenant";
+import { useOrganization } from "@/features/organizations";
 
 export function useLogout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
 
   return async () => {
     try {

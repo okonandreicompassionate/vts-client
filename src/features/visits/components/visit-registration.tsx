@@ -9,7 +9,7 @@ import RegistrationModal from "./modals/registration-modal";
 import RegistrationSuccessModal from "./modals/registration-success-modal";
 import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
-import { useTenant } from "../../../lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import { setVisitorSession } from "../../auth/stores/visitor-auth-slice";
 import { useGetEmployeeNamesQuery } from "@/features/employees/api/public-employees-api-slice";
 import { Spinner } from "@/components/ui/spinner";
@@ -18,7 +18,7 @@ import { useCreateVisitMutation } from "../api/public-visits-api-slice";
 const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
 
 export default function Registration() {
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
   const [form] = Form.useForm<RegistrationValues>();
   const { openModal, closeModal } = usePopup();
   const navigate = useNavigate();

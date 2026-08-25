@@ -1,16 +1,14 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
-export interface Tenant {
-  orgSlug: string;
-}
+import type { Organization } from "../types/organization";
 
-export function useTenant(): Tenant {
+export function useOrganization(): Organization {
   const { orgSlug } = useParams<{ orgSlug: string }>();
 
   if (!orgSlug) {
     throw new Error(
-      "No organization slug found in the current route."
+      "No organization slug found in the current route.",
     );
   }
 
@@ -18,6 +16,6 @@ export function useTenant(): Tenant {
     () => ({
       orgSlug,
     }),
-    [orgSlug]
+    [orgSlug],
   );
 }

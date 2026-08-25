@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { paths } from "../../../../config/paths";
-import { useTenant } from "@/lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
 import { useTheme } from "@/lib/contexts/theme/use-theme";
 
@@ -20,7 +20,7 @@ export default function Sidebar() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
   const { isDark } = useTheme();
 
   const { data: profile } = useGetProfileQuery(undefined, {

@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import LoadingRing from "../animations/loading-ring";
 import { paths } from "../../../config/paths";
-import { useTenant } from "../../../lib/tenant";
+import { useOrganization } from "@/features/organizations";
 import type {
   VisitorProfileStatus,
   VisitorRegistration,
@@ -17,7 +17,7 @@ import type { VisitResponse } from "../types/api-types";
 import { useVisitorSse } from "../hooks/use-visitor-sse";
 
 export default function VisitorProfile() {
-  const { orgSlug } = useTenant();
+  const { orgSlug } = useOrganization();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 

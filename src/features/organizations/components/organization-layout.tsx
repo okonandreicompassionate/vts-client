@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
 
-export function TenantLayout() {
+export function OrganizationLayout() {
   return <Outlet />;
 }
