@@ -36,3 +36,32 @@ export interface RefreshResponse {
   success: boolean;
 }
 
+export interface JoinOrganizationWithPasswordPayload {
+  fullName: string;
+  phoneNumber: string;
+  password: string;
+  inviteToken: string;
+}
+
+export interface JoinOrganizationWithPasswordResponse {
+  accessToken: string;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    role: "SUPERADMIN" | "ADMIN";
+    orgId: string;
+    orgSlug: string;
+  };
+}
+
+export interface VisitorMeResponse {
+  visitorId: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string | null;
+  orgId: string;
+  orgSlug: string;
+}
+

@@ -81,15 +81,6 @@ export interface CreateVisitResponse {
   visitorSocketToken: string;
 }
 
-export interface VisitorMeResponse {
-  visitorId: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string | null;
-  orgId: string;
-  orgSlug: string;
-}
-
 export interface BulkVisitIds {
   visitIds: string[];
 }

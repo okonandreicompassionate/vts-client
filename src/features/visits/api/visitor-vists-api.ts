@@ -1,4 +1,4 @@
-import type { VisitorMeResponse, VisitResponse } from "../types/api-types";
+import type { VisitResponse } from "../types/api-types";
 
 import { visitorApi } from "@/lib/api/visitor/visitor-api";
 
@@ -9,13 +9,7 @@ export const visitorVisitsApi = visitorApi.injectEndpoints({
       providesTags: (_result, _error, id) => [{ type: "Visits", id }],
     }),
 
-    getVisitorMe: builder.query<VisitorMeResponse, void>({
-      query: () => ({
-        url: "/auth/visitor/me",
-        method: "GET",
-      }),
-    }),
   }),
 });
 
-export const { useGetVisitQuery, useGetVisitorMeQuery } = visitorVisitsApi;
+export const { useGetVisitQuery } = visitorVisitsApi;
