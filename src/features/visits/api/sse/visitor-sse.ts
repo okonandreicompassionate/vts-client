@@ -11,7 +11,8 @@ export function createVisitSse(
   onError?: (error: Event) => void,
 ): EventSource {
   const path = paths.notification.visitStream.getHref(orgSlug);
-    const url = `${import.meta.env.VITE_API_URL}${path}`;
+  const apiUrl = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
+  const url = `${apiUrl}${path}`;
 
   const source = new EventSource(url, {
     withCredentials: true,
