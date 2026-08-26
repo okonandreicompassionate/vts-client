@@ -22,11 +22,7 @@ export default function AdminAuth() {
     }
 
     if (mode === "login") {
-      navigate(
-        inviteToken
-          ? `${paths.admin.signup.getHref(orgSlug)}?invite=${encodeURIComponent(inviteToken)}`
-          : paths.admin.signup.getHref(orgSlug),
-      );
+      return;
     } else {
       navigate(paths.admin.login.getHref(orgSlug));
     }
