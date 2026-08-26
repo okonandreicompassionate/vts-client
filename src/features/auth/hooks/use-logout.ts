@@ -5,6 +5,7 @@ import { adminApi } from "@/lib/api/admin/admin-api";
 import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
 import { useOrganization } from "@/features/organizations";
+import { csrfFetch } from "@/lib/api/csrf-fetch";
 
 export function useLogout() {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ export function useLogout() {
 
   return async () => {
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/${orgSlug}/auth/logout`, {
+      await csrfFetch(`${import.meta.env.VITE_API_URL}/${orgSlug}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

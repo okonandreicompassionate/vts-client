@@ -7,10 +7,12 @@ import {
 
 import { organizationPath } from "@/features/organizations";
 import { clearAuth } from "@/features/auth/stores/admin-auth-slice";
+import { csrfFetch } from "../csrf-fetch";
 
 const rawAdminBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
   credentials: "include",
+  fetchFn: csrfFetch,
 });
 
 let refreshPromise: Promise<boolean> | null = null;
