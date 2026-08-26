@@ -6,10 +6,12 @@ import {
 } from "@reduxjs/toolkit/query";
 
 import { organizationPath } from "@/features/organizations";
+import { csrfFetch } from "./csrf-fetch";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
   credentials: "include",
+  fetchFn: csrfFetch,
 });
 
 export const tenantBaseQuery: BaseQueryFn<
