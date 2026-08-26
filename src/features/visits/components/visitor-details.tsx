@@ -9,7 +9,7 @@ import ApproveAccessModal from "./modals/approve-access-modal.tsx";
 import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
 import { Avatar } from "../../../components/ui/avatar.tsx";
 
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 
 import {
   useApproveVisitMutation,

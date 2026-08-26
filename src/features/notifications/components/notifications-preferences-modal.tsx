@@ -4,7 +4,7 @@ import FormItem from "antd/es/form/FormItem";
 import { useEffect } from "react";
 
 import CustomModal from "@/components/ui/custom-modal";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 
 import {
   useGetNotificationSettingsQuery,

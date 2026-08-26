@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteAdminModal from "./modals/delete-admin-modal";
 import { useDeleteAdminMutation } from "../api/users-api-slice";
 import { useOrganization } from "@/features/organizations";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 
 interface DeleteAdminProps {
   adminId: string;

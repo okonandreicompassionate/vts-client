@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
-import { type Theme, ThemeContext } from "./theme-context";
+import { ThemeContext } from "./theme-context";
+import type { Theme } from "../types/theme";
 
-function resolveIsDark(theme: Theme) {
+function resolveIsDark(theme: Theme): boolean {
   return theme === "system"
     ? window.matchMedia("(prefers-color-scheme: dark)").matches
     : theme === "dark";
 }
 
-export function ThemeProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem("theme") as Theme | null;
 
@@ -24,13 +21,11 @@ export function ThemeProvider({
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
     const applyTheme = () => {
       const dark = theme === "system" ? mediaQuery.matches : theme === "dark";
 
       document.documentElement.classList.toggle("dark", dark);
       document.documentElement.style.colorScheme = dark ? "dark" : "light";
-
       setIsDark(dark);
     };
 
@@ -40,14 +35,9 @@ export function ThemeProvider({
       return;
     }
 
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener("change", applyTheme);
+    mediaQuery.addEventListener("change", applyTheme);
 
-      return () => {
-        mediaQuery.removeEventListener("change", applyTheme);
-      };
-    }
-
+    return () => mediaQuery.removeEventListener("change", applyTheme);
   }, [theme]);
 
   const handleSetTheme = (newTheme: Theme) => {
@@ -56,13 +46,7 @@ export function ThemeProvider({
   };
 
   return (
-    <ThemeContext.Provider
-      value={{
-        theme,
-        setTheme: handleSetTheme,
-        isDark,
-      }}
-    >
+    <ThemeContext.Provider value={{ theme, setTheme: handleSetTheme, isDark }}>
       {children}
     </ThemeContext.Provider>
   );

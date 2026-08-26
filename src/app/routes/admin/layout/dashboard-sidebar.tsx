@@ -12,7 +12,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { paths } from "../../../../config/paths";
 import { useOrganization } from "@/features/organizations";
 import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
-import { useTheme } from "@/lib/contexts/theme/use-theme";
+import { useTheme } from "@/features/theme/hooks/use-theme";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -139,13 +145,12 @@ export default function Sidebar() {
             />
           </div>
 
-          <nav className="mt-1 space-y-1 px-3">
-            {navItems.map((item) => {
+          <TooltipProvider>
+            <nav className="mt-1 space-y-1 px-3">
+              {navItems.map((item) => {
               const isActive = location.pathname.startsWith(item.href);
-
-              return (
+              const button = (
                 <Button
-                  key={item.key}
                   type="text"
                   onClick={() => go(item.href)}
                   className={`flex! h-auto! w-full! items-center rounded-lg! px-3! py-1.5! text-sm! font-medium! ${
@@ -169,8 +174,18 @@ export default function Sidebar() {
                   <span className={collapsed ? "md:hidden" : ""}>{item.label}</span>
                 </Button>
               );
+
+              return collapsed ? (
+                <Tooltip key={item.key}>
+                  <TooltipTrigger asChild>{button}</TooltipTrigger>
+                  <TooltipContent>{item.label}</TooltipContent>
+                </Tooltip>
+              ) : (
+                button
+              );
             })}
-          </nav>
+            </nav>
+          </TooltipProvider>
         </div>
       </aside>
     </>

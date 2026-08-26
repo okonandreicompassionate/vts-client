@@ -1,5 +1,5 @@
-import { useTheme } from "@/lib/contexts/theme/use-theme";
-import { SunOutlined, MoonOutlined, DesktopOutlined } from "@ant-design/icons";
+import { useTheme } from "@/features/theme/hooks/use-theme";
+import { SunOutlined, MoonOutlined } from "@ant-design/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,12 +9,16 @@ import {
 } from "./dropdown-menu";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, isDark } = useTheme();
 
   const getIcon = () => {
     if (theme === "dark") return <MoonOutlined className="text-base" />;
     if (theme === "light") return <SunOutlined className="text-base" />;
-    return <DesktopOutlined className="text-base" />;
+    return isDark ? (
+      <MoonOutlined className="text-base" />
+    ) : (
+      <SunOutlined className="text-base" />
+    );
   };
 
   return (

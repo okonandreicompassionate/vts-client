@@ -1,7 +1,7 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import CustomModal from "@/components/ui/custom-modal";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 
 type DeleteAdminModalProps = {
   onConfirm?: () => void | Promise<void>;

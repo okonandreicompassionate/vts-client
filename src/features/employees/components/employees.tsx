@@ -4,7 +4,7 @@ import DashboardHeader from "@/app/routes/admin/layout/dashboard-header";
 import { Spinner } from "@/components/ui/spinner";
 import TableComponent from "@/components/ui/table";
 import { TablePaginationFooter } from "@/components/ui/table-pagination-footer";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 import { getEmployeeColumns } from "./employee-columns";
 import EmployeeExcelUploadModal from "../components/modals/employee-excel-upload-modal";
 import type { EmployeeRow } from "../types/types";

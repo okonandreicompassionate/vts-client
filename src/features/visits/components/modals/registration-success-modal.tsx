@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "antd";
 
 import CustomModal from "../../../../components/ui/custom-modal";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 
 import LoadingRing from "../../animations/loading-ring";
 import SuccessCheckmark from "../success-checkmark";

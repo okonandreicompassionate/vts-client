@@ -2,7 +2,7 @@ import { Button, Modal, Spin } from "antd";
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 
 interface ModalCtx {
   close: () => void;

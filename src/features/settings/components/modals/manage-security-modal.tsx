@@ -2,7 +2,7 @@ import { Button, Input, message } from "antd";
 import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import CustomModal from "../../../../components/ui/custom-modal";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 import { useUpdatePasswordMutation } from "../../api/settings-api-slice";
 
 function ManageSecurityModal() {

@@ -1,6 +1,6 @@
 import { Dropdown, type MenuProps } from "antd";
 import { DownOutlined, SettingOutlined } from "@ant-design/icons";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 import { Spinner } from "@/components/ui/spinner";
 import { ThemeToggle } from "../../../../components/ui/theme-toggle";
 import { useLogout } from "@/features/auth/hooks/use-logout";

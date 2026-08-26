@@ -4,7 +4,7 @@ import { useState } from "react";
 import { InboxOutlined, FileExcelOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 import CustomModal from "@/components/ui/custom-modal";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 import { useUploadEmployeeExcelSheetMutation } from "../../api/admin-employees-api-slice";
 
 const { Dragger } = Upload;

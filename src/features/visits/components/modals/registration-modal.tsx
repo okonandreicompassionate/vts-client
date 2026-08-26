@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Checkbox, Button } from "antd";
 import CustomModal from "../../../../components/ui/custom-modal";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 
 type RegistrationModalProps = {
   onSubmit: () => Promise<void> | void;

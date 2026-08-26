@@ -1,12 +1,9 @@
 import { type ReactNode, useState } from "react";
 import { PopupContext } from "./popup-context";
 
-export const PopupProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export function PopupProvider({ children }: { children: ReactNode }) {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-
   const [modalContent, setModalContent] = useState<ReactNode>(null);
   const [drawerContent, setDrawerContent] = useState<ReactNode>(null);
 
@@ -42,9 +39,8 @@ export const PopupProvider: React.FC<{ children: ReactNode }> = ({
       }}
     >
       {children}
-
       {modalContent}
       {drawerContent}
     </PopupContext.Provider>
   );
-};
+}

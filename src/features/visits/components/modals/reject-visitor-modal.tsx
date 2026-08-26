@@ -2,7 +2,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, Checkbox, message } from "antd";
 import { useState } from "react";
 import CustomModal from "@/components/ui/custom-modal";
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 
 type RejectVisitorModalProps = {
   onConfirm?: () => void | Promise<void>;

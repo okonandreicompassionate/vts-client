@@ -3,7 +3,7 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { usePopup } from "@/features/popup/hooks/use-popup";
 import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
 import RegistrationModal from "./modals/registration-modal";
 import RegistrationSuccessModal from "./modals/registration-success-modal";
