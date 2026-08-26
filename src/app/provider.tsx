@@ -21,7 +21,9 @@ function AppProviderContent({ children }: { children: ReactNode }) {
   return (
     <StyleProvider layer>
       <ConfigProvider theme={theme}>
-        <Provider store={store}>{children}</Provider>
+        <Provider store={store}>
+          <PopupProvider>{children}</PopupProvider>
+        </Provider>
       </ConfigProvider>
     </StyleProvider>
   );
@@ -29,12 +31,10 @@ function AppProviderContent({ children }: { children: ReactNode }) {
 
 export function AppProvider({ children }: { children: ReactNode }) {
   return (
-    <PopupProvider>
-      <ThemeProvider>
+    <ThemeProvider>
         <MsalProvider instance={msalInstance}>
           <AppProviderContent>{children}</AppProviderContent>
         </MsalProvider>
-      </ThemeProvider>
-    </PopupProvider>
+    </ThemeProvider>
   );
 }
