@@ -1,5 +1,9 @@
-import { Dropdown, type MenuProps } from "antd";
-import { DownOutlined, SettingOutlined } from "@ant-design/icons";
+import { Button, Dropdown, type MenuProps } from "antd";
+import {
+  DownOutlined,
+  MenuOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { usePopup } from "@/features/popup/hooks/use-popup";
 import { Spinner } from "@/components/ui/spinner";
 import { ThemeToggle } from "../../../../components/ui/theme-toggle";
@@ -8,9 +12,11 @@ import { Avatar } from "../../../../components/ui/avatar";
 import EditProfileModal from "@/features/settings/components/modals/edit-profile-modal";
 import SystemSettingsModal from "../../../../features/settings/components/modals/system-settings-modal";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { useDashboardShell } from "./dashboard-shell-context";
 
 const DashboardHeader = ({ title }: { title: string }) => {
-const { data: profile, isLoading } = useAdminAuthSession();
+  const { data: profile, isLoading } = useAdminAuthSession();
+  const shell = useDashboardShell();
 
   const { openModal } = usePopup();
 
@@ -96,7 +102,17 @@ const { data: profile, isLoading } = useAdminAuthSession();
 
   return (
     <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-3 pe-1 backdrop-blur md:ps-6 md:pe-2 dark:border-slate-800 dark:bg-slate-950/95">
-      <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">{title}</h2>
+      <div className="flex min-w-0 items-center">
+        <Button
+          type="text"
+          onClick={() => shell?.setMobileOpen(true)}
+          aria-label="Open navigation menu"
+          icon={<MenuOutlined />}
+          className="mr-1! flex! h-9! w-9! shrink-0! items-center! justify-center! p-0! text-slate-500! md:hidden! dark:text-slate-400!"
+        />
+
+        <h2 className="truncate text-lg font-bold text-slate-800 dark:text-slate-100">{title}</h2>
+      </div>
 
       <div className="flex items-center gap-2">
         <ThemeToggle />
@@ -110,6 +126,7 @@ const { data: profile, isLoading } = useAdminAuthSession();
             <button
               type="button"
               className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900"
+              aria-label={`Open account menu for ${displayName}`}
             >
               <Avatar name={displayName} size="sm" src={profile?.avatar} />
 

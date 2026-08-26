@@ -393,7 +393,7 @@ export default function VisitorDetails() {
               ) : null}
             </div>
 
-            <div className="min-w-0 w-full rounded-lg border border-slate-100 bg-white px-2 py-3 shadow-sm shadow-slate-100 sm:px-4 sm:py-6 lg:w-80 lg:shrink-0 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:w-96 xl:px-6 xl:py-6 2xl:w-104">
+            <div className="min-w-0 w-full rounded-lg border border-slate-100 bg-white px-4 py-3 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-80 lg:shrink-0 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:w-96 xl:px-6 xl:py-6 2xl:w-104">
               <h3 className="mb-2.5 text-sm font-bold text-slate-800 dark:text-slate-100">
                 Visit Timeline
               </h3>

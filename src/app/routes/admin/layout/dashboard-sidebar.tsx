@@ -2,11 +2,10 @@ import { Button } from "antd";
 import {
   AppstoreOutlined,
   SettingOutlined,
-  MenuOutlined,
   CloseOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { paths } from "../../../../config/paths";
@@ -20,10 +19,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+type SidebarProps = {
+  collapsed: boolean;
+  mobileOpen: boolean;
+  setMobileOpen: (open: boolean) => void;
+  setCollapsed: Dispatch<SetStateAction<boolean>>;
+};
 
+export default function Sidebar({
+  collapsed,
+  mobileOpen,
+  setMobileOpen,
+  setCollapsed,
+}: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { orgSlug } = useOrganization();
@@ -81,14 +89,6 @@ export default function Sidebar() {
 
   return (
     <>
-      <Button
-        type="text"
-        onClick={() => setMobileOpen(true)}
-        aria-label="Open menu"
-        icon={<MenuOutlined />}
-        className="h-9! w-9! text-slate-500! md:hidden! dark:text-slate-400!"
-      />
-
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/40 md:hidden"

@@ -16,7 +16,7 @@ const details = [
 
 export default function VisitorDetailsCard({ registration, requestId, status, reason }: Props) {
   return (
-    <div className="w-full rounded-2xl border border-slate-200 bg-white shadow-sm sm:p-7 lg:p-8 dark:border-slate-700 dark:bg-slate-900">
+    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm sm:p-7 lg:p-8 dark:border-slate-700 dark:bg-slate-900 w-full">
       <div className="flex items-center gap-4 border-b border-slate-100 pb-6 dark:border-slate-700">
         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-white">
           <span className="text-lg font-bold">{registration.name.charAt(0)}</span>
@@ -40,14 +40,14 @@ export default function VisitorDetailsCard({ registration, requestId, status, re
         </div>
       )}
 
-      <div className="mt-6 divide-y divide-slate-100">
+      <div className="mt-6 divide-y divide-slate-100 dark:divide-slate-700">
         {details.map((item) => (
           <div
             key={item.label}
             className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
           >
             <span className="shrink-0 text-sm text-slate-500">{item.label}</span>
-            <span className="truncate text-right text-sm font-semibold text-slate-900 dark:text-slate-100">
+            <span className="truncate text-right text-sm font-semibold text-slate-900 dark:text-slate-100 wrap-break-word">
               {registration[item.field]}
             </span>
           </div>

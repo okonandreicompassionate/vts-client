@@ -1,5 +1,5 @@
 ﻿import { Button } from "antd";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import LoadingRing from "../animations/loading-ring";
@@ -59,7 +59,8 @@ export default function VisitorProfile() {
 
       if (
         normalized === "approved" ||
-        normalized === "signed in"
+        normalized === "signed in" ||
+        normalized === "signed off"
       ) {
         return "approved";
       }
@@ -82,9 +83,7 @@ export default function VisitorProfile() {
     isFetching: isVisitFetching,
     refetch: refetchVisit,
   } = useGetVisitQuery(visitId ?? "", {
-    skip:
-      !visitId ||
-      !visitorAuth.isAuthenticated,
+    skip: !visitId,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     refetchOnReconnect: true,
@@ -123,6 +122,7 @@ export default function VisitorProfile() {
         id: response.id,
         name:
           response.fullName ??
+          response.name ??
           storedRegistration?.name ??
           "Visitor",
         purposeOfVisit:
@@ -156,6 +156,20 @@ export default function VisitorProfile() {
       storedRegistration,
       normalizeStatus,
     ]);
+
+  useEffect(() => {
+    if (
+      !displayedRegistration ||
+      typeof window === "undefined"
+    ) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      "visitorRegistration",
+      JSON.stringify(displayedRegistration),
+    );
+  }, [displayedRegistration]);
 
   const formatDate = (value?: string) => {
     if (!value) {

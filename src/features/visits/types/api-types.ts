@@ -89,13 +89,14 @@ export interface VisitResponse {
   id: string;
   visitorId: string;
   referenceId: string;
-  fullName: string;
+  name?: string;
+  fullName?: string;
   createdAt: string;
   email: string;
   phoneNumber: string;
   hostName: string;
   purpose: string;
-  status: "PENDING" | "SIGNED_IN" | "REJECTED" | "SIGNED_OFF";
+  status: "PENDING" | "SIGNED_IN" | "REJECTED" | "SIGNED_OFF" | "APPROVED";
   checkInTime: string | null;
   checkOutTime: string | null;
   registeredAt: string;
