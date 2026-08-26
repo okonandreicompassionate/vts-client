@@ -32,7 +32,7 @@ const Layout = () => {
           </main>
         </DashboardShellContext.Provider>
 
-        <div className="w-full bg-white ps-2 text-left dark:bg-slate-950/95 dark:text-white">
+        <div className="w-full bg-white dark:bg-slate-950/95 dark:text-white">
           <Footer />
         </div>
       </div>

@@ -339,8 +339,8 @@ export default function VisitorDetails() {
       <main className="flex-1 px-3 w-full sm:px-4 md:py-2 xl:px-8 2xl:px-20">
         {BackButton}
 
-        <div className="xl:flex w-full xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">
-          <div className="flex min-w-0 flex-col gap-5 lg:flex-row lg:gap-8 xl:h-full xl:w-full xl:gap-12 2xl:gap-16">
+        <div className="w-full xl:flex xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">
+          <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:gap-6 xl:h-full xl:w-full xl:gap-8 2xl:gap-10">
             <div className="min-w-0 w-full xl:h-full rounded-xl border border-slate-100 bg-white px-4 shadow-sm shadow-slate-100 sm:px-6 py-6 md:px-8 md:py-8 lg:flex-1 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:px-10 xl:py-8 2xl:px-12 2xl:py-10">
               <div className="mb-6 flex flex-col items-center text-center">
                 <div className="mb-2.5">
@@ -362,7 +362,7 @@ export default function VisitorDetails() {
                 {detailRows.map((row, idx) => (
                   <div
                     key={row.label}
-                    className={`grid min-w-0 grid-cols-1 gap-1 px-4 py-2.5 sm:grid-cols-[12rem_minmax(0,1fr)] sm:items-center sm:gap-x-8 sm:px-5 md:grid-cols-[13rem_minmax(0,1fr)] lg:gap-x-12 xl:grid-cols-[14rem_minmax(0,1fr)] xl:gap-x-16 xl:px-10 xl:py-3 ${
+                    className={`grid min-w-0 grid-cols-1 gap-1 px-4 py-2.5 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-center sm:gap-x-5 sm:ps-6 sm:pe-5 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-x-6 md:ps-8 md:pe-6 xl:grid-cols-[13rem_minmax(0,1fr)] xl:gap-x-8 xl:ps-10 xl:pe-8 xl:py-3 ${
                       idx !== detailRows.length - 1
                         ? "border-b border-slate-100 dark:border-slate-700"
                         : ""
@@ -393,7 +393,7 @@ export default function VisitorDetails() {
               ) : null}
             </div>
 
-            <div className="min-w-0 w-full rounded-lg border border-slate-100 bg-white px-4 py-4 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-[24rem] lg:shrink-0 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:w-120 xl:px-8 xl:py-7 2xl:w-136">
+            <div className="min-w-0 w-full rounded-lg border border-slate-100 bg-white px-4 py-4 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-[21rem] lg:shrink-0 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none xl:w-[24rem] xl:px-7 xl:py-6 2xl:w-[26rem]">
               <h3 className="mb-2.5 text-sm font-bold text-slate-800 dark:text-slate-100">
                 Visit Timeline
               </h3>
