@@ -84,6 +84,7 @@ export default function VisitorProfile() {
     refetch: refetchVisit,
   } = useGetVisitQuery(visitId ?? "", {
     skip: !visitId,
+    pollingInterval: 15000,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     refetchOnReconnect: true,
