@@ -150,6 +150,7 @@ export default function PageError({
         type="primary"
         size="large"
         onClick={handleAction}
+        className="h-6.5!"
       >
         {copy.actionLabel}
       </Button>
