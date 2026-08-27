@@ -1,14 +1,13 @@
 import type { ColumnsType } from "antd/es/table";
 
 import type { EmployeeRow } from "../types/types";
+
 import { EmployeeIdentityCell } from "./employee-table-cells";
 
 export function getEmployeeColumns(
   employees: EmployeeRow[],
 ): ColumnsType<EmployeeRow> {
-  const hasRole = employees.some(
-    (employee) => employee.role?.trim(),
-  );
+  const hasRole = employees.some((employee) => employee.role?.trim());
 
   const hasDepartment = employees.some(
     (employee) => employee.department?.trim(),
@@ -16,18 +15,14 @@ export function getEmployeeColumns(
 
   return [
     {
-      title: "Full Name",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Employee",
+      key: "employee",
       render: (_, record) => (
-        <EmployeeIdentityCell name={record.fullName} />
+        <EmployeeIdentityCell
+          name={record.fullName}
+          employeeId={record.employeeId}
+        />
       ),
-    },
-
-    {
-      title: "Employee ID",
-      dataIndex: "employeeId",
-      key: "employeeId",
     },
 
     ...(hasRole
