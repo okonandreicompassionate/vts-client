@@ -6,11 +6,11 @@ import {
 } from "@ant-design/icons";
 import { usePopup } from "@/features/popup/hooks/use-popup";
 import { Spinner } from "@/components/ui/spinner";
-import { ThemeToggle } from "../../../../components/ui/theme-toggle";
+import { ThemeToggle } from "../ui/theme-toggle";
 import { useLogout } from "@/features/auth/hooks/use-logout";
-import { Avatar } from "../../../../components/ui/avatar";
+import { Avatar } from "../ui/avatar";
 import EditProfileModal from "@/features/settings/components/modals/edit-profile-modal";
-import SystemSettingsModal from "../../../../features/settings/components/modals/system-settings-modal";
+import SystemSettingsModal from "../../features/settings/components/modals/system-settings-modal";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { useDashboardShell } from "./dashboard-shell-context";
 

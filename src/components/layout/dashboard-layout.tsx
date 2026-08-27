@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
 
-import Sidebar from "@/app/routes/admin/layout/dashboard-sidebar";
+import Sidebar from "@/components/layout/dashboard-sidebar";
 import Footer from "@/components/layout/footer";
 import { DashboardShellContext } from "./dashboard-shell-context";
 

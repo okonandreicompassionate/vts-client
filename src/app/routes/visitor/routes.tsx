@@ -17,7 +17,7 @@ export const visitorRoutes: RouteObject[] = [
   {
     lazy: async () => {
       const { default: VisitorLayout } = await import(
-        "./layout/visitor-layout"
+        "@/components/layout/visitor-layout"
       );
 
       return { Component: VisitorLayout };

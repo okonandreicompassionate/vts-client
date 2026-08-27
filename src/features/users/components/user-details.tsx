@@ -4,7 +4,7 @@ import { Alert, Button } from "antd";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import DashboardHeader from "@/app/routes/admin/layout/dashboard-header";
+import DashboardHeader from "@/components/layout/dashboard-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetAdminByIdQuery } from "@/features/users/api/users-api-slice";

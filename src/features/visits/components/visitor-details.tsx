@@ -4,7 +4,7 @@ import { Alert, Button, Input, message } from "antd";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import DashboardHeader from "../../../app/routes/admin/layout/dashboard-header.tsx";
+import DashboardHeader from "../../../components/layout/dashboard-header.tsx";
 import ApproveAccessModal from "./modals/approve-access-modal.tsx";
 import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
 import { Avatar } from "../../../components/ui/avatar.tsx";

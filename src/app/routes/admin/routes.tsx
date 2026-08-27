@@ -8,7 +8,7 @@ export const adminRoutes: RouteObject[] = [
     children: [
       {
         lazy: async () => {
-          const { default: AdminLayout } = await import("./layout/dashboard-layout");
+          const { default: AdminLayout } = await import("../../../components/layout/dashboard-layout");
 
           return {
             Component: AdminLayout,

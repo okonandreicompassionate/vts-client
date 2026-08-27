@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TablePaginationFooter } from "../../../components/ui/table-pagination-footer.tsx";
-import DashboardHeader from "../../../app/routes/admin/layout/dashboard-header.tsx";
+import DashboardHeader from "../../../components/layout/dashboard-header.tsx";
 import TableComponent from "../../../components/ui/table.tsx";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits.ts";
 import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data.ts";

@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import { useState } from "react";
-import DashboardHeader from "@/app/routes/admin/layout/dashboard-header";
+import DashboardHeader from "@/components/layout/dashboard-header";
 import { Spinner } from "@/components/ui/spinner";
 import TableComponent from "@/components/ui/table";
 import { TablePaginationFooter } from "@/components/ui/table-pagination-footer";

@@ -16,7 +16,7 @@ import AddUserModal from "./modals/add-user-modal";
 import { useUsersSSE } from "../hooks/use-users-sse";
 import { userColumns } from "./user-columns";
 import { getSelectionColumn } from "@/components/ui/selection-column";
-import DashboardHeader from "@/app/routes/admin/layout/dashboard-header";
+import DashboardHeader from "@/components/layout/dashboard-header";
 
 export default function UsersPage() {
   const [isInviteModalOpen, setInviteModalOpen] = useState(false);

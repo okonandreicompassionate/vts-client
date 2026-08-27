@@ -6,7 +6,7 @@ import {
   CloseOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import Header from "../../../app/routes/admin/layout/dashboard-header";
+import Header from "../../../components/layout/dashboard-header";
 import TableComponent from "../../../components/ui/table";
 import { TablePaginationFooter } from "../../../components/ui/table-pagination-footer";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits";
