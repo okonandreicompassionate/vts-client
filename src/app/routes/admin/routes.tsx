@@ -32,7 +32,7 @@ export const adminRoutes: RouteObject[] = [
             path: paths.admin.visitors.path,
             lazy: async () => {
               const { default: Visitors } =
-                await import("@/features/visits/components/visitors");
+                await import("@/features/visits/components/visitors-page");
 
               return {
                 Component: Visitors,

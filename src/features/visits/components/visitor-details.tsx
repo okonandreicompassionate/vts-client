@@ -443,7 +443,7 @@ export default function VisitorDetails() {
                     className="mb-3 rounded-lg"
                   />
 
-                  <div className="flex flex-col gap-3 sm:flex-row">
+                  <div className="flex gap-1.5 sm:gap-2.5 sm:flex-row">
                     <Button
                       danger
                       loading={isRejecting}

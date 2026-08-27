@@ -176,7 +176,7 @@ export default function Visitors() {
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
           <div className="flex flex-col gap-3 px-3 sm:px-6 sm:py-1">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex py-2 w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+              <div className="flex py-2 w-full gap-2 sm:w-auto sm:flex-row sm:items-center">
                 <Button
                   icon={<FilterOutlined />}
                   aria-label="Toggle filters"
