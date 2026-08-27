@@ -125,7 +125,7 @@ export default function VerifyIdentity() {
           </Form.Item>
         </div>
 
-        <div className="sm:mt-auto pb-4 md:pb-0">
+        <div className="mt-auto pb-4 md:pb-0">
           <Button
             type="primary"
             htmlType="submit"
