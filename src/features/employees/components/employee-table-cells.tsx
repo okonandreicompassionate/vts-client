@@ -13,7 +13,7 @@ export function EmployeeIdentityCell({
     <div className="flex items-center gap-2">
       <Avatar name={name} size="sm" />
 
-      <div className="flex min-w-0 gap-1 flex-col leading-none">
+      <div className="flex min-w-0 gap-0.5 flex-col leading-none">
         <span className="truncate text-[12px] text-slate-800 dark:text-slate-100">
           {name}
         </span>
