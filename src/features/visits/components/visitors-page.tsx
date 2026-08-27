@@ -172,7 +172,7 @@ export default function Visitors() {
     <>
       <Header title="Visitors" />
 
-      <main className="flex-1 px-3 pt-1 pb-3 sm:px-4 md:px-8 md:py-6">
+      <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
           <div className="flex flex-col gap-3 px-3 sm:px-6 sm:py-1 overflow-x-auto">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between overflow-x-auto">

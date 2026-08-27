@@ -159,7 +159,7 @@ export default function VisitorDetails() {
       <>
         <DashboardHeader title="Visitor Details" />
 
-        <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+        <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
           <Alert type="error" showIcon title="No visitor ID was provided." />
         </main>
       </>
@@ -171,7 +171,7 @@ export default function VisitorDetails() {
       <>
         <DashboardHeader title="Visitor Details" />
 
-        <main className="flex flex-1 px-3 py-16">
+        <main className="flex flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
           <Spinner variant="page" label="Loading visitor..." />
         </main>
       </>
@@ -186,7 +186,7 @@ export default function VisitorDetails() {
         <>
           <DashboardHeader title="Visitor Details" />
 
-          <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+          <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
             {BackButton}
 
             <Alert
@@ -205,7 +205,7 @@ export default function VisitorDetails() {
         <>
           <DashboardHeader title="Visitor Details" />
 
-          <main className="flex-1 px-2 pt-1 pb-3 sm:px-4 md:px-5 md:py-3">
+          <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
             <Alert
               type="error"
               showIcon
@@ -221,7 +221,7 @@ export default function VisitorDetails() {
       <>
         <DashboardHeader title="Visitor Details" />
 
-        <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+        <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
           {BackButton}
 
           <Alert
@@ -245,7 +245,7 @@ export default function VisitorDetails() {
       <>
         <DashboardHeader title="Visitor Details" />
 
-        <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+        <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
           {BackButton}
 
           <Alert type="warning" showIcon title="Visitor not found" />
@@ -336,7 +336,7 @@ export default function VisitorDetails() {
     <>
       <DashboardHeader title="Visitor Details" />
 
-      <main className="flex-1 px-3 w-full sm:px-4 md:py-2 xl:px-8 2xl:px-20">
+      <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
         {BackButton}
 
         <div className="w-full xl:flex xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">

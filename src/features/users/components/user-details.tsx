@@ -70,7 +70,7 @@ export default function UserDetailsPage() {
       <>
         <DashboardHeader title="Admin Details" />
 
-        <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+        <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
           <Alert
             type="error"
             showIcon
@@ -86,7 +86,7 @@ export default function UserDetailsPage() {
       <>
         <DashboardHeader title="Admin Details" />
 
-        <main className="flex flex-1 px-3 py-16">
+        <main className="flex flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
           <Spinner
             variant="page"
             label="Loading admin..."
@@ -104,7 +104,7 @@ export default function UserDetailsPage() {
         <>
           <DashboardHeader title="Admin Details" />
 
-          <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+          <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
             {BackButton}
 
             <Alert
@@ -123,7 +123,7 @@ export default function UserDetailsPage() {
         <>
           <DashboardHeader title="Admin Details" />
 
-          <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+          <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
             {BackButton}
 
             <Alert
@@ -142,7 +142,7 @@ export default function UserDetailsPage() {
         <>
           <DashboardHeader title="Admin Details" />
 
-          <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+          <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
             {BackButton}
 
             <Alert
@@ -160,7 +160,7 @@ export default function UserDetailsPage() {
       <>
         <DashboardHeader title="Admin Details" />
 
-        <main className="flex-1 px-3 pt-2 pb-3 sm:px-4 md:px-8 md:py-4">
+        <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
           {BackButton}
 
           <Alert
@@ -187,7 +187,7 @@ export default function UserDetailsPage() {
       <>
         <DashboardHeader title="Admin Details" />
 
-        <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+        <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
           {BackButton}
 
           <Alert
@@ -209,7 +209,7 @@ export default function UserDetailsPage() {
     <>
       <DashboardHeader title="Admin Details" />
 
-      <main className="w-full flex-1 px-3 sm:px-4 md:py-2 xl:px-8 2xl:px-20">
+      <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
         <div className="mb-1">
           {BackButton}
         </div>

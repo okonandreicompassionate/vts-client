@@ -20,7 +20,7 @@ export default function AdminSettings() {
       <div>
         <Header title="Settings" />
 
-        <main className="flex-1 px-3 pt-2.5 pb-3 sm:px-4 md:px-8 md:py-6">
+        <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
           <Spinner variant="page" />
         </main>
       </div>
@@ -80,7 +80,7 @@ export default function AdminSettings() {
     <div>
       <Header title="Settings" />
 
-      <main className="flex-1 px-2 pt-1 pb-3 sm:px-4 md:px-5 md:py-3">
+      <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
         <div className="w-full max-w-4xl space-y-3 sm:space-y-4 md:max-w-full">
           {settingsItems.map((item) => (
             <Button

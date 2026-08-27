@@ -33,19 +33,19 @@ export default function Employees() {
     <div className="flex h-full min-h-0 flex-col">
       <DashboardHeader title="Employees" />
 
-      <main className="flex-1 pb-3 sm:px-3 md:px-3 md:py-6">
+      <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
         <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-          <div className="flex items-center justify-between overflow-x-auto py-2 pe-2">
+          <div className="flex items-center justify-between py-2 pe-2 overflow-x-auto">
             <div className="shrink-0 px-3">
-              <h2 className="text-xs font-semibold text-slate-800 sm:text-sm dark:text-slate-100">
-                Manage employees that can be visited
+              <h2 className="sm:text-sm text-xs font-semibold text-slate-800 dark:text-slate-100">
+                Manage employees available for visits
               </h2>
             </div>
 
             <Button
               type="primary"
               onClick={handleOpenUploadModal}
-              className="inline-flex h-7! gap-1 rounded-sm! px-2! text-xs! font-medium!"
+              className="inline-flex h-6! gap-0.5 rounded-sm! px-2! text-xs! font-medium!"
             >
               <UploadOutlined />
               <span>Upload Exceel sheet</span>
