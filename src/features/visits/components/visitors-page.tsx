@@ -174,8 +174,8 @@ export default function Visitors() {
 
       <main className="flex-1 px-3 pt-1 pb-3 sm:px-4 md:px-8 md:py-6">
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-          <div className="flex flex-col gap-3 px-3 sm:px-6 sm:py-1">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 px-3 sm:px-6 sm:py-1 overflow-x-auto">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between overflow-x-auto">
               <div className="flex py-2 w-full gap-2 sm:w-auto sm:flex-row sm:items-center">
                 <Button
                   icon={<FilterOutlined />}
@@ -259,8 +259,8 @@ export default function Visitors() {
             </div>
 
             {showFilters && (
-              <div className="overflow-x-auto rounded-lg border border-[#E6EAE8] bg-[#FAFAFA] p-1 dark:border-slate-700 dark:bg-slate-900">
-                <div className="flex min-w-max items-center gap-1">
+              <div className="overflow-x-auto rounded-lg border border-[#E6EAE8] bg-[#FAFAFA] dark:border-slate-700 dark:bg-slate-900">
+                <div className="flex min-w-max items-center gap-0.5 overflow-x-auto">
                   {filterTabs.map((tab) => {
                     const isActive = activeTab === tab;
                     return (
