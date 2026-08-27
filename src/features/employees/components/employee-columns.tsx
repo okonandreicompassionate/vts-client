@@ -15,7 +15,7 @@ export function getEmployeeColumns(
 
   return [
     {
-      title: "Employee",
+      title: "Employee Name and ID",
       key: "employee",
       render: (_, record) => (
         <EmployeeIdentityCell
