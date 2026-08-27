@@ -35,9 +35,9 @@ export default function Employees() {
 
       <main className="flex-1 pb-3 sm:px-3 md:px-3 md:py-6">
         <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-          <div className="flex items-center justify-between py-3 pe-3">
+          <div className="flex items-center justify-between overflow-x-auto py-2 pe-2">
             <div className="shrink-0 px-3">
-              <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+              <h2 className="text-xs font-semibold text-slate-800 sm:text-sm dark:text-slate-100">
                 Manage employees that can be visited
               </h2>
             </div>
