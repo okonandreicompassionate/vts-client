@@ -338,7 +338,7 @@ export default function VisitorProfile() {
             )}
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-slate-200 pt-3 dark:border-slate-700">
+          <div className="w-full mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-slate-200 pt-3 dark:border-slate-700">
             <MetaItem
               label="Host"
               value={
