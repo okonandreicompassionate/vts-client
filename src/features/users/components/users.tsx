@@ -72,10 +72,10 @@ export default function UsersPage() {
     const count = selectedRows.length;
 
     Modal.confirm({
-      title: `Delete ${count} ${count === 1 ? "user" : "users"}?`,
+      title: `Deactivate ${count} ${count === 1 ? "user" : "users"}?`,
       content:
         "This action cannot be undone. Selected users will lose access immediately.",
-      okText: "Delete",
+      okText: "Deactivate",
       okButtonProps: {
         danger: true,
       },
@@ -86,13 +86,13 @@ export default function UsersPage() {
           }).unwrap();
 
           message.success(
-            count === 1 ? "User deleted" : "Users deleted",
+            count === 1 ? "User deactivated" : "Users deactivated",
           );
 
           setSelectedRows([]);
           setIsSelecting(false);
         } catch {
-          message.error("Failed to delete selected users");
+          message.error("Failed to deactivate selected users");
         }
       },
     });
@@ -164,7 +164,7 @@ export default function UsersPage() {
                 onClick={handleDeleteSelected}
                 className="flex h-6 cursor-pointer items-center justify-center rounded px-1.5 text-[11px] leading-none font-medium text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:text-red-300"
               >
-                {isDeleting ? "Deleting..." : "Delete"}
+                {isDeleting ? "Deactivating..." : "Deactivate"}
               </button>
             </div>
           )}
