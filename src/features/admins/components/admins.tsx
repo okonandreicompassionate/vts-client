@@ -201,7 +201,7 @@ export default function UsersPage() {
               alt=""
               className="inline-flex h-3 w-3 items-center"
             />
-            <span className="text-xs">Invite User</span>
+            <span className="text-xs">Invite Admin</span>
           </Button>
         )}
       </div>
