@@ -320,11 +320,15 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
     { label: "Phone Number", value: visitor.phone },
     { label: "Host Name", value: visitor.host },
     { label: "Purpose of Visit", value: visitor.purpose },
-    { label: "Signed-In Time", value: visitor.checkIn },
-    {
-      label: "Signed-Out Time",
-      value: visitor.status === "Signed Off" ? visitor.time : "Pending",
-    },
+    ...(isRejected
+      ? []
+      : [
+          { label: "Signed-In Time", value: visitor.checkIn },
+          {
+            label: "Signed-Out Time",
+            value: visitor.status === "Signed Off" ? visitor.time : "Pending",
+          },
+        ]),
   ];
 
   // ---------- Drawer layout (fixed-width panel — compact, never relies on viewport breakpoints) ----------
@@ -337,7 +341,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
       <div className="flex h-full min-h-0 flex-col bg-white dark:bg-slate-800">
         {/* Scrollable content */}
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="flex flex-col items-center border-b border-slate-300 px-4 pt-4 pb-3 text-center dark:border-slate-600">
+          <div className="flex flex-col items-center border-b border-slate-100 px-4 pt-4 pb-3 text-center dark:border-slate-700">
             <Avatar name={visitor.name} size="sm" />
 
             <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-slate-100">
@@ -352,13 +356,13 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
           </div>
 
           <div className="px-4 py-3">
-            <div className="overflow-hidden rounded-lg border border-slate-300 dark:border-slate-600">
+            <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-slate-700">
               {detailRows.map((row, idx) => (
                 <div
                   key={row.label}
                   className={`flex items-start gap-3 px-3 py-2 ${
                     idx !== detailRows.length - 1
-                      ? "border-b border-slate-300 dark:border-slate-600"
+                      ? "border-b border-slate-100 dark:border-slate-700"
                       : ""
                   }`}
                 >
@@ -404,7 +408,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
             </div>
 
             {showReview && (
-              <div className="mt-3 rounded-lg border border-slate-300 bg-slate-100 p-3 dark:border-slate-600 dark:bg-slate-900">
+              <div className="mt-3 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-900">
                 <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
                   Review and Approve
                 </h4>
@@ -432,7 +436,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
         {/* Sticky footer actions — always reachable regardless of content height */}
         {hasFooterActions && (
-          <div className="shrink-0 border-t border-slate-300 bg-white px-4 py-2.5 dark:border-slate-600 dark:bg-slate-800">
+          <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-2.5 dark:border-slate-700 dark:bg-slate-800">
             {showSignOff && (
               <Button
                 danger
