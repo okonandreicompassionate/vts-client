@@ -164,7 +164,7 @@ export default function UsersPage() {
                 onClick={handleDeleteSelected}
                 className="flex h-6 cursor-pointer items-center justify-center rounded px-1.5 text-[11px] leading-none font-medium text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:text-red-300"
               >
-                {isDeleting ? "Deactivating..." : "Deactivate"}
+                {isDeleting ? "Deactivate..." : "Deactivate"}
               </button>
             </div>
           )}
@@ -180,7 +180,7 @@ export default function UsersPage() {
           <Button
             size="small"
             type="primary"
-            className="flex h-7 gap-1 text-[13px]"
+            className="flex h-5 sm:h-6.5 gap-1 text-[13px]"
             onClick={() => setInviteModalOpen(true)}
           >
             <img
