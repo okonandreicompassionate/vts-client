@@ -1,7 +1,7 @@
 import CustomModal from "@/components/ui/custom-modal";
 import { Button, Form, Input, Select, message } from "antd";
 import type { InviteFormValues } from "../../types/types";
-import { useCreateInviteMutation } from "../../api/users-api-slice";
+import { useCreateInviteMutation } from "../../api/admins-api-slice";
 
 interface AddUserModalProps {
   open: boolean;

@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import DashboardHeader from "@/components/layout/dashboard-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Spinner } from "@/components/ui/spinner";
-import { useGetAdminByIdQuery } from "@/features/users/api/users-api-slice";
+import { useGetAdminByIdQuery } from "@/features/admins/api/admins-api-slice";
 
 import { DeleteAdmin } from "./deactivate-admin-button";
 

@@ -7,14 +7,14 @@ import { paths } from "@/config/paths";
 import {
   useGetAdminsQuery,
   useBulkDeleteAdminsMutation, // TODO: rename to useBulkDeactivateAdminsMutation once the mutation itself is renamed
-} from "@/features/users/api/users-api-slice";
+} from "@/features/admins/api/admins-api-slice";
 import { useOrganization } from "@/features/organizations";
 import { Spinner } from "@/components/ui/spinner";
-import type { AdminUserItem } from "@/features/users/types/api-types";
+import type { AdminUserItem } from "@/features/admins/types/api-types";
 import type { User } from "../types/types";
 import AddUserModal from "./modals/add-user-modal";
 import { useUsersSSE } from "../hooks/use-users-sse";
-import { userColumns } from "./user-columns";
+import { userColumns } from "./admins-columns";
 import { getSelectionColumn } from "@/components/ui/selection-column";
 import DashboardHeader from "@/components/layout/dashboard-header";
 
@@ -76,7 +76,7 @@ export default function UsersPage() {
     Modal.confirm({
       title: `Deactivate ${count} ${count === 1 ? "user" : "users"}?`,
       content:
-        "This action cannot be undone. Selected users will lose access immediately.",
+        "This action cannot be undone. Selected admins will lose access immediately.",
       okText: "Deactivate",
       okButtonProps: {
         danger: true,
@@ -86,7 +86,7 @@ export default function UsersPage() {
           await deactivateAdmins({ ids: selectedRowKeys }).unwrap();
 
           message.success(
-            count === 1 ? "User deactivated" : "Users deactivated",
+            count === 1 ? "Admin deactivated" : "Admins deactivated",
           );
 
           setSelectedRows([]);
@@ -120,14 +120,14 @@ export default function UsersPage() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <DashboardHeader title="Users" />
+      <DashboardHeader title="Admins" />
 
       <div className="flex min-h-12.5 items-center justify-between border-b border-slate-200 px-3 py-1 sm:py-2 dark:border-slate-800">
         <div className="flex min-w-0 items-center gap-2.5">
           {!isLoading && !isError && !isSelecting && (
             <>
               <span className="text-xs text-slate-500 dark:text-slate-400">
-                {users.length} {users.length === 1 ? "user" : "users"}
+                {users.length} {users.length === 1 ? "admin" : "admins"}
               </span>
 
               <button
@@ -210,13 +210,13 @@ export default function UsersPage() {
         {!isLoading && !isError && users.length === 0 ? (
           <div className="flex h-56 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-slate-200 text-center dark:border-slate-800">
             <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
-              No users yet
+              No admins yet
             </span>
             <span className="max-w-55 text-xs text-slate-400 dark:text-slate-500">
               Invite your first admin to get started.
             </span>
             <Button size="small" className="h-6!" type="primary" onClick={() => setInviteModalOpen(true)}>
-              Invite User
+              Invite Admin
             </Button>
           </div>
         ) : (

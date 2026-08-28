@@ -1,4 +1,4 @@
-import type { AdminRole } from "@/features/users/types/api-types";
+import type { AdminRole } from "@/features/admins/types/api-types";
 
 export type UserStatus = "active" | "disabled" | "invited";
 

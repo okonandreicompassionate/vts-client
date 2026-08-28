@@ -65,7 +65,7 @@ export const adminRoutes: RouteObject[] = [
           {
             path: paths.admin.users.path,
             lazy: async () => {
-              const { default: Users } = await import("@/features/users/components/users");
+              const { default: Users } = await import("@/features/admins/components/admins");
 
               return {
                 Component: Users,
@@ -76,7 +76,7 @@ export const adminRoutes: RouteObject[] = [
             path: paths.admin.userDetails.path,
             lazy: async () => {
               const { default: UserDetails } =
-                await import("@/features/users/components/user-details");
+                await import("@/features/admins/components/admin-details");
 
               return {
                 Component: UserDetails,

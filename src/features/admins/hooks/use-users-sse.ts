@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "@/lib/stores/hooks";
 import { useOrganization } from "@/features/organizations";
-import { usersApi } from "../api/users-api-slice";
+import { usersApi } from "../api/admins-api-slice";
 
 export function useUsersSSE() {
   const dispatch = useAppDispatch();
