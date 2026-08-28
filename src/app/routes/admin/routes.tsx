@@ -8,7 +8,8 @@ export const adminRoutes: RouteObject[] = [
     children: [
       {
         lazy: async () => {
-          const { default: AdminLayout } = await import("../../../components/layout/dashboard-layout");
+          const { default: AdminLayout } =
+            await import("../../../components/layout/dashboard-layout");
 
           return {
             Component: AdminLayout,
@@ -36,18 +37,6 @@ export const adminRoutes: RouteObject[] = [
 
               return {
                 Component: Visitors,
-              };
-            },
-          },
-
-          {
-            path: paths.admin.visitorDetails.path,
-            lazy: async () => {
-              const { default: VisitorDetails } =
-                await import("@/features/visits/components/visitor-details");
-
-              return {
-                Component: VisitorDetails,
               };
             },
           },
