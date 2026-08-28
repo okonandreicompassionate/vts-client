@@ -123,7 +123,7 @@ export default function UsersPage() {
     <div className="flex h-full min-h-0 flex-col">
       <DashboardHeader title="Users" />
 
-      <div className="flex min-h-12.5 items-center justify-between border-b border-slate-200 px-5 py-2 dark:border-slate-800">
+      <div className="flex min-h-12.5 items-center justify-between border-b border-slate-200 px-3 py-1 sm:py-2 dark:border-slate-800">
         <div className="flex min-w-0 items-center gap-2.5">
           {!isLoading && !isError && !isSelecting && (
             <>
