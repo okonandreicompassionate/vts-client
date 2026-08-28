@@ -9,7 +9,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetAdminByIdQuery } from "@/features/users/api/users-api-slice";
 
-import { DeleteAdmin } from "../components/delete-admin-button";
+import { DeleteAdmin } from "./deactivate-admin-button";
 
 function getErrorStatus(error: unknown): number | string | undefined {
   if (error && typeof error === "object" && "status" in error) {

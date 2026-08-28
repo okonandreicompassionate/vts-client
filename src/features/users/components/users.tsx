@@ -133,7 +133,7 @@ export default function UsersPage() {
               <button
                 type="button"
                 onClick={handleStartSelecting}
-                className="flex h-7! items-center cursor-pointer justify-center rounded-sm bg-sky-500 px-2 text-xs leading-none font-medium text-white transition-colors hover:bg-sky-600 active:bg-sky-700"
+                className="flex h-6! items-center cursor-pointer justify-center rounded-sm bg-sky-500 px-2 text-xs leading-none font-medium text-white transition-colors hover:bg-sky-600 active:bg-sky-700"
               >
                 Select
               </button>
@@ -215,7 +215,7 @@ export default function UsersPage() {
             <span className="max-w-55 text-xs text-slate-400 dark:text-slate-500">
               Invite your first admin to get started.
             </span>
-            <Button size="small" className="h-7!" type="primary" onClick={() => setInviteModalOpen(true)}>
+            <Button size="small" className="h-6!" type="primary" onClick={() => setInviteModalOpen(true)}>
               Invite User
             </Button>
           </div>
