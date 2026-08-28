@@ -180,7 +180,7 @@ export default function UsersPage() {
           <Button
             size="small"
             type="primary"
-            className="flex h-5 sm:h-6.5 gap-1 text-[13px] border-sm!"
+            className="flex h-5 sm:h-6.5 gap-1 text-[13px] rounded-sm!"
             onClick={() => setInviteModalOpen(true)}
           >
             <img
