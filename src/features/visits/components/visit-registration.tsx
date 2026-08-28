@@ -346,7 +346,7 @@ export default function Registration() {
               htmlType="submit"
               size="large"
               block
-              className="rounded-lg text-[13px] font-medium"
+              className="rounded-lg text-[13px] font-medium mt-35 sm:mt-0"
               icon={<ArrowRightOutlined />}
               iconPlacement="end"
             >
