@@ -217,7 +217,7 @@ export default function UserDetailsPage() {
         <div className="w-full xl:flex xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">
           <div className="flex min-w-0 flex-col gap-4 lg:flex-row xl:h-full xl:w-full xl:gap-8 2xl:gap-10">
             {/* Admin information */}
-            <div className="w-full min-w-0 rounded-xl border border-slate-100 bg-white px-4 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1 xl:h-full xl:px-10 xl:py-8 2xl:px-12 2xl:py-10 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
+            <div className="w-full min-w-0 rounded-xl border border-slate-100 bg-white pt-2.5 px-4 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 md:px-8 md:py-8 lg:flex-1 xl:h-full xl:px-10 xl:py-8 2xl:px-12 2xl:py-10 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
               <div className="mb-6 flex flex-col items-center text-center">
                 <div className="mb-2.5">
                   <Avatar
