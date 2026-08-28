@@ -25,27 +25,18 @@ export default function Registration() {
 
   const dispatch = useAppDispatch();
 
-  const {
-    visitorId,
-    verifiedName,
-    verifiedEmail,
-    verifiedPhoneNumber,
-  } = useAppSelector((state) => state.visitorAuth);
+  const { visitorId, verifiedName, verifiedEmail, verifiedPhoneNumber } = useAppSelector(
+    (state) => state.visitorAuth,
+  );
 
   const [createVisit] = useCreateVisitMutation();
 
-  const {
-    data: employeeNames = [],
-    isLoading: isLoadingEmployeeNames,
-  } = useGetEmployeeNamesQuery();
+  const { data: employeeNames = [], isLoading: isLoadingEmployeeNames } =
+    useGetEmployeeNamesQuery();
 
-  const purposeOfVisitValue = Form.useWatch(
-    "purposeOfVisit",
-    form,
-  );
+  const purposeOfVisitValue = Form.useWatch("purposeOfVisit", form);
 
-  const purposeOfVisitLength =
-    purposeOfVisitValue?.length ?? 0;
+  const purposeOfVisitLength = purposeOfVisitValue?.length ?? 0;
 
   useEffect(() => {
     form.setFieldsValue({
@@ -53,50 +44,30 @@ export default function Registration() {
       email: verifiedEmail ?? undefined,
       phoneNo: verifiedPhoneNumber ?? undefined,
     });
-  }, [
-    verifiedName,
-    verifiedEmail,
-    verifiedPhoneNumber,
-    form,
-  ]);
+  }, [verifiedName, verifiedEmail, verifiedPhoneNumber, form]);
 
   const normalizeVisitStatus = (status?: string) => {
-    const normalized = status
-      ?.toLowerCase()
-      .replace(/[_-]/g, " ")
-      .trim();
+    const normalized = status?.toLowerCase().replace(/[_-]/g, " ").trim();
 
-    if (
-      normalized === "approved" ||
-      normalized === "signed in"
-    ) {
+    if (normalized === "approved" || normalized === "signed in") {
       return "approved";
     }
 
-    if (
-      normalized === "rejected" ||
-      normalized === "declined"
-    ) {
+    if (normalized === "rejected" || normalized === "declined") {
       return "rejected";
     }
 
     return "pending";
   };
 
-  const handleFinish = async (
-    values: RegistrationValues,
-  ) => {
+  const handleFinish = async (values: RegistrationValues) => {
     openModal(
       <RegistrationModal
         onSubmit={async () => {
           openModal(
             <RegistrationSuccessModal
               loading
-              onOk={() =>
-                navigate(
-                  paths.visitorProfile.getHref(orgSlug),
-                )
-              }
+              onOk={() => navigate(paths.visitorProfile.getHref(orgSlug))}
             />,
           );
 
@@ -110,24 +81,15 @@ export default function Registration() {
               purposeOfVisit: values.purposeOfVisit,
             }).unwrap();
 
-            const createdAt =
-              response?.createdAt ??
-              new Date().toISOString();
+            const createdAt = response?.createdAt ?? new Date().toISOString();
 
-            const status = normalizeVisitStatus(
-              response?.status,
-            );
+            const status = normalizeVisitStatus(response?.status);
 
-            const visitId =
-              response?.id ??
-              response?.referenceId;
+            const visitId = response?.id ?? response?.referenceId;
 
-            const requestId =
-              response?.referenceId ??
-              response?.id;
+            const requestId = response?.referenceId ?? response?.id;
 
-            const resolvedVisitorId =
-              response?.visitorId ?? visitorId;
+            const resolvedVisitorId = response?.visitorId ?? visitorId;
 
             if (resolvedVisitorId) {
               dispatch(
@@ -149,8 +111,7 @@ export default function Registration() {
                 email: values.email,
                 phoneNo: values.phoneNo,
                 hostName: values.hostName,
-                purposeOfVisit:
-                  values.purposeOfVisit,
+                purposeOfVisit: values.purposeOfVisit,
                 status,
                 requestId,
                 createdAt,
@@ -162,26 +123,15 @@ export default function Registration() {
             openModal(
               <RegistrationSuccessModal
                 loading={false}
-                onOk={() =>
-                  navigate(
-                    paths.visitorProfile.getHref(
-                      orgSlug,
-                    ),
-                  )
-                }
+                onOk={() => navigate(paths.visitorProfile.getHref(orgSlug))}
               />,
             );
           } catch (error) {
-            console.error(
-              "Registration failed:",
-              error,
-            );
+            console.error("Registration failed:", error);
 
             closeModal();
 
-            message.error(
-              "Registration could not be submitted. Please try again.",
-            );
+            message.error("Registration could not be submitted. Please try again.");
           }
         }}
       />,
@@ -192,9 +142,7 @@ export default function Registration() {
     <div className="flex w-full flex-col items-center md:justify-center dark:bg-slate-900">
       <div className="flex w-full flex-1 flex-col md:max-w-lg md:flex-none md:overflow-y-auto">
         <header className="-mb-3 flex items-center justify-between border-b border-slate-200 px-5 md:mt-0 dark:border-slate-700">
-          <h1 className="text-md font-bold text-slate-900 dark:text-slate-100">
-            Registration
-          </h1>
+          <h1 className="text-md font-bold text-slate-900 dark:text-slate-100">Registration</h1>
         </header>
 
         <Form
@@ -202,17 +150,12 @@ export default function Registration() {
           layout="vertical"
           requiredMark={false}
           onFinish={handleFinish}
-          className="flex flex-col px-5 pt-6 md:flex-none dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
+          className="flex flex-col px-5 pt-6 pb-28 md:flex-none md:pb-0 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
         >
           <Form.Item
             name="name"
             label="Name"
-            rules={[
-              {
-                required: true,
-                message: "Please enter your name",
-              },
-            ]}
+            rules={[{ required: true, message: "Please enter your name" }]}
           >
             <Input
               size="large"
@@ -224,10 +167,7 @@ export default function Registration() {
             name="purposeOfVisit"
             label="Purpose of Visit"
             rules={[
-              {
-                required: true,
-                message: "Please select a purpose",
-              },
+              { required: true, message: "Please select a purpose" },
               {
                 max: PURPOSE_OF_VISIT_MAX_LENGTH,
                 message: `Purpose of visit can't exceed ${PURPOSE_OF_VISIT_MAX_LENGTH} characters`,
@@ -242,20 +182,14 @@ export default function Registration() {
           </Form.Item>
 
           <p className="-mt-2 mb-2 text-xs text-slate-400 dark:text-slate-500">
-            Keep it brief, e.g. "Job interview" (
-            {purposeOfVisitLength}/
+            Keep it brief, e.g. "Job interview" ({purposeOfVisitLength}/
             {PURPOSE_OF_VISIT_MAX_LENGTH})
           </p>
 
           <Form.Item
             name="hostName"
             label="Host Name"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the host name",
-              },
-            ]}
+            rules={[{ required: true, message: "Please enter the host name" }]}
           >
             <AutoComplete
               options={employeeNames.map((employee) => ({
@@ -263,33 +197,19 @@ export default function Registration() {
                 label: employee.name,
               }))}
               showSearch={{
-                filterOption: (
-                  inputValue,
-                  option,
-                ) =>
+                filterOption: (inputValue, option) =>
                   String(option?.value ?? "")
                     .toLowerCase()
-                    .includes(
-                      inputValue.toLowerCase(),
-                    ),
+                    .includes(inputValue.toLowerCase()),
               }}
               allowClear
               placeholder="Search or enter host name"
               size="large"
               className="w-full cursor-pointer"
-              getPopupContainer={(triggerNode) =>
-                triggerNode.parentElement!
-              }
-              suffixIcon={
-                isLoadingEmployeeNames ? (
-                  <Spinner variant="inline" />
-                ) : undefined
-              }
+              getPopupContainer={(triggerNode) => triggerNode.parentElement!}
+              suffixIcon={isLoadingEmployeeNames ? <Spinner variant="inline" /> : undefined}
               classNames={{
-                popup: {
-                  listItem:
-                    "employee-autocomplete-option",
-                },
+                popup: { listItem: "employee-autocomplete-option" },
               }}
             />
           </Form.Item>
@@ -298,16 +218,8 @@ export default function Registration() {
             name="email"
             label="Email Address"
             rules={[
-              {
-                required: true,
-                message:
-                  "Please enter your email address",
-              },
-              {
-                type: "email",
-                message:
-                  "Please enter a valid email address",
-              },
+              { required: true, message: "Please enter your email address" },
+              { type: "email", message: "Please enter a valid email address" },
             ]}
           >
             <Input
@@ -321,16 +233,8 @@ export default function Registration() {
             name="phoneNo"
             label="Phone Number"
             rules={[
-              {
-                required: true,
-                message:
-                  "Please enter your phone number",
-              },
-              {
-                pattern: /^[0-9+\-\s]{7,15}$/,
-                message:
-                  "Please enter a valid phone number",
-              },
+              { required: true, message: "Please enter your phone number" },
+              { pattern: /^[0-9+\-\s]{7,15}$/, message: "Please enter a valid phone number" },
             ]}
           >
             <Input
@@ -340,19 +244,19 @@ export default function Registration() {
             />
           </Form.Item>
 
-          <Form.Item className="mb-0 mt-6">
+          <div className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)] md:static md:border-0 md:bg-transparent md:px-0 md:pt-6 md:pb-0 dark:border-slate-700 dark:bg-slate-900">
             <Button
               type="primary"
               htmlType="submit"
               size="large"
               block
-              className="rounded-lg text-[13px] font-medium mt-35 sm:mt-0"
+              className="rounded-lg text-[13px] font-medium"
               icon={<ArrowRightOutlined />}
               iconPlacement="end"
             >
               Submit Registration
             </Button>
-          </Form.Item>
+          </div>
         </Form>
       </div>
     </div>
