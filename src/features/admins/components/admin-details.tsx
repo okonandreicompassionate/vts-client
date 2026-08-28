@@ -31,13 +31,7 @@ export default function AdminDetails({
   const navigate = useNavigate();
   const { id: routeId } = useParams<{ id: string }>();
 
-  /**
-   * Drawer:
-   *   adminId comes from the admin list.
-   *
-   * Full page:
-   *   routeId comes from /admins/:id.
-   */
+
   const detailId = adminId ?? routeId;
   const isDrawer = Boolean(adminId);
 
