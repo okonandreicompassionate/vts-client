@@ -72,17 +72,7 @@ export const adminRoutes: RouteObject[] = [
               };
             },
           },
-          {
-            path: paths.admin.userDetails.path,
-            lazy: async () => {
-              const { default: UserDetails } =
-                await import("@/features/admins/components/admin-details");
-
-              return {
-                Component: UserDetails,
-              };
-            },
-          },
+         
         ],
       },
     ],

@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { Button, Modal, message } from "antd";
+
+import { Button, Drawer, Modal, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { useNavigate } from "react-router-dom";
+
 import TableComponent from "@/components/ui/table";
-import { paths } from "@/config/paths";
+
 import {
   useGetAdminsQuery,
-  useBulkDeleteAdminsMutation, // TODO: rename to useBulkDeactivateAdminsMutation once the mutation itself is renamed
+  useBulkDeleteAdminsMutation, // TODO: rename once mutation itself is renamed
 } from "@/features/admins/api/admins-api-slice";
-import { useOrganization } from "@/features/organizations";
+
 import { Spinner } from "@/components/ui/spinner";
+
 import type { AdminUserItem } from "@/features/admins/types/api-types";
 import type { User } from "../types/types";
+
 import AddUserModal from "./modals/add-user-modal";
+import AdminDetails from "./admin-details";
+
 import { useUsersSSE } from "../hooks/use-users-sse";
 import { userColumns } from "./admins-columns";
 import { getSelectionColumn } from "@/components/ui/selection-column";
@@ -20,11 +25,13 @@ import DashboardHeader from "@/components/layout/dashboard-header";
 
 export default function UsersPage() {
   const [isInviteModalOpen, setInviteModalOpen] = useState(false);
+
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedRows, setSelectedRows] = useState<User[]>([]);
 
-  const navigate = useNavigate();
-  const { orgSlug } = useOrganization();
+  // Selected admin for the details drawer
+  const [selectedAdminId, setSelectedAdminId] = useState<string | null>(null);
+
 
   useUsersSSE();
 
@@ -47,7 +54,9 @@ export default function UsersPage() {
   }));
 
   const selectedRowKeys = selectedRows.map((row) => row.id);
-  const allSelected = users.length > 0 && selectedRows.length === users.length;
+
+  const allSelected =
+    users.length > 0 && selectedRows.length === users.length;
 
   const handleToggleSelection = (record: User) => {
     setSelectedRows((current) =>
@@ -115,7 +124,11 @@ export default function UsersPage() {
       return;
     }
 
-    navigate(paths.admin.userDetails.getHref(orgSlug, record.id));
+    setSelectedAdminId(record.id);
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedAdminId(null);
   };
 
   return (
@@ -133,7 +146,7 @@ export default function UsersPage() {
               <button
                 type="button"
                 onClick={handleStartSelecting}
-                className="flex h-6! items-center cursor-pointer justify-center rounded-sm bg-sky-500 px-2 text-xs leading-none font-medium text-white transition-colors hover:bg-sky-600 active:bg-sky-700"
+                className="flex h-6! cursor-pointer items-center justify-center rounded-sm bg-sky-500 px-2 text-xs leading-none font-medium text-white transition-colors hover:bg-sky-600 active:bg-sky-700"
               >
                 Select
               </button>
@@ -166,7 +179,9 @@ export default function UsersPage() {
 
               <button
                 type="button"
-                disabled={selectedRows.length === 0 || isDeactivating}
+                disabled={
+                  selectedRows.length === 0 || isDeactivating
+                }
                 onClick={handleDeactivateSelected}
                 className="flex h-7 cursor-pointer items-center justify-center rounded px-1.5 text-xs leading-none font-medium text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:text-red-300"
               >
@@ -177,7 +192,10 @@ export default function UsersPage() {
 
           {isError && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-red-500">Unable to load users</span>
+              <span className="text-xs text-red-500">
+                Unable to load users
+              </span>
+
               <button
                 type="button"
                 onClick={() => refetch()}
@@ -193,7 +211,7 @@ export default function UsersPage() {
           <Button
             size="small"
             type="primary"
-            className="flex h-7 gap-1 text-xs rounded-sm!"
+            className="flex h-7 gap-1 rounded-sm! text-xs"
             onClick={() => setInviteModalOpen(true)}
           >
             <img
@@ -201,6 +219,7 @@ export default function UsersPage() {
               alt=""
               className="inline-flex h-3 w-3 items-center"
             />
+
             <span className="text-xs">Invite Admin</span>
           </Button>
         )}
@@ -212,10 +231,17 @@ export default function UsersPage() {
             <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
               No admins yet
             </span>
+
             <span className="max-w-55 text-xs text-slate-400 dark:text-slate-500">
               Invite your first admin to get started.
             </span>
-            <Button size="small" className="h-6!" type="primary" onClick={() => setInviteModalOpen(true)}>
+
+            <Button
+              size="small"
+              className="h-6!"
+              type="primary"
+              onClick={() => setInviteModalOpen(true)}
+            >
               Invite Admin
             </Button>
           </div>
@@ -228,14 +254,17 @@ export default function UsersPage() {
             serialNumberTitle="SN"
             onRow={(record) => ({
               onClick: () => handleRowClick(record),
+
               onKeyDown: (e: React.KeyboardEvent) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
                   handleRowClick(record);
                 }
               },
+
               tabIndex: 0,
               role: "button",
+
               style: {
                 cursor: "pointer",
               },
@@ -256,6 +285,28 @@ export default function UsersPage() {
         open={isInviteModalOpen}
         onCancel={() => setInviteModalOpen(false)}
       />
+
+      {/* Admin Details Drawer */}
+      <Drawer
+        title="Admin Details"
+        placement="right"
+        width={420}
+        open={Boolean(selectedAdminId)}
+        onClose={handleCloseDetails}
+        destroyOnClose
+        styles={{
+          body: {
+            padding: 0,
+          },
+        }}
+      >
+        {selectedAdminId && (
+          <AdminDetails
+            adminId={selectedAdminId}
+            onClose={handleCloseDetails}
+          />
+        )}
+      </Drawer>
     </div>
   );
 }

@@ -57,11 +57,6 @@ export const paths = {
       path: "/:orgSlug/users",
       getHref: (orgSlug: string) => organizationPath(orgSlug, "/users"),
     },
-    userDetails: {
-      path: "/:orgSlug/users/:id",
-      getHref: (orgSlug: string, id?: string) =>
-        id ? organizationPath(orgSlug, `/users/${id}`) : organizationPath(orgSlug, "/users"),
-    },
   },
   notification: {
     notificationStream: {
