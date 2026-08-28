@@ -1,20 +1,14 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import LeftLayout from "@/components/layout/left-layout";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/brand-header";
-import { paths } from "@/config/paths";
-import { useOrganization } from "@/features/organizations";
+
 
 const VisitorLayout = () => {
-  const { orgSlug } = useOrganization();
-  const { pathname } = useLocation();
+
   const navigate = useNavigate();
-  const backPath = pathname.endsWith("/profile")
-    ? paths.register.getHref(orgSlug)
-    : pathname.endsWith("/register")
-      ? paths.verify.getHref(orgSlug)
-      : paths.home.getHref(orgSlug);
+
 
   return (
     <div className="flex min-h-screen w-full md:flex-row">
@@ -28,7 +22,7 @@ const VisitorLayout = () => {
             <Button
               type="link"
               icon={<ArrowLeftOutlined />}
-              onClick={() => navigate(backPath)}
+              onClick={() => navigate(-1)}
               className="mb-3 px-0! text-sky-500!"
             >
               Back
