@@ -18,6 +18,7 @@ import {
 } from "@/features/visits/api/admins-visit-api-slice.ts";
 
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
+import { formatVisitTime } from "../utils/visits.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
 
 const { TextArea } = Input;
@@ -269,50 +270,57 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
   const isRejected = visitor.status === "Rejected";
 
-  const timeline: TimelineStep[] = [
-    {
-      key: "1",
-      title: "Registration received",
-      time: isRejected ? "" : visitor.time,
-      status: "done-blue",
-    },
-    {
-      key: "2",
-      title: isRejected
-        ? "Approval rejected"
-        : visitor.status === "Pending"
-          ? "Awaiting approval"
-          : "Approved for entry",
-      time: isRejected ? "" : visitor.status === "Pending" ? "Pending review" : visitor.checkIn,
-      status: isRejected
-        ? "done-orange"
-        : visitor.status === "Signed In" || visitor.status === "Signed Off"
-          ? "done-green"
-          : "done-orange",
-    },
-    {
-      key: "3",
-      title: isRejected
-        ? "Visit rejected"
-        : visitor.status === "Signed Off"
-          ? "Signed out"
-          : visitor.status === "Signed In"
-            ? "Currently signed in"
-            : "Pending confirmation",
-      time: isRejected
-        ? ""
-        : visitor.status === "Signed Off"
-          ? visitor.time
-          : visitor.status === "Signed In"
-            ? visitor.checkIn
-            : "Pending",
-      status: isRejected
-        ? "done-orange"
-        : visitor.status === "Signed Off" || visitor.status === "Signed In"
-          ? "done-green"
-          : "done-orange",
-    },
-  ];
+  const timeline: TimelineStep[] = isRejected
+    ? [
+        {
+          key: "1",
+          title: "Registration received",
+          time: visitor.time,
+          status: "done-blue",
+        },
+        {
+          key: "2",
+          title: "Visit rejected",
+          time: formatVisitTime(visitor.reviewedAt),
+          status: "done-orange",
+        },
+      ]
+    : [
+        {
+          key: "1",
+          title: "Registration received",
+          time: visitor.time,
+          status: "done-blue",
+        },
+        {
+          key: "2",
+          title: visitor.status === "Pending" ? "Awaiting approval" : "Approved for entry",
+          time: visitor.status === "Pending" ? "Pending review" : visitor.checkIn,
+          status:
+            visitor.status === "Signed In" || visitor.status === "Signed Off"
+              ? "done-green"
+              : "done-orange",
+        },
+        {
+          key: "3",
+          title:
+            visitor.status === "Signed Off"
+              ? "Signed out"
+              : visitor.status === "Signed In"
+                ? "Currently signed in"
+                : "Pending confirmation",
+          time:
+            visitor.status === "Signed Off"
+              ? visitor.time
+              : visitor.status === "Signed In"
+                ? visitor.checkIn
+                : "Pending",
+          status:
+            visitor.status === "Signed Off" || visitor.status === "Signed In"
+              ? "done-green"
+              : "done-orange",
+        },
+      ];
 
   const detailRows: { label: string; value: string }[] = [
     { label: "Full Name", value: visitor.name },
