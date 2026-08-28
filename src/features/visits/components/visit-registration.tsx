@@ -244,7 +244,7 @@ export default function Registration() {
             />
           </Form.Item>
 
-          <div className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)] md:static md:border-0 md:bg-transparent md:px-0 md:pt-6 md:pb-0 dark:border-slate-700 dark:bg-slate-900">
+          <div className="fixed inset-x-0 bottom-0 z-20 bg-white px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)] md:static md:border-0 md:bg-transparent md:px-0 md:pt-6 md:pb-0 dark:border-slate-700 dark:bg-slate-900">
             <Button
               type="primary"
               htmlType="submit"
