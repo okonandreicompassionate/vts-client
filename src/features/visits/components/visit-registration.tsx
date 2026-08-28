@@ -141,8 +141,10 @@ export default function Registration() {
   return (
     <div className="flex w-full flex-col items-center md:justify-center dark:bg-slate-900">
       <div className="flex w-full flex-1 flex-col md:max-w-lg md:flex-none md:overflow-y-auto">
-        <header className="-mb-3 flex items-center justify-between border-b border-slate-200 px-5 md:mt-0 dark:border-slate-700">
-          <h1 className="text-md font-bold text-slate-900 dark:text-slate-100">Registration</h1>
+        <header className="flex min-h-12 items-center justify-between border-b border-slate-200 px-5 py-3 md:mt-0 dark:border-slate-700">
+          <h1 className="text-md leading-normal font-bold whitespace-nowrap text-slate-900 dark:text-slate-100">
+            Request a Visit
+          </h1>
         </header>
 
         <Form
@@ -205,8 +207,9 @@ export default function Registration() {
               allowClear
               placeholder="Search or enter host name"
               size="large"
+              placement="bottomLeft"
               className="w-full cursor-pointer"
-              getPopupContainer={(triggerNode) => triggerNode.parentElement!}
+              getPopupContainer={() => document.body}
               suffixIcon={isLoadingEmployeeNames ? <Spinner variant="inline" /> : undefined}
               classNames={{
                 popup: { listItem: "employee-autocomplete-option" },

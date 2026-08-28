@@ -1,18 +1,13 @@
 import { useState } from "react";
-import { Button, Modal, message } from "antd";
-import {
-  FilterOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+import { Button, Drawer, Modal, message } from "antd";
+import { FilterOutlined, CheckOutlined, CloseOutlined, LogoutOutlined } from "@ant-design/icons";
 import Header from "../../../components/layout/dashboard-header";
 import TableComponent from "../../../components/ui/table";
 import { TablePaginationFooter } from "../../../components/ui/table-pagination-footer";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits";
 import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data";
-import { useVisitorRowClick } from "@/features/visits/hooks/use-visitor-row-click";
-import { visitorColumns } from "./visitor-columns";
+import { getVisitorColumns } from "./visitor-columns";
+import VisitorDetails from "./visitor-details";
 import { getSelectionColumn } from "@/components/ui/selection-column";
 import { Spinner } from "@/components/ui/spinner";
 import type { BulkVisitIds } from "../types/api-types";
@@ -29,31 +24,18 @@ export default function Visitors() {
   const [showFilters, setShowFilters] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedRows, setSelectedRows] = useState<VisitorRow[]>([]);
+  const [drawerVisitorId, setDrawerVisitorId] = useState<string>();
   const pageSize = 8;
 
-
-  const {
-    visitorRecords,
-    totalEntries,
-    isLoading,
-    isError,
-  } = useVisitorTableData({
+  const { visitorRecords, totalEntries, isLoading, isError } = useVisitorTableData({
     page,
     limit: pageSize,
-    status:
-      activeTab === "All"
-        ? undefined
-        : toApiVisitStatus(activeTab),
+    status: activeTab === "All" ? undefined : toApiVisitStatus(activeTab),
   });
 
-  const handleRowClick = useVisitorRowClick();
-
-  const [approveManyVisits, { isLoading: isApproving }] =
-    useApproveManyVisitsMutation();
-  const [rejectManyVisits, { isLoading: isRejecting }] =
-    useRejectManyVisitsMutation();
-  const [signoffManyVisits, { isLoading: isSigningOff }] =
-    useSignoffManyVisitsMutation();
+  const [approveManyVisits, { isLoading: isApproving }] = useApproveManyVisitsMutation();
+  const [rejectManyVisits, { isLoading: isRejecting }] = useRejectManyVisitsMutation();
+  const [signoffManyVisits, { isLoading: isSigningOff }] = useSignoffManyVisitsMutation();
 
   const isBulkActionRunning = isApproving || isRejecting || isSigningOff;
 
@@ -64,10 +46,8 @@ export default function Visitors() {
   const isMixedSelection = selectedStatuses.size > 1;
   const commonStatus = !isMixedSelection ? selectedRows[0]?.status : undefined;
 
-  const canApproveOrReject =
-    hasSelection && !isMixedSelection && commonStatus === "Pending";
-  const canSignOff =
-    hasSelection && !isMixedSelection && commonStatus === "Signed In";
+  const canApproveOrReject = hasSelection && !isMixedSelection && commonStatus === "Pending";
+  const canSignOff = hasSelection && !isMixedSelection && commonStatus === "Signed In";
 
   let actionHint: string | null = null;
   if (hasSelection && isMixedSelection) {
@@ -157,6 +137,7 @@ export default function Visitors() {
     });
   };
 
+  const actionColumns = getVisitorColumns((visitor) => setDrawerVisitorId(visitor.id));
   const columns = isSelecting
     ? [
         getSelectionColumn<VisitorRow>({
@@ -164,9 +145,9 @@ export default function Visitors() {
           onToggle: handleToggleSelection,
           checkboxClassName: "visitor-table-checkbox",
         }),
-        ...visitorColumns,
+        ...actionColumns,
       ]
-    : visitorColumns;
+    : actionColumns;
 
   return (
     <>
@@ -174,17 +155,15 @@ export default function Visitors() {
 
       <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-          <div className="flex flex-col gap-3 px-3 sm:px-6 sm:py-1 overflow-x-auto">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between overflow-x-auto">
-              <div className="flex py-2 w-full gap-2 sm:w-auto sm:flex-row sm:items-center">
+          <div className="flex flex-col gap-3 overflow-x-auto px-3 sm:px-6 sm:py-1">
+            <div className="flex flex-col gap-2 overflow-x-auto sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex w-full gap-2 py-2 sm:w-auto sm:flex-row sm:items-center">
                 <Button
                   icon={<FilterOutlined />}
                   aria-label="Toggle filters"
                   onClick={() => setShowFilters((prev) => !prev)}
                   className={`h-6! ${
-                    showFilters
-                      ? "bg-emerald-50! text-emerald-500!"
-                      : "text-slate-400!"
+                    showFilters ? "bg-emerald-50! text-emerald-500!" : "text-slate-400!"
                   }`}
                 >
                   Filter
@@ -292,7 +271,14 @@ export default function Visitors() {
               size="small"
               showSerialNumber
               startIndex={(page - 1) * pageSize + 1}
-              onRow={isSelecting ? () => ({ style: { cursor: "default" } }) : handleRowClick}
+              onRow={
+                isSelecting
+                  ? () => ({ style: { cursor: "default" } })
+                  : (record) => ({
+                      onClick: () => setDrawerVisitorId(record.id),
+                      style: { cursor: "pointer" },
+                    })
+              }
             />
 
             {isLoading && (
@@ -306,9 +292,7 @@ export default function Visitors() {
 
           {isError && (
             <div className="px-3 pb-3 sm:px-6">
-              <span className="text-[13px] text-red-500">
-                Unable to load visitors
-              </span>
+              <span className="text-[13px] text-red-500">Unable to load visitors</span>
             </div>
           )}
 
@@ -320,6 +304,23 @@ export default function Visitors() {
           />
         </div>
       </main>
+
+      <Drawer
+        title="Visitor Details"
+        placement="right"
+        width="min(100vw, 420px)"
+        open={Boolean(drawerVisitorId)}
+        onClose={() => setDrawerVisitorId(undefined)}
+        destroyOnClose
+        styles={{ body: { padding: 0 } }}
+      >
+        {drawerVisitorId && (
+          <VisitorDetails
+            visitorId={drawerVisitorId}
+            onClose={() => setDrawerVisitorId(undefined)}
+          />
+        )}
+      </Drawer>
     </>
   );
 }

@@ -1,19 +1,20 @@
 import { useState } from "react";
+import { Drawer } from "antd";
 import { TablePaginationFooter } from "../../../components/ui/table-pagination-footer.tsx";
 import DashboardHeader from "../../../components/layout/dashboard-header.tsx";
 import TableComponent from "../../../components/ui/table.tsx";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits.ts";
 import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data.ts";
-import { useVisitorRowClick } from "@/features/visits/hooks/use-visitor-row-click.ts";
 import { useVisitorStats } from "@/features/visits/hooks/use-visitor-stats.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
-import { visitorColumns } from "./visitor-columns.tsx";
+import { getVisitorColumns } from "./visitor-columns.tsx";
+import VisitorDetails from "./visitor-details.tsx";
 import { statCards, type StatusFilter } from "./visitor-stat-cards.tsx";
-
 
 export default function Dashboard() {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
+  const [drawerVisitorId, setDrawerVisitorId] = useState<string>();
 
   const pageSize = 8;
 
@@ -24,7 +25,7 @@ export default function Dashboard() {
   });
 
   const summary = useVisitorStats();
-  const handleRowClick = useVisitorRowClick();
+  const columns = getVisitorColumns((visitor) => setDrawerVisitorId(visitor.id));
 
   const handleStatusChange = (filter: StatusFilter) => {
     setStatusFilter(filter);
@@ -95,14 +96,17 @@ export default function Dashboard() {
             )}
 
             <TableComponent<VisitorRow>
-              columns={visitorColumns}
+              columns={columns}
               dataSource={visitorRecords}
               rowKey="id"
               className="visitor-table"
               size="small"
               showSerialNumber
               startIndex={(page - 1) * pageSize + 1}
-              onRow={handleRowClick}
+              onRow={(record) => ({
+                onClick: () => setDrawerVisitorId(record.id),
+                style: { cursor: "pointer" },
+              })}
             />
           </div>
 
@@ -115,6 +119,23 @@ export default function Dashboard() {
             />
           )}
         </div>
+
+        <Drawer
+          title="Visitor Details"
+          placement="right"
+          width="min(100vw, 420px)"
+          open={Boolean(drawerVisitorId)}
+          onClose={() => setDrawerVisitorId(undefined)}
+          destroyOnClose
+          styles={{ body: { padding: 0 } }}
+        >
+          {drawerVisitorId && (
+            <VisitorDetails
+              visitorId={drawerVisitorId}
+              onClose={() => setDrawerVisitorId(undefined)}
+            />
+          )}
+        </Drawer>
       </main>
     </>
   );
