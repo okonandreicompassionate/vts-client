@@ -14,13 +14,16 @@ import SystemSettingsModal from "../../features/settings/components/modals/syste
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { useDashboardShell } from "./dashboard-shell-context";
 
-const DashboardHeader = ({ title }: { title: string }) => {
+type DashboardHeaderProps = {
+  title: string;
+};
+
+const DashboardHeader = ({ title }: DashboardHeaderProps) => {
   const { data: profile, isLoading } = useAdminAuthSession();
   const shell = useDashboardShell();
-
   const { openModal } = usePopup();
-
   const logout = useLogout();
+
   const handleLogout = () => {
     logout();
   };
@@ -33,7 +36,8 @@ const DashboardHeader = ({ title }: { title: string }) => {
     openModal(<SystemSettingsModal />);
   };
 
-  const displayName = profile?.fullName ?? profile?.email ?? "Admin User";
+  const displayName =
+    profile?.fullName ?? profile?.email ?? "Admin User";
 
   const normalizedRole =
     profile?.role === "SUPERADMIN"
@@ -43,16 +47,21 @@ const DashboardHeader = ({ title }: { title: string }) => {
           .replace(/[_-]+/g, " ")
           .replace(/\s+/g, " ")
           .trim()
-          .replace(/\b\w/g, (char) => char.toUpperCase()) ?? "Admin");
+          .replace(/\b\w/g, (char) => char.toUpperCase()) ??
+        "Admin");
 
   const menuItems: MenuProps["items"] = [
     {
       key: "profile",
       label: (
         <div>
-          <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">{displayName}</p>
+          <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+            {displayName}
+          </p>
 
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">{normalizedRole}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            {normalizedRole}
+          </p>
         </div>
       ),
       disabled: true,
@@ -66,7 +75,11 @@ const DashboardHeader = ({ title }: { title: string }) => {
       key: "update-profile",
       label: (
         <span className="inline-flex items-center gap-1 text-[11.5px]">
-          <img src="/profile.svg" className="h-3.5 opacity-55 brightness-0" alt="" />
+          <img
+            src="/profile.svg"
+            className="h-3.5 opacity-55 brightness-0"
+            alt=""
+          />
           Update Profile
         </span>
       ),
@@ -101,7 +114,8 @@ const DashboardHeader = ({ title }: { title: string }) => {
   ];
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-3 pe-1 backdrop-blur md:ps-6 md:pe-2 dark:border-slate-800 dark:bg-slate-950/95">
+    <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-2 backdrop-blur dark:border-slate-600 dark:bg-slate-600 md:ps-5 md:pe-2">
+      {/* Left side */}
       <div className="flex min-w-0 items-center">
         <Button
           type="text"
@@ -111,10 +125,13 @@ const DashboardHeader = ({ title }: { title: string }) => {
           className="mr-1! flex! h-9! w-9! shrink-0! items-center! justify-center! p-0! text-slate-500! md:hidden! dark:text-slate-400!"
         />
 
-        <h2 className="truncate text-lg font-bold text-slate-800 dark:text-slate-100">{title}</h2>
+        <h2 className="truncate text-lg font-bold text-slate-800 dark:text-slate-100">
+          {title}
+        </h2>
       </div>
 
-      <div className="flex items-center gap-2">
+      {/* Right side */}
+      <div className="flex shrink-0 items-center gap-2">
         <ThemeToggle />
 
         {isLoading ? (
@@ -122,15 +139,25 @@ const DashboardHeader = ({ title }: { title: string }) => {
             <Spinner variant="inline" />
           </div>
         ) : (
-          <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={["click"]}>
+          <Dropdown
+            menu={{ items: menuItems }}
+            placement="bottomRight"
+            trigger={["click"]}
+          >
             <button
               type="button"
               className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900"
               aria-label={`Open account menu for ${displayName}`}
             >
-              <Avatar name={displayName} size="sm" src={profile?.avatar} />
+              <Avatar
+                name={displayName}
+                size="sm"
+                src={profile?.avatar}
+              />
 
-              <span className="hidden text-[13px] font-medium sm:block">{displayName}</span>
+              <span className="hidden text-[13px] font-medium sm:block">
+                {displayName}
+              </span>
 
               <DownOutlined className="flex items-center text-[10px] text-slate-500 dark:text-slate-400" />
             </button>
