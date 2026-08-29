@@ -23,7 +23,7 @@ const VisitorLayout = () => {
               type="link"
               icon={<ArrowLeftOutlined />}
               onClick={() => navigate(-1)}
-              className="mb-3 px-0! text-sky-500!"
+              className="mb-1 px-0! text-sky-500!"
             >
               Back
             </Button>
