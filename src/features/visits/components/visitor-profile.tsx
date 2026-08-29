@@ -307,7 +307,7 @@ export default function VisitorProfile() {
   }
 
   return (
-    <div className="flex min-h-[calc(100dvh-6rem)] w-full items-center justify-center bg-white px-4 py-6 sm:px-6 md:min-h-0 md:px-10 md:py-0 dark:bg-slate-950">
+    <div className="flex min-h-[calc(100dvh-6rem)] w-full items-center justify-center bg-white px-4 py-6 sm:px-6 md:min-h-0 md:px-10 md:py-0">
       <main className="flex w-full max-w-xl flex-col">
         <div className="text-center">
           <div className="text-[20px] font-bold text-slate-900 dark:text-slate-100">
@@ -319,7 +319,7 @@ export default function VisitorProfile() {
           </p>
         </div>
 
-        <section className="mt-6 w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left shadow-sm md:p-6 dark:border-slate-700 dark:bg-slate-900">
+        <section className="mt-6 w-full rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left shadow-sm md:p-6 dark:border-slate-700">
           <div className="flex items-start justify-between gap-1">
             <div>
               <p className="text-[19px] font-bold text-slate-900 dark:text-slate-100">
