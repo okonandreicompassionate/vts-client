@@ -1,6 +1,6 @@
 import React from "react";
 import LeftLayout from "@/components/layout/left-layout";
-import Header from "@/components/layout/brand-header";
+import Header from "@/components/layout/mobile-header";
 
 interface AuthLayoutProps {
   children: React.ReactNode;

@@ -2,7 +2,7 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import LeftLayout from "@/components/layout/left-layout";
 import { Outlet, useNavigate } from "react-router-dom";
-import Header from "@/components/layout/brand-header";
+import Header from "@/components/layout/mobile-header";
 import { ThemeToggle } from "../ui/theme-toggle";
 
 const VisitorLayout = () => {

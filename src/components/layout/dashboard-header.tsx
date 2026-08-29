@@ -75,10 +75,19 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
       key: "update-profile",
       label: (
         <span className="inline-flex items-center gap-1 text-[11.5px]">
-          <img
-            src="/profile.svg"
-            className="h-3.5 opacity-55 brightness-0"
-            alt=""
+          <span
+            aria-hidden="true"
+            className="inline-block h-3.5 w-3.5 bg-current opacity-55"
+            style={{
+              WebkitMaskImage: "url(/profile.svg)",
+              maskImage: "url(/profile.svg)",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+            }}
           />
           Update Profile
         </span>
@@ -105,7 +114,20 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
       key: "logout",
       label: (
         <span className="inline-flex items-center gap-0.5 text-[11.5px]">
-          <img src="/back.svg" className="h-3.5" alt="" />
+          <span
+            aria-hidden="true"
+            className="inline-block h-3.5 w-3.5 bg-current"
+            style={{
+              WebkitMaskImage: "url(/back.svg)",
+              maskImage: "url(/back.svg)",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+            }}
+          />
           Logout
         </span>
       ),
