@@ -43,11 +43,11 @@ export default function RegistrationModal({
       <CustomModal.Body maxHeight={false}>
         <div className="w-full px-2 pt-2">
           <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-            Submit Registration?
+            Submit Visit Request?
           </h3>
 
           <p className="mt-1 text-sm leading-5 text-slate-600 dark:text-slate-400">
-            Confirm that you want to submit this registration.
+            Confirm that you want to submit this request.
           </p>
 
           <div className="pt-4 pb-2">

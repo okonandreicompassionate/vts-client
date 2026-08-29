@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import { usePopup } from "@/features/popup/hooks/use-popup";
 import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
-import RegistrationModal from "./modals/registration-modal";
-import RegistrationSuccessModal from "./modals/registration-success-modal";
+import RegistrationModal from "./modals/visit-request-modal";
+import RegistrationSuccessModal from "./modals/request-success-modal";
 import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
 import { useOrganization } from "@/features/organizations";

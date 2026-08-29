@@ -60,7 +60,7 @@ export default function RegistrationSuccessModal({
                 variants={itemVariants}
                 className="text-[15px] font-medium text-slate-700"
               >
-                Submitting your registration...
+                Submitting your request...
               </motion.p>
             </motion.div>
           ) : (
