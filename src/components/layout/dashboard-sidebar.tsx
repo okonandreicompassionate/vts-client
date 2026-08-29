@@ -97,7 +97,7 @@ export default function Sidebar({
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-64 transform flex-col justify-between border-r border-slate-100 bg-white transition-transform duration-200 dark:border-slate-800 dark:bg-slate-800 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-64 transform flex-col justify-between border-r border-slate-100 bg-white transition-transform duration-200 dark:border-slate-900 dark:bg-slate-900 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         } md:sticky md:top-0 md:h-screen md:translate-x-0 md:transition-all ${
           collapsed ? "md:w-20" : "md:w-60"
