@@ -125,7 +125,7 @@ export default function VerifyIdentity() {
           </Form.Item>
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 z-20 bg-white px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)] md:static md:border-0 md:bg-transparent md:px-0 md:pt-6 md:pb-0 dark:border-slate-700 dark:bg-slate-900 sm:mt-auto">
+        <div className="fixed inset-x-0 bottom-0 z-20 sm:pt-0 bg-white px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)] md:static md:border-0 md:bg-transparent md:px-0 md:pb-0 dark:border-slate-700 dark:bg-slate-900 sm:mt-auto">
             <Button
               type="primary"
               htmlType="submit"
