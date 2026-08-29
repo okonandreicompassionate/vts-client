@@ -58,7 +58,7 @@ export default function RegistrationModal({
             >
               <span className="text-sm leading-5 text-slate-600 dark:text-slate-400">
                 I confirm that I want to proceed with this action and understand
-                that this registration will be reviewed.
+                that this request will be reviewed.
               </span>
             </Checkbox>
           </div>
