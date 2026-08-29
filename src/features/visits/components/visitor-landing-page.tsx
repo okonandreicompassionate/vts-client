@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { LandingPageBackground } from "../animations/landing-page-background";
 import { paths } from "../../../config/paths";
 import { useOrganization } from "@/features/organizations";
-import { ThemeToggle } from "../../../components/ui/theme-toggle";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -15,20 +15,15 @@ export default function LandingPage() {
       className="relative isolate flex min-h-screen w-full items-center justify-center overflow-hidden bg-white px-4 py-10 dark:bg-slate-900"
       style={{ position: "relative", isolation: "isolate" }}
     >
+      <LandingPageBackground />
+
       <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
       </div>
 
-      <LandingPageBackground />
-
       {/* content */}
       <div className="relative flex w-full max-w-md flex-col items-center" style={{ zIndex: 3 }}>
-        <img
-          src="/logo.png"
-          alt="Zoracom"
-          loading="lazy"
-          className="mb-6 h-5 w-auto opacity-90"
-        />
+        <img src="/logo.png" alt="Zoracom" loading="lazy" className="mb-6 h-5 w-auto opacity-90" />
 
         <header className="mb-8 flex flex-col items-center text-center">
           <h1 className="text-2xl font-semibold tracking-tight text-[#10241C] md:text-[28px] dark:text-slate-100">
@@ -40,7 +35,6 @@ export default function LandingPage() {
         </header>
 
         <div className="relative w-full rounded-2xl border border-black/5 bg-white/85 p-3 shadow-[0_30px_80px_-20px_rgba(16,36,28,0.22)] backdrop-blur-xl md:p-4 dark:border-slate-800 dark:bg-slate-800/85">
-
           <div className="overflow-hidden rounded-xl">
             <img
               src="/nsoc-building.png"
