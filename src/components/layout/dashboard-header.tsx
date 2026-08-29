@@ -13,6 +13,7 @@ import EditProfileModal from "@/features/settings/components/modals/edit-profile
 import SystemSettingsModal from "../../features/settings/components/modals/system-settings-modal";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { useDashboardShell } from "./dashboard-shell-context";
+import { formatRole } from "@/utils/format-role";
 
 type DashboardHeaderProps = {
   title: string;
@@ -39,16 +40,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
   const displayName =
     profile?.fullName ?? profile?.email ?? "Admin User";
 
-  const normalizedRole =
-    profile?.role === "SUPERADMIN"
-      ? "Super Admin"
-      : (profile?.role
-          ?.toLowerCase()
-          .replace(/[_-]+/g, " ")
-          .replace(/\s+/g, " ")
-          .trim()
-          .replace(/\b\w/g, (char) => char.toUpperCase()) ??
-        "Admin");
+  const normalizedRole = formatRole(profile?.role);
 
   const menuItems: MenuProps["items"] = [
     {
@@ -136,7 +128,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
   ];
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-2 backdrop-blur dark:border-slate-700 dark:bg-slate-800 md:ps-5 md:pe-2">
+    <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-2 backdrop-blur dark:border-slate-700 dark:bg-slate-900 md:ps-5 md:pe-2">
       {/* Left side */}
       <div className="flex min-w-0 items-center">
         <Button
