@@ -2,6 +2,7 @@ import type { ColumnsType } from "antd/es/table";
 import type { AdminRole } from "@/features/admins/types/api-types";
 import type { User } from "../types/types";
 import UserIdentityCell from "./admin-identity-cell";
+import { formatRole } from "@/utils/format-role";
 
 export const userColumns: ColumnsType<User> = [
   {
@@ -27,7 +28,7 @@ export const userColumns: ColumnsType<User> = [
     key: "role",
     render: (role: AdminRole) => (
       <span className="text-[12px] text-slate-700 dark:text-slate-300">
-        {role}
+        {formatRole(role)}
       </span>
     ),
   },

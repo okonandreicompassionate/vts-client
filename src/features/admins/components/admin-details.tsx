@@ -8,6 +8,7 @@ import DashboardHeader from "@/components/layout/dashboard-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetAdminByIdQuery } from "@/features/admins/api/admins-api-slice";
+import { formatRole } from "@/utils/format-role";
 
 import { DeleteAdmin } from "./deactivate-admin-button";
 
@@ -60,7 +61,7 @@ export default function AdminDetails({
       },
       {
         label: "Role",
-        value: admin?.role ?? "-",
+        value: admin?.role ? formatRole(admin.role) : "-",
       },
     ],
     [admin],
@@ -253,11 +254,7 @@ export default function AdminDetails({
       ? "border border-violet-200 bg-violet-50 text-violet-600 dark:border-violet-800 dark:bg-violet-950/40 dark:text-violet-400"
       : "border border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400";
 
-  /*
-   * ------------------------------------------------------------
-   * DRAWER
-   * ------------------------------------------------------------
-   */
+
   if (isDrawer) {
     return (
       <div className="flex h-full min-h-0 flex-col bg-white dark:bg-slate-800">
@@ -276,7 +273,7 @@ export default function AdminDetails({
             <span
               className={`mt-1 inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] ${roleBadge}`}
             >
-              {admin.role}
+              {formatRole(admin.role)}
             </span>
           </div>
 
@@ -324,7 +321,7 @@ export default function AdminDetails({
                   </p>
 
                   <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
-                    {admin.role}
+                    {formatRole(admin.role)}
                   </p>
                 </div>
               </div>
@@ -367,11 +364,6 @@ export default function AdminDetails({
     );
   }
 
-  /*
-   * ------------------------------------------------------------
-   * FULL PAGE
-   * ------------------------------------------------------------
-   */
   return (
     <>
       <DashboardHeader title="Admin Details" />
@@ -395,7 +387,7 @@ export default function AdminDetails({
                 <span
                   className={`mt-1 inline-flex items-center rounded-full px-3 py-0.5 text-xs ${roleBadge}`}
                 >
-                  {admin.role}
+                  {formatRole(admin.role)}
                 </span>
               </div>
 
@@ -440,7 +432,7 @@ export default function AdminDetails({
                     </p>
 
                     <p className="mt-0.5 text-xs text-slate-400">
-                      {admin.role}
+                      {formatRole(admin.role)}
                     </p>
                   </div>
                 </div>

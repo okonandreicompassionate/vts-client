@@ -293,7 +293,7 @@ export default function UsersPage() {
         width={420}
         open={Boolean(selectedAdminId)}
         onClose={handleCloseDetails}
-        destroyOnClose
+        destroyOnHidden
         styles={{
           body: {
             padding: 0,

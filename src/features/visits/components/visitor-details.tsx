@@ -270,76 +270,87 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
   const isRejected = visitor.status === "Rejected";
 
-  const timeline: TimelineStep[] = isRejected
-    ? [
-        {
-          key: "1",
-          title: "Registration received",
-          time: visitor.time,
-          status: "done-blue",
-        },
-        {
-          key: "2",
-          title: "Visit rejected",
-          time: formatVisitTime(visitor.reviewedAt),
-          status: "done-orange",
-        },
-      ]
-    : [
-        {
-          key: "1",
-          title: "Registration received",
-          time: visitor.time,
-          status: "done-blue",
-        },
-        {
-          key: "2",
-          title: visitor.status === "Pending" ? "Awaiting approval" : "Approved for entry",
-          time: visitor.status === "Pending" ? "Pending review" : visitor.checkIn,
-          status:
-            visitor.status === "Signed In" || visitor.status === "Signed Off"
-              ? "done-green"
-              : "done-orange",
-        },
-        {
-          key: "3",
-          title:
-            visitor.status === "Signed Off"
-              ? "Signed out"
-              : visitor.status === "Signed In"
-                ? "Currently signed in"
-                : "Pending confirmation",
-          time:
-            visitor.status === "Signed Off"
-              ? visitor.time
-              : visitor.status === "Signed In"
-                ? visitor.checkIn
-                : "Pending",
-          status:
-            visitor.status === "Signed Off" || visitor.status === "Signed In"
-              ? "done-green"
-              : "done-orange",
-        },
-      ];
+ const timeline: TimelineStep[] = isRejected
+  ? [
+      {
+        key: "1",
+        title: "Registration received",
+        time: visitor.time,
+        status: "done-blue",
+      },
+      {
+        key: "2",
+        title: "Visit rejected",
+        time: formatVisitTime(visitor.reviewedAt),
+        status: "done-orange",
+      },
+    ]
+  : [
+      {
+        key: "1",
+        title: "Registration received",
+        time: visitor.time,
+        status: "done-blue",
+      },
+      {
+        key: "2",
+        title:
+          visitor.status === "Pending"
+            ? "Awaiting approval"
+            : "Approved for entry",
+        time:
+          visitor.status === "Pending"
+            ? "Pending review"
+            : visitor.checkIn,
+        status:
+          visitor.status === "Signed In" || visitor.status === "Signed Off"
+            ? "done-green"
+            : "done-orange",
+      },
+      {
+        key: "3",
+        title:
+          visitor.status === "Signed Off"
+            ? "Signed out"
+            : visitor.status === "Signed In"
+              ? "Currently signed in"
+              : "Pending confirmation",
+        time:
+          visitor.status === "Signed Off"
+            ? visitor.checkOut
+            : visitor.status === "Signed In"
+              ? visitor.checkIn
+              : "Pending",
+        status:
+          visitor.status === "Signed Off" || visitor.status === "Signed In"
+            ? "done-green"
+            : "done-orange",
+      },
+    ];
 
   const detailRows: { label: string; value: string }[] = [
-    { label: "Full Name", value: visitor.name },
-    { label: "Email Address", value: visitor.email },
-    { label: "Phone Number", value: visitor.phone },
-    { label: "Host Name", value: visitor.host },
-    { label: "Purpose of Visit", value: visitor.purpose },
-    ...(isRejected
-      ? []
-      : [
-          { label: "Signed-In Time", value: visitor.checkIn },
-          {
-            label: "Signed-Out Time",
-            value: visitor.status === "Signed Off" ? visitor.time : "Pending",
-          },
-        ]),
-  ];
+  { label: "Full Name", value: visitor.name },
+  { label: "Email Address", value: visitor.email },
+  { label: "Phone Number", value: visitor.phone },
+  { label: "Host Name", value: visitor.host },
+  { label: "Purpose of Visit", value: visitor.purpose },
+  ...(isRejected
+    ? []
+    : [
+        {
+          label: "Signed-In Time",
+          value: visitor.checkIn,
+        },
+        {
+          label: "Signed-Out Time",
+          value:
+            visitor.status === "Signed Off"
+              ? visitor.checkOut
+              : "Pending",
+        },
+      ]),
+];
 
-  // ---------- Drawer layout (fixed-width panel — compact, never relies on viewport breakpoints) ----------
   if (isDrawer) {
     const showSignOff = visitor.status === "Signed In";
     const showReview = visitor.status === "Pending";
@@ -347,7 +358,6 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
     return (
       <div className="flex h-full min-h-0 flex-col bg-white dark:bg-slate-800">
-        {/* Scrollable content */}
         <div className="min-h-0 flex-1 overflow-y-auto">
           <div className="flex flex-col items-center border-b border-slate-100 px-4 pt-4 pb-3 text-center dark:border-slate-700">
             <Avatar name={visitor.name} size="sm" />
