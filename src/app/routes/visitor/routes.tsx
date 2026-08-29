@@ -42,7 +42,7 @@ export const visitorRoutes: RouteObject[] = [
             path: paths.register.path,
             lazy: async () => {
               const { default: Registration } = await import(
-                "@/features/visits/components/visit-registration"
+                "@/features/visits/components/visit-request"
               );
 
               return { Component: Registration };

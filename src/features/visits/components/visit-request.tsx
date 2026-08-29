@@ -141,7 +141,7 @@ export default function Registration() {
   return (
     <div className="flex w-full flex-col items-center md:justify-center dark:bg-slate-900">
       <div className="flex w-full flex-1 flex-col md:max-w-lg md:flex-none md:overflow-y-auto">
-        <header className="flex min-h-12 items-center justify-between border-b border-slate-200 px-5 py-3 md:mt-0 dark:border-slate-700">
+        <header className="flex min-h-12 items-center justify-between border-b border-slate-200 ps-5 py-1 md:mt-0 dark:border-slate-700">
           <h1 className="text-md leading-normal font-bold whitespace-nowrap text-slate-900 dark:text-slate-100">
             Request a Visit
           </h1>
@@ -257,7 +257,7 @@ export default function Registration() {
               icon={<ArrowRightOutlined />}
               iconPlacement="end"
             >
-              Submit Registration
+              Submit Request
             </Button>
           </div>
         </Form>
