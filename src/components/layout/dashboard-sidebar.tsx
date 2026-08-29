@@ -167,12 +167,23 @@ export default function Sidebar({
                   >
                     <span className="text-sm">
                       {typeof item.icon === "string" ? (
-                        <img
-                          src={item.icon}
-                          alt=""
-                          className={`h-4 w-4 ${
-                            isActive ? "brightness-0 invert" : ""
+                        <span
+                          aria-hidden="true"
+                          className={`inline-block h-4 w-4 ${
+                            isActive
+                              ? "bg-white"
+                              : "bg-slate-500 dark:bg-slate-400"
                           }`}
+                          style={{
+                            WebkitMaskImage: `url(${item.icon})`,
+                            maskImage: `url(${item.icon})`,
+                            WebkitMaskRepeat: "no-repeat",
+                            maskRepeat: "no-repeat",
+                            WebkitMaskPosition: "center",
+                            maskPosition: "center",
+                            WebkitMaskSize: "contain",
+                            maskSize: "contain",
+                          }}
                         />
                       ) : (
                         item.icon
