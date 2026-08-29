@@ -7,7 +7,7 @@ export const visitorRoutes: RouteObject[] = [
     path: paths.home.path,
     lazy: async () => {
       const { default: Landing } = await import(
-        "@/features/visits/components/landing-page"
+        "@/features/visits/components/visitor-landing-page"
       );
 
       return { Component: Landing };
