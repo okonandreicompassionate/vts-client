@@ -114,7 +114,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
   ];
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-2 backdrop-blur dark:border-slate-700 dark:bg-slate-700 md:ps-5 md:pe-2">
+    <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-2 backdrop-blur dark:border-slate-700 dark:bg-slate-800 md:ps-5 md:pe-2">
       {/* Left side */}
       <div className="flex min-w-0 items-center">
         <Button
@@ -146,7 +146,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
           >
             <button
               type="button"
-              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-900"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-900"
               aria-label={`Open account menu for ${displayName}`}
             >
               <Avatar
