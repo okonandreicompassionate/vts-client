@@ -1,221 +1,185 @@
-import { Button } from "antd";
+import { Button, Dropdown, type MenuProps } from "antd";
 import {
-  AppstoreOutlined,
+  DownOutlined,
+  MenuOutlined,
   SettingOutlined,
-  CloseOutlined,
-  TeamOutlined,
 } from "@ant-design/icons";
-import { useLocation, useNavigate } from "react-router-dom";
-import { paths } from "../../config/paths";
-import { useOrganization } from "@/features/organizations";
-import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
-import { useTheme } from "@/features/theme/hooks/use-theme";
-import type { Dispatch, SetStateAction } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { usePopup } from "@/features/popup/hooks/use-popup";
+import { Spinner } from "@/components/ui/spinner";
+import { ThemeToggle } from "../ui/theme-toggle";
+import { useLogout } from "@/features/auth/hooks/use-logout";
+import { Avatar } from "../ui/avatar";
+import EditProfileModal from "@/features/settings/components/modals/edit-profile-modal";
+import SystemSettingsModal from "../../features/settings/components/modals/system-settings-modal";
+import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { useDashboardShell } from "./dashboard-shell-context";
+import { formatRole } from "@/utils/format-role";
 
-type SidebarProps = {
-  collapsed: boolean;
-  mobileOpen: boolean;
-  setMobileOpen: (open: boolean) => void;
-  setCollapsed: Dispatch<SetStateAction<boolean>>;
+type DashboardHeaderProps = {
+  title: string;
 };
 
-export default function Sidebar({
-  collapsed,
-  mobileOpen,
-  setMobileOpen,
-  setCollapsed,
-}: SidebarProps) {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { orgSlug } = useOrganization();
-  const { isDark } = useTheme();
+const DashboardHeader = ({ title }: DashboardHeaderProps) => {
+  const { data: profile, isLoading } = useAdminAuthSession();
+  const shell = useDashboardShell();
+  const { openModal } = usePopup();
+  const logout = useLogout();
 
-  const { data: profile } = useGetProfileQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-    refetchOnFocus: true,
-  });
+  const handleLogout = () => {
+    logout();
+  };
 
-  const isSuperAdmin = profile?.role === "SUPERADMIN";
+  const handleUpdateProfile = () => {
+    openModal(<EditProfileModal />);
+  };
 
-  const navItems = [
+  const handleUpdateSystemSettings = () => {
+    openModal(<SystemSettingsModal />);
+  };
+
+  const displayName =
+    profile?.fullName ?? profile?.email ?? "Admin User";
+
+  const normalizedRole = formatRole(profile?.role);
+
+  const menuItems: MenuProps["items"] = [
     {
-      key: "dashboard",
-      label: "Dashboard",
-      href: paths.admin.dashboard.getHref(orgSlug),
-      icon: <AppstoreOutlined />,
+      key: "profile",
+      label: (
+        <div>
+          <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+            {displayName}
+          </p>
+
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            {normalizedRole}
+          </p>
+        </div>
+      ),
+      disabled: true,
     },
+
     {
-      key: "visitors",
-      label: "Visitors",
-      href: paths.admin.visitors.getHref(orgSlug),
-      icon: "/visitors.svg",
+      type: "divider",
     },
+
     {
-      key: "employees",
-      label: "Employees",
-      href: paths.admin.employees.getHref(orgSlug),
-      icon: "/staff.svg",
+      key: "update-profile",
+      label: (
+        <span className="inline-flex items-center gap-1 text-[11.5px]">
+          <span
+            aria-hidden="true"
+            className="inline-block h-3.5 w-3.5 bg-current opacity-55"
+            style={{
+              WebkitMaskImage: "url(/profile.svg)",
+              maskImage: "url(/profile.svg)",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+            }}
+          />
+          Update Profile
+        </span>
+      ),
+      onClick: handleUpdateProfile,
     },
-    ...(isSuperAdmin
+
+    ...(profile?.role === "SUPERADMIN"
       ? [
           {
-            key: "Admins",
-            label: "Admins",
-            href: paths.admin.users.getHref(orgSlug),
-            icon: <TeamOutlined />,
+            key: "update-system-settings",
+            label: (
+              <span className="inline-flex items-center gap-1 text-[11.5px]">
+                <SettingOutlined />
+                Update System Settings
+              </span>
+            ),
+            onClick: handleUpdateSystemSettings,
           },
         ]
       : []),
+
     {
-      key: "settings",
-      label: "Settings",
-      href: paths.admin.settings.getHref(orgSlug),
-      icon: <SettingOutlined />,
+      key: "logout",
+      label: (
+        <span className="inline-flex items-center gap-0.5 text-[11.5px]">
+          <span
+            aria-hidden="true"
+            className="inline-block h-3.5 w-3.5 bg-current"
+            style={{
+              WebkitMaskImage: "url(/back.svg)",
+              maskImage: "url(/back.svg)",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+            }}
+          />
+          Logout
+        </span>
+      ),
+      onClick: handleLogout,
     },
   ];
 
-  const go = (href: string) => {
-    navigate(href);
-    setMobileOpen(false);
-  };
-
   return (
-    <>
-      {/* Mobile backdrop */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
-          onClick={() => setMobileOpen(false)}
-          aria-hidden="true"
+    <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-1 backdrop-blur dark:border-slate-700 dark:bg-slate-900 md:ps-5 md:pe-2">
+      {/* Left side */}
+      <div className="flex min-w-0 items-center">
+        <Button
+          type="text"
+          onClick={() => shell?.setMobileOpen(true)}
+          aria-label="Open navigation menu"
+          icon={<MenuOutlined />}
+          className="mr-1! flex! h-9! w-9! shrink-0! items-center! justify-center! p-0! text-slate-500! md:hidden! dark:text-slate-400!"
         />
-      )}
 
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-64 transform flex-col justify-between border-r border-slate-100 bg-white transition-transform duration-200 dark:border-slate-900 dark:bg-slate-900 ${
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        } md:sticky md:top-0 md:h-screen md:translate-x-0 md:transition-all ${
-          collapsed ? "md:w-20" : "md:w-60"
-        } md:shrink-0`}
-      >
-        <div>
-          <div className="flex h-16 items-center justify-between px-5">
-            {!collapsed && (
-              <img
-                src="/logo.svg"
-                className="h-3 border-0! shadow-none! outline-none! md:block"
-                alt="Logo"
-              />
-            )}
+        <h2 className="truncate text-lg font-bold text-slate-800 dark:text-slate-100">
+          {title}
+        </h2>
+      </div>
 
-            {/* Desktop collapse button */}
-            <Button
-              type="text"
-              onClick={() => setCollapsed((c) => !c)}
-              aria-label="Toggle sidebar"
-              icon={
-                <img
-                  src={
-                    collapsed
-                      ? isDark
-                        ? "/expand-dark.svg"
-                        : "/expand.svg"
-                      : isDark
-                        ? "/collapse-dark.svg"
-                        : "/collapse.svg"
-                  }
-                  alt=""
-                  className="h-4 w-4"
-                />
-              }
-              className="hidden! h-7! w-7! text-slate-400! md:inline-flex! dark:text-slate-500!"
-            />
+      {/* Right side */}
+      <div className="flex shrink-0 items-center gap-2">
+        <ThemeToggle />
 
-            {/* Mobile close button */}
-            <Button
-              type="text"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Close menu"
-              icon={<CloseOutlined />}
-              className="h-7! w-7! text-slate-400! md:hidden! dark:text-slate-500!"
-            />
+        {isLoading ? (
+          <div className="flex h-8 w-8 items-center justify-center">
+            <Spinner variant="inline" />
           </div>
+        ) : (
+          <Dropdown
+            menu={{ items: menuItems }}
+            placement="bottomRight"
+            trigger={["click"]}
+          >
+            <button
+              type="button"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-900"
+              aria-label={`Open account menu for ${displayName}`}
+            >
+              <Avatar
+                name={displayName}
+                size="sm"
+                src={profile?.avatar}
+              />
 
-          <TooltipProvider>
-            <nav className="mt-1 space-y-1 px-3">
-              {navItems.map((item) => {
-                const isActive = location.pathname.startsWith(item.href);
+              <span className="hidden text-[13px] font-medium sm:block">
+                {displayName}
+              </span>
 
-                const button = (
-                  <Button
-                    type="text"
-                    onClick={() => go(item.href)}
-                    className={`flex! h-auto! w-full! items-center rounded-lg! px-3! py-1.5! text-sm! font-medium! ${
-                      isActive
-                        ? "bg-sky-500! text-white! shadow-sm shadow-sky-200 dark:shadow-sky-900!"
-                        : "text-slate-500! hover:bg-slate-50! dark:text-slate-400! dark:hover:bg-slate-800!"
-                    } ${
-                      collapsed
-                        ? "md:justify-center!"
-                        : "justify-start!"
-                    }`}
-                  >
-                    <span className="text-sm">
-                      {typeof item.icon === "string" ? (
-                        <span
-                          aria-hidden="true"
-                          className={`inline-block h-4 w-4 ${
-                            isActive
-                              ? "bg-white"
-                              : "bg-slate-500 dark:bg-slate-400"
-                          }`}
-                          style={{
-                            WebkitMaskImage: `url(${item.icon})`,
-                            maskImage: `url(${item.icon})`,
-                            WebkitMaskRepeat: "no-repeat",
-                            maskRepeat: "no-repeat",
-                            WebkitMaskPosition: "center",
-                            maskPosition: "center",
-                            WebkitMaskSize: "contain",
-                            maskSize: "contain",
-                          }}
-                        />
-                      ) : (
-                        item.icon
-                      )}
-                    </span>
-
-                    <span
-                      className={collapsed ? "md:hidden" : ""}
-                    >
-                      {item.label}
-                    </span>
-                  </Button>
-                );
-
-                return collapsed ? (
-                  <Tooltip key={item.key}>
-                    <TooltipTrigger asChild>
-                      {button}
-                    </TooltipTrigger>
-
-                    <TooltipContent>
-                      {item.label}
-                    </TooltipContent>
-                  </Tooltip>
-                ) : (
-                  <div key={item.key}>{button}</div>
-                );
-              })}
-            </nav>
-          </TooltipProvider>
-        </div>
-      </aside>
-    </>
+              <DownOutlined className="flex items-center text-[10px] text-slate-500 dark:text-slate-400" />
+            </button>
+          </Dropdown>
+        )}
+      </div>
+    </header>
   );
-}
+};
+
+export default DashboardHeader;
