@@ -1,6 +1,6 @@
 export default function LeftLayout() {
   return (
-    <aside className="hidden min-h-screen items-center w-full overflow-hidden bg-[#EFF7FB] px-8 pt-10 md:grid md:px-16 md:pt-12 dark:bg-slate-800">
+    <aside className="hidden min-h-screen h-screen items-center w-full overflow-hidden bg-[#EFF7FB] px-8 pt-10 md:grid md:px-16 md:pt-12 dark:bg-slate-800">
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 text-center 2xl:gap-10">
         <img src="/logo.svg" alt="" className="h-20 w-32 2xl:h-24 2xl:w-40" />
 
