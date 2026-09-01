@@ -1,6 +1,32 @@
 import type { VisitListResponse, VisitStats, VisitResponse, BulkVisitIds } from "../types/api-types";
 import { adminApi } from "@/lib/api/admin/admin-api";
 
+const VISITS_GRAPHQL_QUERY = `
+  query Visits($orgId: String!, $page: Int!, $limit: Int!, $status: VisitStatus, $search: String) {
+    visits(orgId: $orgId, page: $page, limit: $limit, status: $status, search: $search) {
+      data {
+        id
+        referenceId
+        name
+        phoneNumber
+        email
+        hostName
+        purpose
+        checkInTime
+        status
+        registeredAt
+      }
+      meta {
+        page
+        limit
+        total
+        totalPages
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
+`;
 
 export const adminVisitsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -67,16 +93,59 @@ export const adminVisitsApi = adminApi.injectEndpoints({
         page: number;
         limit: number;
         status?: string;
+        search?: string;
       }
     >({
-      query: ({ page, limit, status }) => ({
-        url: "/visits",
-        params: {
-          page,
-          limit,
-          ...(status && { status }),
-        },
-      }),
+      async queryFn(args) {
+        const orgSlug = window.location.pathname.split("/")[1];
+
+        const response = await fetch(`${import.meta.env.VITE_API_URL ?? ""}/graphql`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: VISITS_GRAPHQL_QUERY,
+            variables: {
+              orgId: orgSlug,
+              page: args.page,
+              limit: args.limit,
+              ...(args.status ? { status: args.status } : {}),
+              ...(args.search ? { search: args.search } : {}),
+            },
+          }),
+        });
+
+        const json = (await response.json()) as {
+          data?: { visits?: VisitListResponse };
+          errors?: Array<{ message?: string }>;
+        };
+
+        if (!response.ok || json.errors?.length) {
+          return {
+            error: {
+              status: response.status,
+              data: json.errors ?? json,
+            },
+          };
+        }
+
+        return {
+          data:
+            json.data?.visits ?? {
+              data: [],
+              meta: {
+                page: 1,
+                limit: args.limit,
+                total: 0,
+                totalPages: 0,
+                hasNextPage: false,
+                hasPreviousPage: false,
+              },
+            },
+        };
+      },
       providesTags: ["Visits"],
     }),
 

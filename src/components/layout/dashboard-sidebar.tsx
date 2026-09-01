@@ -1,185 +1,120 @@
-import { Button, Dropdown, type MenuProps } from "antd";
+import { Button } from "antd";
 import {
-  DownOutlined,
-  MenuOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
-import { usePopup } from "@/features/popup/hooks/use-popup";
-import { Spinner } from "@/components/ui/spinner";
-import { ThemeToggle } from "../ui/theme-toggle";
-import { useLogout } from "@/features/auth/hooks/use-logout";
-import { Avatar } from "../ui/avatar";
-import EditProfileModal from "@/features/settings/components/modals/edit-profile-modal";
-import SystemSettingsModal from "../../features/settings/components/modals/system-settings-modal";
-import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
-import { useDashboardShell } from "./dashboard-shell-context";
-import { formatRole } from "@/utils/format-role";
+  Bell,
+  ChevronLeft,
+  ChevronRight,
+  LayoutDashboard,
+  Settings,
+  UserCheck,
+  Users,
+  X,
+} from "lucide-react";
+import { NavLink } from "react-router-dom";
 
-type DashboardHeaderProps = {
-  title: string;
+type SidebarProps = {
+  collapsed: boolean;
+  mobileOpen: boolean;
+  setCollapsed: (value: boolean) => void;
+  setMobileOpen: (value: boolean) => void;
 };
 
-const DashboardHeader = ({ title }: DashboardHeaderProps) => {
-  const { data: profile, isLoading } = useAdminAuthSession();
-  const shell = useDashboardShell();
-  const { openModal } = usePopup();
-  const logout = useLogout();
+const navItems = [
+  { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/admin/visitors", label: "Visitors", icon: UserCheck },
+  { to: "/admin/employees", label: "Employees", icon: Users },
+  { to: "/admin/notifications", label: "Notifications", icon: Bell },
+  { to: "/admin/settings", label: "Settings", icon: Settings },
+];
 
-  const handleLogout = () => {
-    logout();
-  };
-
-  const handleUpdateProfile = () => {
-    openModal(<EditProfileModal />);
-  };
-
-  const handleUpdateSystemSettings = () => {
-    openModal(<SystemSettingsModal />);
-  };
-
-  const displayName =
-    profile?.fullName ?? profile?.email ?? "Admin User";
-
-  const normalizedRole = formatRole(profile?.role);
-
-  const menuItems: MenuProps["items"] = [
-    {
-      key: "profile",
-      label: (
-        <div>
-          <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
-            {displayName}
-          </p>
-
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">
-            {normalizedRole}
-          </p>
-        </div>
-      ),
-      disabled: true,
-    },
-
-    {
-      type: "divider",
-    },
-
-    {
-      key: "update-profile",
-      label: (
-        <span className="inline-flex items-center gap-1 text-[11.5px]">
-          <span
-            aria-hidden="true"
-            className="inline-block h-3.5 w-3.5 bg-current opacity-55"
-            style={{
-              WebkitMaskImage: "url(/profile.svg)",
-              maskImage: "url(/profile.svg)",
-              WebkitMaskRepeat: "no-repeat",
-              maskRepeat: "no-repeat",
-              WebkitMaskPosition: "center",
-              maskPosition: "center",
-              WebkitMaskSize: "contain",
-              maskSize: "contain",
-            }}
-          />
-          Update Profile
-        </span>
-      ),
-      onClick: handleUpdateProfile,
-    },
-
-    ...(profile?.role === "SUPERADMIN"
-      ? [
-          {
-            key: "update-system-settings",
-            label: (
-              <span className="inline-flex items-center gap-1 text-[11.5px]">
-                <SettingOutlined />
-                Update System Settings
-              </span>
-            ),
-            onClick: handleUpdateSystemSettings,
-          },
-        ]
-      : []),
-
-    {
-      key: "logout",
-      label: (
-        <span className="inline-flex items-center gap-0.5 text-[11.5px]">
-          <span
-            aria-hidden="true"
-            className="inline-block h-3.5 w-3.5 bg-current"
-            style={{
-              WebkitMaskImage: "url(/back.svg)",
-              maskImage: "url(/back.svg)",
-              WebkitMaskRepeat: "no-repeat",
-              maskRepeat: "no-repeat",
-              WebkitMaskPosition: "center",
-              maskPosition: "center",
-              WebkitMaskSize: "contain",
-              maskSize: "contain",
-            }}
-          />
-          Logout
-        </span>
-      ),
-      onClick: handleLogout,
-    },
-  ];
+const Sidebar = ({
+  collapsed,
+  mobileOpen,
+  setCollapsed,
+  setMobileOpen,
+}: SidebarProps) => {
+  const isMobileOpen = mobileOpen;
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-1 backdrop-blur dark:border-slate-700 dark:bg-slate-900 md:ps-5 md:pe-2">
-      {/* Left side */}
-      <div className="flex min-w-0 items-center">
-        <Button
-          type="text"
-          onClick={() => shell?.setMobileOpen(true)}
-          aria-label="Open navigation menu"
-          icon={<MenuOutlined />}
-          className="mr-1! flex! h-9! w-9! shrink-0! items-center! justify-center! p-0! text-slate-500! md:hidden! dark:text-slate-400!"
-        />
+    <>
+      {isMobileOpen && (
+        <button
+          type="button"
+          aria-label="Close sidebar"
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 z-30 bg-slate-900/40 md:hidden"
+        >
+          <span className="sr-only">Close sidebar</span>
+        </button>
+      )}
 
-        <h2 className="truncate text-lg font-bold text-slate-800 dark:text-slate-100">
-          {title}
-        </h2>
-      </div>
+      <aside
+        className={[
+          "fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white transition-all duration-200 dark:border-slate-700 dark:bg-slate-950 md:static",
+          isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+          collapsed ? "w-20" : "w-72",
+          !collapsed && "md:w-72",
+        ].join(" ")}
+      >
+        <div className="flex items-center justify-between border-b border-slate-200 px-3 py-4 dark:border-slate-700">
+          <div className="flex min-w-0 items-center gap-2 overflow-hidden">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-100 font-bold text-sky-700 dark:bg-sky-900/40 dark:text-sky-300">
+              V
+            </div>
 
-      {/* Right side */}
-      <div className="flex shrink-0 items-center gap-2">
-        <ThemeToggle />
-
-        {isLoading ? (
-          <div className="flex h-8 w-8 items-center justify-center">
-            <Spinner variant="inline" />
+            {!collapsed && (
+              <div className="overflow-hidden">
+                <p className="truncate text-sm font-bold text-slate-800 dark:text-slate-50">
+                  VTS
+                </p>
+                <p className="truncate text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                  Admin
+                </p>
+              </div>
+            )}
           </div>
-        ) : (
-          <Dropdown
-            menu={{ items: menuItems }}
-            placement="bottomRight"
-            trigger={["click"]}
-          >
-            <button
-              type="button"
-              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-900"
-              aria-label={`Open account menu for ${displayName}`}
+
+          <Button
+            type="text"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={() => setCollapsed(!collapsed)}
+            className="hidden h-8 w-8 md:flex"
+            icon={collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          />
+
+          <Button
+            type="text"
+            aria-label="Close mobile navigation"
+            onClick={() => setMobileOpen(false)}
+            className="md:hidden"
+            icon={<X size={16} />}
+          />
+        </div>
+
+        <nav className="flex flex-1 flex-col gap-1 p-3">
+          {navItems.map(({ to, label, icon: Icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={to === "/admin/dashboard"}
+              onClick={() => setMobileOpen(false)}
+              className={({ isActive }) =>
+                [
+                  "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100",
+                  collapsed ? "justify-center px-2" : "",
+                ].join(" ")
+              }
             >
-              <Avatar
-                name={displayName}
-                size="sm"
-                src={profile?.avatar}
-              />
-
-              <span className="hidden text-[13px] font-medium sm:block">
-                {displayName}
-              </span>
-
-              <DownOutlined className="flex items-center text-[10px] text-slate-500 dark:text-slate-400" />
-            </button>
-          </Dropdown>
-        )}
-      </div>
-    </header>
+              <Icon size={18} />
+              {!collapsed && <span>{label}</span>}
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+    </>
   );
 };
 
-export default DashboardHeader;
+export default Sidebar;
