@@ -10,11 +10,11 @@ const VisitorLayout = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-screen w-full flex-col">
+    <div className="flex h-screen w-full flex-col overflow-hidden">
       <div className="flex min-h-0 w-full flex-1 md:flex-row">
         <LeftLayout />
 
-        <div className="mt-4 flex min-h-screen w-full flex-col bg-white sm:px-6 md:px-10 lg:px-14 dark:bg-slate-900">
+        <div className="mt-4 flex h-full min-h-0 w-full flex-col overflow-y-auto bg-white sm:px-6 md:px-10 lg:px-14 dark:bg-slate-900">
           <Header />
 
           <main className="flex min-h-0 w-full flex-1 justify-center px-4 pt-6 sm:px-6 sm:pt-8 md:items-center md:px-10 md:pt-0">
