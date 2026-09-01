@@ -3,7 +3,7 @@ import { adminApi } from "@/lib/api/admin/admin-api";
 import { csrfFetch } from "@/lib/api/csrf-fetch";
 
 const VISITS_GRAPHQL_QUERY = `
-  query Visits($orgId: String!, $page: Int!, $limit: Int!, $status: VisitStatus, $search: String) {
+  query Visits($orgId: String!, $page: Int!, $limit: Int!, $status: VisitorStatus, $search: String) {
     visits(orgId: $orgId, page: $page, limit: $limit, status: $status, search: $search) {
       data {
         id
