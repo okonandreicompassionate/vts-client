@@ -1,5 +1,6 @@
 import type { VisitListResponse, VisitStats, VisitResponse, BulkVisitIds } from "../types/api-types";
 import { adminApi } from "@/lib/api/admin/admin-api";
+import { csrfFetch } from "@/lib/api/csrf-fetch";
 
 const VISITS_GRAPHQL_QUERY = `
   query Visits($orgId: String!, $page: Int!, $limit: Int!, $status: VisitStatus, $search: String) {
@@ -99,7 +100,7 @@ export const adminVisitsApi = adminApi.injectEndpoints({
       async queryFn(args) {
         const orgSlug = window.location.pathname.split("/")[1];
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL ?? ""}/graphql`, {
+        const response = await csrfFetch(`${import.meta.env.VITE_API_URL ?? ""}/graphql`, {
           method: "POST",
           credentials: "include",
           headers: {
