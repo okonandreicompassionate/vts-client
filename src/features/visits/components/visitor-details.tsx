@@ -1,3 +1,4 @@
+import { useApolloClient } from "@apollo/client/react";
 import { ArrowLeftOutlined, CheckOutlined } from "@ant-design/icons";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Alert, Button, Input, message } from "antd";
@@ -62,6 +63,7 @@ interface VisitorDetailsProps {
 }
 
 export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsProps = {}) {
+  const client = useApolloClient();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { openModal, closeModal } = usePopup();
@@ -97,6 +99,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
     try {
       await signoffVisit(visitor.id).unwrap();
+      await client.refetchQueries({ include: ["Visits"] });
 
       message.success("Visitor signed off successfully.");
     } catch {
@@ -122,6 +125,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
     try {
       await approveVisit(visitor.id).unwrap();
+      await client.refetchQueries({ include: ["Visits"] });
 
       message.success("Visitor approved successfully.");
       closeModal();
@@ -142,6 +146,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
         id: visitor.id,
         reason: notes,
       }).unwrap();
+      await client.refetchQueries({ include: ["Visits"] });
 
       message.success("Visitor rejected.");
       setNotes("");

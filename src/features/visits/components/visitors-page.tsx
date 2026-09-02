@@ -1,3 +1,4 @@
+import { useApolloClient } from "@apollo/client/react";
 import { useState } from "react";
 import { Button, Drawer, Modal, message } from "antd";
 import { FilterOutlined, CheckOutlined, CloseOutlined, LogoutOutlined } from "@ant-design/icons";
@@ -19,6 +20,7 @@ import {
 } from "@/features/visits/api/admins-visit-api-slice";
 
 export default function Visitors() {
+  const client = useApolloClient();
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
@@ -83,6 +85,7 @@ export default function Visitors() {
   ) => {
     try {
       await action({ visitIds: selectedRowKeys });
+      await client.refetchQueries({ include: ["Visits"] });
       message.success(successMessage);
       setSelectedRows([]);
       setIsSelecting(false);
