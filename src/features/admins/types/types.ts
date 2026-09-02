@@ -1,13 +1,13 @@
 import type { AdminRole } from "@/features/admins/types/api-types";
 
-export type UserStatus = "active" | "disabled" | "invited";
+export type AdminStatus = "active" | "disabled" | "invited";
 
 export interface InviteFormValues {
   email: string;
   role: AdminRole;
 }
 
-export interface User {
+export interface Admin {
   id: string;
   name: string;
   email: string;

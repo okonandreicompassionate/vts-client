@@ -1,9 +1,5 @@
 import { Button, Dropdown, type MenuProps } from "antd";
-import {
-  DownOutlined,
-  MenuOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+import { DownOutlined, MenuOutlined } from "@ant-design/icons";
 import { usePopup } from "@/features/popup/hooks/use-popup";
 import { Spinner } from "@/components/ui/spinner";
 import { ThemeToggle } from "../ui/theme-toggle";
@@ -66,10 +62,10 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
     {
       key: "update-profile",
       label: (
-        <span className="inline-flex items-center gap-1 text-[11.5px]">
+        <span className="inline-flex items-center gap-1 text-[11.5px] text-slate-700 dark:text-slate-200">
           <span
             aria-hidden="true"
-            className="inline-block h-3.5 w-3.5 bg-current opacity-55"
+            className="inline-block h-3.5 w-3.5 shrink-0 bg-current"
             style={{
               WebkitMaskImage: "url(/profile.svg)",
               maskImage: "url(/profile.svg)",
@@ -92,8 +88,21 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
           {
             key: "update-system-settings",
             label: (
-              <span className="inline-flex items-center gap-1 text-[11.5px]">
-                <SettingOutlined />
+              <span className="inline-flex items-center gap-1 text-[11.5px] text-slate-700 dark:text-slate-200">
+                <span
+                  aria-hidden="true"
+                  className="inline-block h-3.5 w-3.5 shrink-0 bg-current"
+                  style={{
+                    WebkitMaskImage: "url(/settings.svg)",
+                    maskImage: "url(/settings.svg)",
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                  }}
+                />
                 Update System Settings
               </span>
             ),
@@ -105,10 +114,10 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
     {
       key: "logout",
       label: (
-        <span className="inline-flex items-center gap-0.5 text-[11.5px]">
+        <span className="inline-flex items-center gap-0.5 text-[11.5px] text-slate-700 dark:text-slate-200">
           <span
             aria-hidden="true"
-            className="inline-block h-3.5 w-3.5 bg-current"
+            className="inline-block h-3.5 w-3.5 shrink-0 bg-current"
             style={{
               WebkitMaskImage: "url(/back.svg)",
               maskImage: "url(/back.svg)",
@@ -160,7 +169,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
           >
             <button
               type="button"
-              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-900"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-900"
               aria-label={`Open account menu for ${displayName}`}
             >
               <Avatar

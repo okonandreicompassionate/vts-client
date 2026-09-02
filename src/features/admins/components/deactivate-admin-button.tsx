@@ -1,12 +1,12 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import DeleteAdminModal from "./modals/deactivate-admin-modal";
-import { useDeleteAdminMutation } from "../api/admins-api-slice";
+import DeactivateAdminModal from "./modals/deactivate-admin-modal";
+import { useDeactivateAdminMutation } from "../api/admins-api-slice";
 import { useOrganization } from "@/features/organizations";
 import { usePopup } from "@/features/popup/hooks/use-popup";
 
-interface DeleteAdminProps {
+interface DeactivateAdminProps {
   adminId: string;
 }
 
@@ -18,32 +18,33 @@ function getErrorStatus(error: unknown): number | string | undefined {
   return undefined;
 }
 
-export const DeleteAdmin = ({ adminId }: DeleteAdminProps) => {
+export const DeactivateAdmin = ({ adminId }: DeactivateAdminProps) => {
   const navigate = useNavigate();
   const { orgSlug } = useOrganization();
   const { openModal } = usePopup();
 
-  const [deleteAdmin, { isLoading: isDeleting }] = useDeleteAdminMutation();
+  const [deactivateAdmin, { isLoading: isDeactivating }] =
+    useDeactivateAdminMutation();
 
-  const handleDelete = async () => {
+  const handleDeactivate = async () => {
     if (!adminId || !orgSlug) {
-      message.error("Unable to remove this admin.");
+      message.error("Unable to deactivate this admin.");
       return;
     }
 
     try {
-      await deleteAdmin({
+      await deactivateAdmin({
         orgSlug,
         adminId,
       }).unwrap();
 
-      message.success("Admin removed successfully.");
+      message.success("Admin deactivated successfully.");
       navigate(-1);
     } catch (error) {
       const status = getErrorStatus(error);
 
       if (status === 403) {
-        message.error("You do not have permission to remove this admin.");
+        message.error("You do not have permission to deactivate this admin.");
         return;
       }
 
@@ -52,12 +53,17 @@ export const DeleteAdmin = ({ adminId }: DeleteAdminProps) => {
         return;
       }
 
-      message.error("Admin could not be removed. Please try again.");
+      message.error("Admin could not be deactivated. Please try again.");
     }
   };
 
   const handleOpenModal = () => {
-    openModal(<DeleteAdminModal onConfirm={handleDelete} loading={isDeleting} />);
+    openModal(
+      <DeactivateAdminModal
+        onConfirm={handleDeactivate}
+        loading={isDeactivating}
+      />,
+    );
   };
 
   return (
@@ -65,11 +71,11 @@ export const DeleteAdmin = ({ adminId }: DeleteAdminProps) => {
       danger
       type="primary"
       icon={<DeleteOutlined className="align-middle" />}
-      loading={isDeleting}
+      loading={isDeactivating}
       onClick={handleOpenModal}
-      className="my-auto inline-flex rounded-sm! h-6 w-30 gap-1 items-center justify-center"
+      className="my-auto inline-flex h-6 w-30 items-center justify-center gap-1 rounded-sm!"
     >
-      Remove Admin
+      Deactivate
     </Button>
   );
 };

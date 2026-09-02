@@ -19,6 +19,7 @@ export const adminApi = createApi({
     "Employees",
     "Notifications",
     "Users",
+    "Admins",
   ],
 
   serializeQueryArgs: ({ endpointName, queryArgs }) => {

@@ -10,7 +10,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useGetAdminByIdQuery } from "@/features/admins/api/admins-api-slice";
 import { formatRole } from "@/utils/format-role";
 
-import { DeleteAdmin } from "./deactivate-admin-button";
+import { DeactivateAdmin } from "./deactivate-admin-button";
 
 interface AdminDetailsProps {
   adminId?: string;
@@ -136,7 +136,7 @@ export default function AdminDetails({
               type="error"
               showIcon
               title="Invalid admin ID"
-              description="The user ID provided is not valid."
+              description="The admin ID provided is not valid."
             />
           </main>
         </>
@@ -161,7 +161,7 @@ export default function AdminDetails({
               type="error"
               showIcon
               title="Access denied"
-              description="Only authorized users can view admin details."
+              description="Only authorized admins can view admin details."
             />
           </main>
         </>
@@ -186,7 +186,7 @@ export default function AdminDetails({
               type="warning"
               showIcon
               title="Admin not found"
-              description="This user may not exist or may belong to another organization."
+              description="This admin may not exist or may belong to another organization."
             />
           </main>
         </>
@@ -352,11 +352,11 @@ export default function AdminDetails({
               </p>
 
               <p className="mt-1 mb-3 text-[11px] leading-relaxed text-slate-400">
-                Remove this administrator and revoke their administrative
+                Deactivate this administrator and revoke their administrative
                 access to this organization.
               </p>
 
-              <DeleteAdmin adminId={admin.id} />
+              <DeactivateAdmin adminId={admin.id} />
             </div>
           </div>
         </div>
@@ -466,7 +466,7 @@ export default function AdminDetails({
                   access to this organization.
                 </p>
 
-                <DeleteAdmin adminId={admin.id} />
+                <DeactivateAdmin adminId={admin.id} />
               </div>
             </div>
           </div>

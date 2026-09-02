@@ -21,7 +21,7 @@ export interface AdminOrganizationSummary {
   slug: string;
 }
 
-export interface AdminUserItem {
+export interface AdminItem {
   id: string;
   orgId: string;
   role: AdminRole;
@@ -32,17 +32,17 @@ export interface AdminUserItem {
   orgSlug?: string;
 }
 
-export type GetAdminsResponse = AdminUserItem[];
+export type GetAdminsResponse = AdminItem[];
 
-export type GetAdminByIdResponse = Omit<AdminUserItem, "organization"> & {
+export type GetAdminByIdResponse = Omit<AdminItem, "organization"> & {
   orgSlug: string;
 };
 
-export interface BulkDeleteAdminsPayload {
+export interface BulkDeactivateAdminsPayload {
   ids: string[];
 }
 
-export interface BulkDeleteAdminsResponse {
+export interface BulkDeactivateAdminsResponse {
   count: number;
   deletedIds: string[];
 }

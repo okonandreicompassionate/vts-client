@@ -1,17 +1,17 @@
 import { adminApi } from "@/lib/api/admin/admin-api";
 
 import type {
+  AdminItem,
   AdminRole,
-  AdminUserItem,
-  BulkDeleteAdminsPayload,
-  BulkDeleteAdminsResponse,
+  BulkDeactivateAdminsPayload,
+  BulkDeactivateAdminsResponse,
   GetAdminByIdResponse,
   GetAdminsResponse,
   InviteAdminPayload,
   InviteAdminResponse,
 } from "../types/api-types";
 
-export const usersApi = adminApi.injectEndpoints({
+export const adminsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
     createInvite: builder.mutation<InviteAdminResponse, InviteAdminPayload>({
       query: ({ email, role }) => ({
@@ -22,34 +22,37 @@ export const usersApi = adminApi.injectEndpoints({
           role,
         },
       }),
-      invalidatesTags: [{ type: "Users", id: "LIST" }],
+      invalidatesTags: [{ type: "Admins", id: "LIST" }],
     }),
 
     getAdmins: builder.query<GetAdminsResponse, void>({
       query: () => "/auth/admins",
-      providesTags: [{ type: "Users", id: "LIST" }],
+      providesTags: [{ type: "Admins", id: "LIST" }],
     }),
 
     getAdminById: builder.query<GetAdminByIdResponse, string>({
       query: (id) => `/auth/admin/${id}`,
-      providesTags: (_result, _error, id) => [{ type: "Users", id }],
+      providesTags: (_result, _error, id) => [{ type: "Admins", id }],
     }),
 
-    deleteAdmin: builder.mutation<void, { orgSlug: string; adminId: string }>({
+    deactivateAdmin: builder.mutation<void, { orgSlug: string; adminId: string }>({
       query: ({ adminId }) => ({
         url: `/users/admins/${adminId}`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "Users", id: "LIST" }],
+      invalidatesTags: [{ type: "Admins", id: "LIST" }],
     }),
 
-    bulkDeleteAdmins: builder.mutation<BulkDeleteAdminsResponse, BulkDeleteAdminsPayload>({
+    bulkDeactivateAdmins: builder.mutation<
+      BulkDeactivateAdminsResponse,
+      BulkDeactivateAdminsPayload
+    >({
       query: ({ ids }) => ({
         url: "/users/admins/bulk-delete",
         method: "POST",
         body: { ids },
       }),
-      invalidatesTags: [{ type: "Users", id: "LIST" }],
+      invalidatesTags: [{ type: "Admins", id: "LIST" }],
     }),
   }),
 });
@@ -58,13 +61,13 @@ export const {
   useCreateInviteMutation,
   useGetAdminsQuery,
   useGetAdminByIdQuery,
-  useDeleteAdminMutation,
-  useBulkDeleteAdminsMutation,
-} = usersApi;
+  useDeactivateAdminMutation,
+  useBulkDeactivateAdminsMutation,
+} = adminsApi;
 
 export type {
+  AdminItem,
   AdminRole,
-  AdminUserItem,
   GetAdminByIdResponse,
   GetAdminsResponse,
   InviteAdminPayload,

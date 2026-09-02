@@ -6,34 +6,32 @@ import type { ColumnsType } from "antd/es/table";
 import TableComponent from "@/components/ui/table";
 
 import {
+  useBulkDeactivateAdminsMutation,
   useGetAdminsQuery,
-  useBulkDeleteAdminsMutation, // TODO: rename once mutation itself is renamed
 } from "@/features/admins/api/admins-api-slice";
 
 import { Spinner } from "@/components/ui/spinner";
 
-import type { AdminUserItem } from "@/features/admins/types/api-types";
-import type { User } from "../types/types";
+import type { AdminItem } from "@/features/admins/types/api-types";
+import type { Admin } from "../types/types";
 
-import AddUserModal from "./modals/add-user-modal";
+import AddAdminModal from "./modals/add-admin-modal";
 import AdminDetails from "./admin-details";
 
-import { useUsersSSE } from "../hooks/use-users-sse";
-import { userColumns } from "./admins-columns";
+import { useAdminsSSE } from "../hooks/use-admins-sse";
+import { adminColumns } from "./admins-columns";
 import { getSelectionColumn } from "@/components/ui/selection-column";
 import DashboardHeader from "@/components/layout/dashboard-header";
 
-export default function UsersPage() {
+export default function AdminsPage() {
   const [isInviteModalOpen, setInviteModalOpen] = useState(false);
 
   const [isSelecting, setIsSelecting] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<User[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Admin[]>([]);
 
-  // Selected admin for the details drawer
   const [selectedAdminId, setSelectedAdminId] = useState<string | null>(null);
 
-
-  useUsersSSE();
+  useAdminsSSE();
 
   const {
     data: admins = [],
@@ -43,9 +41,9 @@ export default function UsersPage() {
   } = useGetAdminsQuery();
 
   const [deactivateAdmins, { isLoading: isDeactivating }] =
-    useBulkDeleteAdminsMutation();
+    useBulkDeactivateAdminsMutation();
 
-  const users: User[] = admins.map((admin: AdminUserItem) => ({
+  const adminList: Admin[] = admins.map((admin: AdminItem) => ({
     id: admin.id,
     name: admin.fullName || admin.email,
     email: admin.email,
@@ -56,9 +54,9 @@ export default function UsersPage() {
   const selectedRowKeys = selectedRows.map((row) => row.id);
 
   const allSelected =
-    users.length > 0 && selectedRows.length === users.length;
+    adminList.length > 0 && selectedRows.length === adminList.length;
 
-  const handleToggleSelection = (record: User) => {
+  const handleToggleSelection = (record: Admin) => {
     setSelectedRows((current) =>
       current.some((row) => row.id === record.id)
         ? current.filter((row) => row.id !== record.id)
@@ -67,7 +65,7 @@ export default function UsersPage() {
   };
 
   const handleToggleSelectAll = () => {
-    setSelectedRows(allSelected ? [] : users);
+    setSelectedRows(allSelected ? [] : adminList);
   };
 
   const handleStartSelecting = () => {
@@ -83,7 +81,7 @@ export default function UsersPage() {
     const count = selectedRows.length;
 
     Modal.confirm({
-      title: `Deactivate ${count} ${count === 1 ? "user" : "users"}?`,
+      title: `Deactivate ${count} ${count === 1 ? "admin" : "admins"}?`,
       content:
         "This action cannot be undone. Selected admins will lose access immediately.",
       okText: "Deactivate",
@@ -101,24 +99,24 @@ export default function UsersPage() {
           setSelectedRows([]);
           setIsSelecting(false);
         } catch {
-          message.error("Failed to deactivate selected users");
+          message.error("Failed to deactivate selected admins");
         }
       },
     });
   };
 
-  const columns: ColumnsType<User> = isSelecting
+  const columns: ColumnsType<Admin> = isSelecting
     ? [
-        getSelectionColumn<User>({
+        getSelectionColumn<Admin>({
           selectedRowKeys,
           onToggle: handleToggleSelection,
-          checkboxClassName: "users-table-checkbox",
+          checkboxClassName: "admins-table-checkbox",
         }),
-        ...userColumns,
+        ...adminColumns,
       ]
-    : userColumns;
+    : adminColumns;
 
-  const handleRowClick = (record: User) => {
+  const handleRowClick = (record: Admin) => {
     if (isSelecting) {
       handleToggleSelection(record);
       return;
@@ -140,7 +138,7 @@ export default function UsersPage() {
           {!isLoading && !isError && !isSelecting && (
             <>
               <span className="text-xs text-slate-500 dark:text-slate-400">
-                {users.length} {users.length === 1 ? "admin" : "admins"}
+                {adminList.length} {adminList.length === 1 ? "admin" : "admins"}
               </span>
 
               <button
@@ -193,7 +191,7 @@ export default function UsersPage() {
           {isError && (
             <div className="flex items-center gap-2">
               <span className="text-xs text-red-500">
-                Unable to load users
+                Unable to load admins
               </span>
 
               <button
@@ -215,7 +213,7 @@ export default function UsersPage() {
             onClick={() => setInviteModalOpen(true)}
           >
             <img
-              src="/add-users.svg"
+              src="/add-admins.svg"
               alt=""
               className="inline-flex h-3 w-3 items-center"
             />
@@ -226,7 +224,7 @@ export default function UsersPage() {
       </div>
 
       <div className="relative min-h-0 px-3 py-3">
-        {!isLoading && !isError && users.length === 0 ? (
+        {!isLoading && !isError && adminList.length === 0 ? (
           <div className="flex h-56 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-slate-200 text-center dark:border-slate-800">
             <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
               No admins yet
@@ -246,9 +244,9 @@ export default function UsersPage() {
             </Button>
           </div>
         ) : (
-          <TableComponent<User>
+          <TableComponent<Admin>
             columns={columns}
-            dataSource={users}
+            dataSource={adminList}
             rowKey="id"
             showSerialNumber
             serialNumberTitle="SN"
@@ -281,7 +279,7 @@ export default function UsersPage() {
         )}
       </div>
 
-      <AddUserModal
+      <AddAdminModal
         open={isInviteModalOpen}
         onCancel={() => setInviteModalOpen(false)}
       />

@@ -1,26 +1,27 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "@/lib/stores/hooks";
 import { useOrganization } from "@/features/organizations";
-import { usersApi } from "../api/admins-api-slice";
+import { adminsApi } from "../api/admins-api-slice";
 
-export function useUsersSSE() {
+export function useAdminsSSE() {
   const dispatch = useAppDispatch();
   const { orgSlug } = useOrganization();
 
   useEffect(() => {
     if (!orgSlug) return;
 
-    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/${orgSlug}/users/events`, {
-      withCredentials: true,
-    });
+    const eventSource = new EventSource(
+      `${import.meta.env.VITE_API_URL}/${orgSlug}/users/events`,
+      { withCredentials: true },
+    );
 
-    eventSource.addEventListener("users.changed", () => {
-      dispatch(usersApi.util.invalidateTags([{ type: "Users", id: "LIST" }]));
+    eventSource.addEventListener("admins.changed", () => {
+      dispatch(adminsApi.util.invalidateTags([{ type: "Admins", id: "LIST" }]));
     });
 
     eventSource.onerror = () => {
       if (eventSource.readyState === EventSource.CLOSED) {
-        console.error("Users SSE connection closed unexpectedly.");
+        console.error("Admins SSE connection closed unexpectedly.");
       }
     };
 

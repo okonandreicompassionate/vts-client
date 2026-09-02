@@ -3,15 +3,15 @@ import { Button, Form, Input, Select, message } from "antd";
 import type { InviteFormValues } from "../../types/types";
 import { useCreateInviteMutation } from "../../api/admins-api-slice";
 
-interface AddUserModalProps {
+interface AddAdminModalProps {
   open: boolean;
   onCancel: () => void;
 }
 
-export default function AddUserModal({
+export default function AddAdminModal({
   open,
   onCancel,
-}: AddUserModalProps) {
+}: AddAdminModalProps) {
   const [form] = Form.useForm<InviteFormValues>();
 
   const [createInvite, { isLoading: isSendingInvite }] =
@@ -77,7 +77,7 @@ export default function AddUserModal({
             ]}
           >
             <Input
-              placeholder="user@example.com"
+              placeholder="admin@example.com"
               className="h-8! rounded-lg! border-slate-100! bg-[#F5FBFE]! px-4! text-xs! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-300!"
             />
           </Form.Item>

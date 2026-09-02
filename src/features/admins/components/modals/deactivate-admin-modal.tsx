@@ -3,17 +3,17 @@ import { Button, message } from "antd";
 import CustomModal from "@/components/ui/custom-modal";
 import { usePopup } from "@/features/popup/hooks/use-popup";
 
-type DeleteAdminModalProps = {
+type DeactivateAdminModalProps = {
   onConfirm?: () => void | Promise<void>;
   onCancel?: () => void;
   loading?: boolean;
 };
 
-export default function DeleteAdminModal({
+export default function DeactivateAdminModal({
   onConfirm,
   onCancel,
   loading = false,
-}: DeleteAdminModalProps) {
+}: DeactivateAdminModalProps) {
   const { closeModal } = usePopup();
 
   const handleCancel = () => {
@@ -26,9 +26,7 @@ export default function DeleteAdminModal({
       await onConfirm?.();
       closeModal();
     } catch {
-      message.error(
-        "Admin could not be removed. Please try again.",
-      );
+      message.error("Admin could not be deactivated. Please try again.");
     }
   };
 
@@ -41,11 +39,11 @@ export default function DeleteAdminModal({
           </div>
 
           <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
-            Remove Admin
+            Deactivate Admin
           </h3>
 
           <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-            Removing this admin will revoke their administrative
+            Deactivating this admin will revoke their administrative
             access to this organization. This action cannot be undone.
           </p>
         </div>
@@ -68,7 +66,7 @@ export default function DeleteAdminModal({
             onClick={handleConfirm}
             className="h-9! flex-1! rounded-full! border-none! bg-red-500! px-5! text-sm! font-semibold! hover:bg-red-600!"
           >
-            Remove Admin
+            Deactivate Admin
           </Button>
         </div>
       </CustomModal.Footer>
