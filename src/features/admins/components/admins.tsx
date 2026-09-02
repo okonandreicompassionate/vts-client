@@ -211,6 +211,7 @@ export default function AdminsPage() {
             type="primary"
             className="flex h-7 gap-1 rounded-sm! text-xs"
             onClick={() => setInviteModalOpen(true)}
+            icon={<img src="/add-admins.svg" alt="" className="inline-flex h-3 w-3 items-center" />}
           >
             <img
               src="/add-admins.svg"
