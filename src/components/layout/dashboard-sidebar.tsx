@@ -1,6 +1,5 @@
 import { Button } from "antd";
 import {
-  Bell,
   ChevronLeft,
   ChevronRight,
   LayoutDashboard,
@@ -11,6 +10,8 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { useOrganization } from "@/features/organizations";
+import { paths } from "@/config/paths";
 
 type SidebarProps = {
   collapsed: boolean;
@@ -19,25 +20,19 @@ type SidebarProps = {
   setMobileOpen: (value: boolean) => void;
 };
 
-const navItems = [
-  { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/visitors", label: "Visitors", icon: UserCheck },
-  { to: "/admin/employees", label: "Employees", icon: Users },
-  { to: "/admin/notifications", label: "Notifications", icon: Bell },
-  { to: "/admin/settings", label: "Settings", icon: Settings },
-];
-
-const Sidebar = ({
-  collapsed,
-  mobileOpen,
-  setCollapsed,
-  setMobileOpen,
-}: SidebarProps) => {
+const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: SidebarProps) => {
   const isMobileOpen = mobileOpen;
+  const { orgSlug } = useOrganization();
   const { data: profile } = useAdminAuthSession();
+  const navItems = [
+    { to: paths.admin.dashboard.getHref(orgSlug), label: "Dashboard", icon: LayoutDashboard },
+    { to: paths.admin.visitors.getHref(orgSlug), label: "Visitors", icon: UserCheck },
+    { to: paths.admin.employees.getHref(orgSlug), label: "Employees", icon: Users },
+    { to: paths.admin.settings.getHref(orgSlug), label: "Settings", icon: Settings },
+  ];
   const visibleNavItems =
     profile?.role === "SUPERADMIN"
-      ? [...navItems, { to: "/admin/users", label: "Admins", icon: Users }]
+      ? [...navItems, { to: paths.admin.users.getHref(orgSlug), label: "Admins", icon: Users }]
       : navItems;
 
   return (
@@ -55,7 +50,7 @@ const Sidebar = ({
 
       <aside
         className={[
-          "fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white transition-all duration-200 dark:border-slate-700 dark:bg-slate-950 md:static",
+          "fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white transition-all duration-200 md:static dark:border-slate-700 dark:bg-slate-950",
           isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
           collapsed ? "w-20" : "w-72",
           !collapsed && "md:w-72",
@@ -69,10 +64,8 @@ const Sidebar = ({
 
             {!collapsed && (
               <div className="overflow-hidden">
-                <p className="truncate text-sm font-bold text-slate-800 dark:text-slate-50">
-                  VTS
-                </p>
-                <p className="truncate text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                <p className="truncate text-sm font-bold text-slate-800 dark:text-slate-50">VTS</p>
+                <p className="truncate text-[10px] tracking-[0.2em] text-slate-500 uppercase dark:text-slate-400">
                   Admin
                 </p>
               </div>
@@ -101,7 +94,7 @@ const Sidebar = ({
             <NavLink
               key={to}
               to={to}
-              end={to === "/admin/dashboard"}
+              end={to === paths.admin.dashboard.getHref(orgSlug)}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
                 [
