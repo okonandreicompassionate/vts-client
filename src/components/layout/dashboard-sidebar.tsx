@@ -10,6 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 
 type SidebarProps = {
   collapsed: boolean;
@@ -33,6 +34,11 @@ const Sidebar = ({
   setMobileOpen,
 }: SidebarProps) => {
   const isMobileOpen = mobileOpen;
+  const { data: profile } = useAdminAuthSession();
+  const visibleNavItems =
+    profile?.role === "SUPERADMIN"
+      ? [...navItems, { to: "/admin/users", label: "Admins", icon: Users }]
+      : navItems;
 
   return (
     <>
@@ -91,7 +97,7 @@ const Sidebar = ({
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 p-3">
-          {navItems.map(({ to, label, icon: Icon }) => (
+          {visibleNavItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
