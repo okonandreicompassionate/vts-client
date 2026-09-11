@@ -7,8 +7,7 @@ type EmployeeNameItem = {
 };
 
 type EmployeeNameResponse =
-  | Array<EmployeeNameItem | string>
-  | { items?: Array<EmployeeNameItem | string> };
+  Array<EmployeeNameItem | string> | { items?: Array<EmployeeNameItem | string> };
 
 const getEmployeeName = (employee: EmployeeNameItem | string): string => {
   if (typeof employee === "string") {
@@ -33,7 +32,7 @@ export const publicEmployeesApiSlice = publicApi.injectEndpoints({
         method: "GET",
       }),
       transformResponse: (response: EmployeeNameResponse) => {
-        const employees = Array.isArray(response) ? response : response.items ?? [];
+        const employees = Array.isArray(response) ? response : (response.items ?? []);
 
         return employees
           .map((employee) => ({ name: getEmployeeName(employee) }))

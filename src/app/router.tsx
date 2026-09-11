@@ -1,7 +1,6 @@
 import {
   createBrowserRouter,
   isRouteErrorResponse,
-  redirect,
   RouterProvider,
   useRouteError,
 } from "react-router-dom";
@@ -54,14 +53,12 @@ const router = createBrowserRouter([
 
       {
         path: paths.admin.signup.path,
-        loader: ({ params }) => {
-          const orgSlug = params.orgSlug;
-
-          return redirect(
-            orgSlug
-              ? paths.admin.login.getHref(orgSlug)
-              : "/",
+        lazy: async () => {
+          const { default: AuthPage } = await import(
+            "@/features/auth/components/auth-page"
           );
+
+          return { Component: AuthPage };
         },
       },
 
