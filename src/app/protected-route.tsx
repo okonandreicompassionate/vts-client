@@ -7,11 +7,10 @@ import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
 
 interface ProtectedRouteProps {
   requiredAuth?: "admin" | "visitor" | "visitor-verified";
+  requiredRole?: "SUPERADMIN";
 }
 
-export function ProtectedRoute({
-  requiredAuth = "admin",
-}: ProtectedRouteProps) {
+export function ProtectedRoute({ requiredAuth = "admin", requiredRole }: ProtectedRouteProps) {
   const { orgSlug } = useOrganization();
 
   const {
@@ -28,12 +27,11 @@ export function ProtectedRoute({
     }
 
     if (isError || !user) {
-      return (
-        <Navigate
-          to={paths.admin.login.getHref(orgSlug)}
-          replace
-        />
-      );
+      return <Navigate to={paths.admin.login.getHref(orgSlug)} replace />;
+    }
+
+    if (requiredRole && user.role !== requiredRole) {
+      return <Navigate to={paths.admin.dashboard.getHref(orgSlug)} replace />;
     }
   }
 

@@ -22,6 +22,7 @@ import { useAdminsSSE } from "../hooks/use-admins-sse";
 import { adminColumns } from "./admins-columns";
 import { getSelectionColumn } from "@/components/ui/selection-column";
 import DashboardHeader from "@/components/layout/dashboard-header";
+import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
 
 export default function AdminsPage() {
   const [isInviteModalOpen, setInviteModalOpen] = useState(false);
@@ -30,18 +31,14 @@ export default function AdminsPage() {
   const [selectedRows, setSelectedRows] = useState<Admin[]>([]);
 
   const [selectedAdminId, setSelectedAdminId] = useState<string | null>(null);
+  const { data: profile } = useGetProfileQuery();
+  const canManageAdmins = profile?.role === "SUPERADMIN";
 
   useAdminsSSE();
 
-  const {
-    data: admins = [],
-    isLoading,
-    isError,
-    refetch,
-  } = useGetAdminsQuery();
+  const { data: admins = [], isLoading, isError, refetch } = useGetAdminsQuery();
 
-  const [deactivateAdmins, { isLoading: isDeactivating }] =
-    useBulkDeactivateAdminsMutation();
+  const [deactivateAdmins, { isLoading: isDeactivating }] = useBulkDeactivateAdminsMutation();
 
   const adminList: Admin[] = admins.map((admin: AdminItem) => ({
     id: admin.id,
@@ -53,8 +50,7 @@ export default function AdminsPage() {
 
   const selectedRowKeys = selectedRows.map((row) => row.id);
 
-  const allSelected =
-    adminList.length > 0 && selectedRows.length === adminList.length;
+  const allSelected = adminList.length > 0 && selectedRows.length === adminList.length;
 
   const handleToggleSelection = (record: Admin) => {
     setSelectedRows((current) =>
@@ -82,8 +78,7 @@ export default function AdminsPage() {
 
     Modal.confirm({
       title: `Deactivate ${count} ${count === 1 ? "admin" : "admins"}?`,
-      content:
-        "This action cannot be undone. Selected admins will lose access immediately.",
+      content: "This action cannot be undone. Selected admins will lose access immediately.",
       okText: "Deactivate",
       okButtonProps: {
         danger: true,
@@ -92,9 +87,7 @@ export default function AdminsPage() {
         try {
           await deactivateAdmins({ ids: selectedRowKeys }).unwrap();
 
-          message.success(
-            count === 1 ? "Admin deactivated" : "Admins deactivated",
-          );
+          message.success(count === 1 ? "Admin deactivated" : "Admins deactivated");
 
           setSelectedRows([]);
           setIsSelecting(false);
@@ -135,7 +128,7 @@ export default function AdminsPage() {
 
       <div className="flex min-h-12.5 items-center justify-between border-b border-slate-200 px-3 py-1 sm:py-2 dark:border-slate-800">
         <div className="flex min-w-0 items-center gap-2.5">
-          {!isLoading && !isError && !isSelecting && (
+          {!isLoading && !isError && canManageAdmins && !isSelecting && (
             <>
               <span className="text-xs text-slate-500 dark:text-slate-400">
                 {adminList.length} {adminList.length === 1 ? "admin" : "admins"}
@@ -151,7 +144,7 @@ export default function AdminsPage() {
             </>
           )}
 
-          {isSelecting && (
+          {canManageAdmins && isSelecting && (
             <div className="flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-1.5 dark:border-slate-700 dark:bg-slate-800/60">
               <span className="flex h-7 items-center px-1 text-xs leading-none font-medium text-slate-700 dark:text-slate-200">
                 {selectedRows.length} selected
@@ -177,9 +170,7 @@ export default function AdminsPage() {
 
               <button
                 type="button"
-                disabled={
-                  selectedRows.length === 0 || isDeactivating
-                }
+                disabled={selectedRows.length === 0 || isDeactivating}
                 onClick={handleDeactivateSelected}
                 className="flex h-7 cursor-pointer items-center justify-center rounded px-1.5 text-xs leading-none font-medium text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:text-red-300"
               >
@@ -190,9 +181,7 @@ export default function AdminsPage() {
 
           {isError && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-red-500">
-                Unable to load admins
-              </span>
+              <span className="text-xs text-red-500">Unable to load admins</span>
 
               <button
                 type="button"
@@ -205,7 +194,7 @@ export default function AdminsPage() {
           )}
         </div>
 
-        {!isSelecting && (
+        {canManageAdmins && !isSelecting && (
           <Button
             size="small"
             type="primary"
@@ -229,14 +218,16 @@ export default function AdminsPage() {
               Invite your first admin to get started.
             </span>
 
-            <Button
-              size="small"
-              className="h-6!"
-              type="primary"
-              onClick={() => setInviteModalOpen(true)}
-            >
-              Invite Admin
-            </Button>
+            {canManageAdmins && (
+              <Button
+                size="small"
+                className="h-6!"
+                type="primary"
+                onClick={() => setInviteModalOpen(true)}
+              >
+                Invite Admin
+              </Button>
+            )}
           </div>
         ) : (
           <TableComponent<Admin>
@@ -274,10 +265,7 @@ export default function AdminsPage() {
         )}
       </div>
 
-      <AddAdminModal
-        open={isInviteModalOpen}
-        onCancel={() => setInviteModalOpen(false)}
-      />
+      <AddAdminModal open={isInviteModalOpen} onCancel={() => setInviteModalOpen(false)} />
 
       {/* Admin Details Drawer */}
       <Drawer
@@ -293,12 +281,7 @@ export default function AdminsPage() {
           },
         }}
       >
-        {selectedAdminId && (
-          <AdminDetails
-            adminId={selectedAdminId}
-            onClose={handleCloseDetails}
-          />
-        )}
+        {selectedAdminId && <AdminDetails adminId={selectedAdminId} onClose={handleCloseDetails} />}
       </Drawer>
     </div>
   );

@@ -63,16 +63,20 @@ export const adminRoutes: RouteObject[] = [
             },
           },
           {
-            path: paths.admin.users.path,
-            lazy: async () => {
-              const { default: Users } = await import("@/features/admins/components/admins");
+            element: <ProtectedRoute requiredRole="SUPERADMIN" />,
+            children: [
+              {
+                path: paths.admin.users.path,
+                lazy: async () => {
+                  const { default: Users } = await import("@/features/admins/components/admins");
 
-              return {
-                Component: Users,
-              };
-            },
+                  return {
+                    Component: Users,
+                  };
+                },
+              },
+            ],
           },
-         
         ],
       },
     ],
