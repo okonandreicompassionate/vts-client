@@ -58,13 +58,14 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
       >
         <div className="flex items-center justify-between border-b border-slate-200 px-3 py-4 dark:border-slate-700">
           <div className="flex min-w-0 items-center gap-2 overflow-hidden">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-100 font-bold text-sky-700 dark:bg-sky-900/40 dark:text-sky-300">
-              V
-            </div>
+            <img
+              src="/logo.png"
+              alt="Zoracom"
+              className={`h-auto shrink-0 object-contain ${collapsed ? "w-10" : "w-28"}`}
+            />
 
             {!collapsed && (
               <div className="overflow-hidden">
-                <p className="truncate text-sm font-bold text-slate-800 dark:text-slate-50">VTS</p>
                 <p className="truncate text-[10px] tracking-[0.2em] text-slate-500 uppercase dark:text-slate-400">
                   Admin
                 </p>

@@ -24,12 +24,7 @@ function RouteError() {
 
   console.error("Unhandled route error:", normalizedError);
 
-  return (
-    <PageError
-      error={normalizedError}
-      resetErrorBoundary={() => {}}
-    />
-  );
+  return <PageError error={normalizedError} resetErrorBoundary={() => {}} />;
 }
 
 const router = createBrowserRouter([
@@ -43,9 +38,7 @@ const router = createBrowserRouter([
       {
         path: paths.admin.login.path,
         lazy: async () => {
-          const { default: AuthPage } = await import(
-            "@/features/auth/components/auth-page"
-          );
+          const { default: AuthPage } = await import("@/features/auth/components/auth-page");
 
           return { Component: AuthPage };
         },
@@ -54,9 +47,7 @@ const router = createBrowserRouter([
       {
         path: paths.admin.signup.path,
         lazy: async () => {
-          const { default: AuthPage } = await import(
-            "@/features/auth/components/auth-page"
-          );
+          const { default: AuthPage } = await import("@/features/auth/components/auth-page");
 
           return { Component: AuthPage };
         },
@@ -66,7 +57,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
 
 router.subscribe((state) => {
   if (state.navigation.state !== "idle") {
