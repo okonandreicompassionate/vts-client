@@ -59,7 +59,7 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
           <div className="flex min-w-0 items-center gap-2 overflow-hidden">
             <img
               src="/logo.png"
-              alt="Zoracom"
+              alt="VisitorX"
               className={`h-auto shrink-0 object-contain ${collapsed ? "w-10" : "w-28"}`}
             />
 

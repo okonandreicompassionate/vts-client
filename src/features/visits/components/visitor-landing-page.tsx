@@ -23,11 +23,11 @@ export default function LandingPage() {
 
       {/* content */}
       <div className="relative flex w-full max-w-md flex-col items-center" style={{ zIndex: 3 }}>
-        <img src="/logo.png" alt="Zoracom" loading="lazy" className="mb-6 h-5 w-auto opacity-90" />
+        <img src="/logo.png" alt="VisitorX" className="mb-6 h-10 w-auto opacity-90" />
 
         <header className="mb-8 flex flex-col items-center text-center">
           <h1 className="text-2xl font-semibold tracking-tight text-[#10241C] md:text-[28px] dark:text-slate-100">
-            Visitor Tracking System
+            Visitor Experience
           </h1>
           <p className="mt-1.5 text-sm text-[#10241C]/55 dark:text-slate-400">
             Check in below to begin your visit
@@ -58,7 +58,7 @@ export default function LandingPage() {
         </div>
 
         <p className="mt-6 text-xs text-[#10241C]/70 dark:text-slate-400">
-          Zoracom © {new Date().getFullYear()} · Secured visitor access
+          VisitorX © {new Date().getFullYear()} · Secured visitor access
         </p>
       </div>
     </div>
