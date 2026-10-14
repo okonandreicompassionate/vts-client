@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visitor Flow PRD</title>
+    <style>
+      :root {
+        --bg: #f7f8fb;
+        --panel: #ffffff;
+        --ink: #172033;
+        --muted: #56657a;
+        --line: #dfe6ef;
+        --accent: #0f766e;
+        --accent-soft: #dff6f3;
+        --warning: #c2410c;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.55;
+      }
+      .page {
+        max-width: 850px;
+        margin: 32px auto;
+        background: var(--panel);
+        padding: 48px 56px 64px;
+        border: 1px solid var(--line);
+        box-shadow: 0 10px 30px rgba(23, 32, 51, 0.06);
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        margin: 0 0 12px;
+        color: var(--ink);
+      }
+      h1 {
+        font-size: 30px;
+        margin-bottom: 18px;
+      }
+      h2 {
+        font-size: 21px;
+        margin-top: 28px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--line);
+      }
+      h3 {
+        font-size: 17px;
+        margin-top: 18px;
+      }
+      p,
+      li {
+        font-size: 14px;
+        color: var(--ink);
+      }
+      ul,
+      ol {
+        padding-left: 22px;
+        margin: 10px 0 16px;
+      }
+      .meta {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin: 16px 0 20px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .pill {
+        display: inline-block;
+        background: var(--accent-soft);
+        color: var(--accent);
+        border: 1px solid #bfe6de;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .section {
+        margin-top: 18px;
+      }
+      .callout {
+        background: #f4f7fb;
+        border-left: 4px solid var(--accent);
+        padding: 12px 14px;
+        margin: 16px 0;
+      }
+      .status-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(200px, 1fr));
+        gap: 12px;
+        margin: 18px 0;
+      }
+      .status-card {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 16px;
+        background: #fff;
+      }
+      .status-card strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+      .status-card.pending {
+        border-left: 6px solid #f59e0b;
+      }
+      .status-card.confirmed {
+        border-left: 6px solid #10b981;
+      }
+      .status-card.checkedin {
+        border-left: 6px solid #6366f1;
+      }
+      .status-card.completed {
+        border-left: 6px solid #6b7280;
+      }
+      .status-card.rejected {
+        border-left: 6px solid #ef4444;
+      }
+      .small {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      @media print {
+        body {
+          background: white;
+        }
+        .page {
+          margin: 0;
+          max-width: none;
+          border: none;
+          box-shadow: none;
+          padding: 32px 36px 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="pill">PRD · Minimal Visitor Flow MVP</div>
+      <h1>Visitor Flow Requirements</h1>
+
+      <div class="meta">
+        <span>Goal: enable the visitor lifecycle from scheduling to completion</span>
+        <span>Scope: host, visitor, reception/security</span>
+      </div>
+
+      <div class="callout">
+        This PRD focuses only on the pages required to make the visitor journey work end to end
+        without expanding into the full admin system.
+      </div>
+
+      <h2>1. Objective</h2>
+      <p>
+        Build the smallest set of pages needed to support the visitor journey shown in the flow:
+        Host creates appointment → invitation issued → confirmation → approval → arrival check-in →
+        active visit → sign-out/completion.
+      </p>
+      <p>
+        This is not a full visitor management suite. It is the minimal path required to make the
+        workflow usable and believable.
+      </p>
+
+      <h2>2. In Scope</h2>
+      <ul>
+        <li>Host creates appointment</li>
+        <li>Visitor invitation and confirmation</li>
+        <li>Visitor check-in page</li>
+        <li>Security / reception dashboard</li>
+        <li>Visit summary / completion page</li>
+      </ul>
+
+      <h2>3. Out of Scope</h2>
+      <ul>
+        <li>Full admin panel</li>
+        <li>Bulk visitor import</li>
+        <li>Advanced reporting</li>
+        <li>Deep role management beyond basic host, visitor, and security</li>
+        <li>Full notification engine beyond status updates</li>
+        <li>Multi-tenant configuration</li>
+      </ul>
+
+      <h2>4. Core User Flows</h2>
+
+      <h3>Flow A: Host schedules a visit</h3>
+      <ul>
+        <li>Host opens the appointment page</li>
+        <li>Enters visitor information, date, time, purpose, and notes</li>
+        <li>Saves the appointment</li>
+        <li>System creates a visit in Pending status</li>
+        <li>System generates an invitation link or confirmation prompt</li>
+      </ul>
+
+      <h3>Flow B: Visitor confirms the visit</h3>
+      <ul>
+        <li>Visitor opens the invitation link</li>
+        <li>Sees host, date, time, purpose, and location</li>
+        <li>Confirms or declines</li>
+        <li>System updates status to Confirmed or Rejected</li>
+      </ul>
+
+      <h3>Flow C: Visitor arrives on site</h3>
+      <ul>
+        <li>Visitor goes to check-in</li>
+        <li>Reception or security verifies identity</li>
+        <li>System marks the visitor as Checked In</li>
+        <li>Visit becomes active and tracked</li>
+      </ul>
+
+      <h3>Flow D: Visit ends</h3>
+      <ul>
+        <li>Visitor exits the premises</li>
+        <li>Security or reception records sign-out</li>
+        <li>System marks the visit as Completed or Signed Off</li>
+        <li>Visit becomes historical and read-only</li>
+      </ul>
+
+      <h3>Alternate branch</h3>
+      <ul>
+        <li>Visitor ignores or declines the invitation</li>
+        <li>Host or security rejects the request</li>
+        <li>Visit ends with Rejected status</li>
+      </ul>
+
+      <h2>5. Required Pages</h2>
+
+      <h3>Page 1: Host appointment creation</h3>
+      <p><strong>Purpose:</strong> Create the initial visit request.</p>
+      <p>
+        <strong>Fields:</strong> visitor name, email, phone, host, visit date, time, purpose, notes,
+        location.
+      </p>
+      <p><strong>Actions:</strong> Create appointment, save draft, cancel.</p>
+      <p>
+        <strong>Behavior:</strong> new entries default to Pending, validation is required, and a
+        confirmation is shown after save.
+      </p>
+
+      <h3>Page 2: Visitor invitation / confirmation</h3>
+      <p><strong>Purpose:</strong> Let the visitor confirm or decline the scheduled visit.</p>
+      <p>
+        <strong>Content:</strong> host, date, time, purpose, location, confirmation and decline
+        actions.
+      </p>
+      <p>
+        <strong>Behavior:</strong> confirmed moves to Confirmed, declined moves to Rejected, no
+        action keeps the record in Pending.
+      </p>
+
+      <h3>Page 3: Visitor check-in</h3>
+      <p><strong>Purpose:</strong> Allow on-site check-in.</p>
+      <p>
+        <strong>Content:</strong> visitor details, scheduled visit information, identity
+        verification, and optional notes.
+      </p>
+      <p><strong>Actions:</strong> Check in, cancel.</p>
+      <p>
+        <strong>Behavior:</strong> only confirmed or approved visits can be checked in; on success
+        the status changes to Checked In.
+      </p>
+
+      <h3>Page 4: Security / reception dashboard</h3>
+      <p><strong>Purpose:</strong> Operational overview and actions for staff.</p>
+      <p><strong>Sections:</strong> Pending, Confirmed, Checked In, Completed, Rejected.</p>
+      <p><strong>Actions:</strong> approve, reject, check in, check out, view details.</p>
+
+      <h3>Page 5: Visit summary / completion</h3>
+      <p><strong>Purpose:</strong> Close the visit and show final outcome.</p>
+      <p>
+        <strong>Content:</strong> visitor, host, time window, status history, check-in/out
+        timestamps, notes.
+      </p>
+      <p><strong>Actions:</strong> mark complete, view details, return to dashboard.</p>
+
+      <h2>6. Functional Requirements</h2>
+      <ul>
+        <li>Every visit must have a single lifecycle status.</li>
+        <li>Status transitions must be clear and chronological.</li>
+        <li>Each page must reflect the current state of the visit.</li>
+        <li>Impossible transitions must be blocked by validation.</li>
+      </ul>
+
+      <div class="section">
+        <h3>Status model</h3>
+        <div class="status-grid">
+          <div class="status-card pending">
+            <strong>Pending</strong>Request created but not yet actioned
+          </div>
+          <div class="status-card confirmed">
+            <strong>Confirmed</strong>Visitor has accepted the invitation
+          </div>
+          <div class="status-card checkedin">
+            <strong>Checked In</strong>Visitor has arrived and is active on site
+          </div>
+          <div class="status-card completed">
+            <strong>Completed</strong>Visit has ended and was signed out
+          </div>
+          <div class="status-card rejected">
+            <strong>Rejected</strong>Request was declined or denied
+          </div>
+        </div>
+      </div>
+
+      <h2>7. Acceptance Criteria</h2>
+      <ul>
+        <li>A host can create a visit with required fields.</li>
+        <li>The record is stored with Pending status.</li>
+        <li>A visitor can confirm or decline the request.</li>
+        <li>The system updates the status correctly.</li>
+        <li>A confirmed visitor can be checked in.</li>
+        <li>A checked-in visitor can be signed out and marked complete.</li>
+        <li>
+          Reception can view all visits by status and act on them without unrelated admin
+          navigation.
+        </li>
+      </ul>
+
+      <h2>8. MVP Success Metrics</h2>
+      <ul>
+        <li>Host can create an appointment in under two minutes.</li>
+        <li>Visitor can confirm in under one minute.</li>
+        <li>Staff can check in a visitor in under 30 seconds.</li>
+        <li>Most visitor flows complete without hitting a dead end.</li>
+      </ul>
+
+      <h2>9. Risks and Open Questions</h2>
+      <ul>
+        <li>Should Confirmed and Approved be the same state or separate states?</li>
+        <li>Should sign-out happen automatically or be a manual staff action?</li>
+        <li>Will invitations be delivered via email, link, or QR?</li>
+        <li>
+          Should the reception dashboard be a dedicated page or part of a broader host dashboard?
+        </li>
+      </ul>
+
+      <h2>10. Recommended MVP Implementation</h2>
+      <p>
+        Keep the first build focused on the visitor lifecycle only. The best minimal page set is:
+      </p>
+      <ol>
+        <li>Host appointment page</li>
+        <li>Visitor confirmation page</li>
+        <li>Reception check-in page</li>
+        <li>Visit summary / completion page</li>
+      </ol>
+      <p>
+        If needed, add a fifth page for the security dashboard overview later, but do not broaden
+        the initial scope beyond the lifecycle itself.
+      </p>
+    </div>
+  </body>
+</html>

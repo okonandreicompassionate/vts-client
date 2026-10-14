@@ -50,13 +50,12 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
 
       <aside
         className={[
-          "fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white transition-all duration-200 md:static dark:border-slate-700 dark:bg-slate-950",
+          "fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white transition-all duration-200 md:sticky md:top-0 md:h-screen md:shrink-0 md:self-start dark:border-slate-700 dark:bg-slate-950",
           isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-          collapsed ? "w-20" : "w-72",
-          !collapsed && "md:w-72",
+          collapsed ? "w-20" : "w-64",
         ].join(" ")}
       >
-        <div className="flex items-center justify-between border-b border-slate-200 px-3 py-4 dark:border-slate-700">
+        <div className="flex items-center justify-between border-b border-slate-200 px-3 py-3 dark:border-slate-700">
           <div className="flex min-w-0 items-center gap-2 overflow-hidden">
             <img
               src="/logo.png"
@@ -90,7 +89,7 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
           />
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 p-3">
+        <nav className="flex flex-1 flex-col gap-1 p-2.5">
           {visibleNavItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
@@ -99,10 +98,10 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
                 [
-                  "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
+                  "flex items-center gap-2.5 rounded-lg border border-transparent px-2.5 py-2.5 text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100",
+                    ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800 dark:bg-sky-950/60 dark:text-sky-300"
+                    : "text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100",
                   collapsed ? "justify-center px-2" : "",
                 ].join(" ")
               }

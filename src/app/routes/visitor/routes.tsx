@@ -6,9 +6,8 @@ export const visitorRoutes: RouteObject[] = [
   {
     path: paths.home.path,
     lazy: async () => {
-      const { default: Landing } = await import(
-        "@/features/visits/components/visitor-landing-page"
-      );
+       const { default: Landing } =
+        await import("@/features/visits/components/visitor-landing-page");
 
       return { Component: Landing };
     },
@@ -16,9 +15,7 @@ export const visitorRoutes: RouteObject[] = [
 
   {
     lazy: async () => {
-      const { default: VisitorLayout } = await import(
-        "@/components/layout/visitor-layout"
-      );
+      const { default: VisitorLayout } = await import("@/components/layout/visitor-layout");
 
       return { Component: VisitorLayout };
     },
@@ -27,9 +24,8 @@ export const visitorRoutes: RouteObject[] = [
       {
         path: paths.verify.path,
         lazy: async () => {
-          const { default: VerifyIdentity } = await import(
-            "@/features/visits/components/verify-identity"
-          );
+          const { default: VerifyIdentity } =
+            await import("@/features/visits/components/verify-identity");
 
           return { Component: VerifyIdentity };
         },
@@ -41,9 +37,8 @@ export const visitorRoutes: RouteObject[] = [
           {
             path: paths.register.path,
             lazy: async () => {
-              const { default: Registration } = await import(
-                "@/features/visits/components/visit-request"
-              );
+              const { default: Registration } =
+                await import("@/features/visits/components/visit-request");
 
               return { Component: Registration };
             },
@@ -58,9 +53,8 @@ export const visitorRoutes: RouteObject[] = [
           {
             path: paths.visitorProfile.path,
             lazy: async () => {
-              const { default: VisitorProfile } = await import(
-                "@/features/visits/components/visitor-profile"
-              );
+              const { default: VisitorProfile } =
+                await import("@/features/visits/components/visitor-profile");
 
               return { Component: VisitorProfile };
             },
