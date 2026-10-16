@@ -94,6 +94,7 @@ export interface VisitResponse {
   createdAt: string;
   email: string;
   phone: string;
+  phoneNumber?: string;
   hostName: string;
   purpose: string;
   status: "PENDING" | "SIGNED_IN" | "REJECTED" | "SIGNED_OFF" | "APPROVED";
@@ -110,6 +111,7 @@ export interface VisitRecord {
   name?: string;
   email?: string;
   phone?: string;
+  phoneNumber?: string;
   hostName?: string;
   host?: string;
   purposeOfVisit?: string;
