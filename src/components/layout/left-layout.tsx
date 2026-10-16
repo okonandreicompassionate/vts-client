@@ -1,21 +1,22 @@
+import leftLayoutImage from "@/components/layout/left2.svg";
+
 export default function LeftLayout() {
   return (
-    <aside className="hidden h-full min-h-0 items-center w-full overflow-hidden bg-[#EFF7FB] px-8 pt-10 md:grid md:px-16 md:pt-12 dark:bg-slate-800">
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 text-center 2xl:gap-10">
-        <img src="/logo.png" alt="VisitorX" className="h-auto w-32 2xl:h-auto 2xl:w-40" />
+    <aside className="hidden h-full min-h-screen w-full flex-col bg-[#f5f9f9] px-8 py-8 md:flex md:px-8 md:py-8 lg:px-16 dark:bg-slate-950">
+      <img src="/logo.png" alt="VisitorX" className="h-auto w-24 object-contain" />
 
+      <div className="flex flex-1 -translate-y-3 flex-col items-center justify-center px-2 text-center">
         <img
-          src="/left-layout-img.png"
+          src={leftLayoutImage}
           alt=""
-          className="w-72 object-contain 2xl:w-96 border-0! outline-none! shadow-none!"
+          className="aspect-[1.37/1] w-[min(100%,34vw)] max-w-md rounded-xl object-contain"
         />
-
-        <div className="flex flex-col gap-2">
-          <h2 className="text-[20px] font-bold text-slate-800 md:text-2xl 2xl:text-3xl dark:text-slate-100">
-            Visitor Experience
-          </h2>
-          <p className="text-slate-400 md:text-base 2xl:text-[16px] dark:text-slate-400">
-            Ensure Secure Visitor Check-Ins and Approvals
+        <div className="mt-4 flex flex-col gap-1.5">
+          <h1 className="text-base font-bold tracking-tight text-slate-900 lg:text-xl dark:text-slate-100">
+            Visitor management, simplified
+          </h1>
+          <p className="text-[10px] whitespace-nowrap text-slate-500 dark:text-slate-400">
+            A secure, seamless experience from invitation to checkout.
           </p>
         </div>
       </div>

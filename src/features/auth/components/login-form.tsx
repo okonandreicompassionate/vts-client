@@ -1,4 +1,4 @@
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, Checkbox, message } from "antd";
 import { useLoginMutation } from "../api/auth-api-slice";
 import { useCompleteLogin } from "../../auth/hooks/use-complete-login";
 import MicrosoftLogin from "./ms-login";
@@ -45,11 +45,9 @@ export default function LoginForm() {
       } else if (typeof backendMessage === "string") {
         errorMessage = backendMessage;
       } else if (loginError.status === "FETCH_ERROR") {
-        errorMessage =
-          "Unable to connect to the server. Please check your connection.";
+        errorMessage = "Unable to connect to the server. Please check your connection.";
       } else if (loginError.status === "TIMEOUT_ERROR") {
-        errorMessage =
-          "The login request timed out. Please try again.";
+        errorMessage = "The login request timed out. Please try again.";
       }
 
       message.error(errorMessage);
@@ -62,76 +60,59 @@ export default function LoginForm() {
       layout="vertical"
       requiredMark={false}
       onFinish={handleSubmit}
+      className="[&_.ant-form-item]:mb-2"
     >
-      <Form.Item
-        label={
-          <span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">
-            Email Address
-          </span>
-        }
-        name="email"
-        rules={emailRules}
-      >
+      <Form.Item name="email" rules={emailRules}>
         <Input
           type="email"
-          placeholder="you@example.com"
-          size="large"
+          aria-label="Email address"
+          placeholder="Email address"
+          size="small"
           autoComplete="email"
-          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:text-slate-100! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
+          className="h-6! rounded-md! border-slate-200! bg-white! px-2! text-[10px]! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-500!"
         />
       </Form.Item>
 
-      <Form.Item
-        label={
-          <span className="text-[13px] font-semibold text-slate-700 dark:text-slate-300">
-            Password
-          </span>
-        }
-        name="password"
-        rules={getPasswordRules({ required: true })}
-      >
+      <Form.Item name="password" rules={getPasswordRules({ required: true })}>
         <Input.Password
-          placeholder="••••••••••"
-          size="large"
+          aria-label="Password"
+          placeholder="Password"
+          size="small"
           autoComplete="current-password"
-          className="rounded-lg! border-slate-200! bg-slate-50! hover:border-slate-300! focus:border-sky-400! focus:bg-white! dark:border-slate-600! dark:bg-slate-700! dark:hover:border-slate-500! dark:focus:border-sky-400! dark:focus:bg-slate-800!"
+          className="h-8! rounded-md! border-slate-200! bg-white! px-2! text-[10px]! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-500!"
         />
       </Form.Item>
 
-      <Form.Item className="mb-3 pt-1">
+      <div className="-mt-1 mb-3 flex items-center justify-between text-[9px]">
+        <Checkbox className="text-[9px]! text-slate-600! dark:text-slate-300!">
+          Remember me
+        </Checkbox>
+        <span className="font-medium text-sky-500">Forgot password?</span>
+      </div>
+
+      <Form.Item className="mb-2! pt-1">
         <Button
           type="primary"
           htmlType="submit"
           block
-          size="large"
+          size="middle"
           loading={isLoading}
-          className="h-10! rounded-lg! border-0! bg-sky-500! font-semibold! shadow-md! hover:bg-sky-600! hover:shadow-lg!"
+          className="h-7! rounded-md! border-0! bg-sky-500! text-[10px]! font-semibold! shadow-none! hover:bg-sky-600!"
         >
-          Login
+          Sign in
         </Button>
       </Form.Item>
 
-      <div className="relative flex items-center justify-center py-2">
-        <div className="absolute right-0 left-0 border-t border-slate-200 dark:border-slate-700" />
-
-        <span className="relative bg-white px-3 text-xs font-medium text-slate-400 dark:bg-slate-900 dark:text-slate-500">
-          or
-        </span>
-      </div>
-
-      <div className="mb-1.5">
+      <div className="pt-1">
         <MicrosoftLogin />
       </div>
 
-      {/* Forgot Password */}
-      {/* <div className="text-center">
-        <Button
-          type="link"
-          className="px-0! text-[13px]! font-medium! text-sky-500! hover:text-sky-600!"
-        >
-          Forgot Password?
-        </Button>
-      </div> */}
+      <div
+        aria-hidden="true"
+        className="mt-2 flex h-8 items-center justify-center rounded-md border border-slate-200 text-[10px] text-slate-600 dark:border-slate-700 dark:text-slate-300"
+      >
+        Organization Login
+      </div>
     </Form>
   );
 }
