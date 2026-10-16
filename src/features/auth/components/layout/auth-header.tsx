@@ -14,7 +14,7 @@ export default function AuthHeader({ mode }: AuthHeaderProps) {
         }`}
       >
         {mode === "login"
-          ? "Enter your details to access the security workspace."
+          ? "Enter your details to access the workspace."
           : "Fill in your details to get started."}
       </p>
     </div>
