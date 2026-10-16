@@ -19,7 +19,7 @@ export const GET_VISITS = gql`
         id
         referenceId
         name
-        phoneNumber
+        phone
         email
         hostName
         purpose
@@ -53,7 +53,7 @@ export type VisitsQueryResult = {
       id: string;
       referenceId: string;
       name: string;
-      phoneNumber?: string | null;
+      phone?: string | null;
       email?: string | null;
       hostName?: string | null;
       purpose?: string | null;

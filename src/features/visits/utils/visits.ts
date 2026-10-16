@@ -160,6 +160,7 @@ export function toVisitorRow(
       "N/A",
 
     phone:
+      visit.phone ??
       visit.phoneNumber ??
       "N/A",
 
