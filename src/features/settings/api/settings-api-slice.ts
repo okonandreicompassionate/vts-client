@@ -1,17 +1,24 @@
 import { adminApi } from "../../../lib/api/admin/admin-api";
 import type {
+  ApiUserProfile,
   UserProfile,
   SettingsResponse,
   UpdatePasswordPayload,
   UpdateSettingsPayload,
   UpdateProfilePayload,
 } from "../types/api-types";
+import { normalizeUserRole } from "@/types/user-role";
+
+function normalizeProfile(profile: ApiUserProfile): UserProfile {
+  return { ...profile, role: normalizeUserRole(profile.role) };
+}
 
 export const settingsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
 
     getProfile: builder.query<UserProfile, void>({
       query: () => "/auth/profile",
+      transformResponse: normalizeProfile,
       providesTags: [{ type: "Settings", id: "PROFILE" }],
       keepUnusedDataFor: 0,
     }),
@@ -27,6 +34,7 @@ export const settingsApi = adminApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      transformResponse: normalizeProfile,
       invalidatesTags: [{ type: "Settings", id: "PROFILE" }],
     }),
 

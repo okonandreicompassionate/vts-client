@@ -8,12 +8,15 @@ import ManageSecurityModal from "./modals/manage-security-modal.tsx";
 import NotificationPreferencesModal from "@/features/notifications/components/notifications-preferences-modal.tsx";
 import SystemSettingsModal from "./modals/system-settings-modal.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
+import { adminManagementRoles } from "@/types/user-role";
 
 export default function AdminSettings() {
   const { openModal } = usePopup();
   const { data: profile, isLoading: isLoadingProfile } = useGetProfileQuery();
 
-  const isSuperAdmin = profile?.role === "SUPERADMIN";
+  const canManageSystemSettings = profile
+    ? adminManagementRoles.includes(profile.role)
+    : false;
 
   if (isLoadingProfile) {
     return (
@@ -61,7 +64,7 @@ export default function AdminSettings() {
       iconColor: "text-orange-400",
       modal: <NotificationPreferencesModal />,
     },
-    ...(isSuperAdmin
+    ...(canManageSystemSettings
       ? [
           {
             key: "system",

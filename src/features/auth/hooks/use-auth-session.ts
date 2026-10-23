@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
-import { useAppDispatch } from "@/lib/stores/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
 import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
 import { useOrganization } from "@/features/organizations";
@@ -11,17 +11,19 @@ export function useAdminAuthSession() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { orgSlug } = useOrganization();
+  const sessionUser = useAppSelector((state) => state.adminAuth.user);
+  const hasMatchingSession = sessionUser?.orgSlug === orgSlug;
 
-  
   const profileQuery = useGetProfileQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
+    skip: hasMatchingSession,
   });
 
   const { data: profile, isError, error, isLoading } = profileQuery;
 
   useEffect(() => {
-    if (isLoading || profile) {
+    if (hasMatchingSession || isLoading || profile) {
       return;
     }
 
@@ -46,7 +48,10 @@ export function useAdminAuthSession() {
     message.info(errorData?.message ?? "Your session has ended. Please log in again.");
 
     navigate(paths.admin.login.getHref(orgSlug), { replace: true });
-  }, [profile, isError, error, isLoading, dispatch, navigate, orgSlug]);
+  }, [hasMatchingSession, profile, isError, error, isLoading, dispatch, navigate, orgSlug]);
 
-  return profileQuery;
+  return {
+    ...profileQuery,
+    data: profileQuery.data ?? (hasMatchingSession ? sessionUser : undefined),
+  };
 }

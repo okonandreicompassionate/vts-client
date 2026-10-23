@@ -15,7 +15,8 @@ import { usePopup } from "@/features/popup/hooks/use-popup";
 import {
   useApproveVisitMutation,
   useRejectVisitMutation,
-  useSignoffVisitMutation,
+  useCheckInVisitMutation,
+  useCheckOutVisitMutation,
 } from "@/features/visits/api/admins-visit-api-slice.ts";
 
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
@@ -70,7 +71,9 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
   const [notes, setNotes] = useState("");
 
-  const [signoffVisit, { isLoading: isSigningOff }] = useSignoffVisitMutation();
+  const [checkInVisit, { isLoading: isCheckingIn }] = useCheckInVisitMutation();
+
+  const [checkOutVisit, { isLoading: isCheckingOut }] = useCheckOutVisitMutation();
 
   const [approveVisit, { isLoading: isApproving }] = useApproveVisitMutation();
 
@@ -81,6 +84,8 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
   const { visitor, isLoading, isError, error } = useVisitorDetails(detailId);
 
   const statusStyles: Record<string, string> = {
+    Approved:
+      "bg-sky-50 text-sky-600 border border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800",
     "Signed In":
       "bg-emerald-50 text-emerald-500 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800",
 
@@ -94,16 +99,29 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
       "bg-rose-50 text-rose-500 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800",
   };
 
-  const handleSignOff = async () => {
+  const handleCheckIn = async () => {
     if (!visitor?.id) return;
 
     try {
-      await signoffVisit(visitor.id).unwrap();
+      await checkInVisit(visitor.id).unwrap();
       await client.refetchQueries({ include: ["Visits"] });
 
-      message.success("Visitor signed off successfully.");
+      message.success("Visitor checked in successfully.");
     } catch {
-      message.error("Sign off could not be completed. Please try again.");
+      message.error("Visitor check-in could not be completed. Please try again.");
+    }
+  };
+
+  const handleCheckOut = async () => {
+    if (!visitor?.id) return;
+
+    try {
+      await checkOutVisit(visitor.id).unwrap();
+      await client.refetchQueries({ include: ["Visits"] });
+
+      message.success("Visitor checked out successfully.");
+    } catch {
+      message.error("Visitor check-out could not be completed. Please try again.");
     }
   };
 
@@ -274,6 +292,8 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
   }
 
   const isRejected = visitor.status === "Rejected";
+ const isApproved = visitor.status === "Approved";
+ const isCheckedIn = visitor.status === "Signed In";
 
  const timeline: TimelineStep[] = isRejected
   ? [
@@ -306,9 +326,11 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
         time:
           visitor.status === "Pending"
             ? "Pending review"
-            : visitor.checkIn,
+            : isApproved
+              ? formatVisitTime(visitor.reviewedAt)
+              : visitor.checkIn,
         status:
-          visitor.status === "Signed In" || visitor.status === "Signed Off"
+          isApproved || isCheckedIn || visitor.status === "Signed Off"
             ? "done-green"
             : "done-orange",
       },
@@ -317,17 +339,19 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
         title:
           visitor.status === "Signed Off"
             ? "Signed out"
-            : visitor.status === "Signed In"
+            : isCheckedIn
               ? "Currently signed in"
-              : "Pending confirmation",
+              : isApproved
+                ? "Awaiting visitor check-in"
+                : "Pending confirmation",
         time:
           visitor.status === "Signed Off"
             ? visitor.checkOut
-            : visitor.status === "Signed In"
+            : isCheckedIn
               ? visitor.checkIn
               : "Pending",
         status:
-          visitor.status === "Signed Off" || visitor.status === "Signed In"
+          visitor.status === "Signed Off" || isCheckedIn
             ? "done-green"
             : "done-orange",
       },
@@ -357,9 +381,10 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 ];
 
   if (isDrawer) {
-    const showSignOff = visitor.status === "Signed In";
+    const showCheckIn = isApproved;
+    const showCheckOut = isCheckedIn;
     const showReview = visitor.status === "Pending";
-    const hasFooterActions = showSignOff || showReview;
+    const hasFooterActions = showCheckIn || showCheckOut || showReview;
 
     return (
       <div className="flex h-full min-h-0 flex-col bg-white dark:bg-slate-800">
@@ -460,18 +485,32 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
         {/* Sticky footer actions — always reachable regardless of content height */}
         {hasFooterActions && (
           <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-2.5 dark:border-slate-700 dark:bg-slate-800">
-            {showSignOff && (
+            {showCheckIn && (
+              <Button
+                type="primary"
+                shape="round"
+                loading={isCheckingIn}
+                block
+                size="middle"
+                className="rounded-sm! bg-emerald-500! font-semibold"
+                onClick={handleCheckIn}
+              >
+                Check In Visitor
+              </Button>
+            )}
+
+            {showCheckOut && (
               <Button
                 danger
                 type="primary"
                 shape="round"
-                loading={isSigningOff}
+                loading={isCheckingOut}
                 block
                 size="middle"
                 className="rounded-sm! bg-[#EF4444]! font-semibold"
-                onClick={handleSignOff}
+                onClick={handleCheckOut}
               >
-                Sign Off Visitor
+                Check Out Visitor
               </Button>
             )}
 
@@ -552,16 +591,26 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
                 ))}
               </div>
 
-              {visitor.status === "Signed In" ? (
+              {isApproved ? (
+                <Button
+                  type="primary"
+                  shape="round"
+                  loading={isCheckingIn}
+                  className="mt-6 h-7! w-full rounded-sm! bg-emerald-500! px-5! font-semibold sm:w-auto"
+                  onClick={handleCheckIn}
+                >
+                  Check In Visitor
+                </Button>
+              ) : isCheckedIn ? (
                 <Button
                   danger
                   type="primary"
                   shape="round"
-                  loading={isSigningOff}
+                  loading={isCheckingOut}
                   className="mt-6 h-7! w-full rounded-sm! bg-[#EF4444]! px-5! font-semibold sm:w-auto"
-                  onClick={handleSignOff}
+                  onClick={handleCheckOut}
                 >
-                  Sign Off Visitor
+                  Check Out Visitor
                 </Button>
               ) : null}
             </div>

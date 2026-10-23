@@ -4,6 +4,7 @@ export type FilterTab = "All" | VisitorStatus;
 
 export const filterTabs: FilterTab[] = [
   "All",
+  "Approved",
   "Signed In",
   "Signed Off",
   "Pending",

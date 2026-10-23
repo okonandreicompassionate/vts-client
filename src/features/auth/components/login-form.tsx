@@ -60,16 +60,16 @@ export default function LoginForm() {
       layout="vertical"
       requiredMark={false}
       onFinish={handleSubmit}
-      className="[&_.ant-form-item]:mb-2"
+      className="[&_.ant-form-item]:mb-4"
     >
       <Form.Item name="email" rules={emailRules}>
         <Input
           type="email"
           aria-label="Email address"
           placeholder="Email address"
-          size="small"
+          size="middle"
           autoComplete="email"
-          className="h-6! rounded-md! border-slate-200! bg-white! px-2! text-[10px]! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-500!"
+          className="h-9! rounded-md! border-slate-200! bg-white! px-3! text-sm! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-500!"
         />
       </Form.Item>
 
@@ -77,27 +77,27 @@ export default function LoginForm() {
         <Input.Password
           aria-label="Password"
           placeholder="Password"
-          size="small"
+          size="middle"
           autoComplete="current-password"
-          className="h-8! rounded-md! border-slate-200! bg-white! px-2! text-[10px]! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-500!"
+          className="h-10! rounded-md! border-slate-200! bg-white! px-3! text-sm! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-500!"
         />
       </Form.Item>
 
-      <div className="-mt-1 mb-3 flex items-center justify-between text-[9px]">
-        <Checkbox className="text-[9px]! text-slate-600! dark:text-slate-300!">
+      <div className="-mt-1 mb-4 flex items-center justify-between text-xs">
+        <Checkbox className="text-xs! text-slate-600! dark:text-slate-300!">
           Remember me
         </Checkbox>
         <span className="font-medium text-sky-500">Forgot password?</span>
       </div>
 
-      <Form.Item className="mb-2! pt-1">
+      <Form.Item className="mb-3! pt-1">
         <Button
           type="primary"
           htmlType="submit"
           block
           size="middle"
           loading={isLoading}
-          className="h-7! rounded-md! border-0! bg-sky-500! text-[10px]! font-semibold! shadow-none! hover:bg-sky-600!"
+          className="h-10! rounded-md! border-0! bg-sky-500! text-sm! font-semibold! shadow-none! hover:bg-sky-600!"
         >
           Sign in
         </Button>
@@ -109,7 +109,7 @@ export default function LoginForm() {
 
       <div
         aria-hidden="true"
-        className="mt-2 flex h-8 items-center justify-center rounded-md border border-slate-200 text-[10px] text-slate-600 dark:border-slate-700 dark:text-slate-300"
+        className="mt-3 flex h-10 items-center justify-center rounded-md border border-slate-200 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300"
       >
         Organization Login
       </div>

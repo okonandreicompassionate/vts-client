@@ -30,11 +30,11 @@ export function toVisitorStatus(status?: string): VisitorStatus {
     .replace(/[_-]/g, " ")
     .trim();
 
-  if (
-    normalized === "signed in" ||
-    normalized === "approved" ||
-    normalized === "sign in"
-  ) {
+  if (normalized === "approved") {
+    return "Approved";
+  }
+
+  if (normalized === "signed in" || normalized === "sign in") {
     return "Signed In";
   }
 
@@ -57,6 +57,7 @@ export function toVisitorStatus(status?: string): VisitorStatus {
 }
 
 export function toApiVisitStatus(status: VisitorStatus) {
+  if (status === "Approved") return "APPROVED";
   if (status === "Signed In") return "SIGNED_IN";
   if (status === "Signed Off") return "SIGNED_OFF";
   if (status === "Rejected") return "REJECTED";

@@ -4,14 +4,12 @@ interface AuthHeaderProps {
 
 export default function AuthHeader({ mode }: AuthHeaderProps) {
   return (
-    <div className={`flex flex-col gap-1 ${mode === "login" ? "mb-3" : "mb-5"}`}>
-      <h2 className="text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">
+    <div className={`flex flex-col gap-1.5 ${mode === "login" ? "mb-6" : "mb-5"}`}>
+      <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
         {mode === "login" ? "Sign in" : "Join Organization"}
       </h2>
       <p
-        className={`leading-relaxed text-slate-500 dark:text-slate-400 ${
-          mode === "login" ? "text-[9px] whitespace-nowrap" : "text-sm"
-        }`}
+        className="text-sm leading-relaxed text-slate-500 dark:text-slate-400"
       >
         {mode === "login"
           ? "Enter your details to access the workspace."

@@ -4,34 +4,41 @@ import { paths } from "../config/paths";
 import { useOrganization } from "@/features/organizations";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
+import type { UserRole } from "@/types/user-role";
+import { useAppSelector } from "@/lib/stores/hooks";
+import { getAdminHomeHref } from "@/features/auth/utils/get-admin-home-href";
 
 interface ProtectedRouteProps {
   requiredAuth?: "admin" | "visitor" | "visitor-verified";
-  requiredRole?: "SUPERADMIN";
+  requiredRoles?: readonly UserRole[];
 }
 
-export function ProtectedRoute({ requiredAuth = "admin", requiredRole }: ProtectedRouteProps) {
+export function ProtectedRoute({ requiredAuth = "admin", requiredRoles }: ProtectedRouteProps) {
   const { orgSlug } = useOrganization();
+  const sessionUser = useAppSelector((state) => state.adminAuth.user);
+  const hasMatchingSession = sessionUser?.orgSlug === orgSlug;
 
   const {
     data: user,
     isLoading,
     isError,
   } = useGetProfileQuery(undefined, {
-    skip: requiredAuth !== "admin",
+    skip: requiredAuth !== "admin" || hasMatchingSession,
   });
 
   if (requiredAuth === "admin") {
-    if (isLoading) {
+    if (isLoading && !hasMatchingSession) {
       return <Spinner variant="screen" />;
     }
 
-    if (isError || !user) {
+    const authenticatedUser = hasMatchingSession ? sessionUser : user;
+
+    if ((isError && !hasMatchingSession) || !authenticatedUser) {
       return <Navigate to={paths.admin.login.getHref(orgSlug)} replace />;
     }
 
-    if (requiredRole && user.role !== requiredRole) {
-      return <Navigate to={paths.admin.dashboard.getHref(orgSlug)} replace />;
+    if (requiredRoles && !requiredRoles.includes(authenticatedUser.role)) {
+      return <Navigate to={getAdminHomeHref(authenticatedUser.role, orgSlug)} replace />;
     }
   }
 

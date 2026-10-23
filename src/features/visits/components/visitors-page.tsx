@@ -1,13 +1,25 @@
 import { useApolloClient } from "@apollo/client/react";
 import { useState } from "react";
-import { Button, Drawer, Modal, message } from "antd";
-import { FilterOutlined, CheckOutlined, CloseOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Button, Drawer, Input, Modal, message } from "antd";
+import {
+  CheckOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  CloseOutlined,
+  FileTextOutlined,
+  FilterOutlined,
+  LogoutOutlined,
+  SearchOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
 import Header from "../../../components/layout/dashboard-header";
 import TableComponent from "../../../components/ui/table";
 import { TablePaginationFooter } from "../../../components/ui/table-pagination-footer";
 import { toApiVisitStatus, type VisitorRow } from "../utils/visits";
 import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data";
-import { getVisitorColumns } from "./visitor-columns";
+import { useVisitorStats } from "@/features/visits/hooks/use-visitor-stats";
+import { getFacilityVisitorColumns } from "./visitor-columns";
 import VisitorDetails from "./visitor-details";
 import { getSelectionColumn } from "@/components/ui/selection-column";
 import { Spinner } from "@/components/ui/spinner";
@@ -19,20 +31,63 @@ import {
   useSignoffManyVisitsMutation,
 } from "@/features/visits/api/admins-visit-api-slice";
 
+type VisitorCategory = "all" | "appointments" | "check-ins";
+const visitorCategories: { key: VisitorCategory; label: string }[] = [
+  { key: "all", label: "All" },
+  { key: "appointments", label: "Appointment" },
+  { key: "check-ins", label: "Check-ins" },
+];
+
+function downloadVisitorReport(visitors: VisitorRow[], page: number) {
+  const columns: (keyof VisitorRow)[] = [
+    "id",
+    "name",
+    "email",
+    "phone",
+    "host",
+    "purpose",
+    "status",
+    "registeredAt",
+  ];
+  const escapeCsv = (value: string) => `"${value.replaceAll('"', '""')}"`;
+  const rows = [
+    columns.join(","),
+    ...visitors.map((visitor) =>
+      columns.map((column) => escapeCsv(String(visitor[column] ?? ""))).join(","),
+    ),
+  ];
+  const blob = new Blob([`\uFEFF${rows.join("\r\n")}`], {
+    type: "text/csv;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `visitors-page-${page}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function Visitors() {
   const client = useApolloClient();
+  const [activeCategory, setActiveCategory] = useState<VisitorCategory>("all");
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedRows, setSelectedRows] = useState<VisitorRow[]>([]);
   const [drawerVisitorId, setDrawerVisitorId] = useState<string>();
   const pageSize = 8;
+  const stats = useVisitorStats();
+  const statusGroup =
+    activeTab !== "All" || activeCategory === "all" ? undefined : activeCategory;
 
   const { visitorRecords, totalEntries, isLoading, isError } = useVisitorTableData({
     page,
     limit: pageSize,
+    search,
     status: activeTab === "All" ? undefined : toApiVisitStatus(activeTab),
+    statusGroup,
   });
 
   const [approveManyVisits, { isLoading: isApproving }] = useApproveManyVisitsMutation();
@@ -59,8 +114,17 @@ export default function Visitors() {
   }
 
   const handleTabChange = (tab: FilterTab) => {
+    setActiveCategory("all");
     setActiveTab(tab);
     setPage(1);
+  };
+
+  const handleCategoryChange = (category: VisitorCategory) => {
+    setActiveCategory(category);
+    setActiveTab("All");
+    setPage(1);
+    setSelectedRows([]);
+    setIsSelecting(false);
   };
 
   const handleToggleSelection = (record: VisitorRow) => {
@@ -140,7 +204,7 @@ export default function Visitors() {
     });
   };
 
-  const actionColumns = getVisitorColumns((visitor) => setDrawerVisitorId(visitor.id));
+  const actionColumns = getFacilityVisitorColumns((visitor) => setDrawerVisitorId(visitor.id));
   const columns = isSelecting
     ? [
         getSelectionColumn<VisitorRow>({
@@ -157,10 +221,96 @@ export default function Visitors() {
       <Header title="Visitors" />
 
       <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
+        <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Visitors</h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400">View and check visitors</p>
+          </div>
+          <Button
+            icon={<FileTextOutlined />}
+            onClick={() => downloadVisitorReport(visitorRecords, page)}
+            disabled={visitorRecords.length === 0}
+            title="Download the visitors on the current page as a CSV report"
+          >
+            Generate Report
+          </Button>
+        </div>
+
         <div className="rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
           <div className="flex flex-col gap-3 overflow-x-auto px-3 sm:px-6 sm:py-1">
+            <div className="flex gap-1 border-b border-slate-100 pt-2 dark:border-slate-700">
+              {visitorCategories.map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  aria-pressed={activeCategory === key}
+                  onClick={() => handleCategoryChange(key)}
+                  className={`rounded-t-md border-b-2 px-3 py-2 text-xs font-medium transition-colors ${
+                    activeCategory === key
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
+                      : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {[
+                { label: "Total", value: stats.total, tone: "blue", icon: <TeamOutlined /> },
+                {
+                  label: "Approved",
+                  value: Math.max(
+                    0,
+                    stats.total - stats.pending - stats.rejected - stats.signedIn - stats.signedOff,
+                  ),
+                  tone: "green",
+                  icon: <CheckCircleOutlined />,
+                },
+                { label: "Declined", value: stats.rejected, tone: "red", icon: <CloseCircleOutlined /> },
+                { label: "Pending", value: stats.pending, tone: "amber", icon: <ClockCircleOutlined /> },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex items-center gap-2 border border-slate-100 px-3 py-2 dark:border-slate-700"
+                >
+                  <span
+                    className={`flex h-7 w-7 items-center justify-center rounded-full text-xs ${
+                      stat.tone === "blue"
+                        ? "bg-sky-50 text-sky-600 dark:bg-sky-950/50 dark:text-sky-300"
+                        : stat.tone === "green"
+                          ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-300"
+                          : stat.tone === "red"
+                            ? "bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-300"
+                            : "bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-300"
+                    }`}
+                  >
+                    {stat.icon}
+                  </span>
+                  <div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{stat.label}</p>
+                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+                      {stat.value.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
             <div className="flex flex-col gap-2 overflow-x-auto sm:flex-row sm:items-center sm:justify-between">
               <div className="flex w-full gap-2 py-2 sm:w-auto sm:flex-row sm:items-center">
+                <Input
+                  allowClear
+                  value={search}
+                  onChange={(event) => {
+                    setSearch(event.target.value);
+                    setPage(1);
+                  }}
+                  prefix={<SearchOutlined className="text-slate-400" />}
+                  placeholder="Search visitors"
+                  className="w-full sm:max-w-xs"
+                />
                 <Button
                   icon={<FilterOutlined />}
                   aria-label="Toggle filters"
@@ -273,6 +423,7 @@ export default function Visitors() {
               className="visitor-table"
               size="small"
               showSerialNumber
+              serialNumberTitle="Id"
               startIndex={(page - 1) * pageSize + 1}
               onRow={
                 isSelecting

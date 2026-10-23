@@ -100,12 +100,24 @@ export default function AddAdminModal({
             <Select
               options={[
                 {
+                  label: "Facility",
+                  value: "FACILITY",
+                },
+                {
+                  label: "Security",
+                  value: "SECURITY",
+                },
+                {
+                  label: "Frontdesk",
+                  value: "FRONTDESK",
+                },
+                {
                   label: "Admin",
                   value: "ADMIN",
                 },
                 {
-                  label: "Super Admin",
-                  value: "SUPERADMIN",
+                  label: "Host",
+                  value: "HOST",
                 },
               ]}
               className="h-8! w-full cursor-pointer"

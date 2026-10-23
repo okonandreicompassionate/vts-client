@@ -1,5 +1,7 @@
 
 
+import type { ApiUserRole } from "@/types/user-role";
+
 export interface LoginPayload {
   email: string;
   password: string;
@@ -14,7 +16,7 @@ export interface UserProfile {
   fullName: string;
   email: string;
   phoneNumber: string;
-  role: "SUPERADMIN" | "ADMIN";
+  role: ApiUserRole;
   orgId?: string;
   orgSlug: string;
 
@@ -50,7 +52,7 @@ export interface JoinOrganizationWithPasswordResponse {
     fullName: string;
     email: string;
     phoneNumber: string;
-    role: "SUPERADMIN" | "ADMIN";
+    role: ApiUserRole;
     orgId: string;
     orgSlug: string;
   };
@@ -64,4 +66,3 @@ export interface VisitorMeResponse {
   orgId: string;
   orgSlug: string;
 }
-

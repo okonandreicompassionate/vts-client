@@ -23,6 +23,7 @@ import { adminColumns } from "./admins-columns";
 import { getSelectionColumn } from "@/components/ui/selection-column";
 import DashboardHeader from "@/components/layout/dashboard-header";
 import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
+import { adminManagementRoles } from "@/types/user-role";
 
 export default function AdminsPage() {
   const [isInviteModalOpen, setInviteModalOpen] = useState(false);
@@ -32,7 +33,7 @@ export default function AdminsPage() {
 
   const [selectedAdminId, setSelectedAdminId] = useState<string | null>(null);
   const { data: profile } = useGetProfileQuery();
-  const canManageAdmins = profile?.role === "SUPERADMIN";
+  const canManageAdmins = profile ? adminManagementRoles.includes(profile.role) : false;
 
   useAdminsSSE();
 

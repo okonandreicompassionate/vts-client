@@ -12,6 +12,7 @@ import { visitorRoutes } from "./routes/visitor/routes";
 import { Spinner } from "@/components/ui/spinner";
 import PageError from "@/components/feedback/page-error";
 import { rememberRoute } from "@/lib/router/route-history";
+import { AdminAuthRedirect } from "@/lib/contexts/admin-auth-redirect";
 
 function RouteError() {
   const error = useRouteError();
@@ -36,12 +37,18 @@ const router = createBrowserRouter([
       ...visitorRoutes,
 
       {
-        path: paths.admin.login.path,
-        lazy: async () => {
-          const { default: AuthPage } = await import("@/features/auth/components/auth-page");
+        element: <AdminAuthRedirect />,
+        children: [
+          {
+            path: paths.admin.login.path,
+            lazy: async () => {
+              const { default: AuthPage } =
+                await import("@/features/auth/components/auth-page");
 
-          return { Component: AuthPage };
-        },
+              return { Component: AuthPage };
+            },
+          },
+        ],
       },
 
       {

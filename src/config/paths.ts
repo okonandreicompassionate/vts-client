@@ -36,6 +36,14 @@ export const paths = {
       path: "/:orgSlug/dashboard",
       getHref: (orgSlug: string) => organizationPath(orgSlug, "/dashboard"),
     },
+    appointments: {
+      path: "/:orgSlug/appointments",
+      getHref: (orgSlug: string) => organizationPath(orgSlug, "/appointments"),
+    },
+    checkIns: {
+      path: "/:orgSlug/check-ins",
+      getHref: (orgSlug: string) => organizationPath(orgSlug, "/check-ins"),
+    },
     visitors: {
       path: "/:orgSlug/visitors",
       getHref: (orgSlug: string) => organizationPath(orgSlug, "/visitors"),

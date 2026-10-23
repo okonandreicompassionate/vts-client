@@ -8,6 +8,7 @@ import { Avatar } from "../ui/avatar";
 import EditProfileModal from "@/features/settings/components/modals/edit-profile-modal";
 import SystemSettingsModal from "../../features/settings/components/modals/system-settings-modal";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { adminManagementRoles } from "@/types/user-role";
 import { useDashboardShell } from "./dashboard-shell-context";
 import { formatRole } from "@/utils/format-role";
 
@@ -83,7 +84,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
       onClick: handleUpdateProfile,
     },
 
-    ...(profile?.role === "SUPERADMIN"
+    ...(profile && adminManagementRoles.includes(profile.role)
       ? [
           {
             key: "update-system-settings",

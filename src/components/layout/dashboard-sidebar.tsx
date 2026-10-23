@@ -2,16 +2,21 @@ import { Button } from "antd";
 import {
   ChevronLeft,
   ChevronRight,
+  CalendarDays,
+  CircleHelp,
   LayoutDashboard,
+  ScanLine,
   Settings,
   UserCheck,
   Users,
   X,
+  type LucideIcon,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { useOrganization } from "@/features/organizations";
 import { paths } from "@/config/paths";
+import type { UserRole } from "@/types/user-role";
 
 type SidebarProps = {
   collapsed: boolean;
@@ -20,20 +25,55 @@ type SidebarProps = {
   setMobileOpen: (value: boolean) => void;
 };
 
+type SidebarNavItem =
+  | { to: string; label: string; icon: LucideIcon }
+  | { label: string; icon: LucideIcon; disabled: true };
+
 const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: SidebarProps) => {
   const isMobileOpen = mobileOpen;
   const { orgSlug } = useOrganization();
   const { data: profile } = useAdminAuthSession();
-  const navItems = [
-    { to: paths.admin.dashboard.getHref(orgSlug), label: "Dashboard", icon: LayoutDashboard },
-    { to: paths.admin.visitors.getHref(orgSlug), label: "Visitors", icon: UserCheck },
-    { to: paths.admin.employees.getHref(orgSlug), label: "Employees", icon: Users },
+  const appointmentsItem: SidebarNavItem = {
+    to: paths.admin.appointments.getHref(orgSlug),
+    label: "Appointments",
+    icon: CalendarDays,
+  };
+  const checkInsItem: SidebarNavItem = {
+    to: paths.admin.checkIns.getHref(orgSlug),
+    label: "Check-ins",
+    icon: ScanLine,
+  };
+  const visitorsItem: SidebarNavItem = {
+    to: paths.admin.visitors.getHref(orgSlug),
+    label: "Visitors",
+    icon: UserCheck,
+  };
+  const dashboardItem: SidebarNavItem = {
+    to: paths.admin.dashboard.getHref(orgSlug),
+    label: "Dashboard",
+    icon: LayoutDashboard,
+  };
+  const facilityNavItems: SidebarNavItem[] = [
+    dashboardItem,
+    appointmentsItem,
+    visitorsItem,
+    checkInsItem,
     { to: paths.admin.settings.getHref(orgSlug), label: "Settings", icon: Settings },
+    { label: "Help Center", icon: CircleHelp, disabled: true },
   ];
-  const visibleNavItems =
-    profile?.role === "SUPERADMIN"
-      ? [...navItems, { to: paths.admin.users.getHref(orgSlug), label: "Admins", icon: Users }]
-      : navItems;
+  const adminNavItems: SidebarNavItem[] = [
+    ...facilityNavItems,
+    { to: paths.admin.employees.getHref(orgSlug), label: "Employees", icon: Users },
+    { to: paths.admin.users.getHref(orgSlug), label: "Admins", icon: Users },
+  ];
+  const navItemsByRole: Record<UserRole, SidebarNavItem[]> = {
+    FACILITY: adminNavItems,
+    SECURITY: [dashboardItem, appointmentsItem, visitorsItem, checkInsItem],
+    FRONTDESK: [dashboardItem, appointmentsItem, visitorsItem, checkInsItem],
+    ADMIN: adminNavItems,
+    HOST: [appointmentsItem],
+  };
+  const visibleNavItems = profile ? navItemsByRole[profile.role] : [];
 
   return (
     <>
@@ -66,7 +106,11 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
             {!collapsed && (
               <div className="overflow-hidden">
                 <p className="truncate text-[10px] tracking-[0.2em] text-slate-500 uppercase dark:text-slate-400">
-                  Admin
+                  {profile?.role === "FRONTDESK"
+                    ? "Frontdesk"
+                    : profile?.role
+                      ? profile.role.charAt(0) + profile.role.slice(1).toLowerCase()
+                      : "Admin"}
                 </p>
               </div>
             )}
@@ -90,26 +134,51 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 p-2.5">
-          {visibleNavItems.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === paths.admin.dashboard.getHref(orgSlug)}
-              onClick={() => setMobileOpen(false)}
-              className={({ isActive }) =>
-                [
-                  "flex items-center gap-2.5 rounded-lg border border-transparent px-2.5 py-2.5 text-sm font-medium transition-colors",
-                  isActive
-                    ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800 dark:bg-sky-950/60 dark:text-sky-300"
-                    : "text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100",
-                  collapsed ? "justify-center px-2" : "",
-                ].join(" ")
-              }
-            >
-              <Icon size={18} />
-              {!collapsed && <span>{label}</span>}
-            </NavLink>
-          ))}
+          {visibleNavItems.map((item) => {
+            const { label, icon: Icon } = item;
+            const className =
+              "flex items-center gap-2.5 rounded-lg border border-transparent px-2.5 py-2.5 text-sm font-medium";
+            const collapsedClassName = collapsed ? "justify-center px-2" : "";
+
+            if ("disabled" in item) {
+              return (
+                <span
+                  key={label}
+                  aria-disabled="true"
+                  title={`${label} is coming soon`}
+                  className={[
+                    className,
+                    collapsedClassName,
+                    "cursor-not-allowed text-slate-400 dark:text-slate-500",
+                  ].join(" ")}
+                >
+                  <Icon size={18} />
+                  {!collapsed && <span>{label}</span>}
+                </span>
+              );
+            }
+
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === paths.admin.dashboard.getHref(orgSlug)}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) =>
+                  [
+                    className,
+                    collapsedClassName,
+                    isActive
+                      ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800 dark:bg-sky-950/60 dark:text-sky-300"
+                      : "text-slate-600 transition-colors hover:bg-white hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100",
+                  ].join(" ")
+                }
+              >
+                <Icon size={18} />
+                {!collapsed && <span>{label}</span>}
+              </NavLink>
+            );
+          })}
         </nav>
       </aside>
     </>

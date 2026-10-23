@@ -1,4 +1,6 @@
-export type AdminRole = "SUPERADMIN" | "ADMIN";
+import type { UserRole } from "@/types/user-role";
+
+export type AdminRole = UserRole;
 
 export interface InviteAdminPayload {
   email: string;

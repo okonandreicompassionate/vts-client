@@ -1,5 +1,6 @@
 
 
+import type { ApiUserRole, UserRole } from "@/types/user-role";
 
 export interface UpdateProfilePayload {
   fullName?: string;
@@ -31,7 +32,7 @@ export interface UserProfile {
   fullName: string;
   email: string;
   phoneNumber: string;
-  role: "SUPERADMIN" | "ADMIN";
+  role: UserRole;
   orgId?: string;
   orgSlug: string;
 
@@ -45,3 +46,6 @@ export interface UserProfile {
   avatar?: string;
 }
 
+export type ApiUserProfile = Omit<UserProfile, "role"> & {
+  role: ApiUserRole;
+};

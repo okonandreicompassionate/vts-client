@@ -1,8 +1,23 @@
-import type { VisitStats, VisitResponse, BulkVisitIds } from "../types/api-types";
+import type {
+  VisitStats,
+  VisitResponse,
+  BulkVisitIds,
+  CreateVisitPayload,
+  CreateVisitResponse,
+} from "../types/api-types";
 import { adminApi } from "@/lib/api/admin/admin-api";
 
 export const adminVisitsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
+    bookAppointment: builder.mutation<CreateVisitResponse, CreateVisitPayload>({
+      query: (body) => ({
+        url: "/visits/book",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Visits"],
+    }),
+
     approveVisit: builder.mutation<void, string>({
       query: (id) => ({
         url: `/visits/${id}/approve`,
@@ -11,9 +26,17 @@ export const adminVisitsApi = adminApi.injectEndpoints({
       invalidatesTags: ["Visits"],
     }),
 
-    signoffVisit: builder.mutation<void, string>({
+    checkInVisit: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/visits/${id}/signoff`,
+        url: `/visits/${id}/checkin`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Visits"],
+    }),
+
+    checkOutVisit: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/visits/${id}/checkout`,
         method: "PATCH",
       }),
       invalidatesTags: ["Visits"],
@@ -68,8 +91,10 @@ export const adminVisitsApi = adminApi.injectEndpoints({
 });
 
 export const {
+  useBookAppointmentMutation,
   useApproveVisitMutation,
-  useSignoffVisitMutation,
+  useCheckInVisitMutation,
+  useCheckOutVisitMutation,
   useRejectVisitMutation,
 
   useApproveManyVisitsMutation,
