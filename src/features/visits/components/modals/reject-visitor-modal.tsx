@@ -1,31 +1,41 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { Button, Checkbox, message } from "antd";
+import { Button, Checkbox, Input, message } from "antd";
 import { useState } from "react";
 import CustomModal from "@/components/ui/custom-modal";
 import { usePopup } from "@/features/popup/hooks/use-popup";
+import { getVisitActionErrorMessage } from "@/features/visits/utils/visits";
 
 type RejectVisitorModalProps = {
-  onConfirm?: () => void | Promise<void>;
+  onConfirm?: (reason: string) => void | Promise<void>;
   onCancel?: () => void;
+  initialReason?: string;
 };
 
-export default function RejectVisitorModal({ onConfirm, onCancel }: RejectVisitorModalProps) {
+export default function RejectVisitorModal({
+  onConfirm,
+  onCancel,
+  initialReason = "",
+}: RejectVisitorModalProps) {
   const { closeModal } = usePopup();
   const [confirmed, setConfirmed] = useState(false);
+  const [reason, setReason] = useState(initialReason);
 
   const handleCancel = () => {
     setConfirmed(false);
+    setReason(initialReason);
     onCancel?.();
     closeModal();
   };
 
   const handleConfirm = async () => {
     try {
-      await onConfirm?.();
+      await onConfirm?.(reason.trim());
       setConfirmed(false);
       closeModal();
-    } catch {
-      message.error("Rejection could not be completed. Please try again.");
+    } catch (error) {
+      message.error(
+        getVisitActionErrorMessage(error, "Rejection could not be completed. Please try again."),
+      );
     }
   };
 
@@ -38,8 +48,18 @@ export default function RejectVisitorModal({ onConfirm, onCancel }: RejectVisito
           </div>
           <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Reject Visitor</h3>
           <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-            Rejecting this visitor will deny access and allow you to notify the guest of the reason.
+            Rejecting this visitor will deny access. Enter a reason to continue.
           </p>
+
+          <Input.TextArea
+            value={reason}
+            onChange={(event) => setReason(event.target.value)}
+            placeholder="Enter rejection reason"
+            rows={3}
+            maxLength={500}
+            showCount
+            className="mt-4 text-left"
+          />
 
           <div className="mt-5 flex justify-center">
             <Checkbox
@@ -66,7 +86,7 @@ export default function RejectVisitorModal({ onConfirm, onCancel }: RejectVisito
           <Button
             type="primary"
             danger
-            disabled={!confirmed}
+            disabled={!confirmed || !reason.trim()}
             onClick={handleConfirm}
             className="h-11! flex-1! rounded-full! border-none! bg-red-500! px-8! font-semibold! hover:bg-red-600! disabled:bg-red-200! disabled:hover:bg-red-200!"
           >

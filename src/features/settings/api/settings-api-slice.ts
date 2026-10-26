@@ -10,7 +10,27 @@ import type {
 import { normalizeUserRole } from "@/types/user-role";
 
 function normalizeProfile(profile: ApiUserProfile): UserProfile {
-  return { ...profile, role: normalizeUserRole(profile.role) };
+  const role = profile.role ?? profile.userRole;
+  if (!role) {
+    throw new Error("Profile response is missing role information.");
+  }
+
+  const fullName =
+    profile.fullName?.trim() ??
+    `${profile.firstName ?? ""} ${profile.lastName ?? ""}`.trim();
+  const orgSlug = profile.orgSlug ?? profile.organization?.slug;
+
+  if (!orgSlug) {
+    throw new Error("Profile response is missing its organization slug.");
+  }
+
+  return {
+    ...profile,
+    fullName,
+    phoneNumber: profile.phoneNumber ?? profile.phone ?? "",
+    orgSlug,
+    role: normalizeUserRole(role),
+  };
 }
 
 export const settingsApi = adminApi.injectEndpoints({
@@ -20,7 +40,6 @@ export const settingsApi = adminApi.injectEndpoints({
       query: () => "/auth/profile",
       transformResponse: normalizeProfile,
       providesTags: [{ type: "Settings", id: "PROFILE" }],
-      keepUnusedDataFor: 0,
     }),
 
     getSettings: builder.query<SettingsResponse, void>({

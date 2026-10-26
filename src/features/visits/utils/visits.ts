@@ -11,6 +11,8 @@ export interface VisitorRow {
   status: VisitorStatus;
 
   time: string;
+  requestedDate?: string;
+  requestedTime?: string;
   visitDate?: string;
   visitTime: string;
 
@@ -24,23 +26,65 @@ export interface VisitorRow {
   checkOut: string;
 }
 
-export function toVisitorStatus(status?: string): VisitorStatus {
+export function getVisitActionErrorMessage(error: unknown, fallback: string): string {
+  if (!error || typeof error !== "object") {
+    return fallback;
+  }
+
+  const responseData = "data" in error ? error.data : undefined;
+  const responseMessage =
+    responseData && typeof responseData === "object" && "message" in responseData
+      ? responseData.message
+      : undefined;
+  const message =
+    typeof responseMessage === "string"
+      ? responseMessage
+      : Array.isArray(responseMessage)
+        ? responseMessage.filter((item): item is string => typeof item === "string").join(", ")
+      : "message" in error && typeof error.message === "string"
+        ? error.message
+        : undefined;
+  const status = "status" in error ? error.status : undefined;
+
+  if (message && (typeof status === "number" || typeof status === "string")) {
+    return `Request failed (${status}): ${message}`;
+  }
+
+  return message ?? fallback;
+}
+
+export function isVisitAlreadyCheckedInError(error: unknown): boolean {
+  if (!error || typeof error !== "object" || !("status" in error) || error.status !== 409) {
+    return false;
+  }
+
+  const responseData = "data" in error ? error.data : undefined;
+  if (!responseData || typeof responseData !== "object" || !("message" in responseData)) {
+    return false;
+  }
+
+  const responseMessage = responseData.message;
+  return (
+    typeof responseMessage === "string" &&
+    responseMessage.toLowerCase().includes("already checked in")
+  );
+}
+
+export function toVisitorStatus(
+  status?: string,
+  checkInTime?: string | null,
+  checkOutTime?: string | null,
+): VisitorStatus {
   const normalized = status
     ?.toLowerCase()
     .replace(/[_-]/g, " ")
     .trim();
 
-  if (normalized === "approved") {
-    return "Approved";
-  }
-
-  if (normalized === "signed in" || normalized === "sign in") {
-    return "Signed In";
-  }
-
   if (
     normalized === "signed off" ||
     normalized === "signed out" ||
+    normalized === "checked out" ||
+    Boolean(checkOutTime) ||
     normalized === "completed"
   ) {
     return "Signed Off";
@@ -51,6 +95,20 @@ export function toVisitorStatus(status?: string): VisitorStatus {
     normalized === "declined"
   ) {
     return "Rejected";
+  }
+
+  if (
+    normalized === "signed in" ||
+    normalized === "sign in" ||
+    normalized === "check in" ||
+    normalized === "checked in" ||
+    Boolean(checkInTime)
+  ) {
+    return "Signed In";
+  }
+
+  if (normalized === "approved") {
+    return "Approved";
   }
 
   return "Pending";
@@ -116,6 +174,48 @@ function formatVisitDateTime(value?: string | null) {
   };
 }
 
+function formatAppointmentDate(value?: string | null) {
+  if (!value) {
+    return undefined;
+  }
+
+  const date = new Date(`${value.slice(0, 10)}T00:00:00`);
+
+  return Number.isNaN(date.getTime())
+    ? value
+    : new Intl.DateTimeFormat(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }).format(date);
+}
+
+function formatAppointmentTime(value?: string | null) {
+  if (!value) {
+    return undefined;
+  }
+
+  const match = /^(\d{1,2}):(\d{2})$/.exec(value);
+  if (!match) {
+    return value;
+  }
+
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  if (hours > 23 || minutes > 59) {
+    return value;
+  }
+
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0);
+
+  return new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date);
+}
+
 export function toVisitorRow(
   visit: VisitRecord,
   index: number,
@@ -133,7 +233,7 @@ export function toVisitorRow(
       : visit.email) ??
     `visit-${index}`;
 
-  const status = toVisitorStatus(visit.status);
+  const status = toVisitorStatus(visit.status, checkInTime, checkOutTime);
 
   const resolvedCheckIn =
     visit.checkIn ?? checkInTime;
@@ -178,6 +278,8 @@ export function toVisitorRow(
     status,
 
     time: formatVisitTime(registeredAt),
+    requestedDate: formatAppointmentDate(visit.date),
+    requestedTime: formatAppointmentTime(visit.time),
 
     visitDate: visitDateTime?.date,
 

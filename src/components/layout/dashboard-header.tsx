@@ -1,5 +1,6 @@
-import { Button, Dropdown, type MenuProps } from "antd";
+import { Breadcrumb, Button, Dropdown, type MenuProps } from "antd";
 import { DownOutlined, MenuOutlined } from "@ant-design/icons";
+import { Link, useLocation } from "react-router-dom";
 import { usePopup } from "@/features/popup/hooks/use-popup";
 import { Spinner } from "@/components/ui/spinner";
 import { ThemeToggle } from "../ui/theme-toggle";
@@ -11,6 +12,8 @@ import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { adminManagementRoles } from "@/types/user-role";
 import { useDashboardShell } from "./dashboard-shell-context";
 import { formatRole } from "@/utils/format-role";
+import { paths } from "@/config/paths";
+import { useOrganization } from "@/features/organizations";
 
 type DashboardHeaderProps = {
   title: string;
@@ -18,6 +21,8 @@ type DashboardHeaderProps = {
 
 const DashboardHeader = ({ title }: DashboardHeaderProps) => {
   const { data: profile, isLoading } = useAdminAuthSession();
+  const { orgSlug } = useOrganization();
+  const location = useLocation();
   const shell = useDashboardShell();
   const { openModal } = usePopup();
   const logout = useLogout();
@@ -38,6 +43,25 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
     profile?.fullName ?? profile?.email ?? "Admin User";
 
   const normalizedRole = formatRole(profile?.role);
+  const routeSegments = location.pathname.split("/").filter(Boolean).slice(1);
+  const isVisitorDetails = routeSegments[0] === "visitors" && routeSegments.length > 1;
+  const breadcrumbItems = [
+    ...(title === "Dashboard"
+      ? []
+      : [
+          {
+            title: <Link to={paths.admin.dashboard.getHref(orgSlug)}>Dashboard</Link>,
+          },
+        ]),
+    ...(isVisitorDetails
+      ? [
+          {
+            title: <Link to={paths.admin.visitors.getHref(orgSlug)}>Visitors</Link>,
+          },
+        ]
+      : []),
+    { title },
+  ];
 
   const menuItems: MenuProps["items"] = [
     {
@@ -149,9 +173,11 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
           className="mr-1! flex! h-9! w-9! shrink-0! items-center! justify-center! p-0! text-slate-500! md:hidden! dark:text-slate-400!"
         />
 
-        <h2 className="truncate text-lg font-bold text-slate-800 dark:text-slate-100">
-          {title}
-        </h2>
+        <Breadcrumb
+          aria-label="Breadcrumb"
+          items={breadcrumbItems}
+          className="truncate text-base font-semibold text-slate-800 dark:text-slate-100"
+        />
       </div>
 
       {/* Right side */}

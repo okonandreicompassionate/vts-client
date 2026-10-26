@@ -1,4 +1,4 @@
-import { AutoComplete, Button, Form, Input, message } from "antd";
+import { Alert, Button, Form, Input, message, Select } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,11 +11,18 @@ import type { RegistrationValues } from "../types/registration-values";
 import { paths } from "../../../config/paths";
 import { useOrganization } from "@/features/organizations";
 import { setVisitorSession } from "../../auth/stores/visitor-auth-slice";
-import { useGetEmployeeNamesQuery } from "@/features/employees/api/public-employees-api-slice";
-import { Spinner } from "@/components/ui/spinner";
-import { useCreateVisitMutation } from "../api/public-visits-api-slice";
+import {
+  useCreateVisitMutation,
+  useGetHostsQuery,
+} from "../api/public-visits-api-slice";
+import { getVisitActionErrorMessage } from "../utils/visits";
 
 const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
+
+function splitFullName(fullName?: string | null) {
+  const [firstName = "", ...lastNameParts] = fullName?.trim().split(/\s+/) ?? [];
+  return { firstName, lastName: lastNameParts.join(" ") };
+}
 
 export default function Registration() {
   const { orgSlug } = useOrganization();
@@ -31,8 +38,11 @@ export default function Registration() {
 
   const [createVisit] = useCreateVisitMutation();
 
-  const { data: employeeNames = [], isLoading: isLoadingEmployeeNames } =
-    useGetEmployeeNamesQuery();
+  const {
+    data: hosts = [],
+    isError: isHostsError,
+    isLoading: isLoadingHosts,
+  } = useGetHostsQuery();
 
   const purposeOfVisitValue = Form.useWatch("purposeOfVisit", form);
 
@@ -40,7 +50,7 @@ export default function Registration() {
 
   useEffect(() => {
     form.setFieldsValue({
-      name: verifiedName ?? undefined,
+      ...splitFullName(verifiedName),
       email: verifiedEmail ?? undefined,
       phoneNo: verifiedPhoneNumber ?? undefined,
     });
@@ -61,6 +71,8 @@ export default function Registration() {
   };
 
   const handleFinish = async (values: RegistrationValues) => {
+    const fullName = `${values.firstName.trim()} ${values.lastName.trim()}`.trim();
+
     openModal(
       <RegistrationModal
         onSubmit={async () => {
@@ -74,11 +86,11 @@ export default function Registration() {
           try {
             const response = await createVisit({
               visitorId: visitorId ?? undefined,
-              fullName: values.name,
+              firstName: values.firstName.trim(),
+              lastName: values.lastName.trim(),
               email: values.email,
-              phoneNumber: values.phoneNo,
-              hostName: values.hostName,
-              purposeOfVisit: values.purposeOfVisit,
+              phone: values.phoneNo,
+              purpose: values.purposeOfVisit,
             }).unwrap();
 
             const createdAt = response?.createdAt ?? new Date().toISOString();
@@ -95,7 +107,7 @@ export default function Registration() {
               dispatch(
                 setVisitorSession({
                   visitorId: resolvedVisitorId,
-                  fullName: values.name,
+                  fullName,
                   email: values.email,
                   phoneNumber: values.phoneNo,
                 }),
@@ -107,7 +119,7 @@ export default function Registration() {
               JSON.stringify({
                 id: visitId,
                 visitorId: resolvedVisitorId,
-                name: values.name,
+                name: fullName,
                 email: values.email,
                 phoneNo: values.phoneNo,
                 hostName: values.hostName,
@@ -131,7 +143,12 @@ export default function Registration() {
 
             closeModal();
 
-            message.error("Registration could not be submitted. Please try again.");
+            message.error(
+              getVisitActionErrorMessage(
+                error,
+                "Registration could not be submitted. Please try again.",
+              ),
+            );
           }
         }}
       />,
@@ -155,9 +172,20 @@ export default function Registration() {
           className="flex flex-col px-5 pt-6 pb-28 md:flex-none md:pb-0 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
         >
           <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please enter your name" }]}
+            name="firstName"
+            label="First Name"
+            rules={[{ required: true, whitespace: true, message: "Please enter your first name" }]}
+          >
+            <Input
+              size="large"
+              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="lastName"
+            label="Last Name"
+            rules={[{ required: true, whitespace: true, message: "Please enter your last name" }]}
           >
             <Input
               size="large"
@@ -169,7 +197,7 @@ export default function Registration() {
             name="purposeOfVisit"
             label="Purpose of Visit"
             rules={[
-              { required: true, message: "Please select a purpose" },
+              { required: true, whitespace: true, message: "Please select a purpose" },
               {
                 max: PURPOSE_OF_VISIT_MAX_LENGTH,
                 message: `Purpose of visit can't exceed ${PURPOSE_OF_VISIT_MAX_LENGTH} characters`,
@@ -191,31 +219,49 @@ export default function Registration() {
           <Form.Item
             name="hostName"
             label="Host Name"
-            rules={[{ required: true, message: "Please enter the host name" }]}
+            rules={[{ required: true, message: "Please select a host" }]}
           >
-            <AutoComplete
-              options={employeeNames.map((employee) => ({
-                value: employee.name,
-                label: employee.name,
-              }))}
-              showSearch={{
-                filterOption: (inputValue, option) =>
-                  String(option?.value ?? "")
-                    .toLowerCase()
-                    .includes(inputValue.toLowerCase()),
-              }}
+            <Select
+              showSearch
               allowClear
-              placeholder="Search or enter host name"
+              placeholder={
+                isLoadingHosts
+                  ? "Loading hosts..."
+                  : isHostsError
+                    ? "Hosts could not be loaded"
+                    : "Select a host"
+              }
               size="large"
-              placement="bottomLeft"
-              className="w-full cursor-pointer"
-              getPopupContainer={() => document.body}
-              suffixIcon={isLoadingEmployeeNames ? <Spinner variant="inline" /> : undefined}
-              classNames={{
-                popup: { listItem: "employee-autocomplete-option" },
-              }}
+              className="w-full"
+              loading={isLoadingHosts}
+              disabled={isHostsError || hosts.length === 0}
+              options={hosts.map(({ fullName }) => ({
+                value: fullName,
+                label: fullName,
+              }))}
+              optionFilterProp="label"
+              filterOption={(input, option) =>
+                String(option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              notFoundContent={
+                isLoadingHosts
+                  ? "Loading hosts..."
+                  : isHostsError
+                    ? "Unable to load hosts"
+                    : "No hosts available"
+              }
             />
           </Form.Item>
+          {isHostsError && (
+            <Alert
+              className="mb-4"
+              type="error"
+              showIcon
+              message="Hosts could not be loaded. Please refresh and try again."
+            />
+          )}
 
           <Form.Item
             name="email"

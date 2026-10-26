@@ -20,11 +20,11 @@ import {
 } from "antd";
 import { useState } from "react";
 
-import type { CreateVisitPayload, CreateVisitResponse } from "../types/api-types";
+import type { BookAppointmentPayload, CreateVisitResponse } from "../types/api-types";
 import type { VisitorRow } from "../utils/visits";
 import { toVisitorRow } from "../utils/visits";
 import { useBookAppointmentMutation } from "../api/admins-visit-api-slice";
-import { useGetEmployeeNamesQuery } from "@/features/employees/api/public-employees-api-slice";
+import { useGetHostsQuery } from "../api/public-visits-api-slice";
 import { Avatar } from "@/components/ui/avatar";
 import StatusPill from "./visit-status-pill";
 
@@ -52,18 +52,19 @@ interface CreateAppointmentModalProps {
 
 function formatCreatedAppointment(
   response: CreateVisitResponse,
-  payload: CreateVisitPayload,
+  payload: BookAppointmentPayload,
   index: number,
+  hostName: string,
 ): VisitorRow {
   return toVisitorRow(
     {
       id: response.id,
       referenceId: response.referenceId,
-      fullName: response.visitorName || payload.fullName,
+      fullName: response.visitorName || `${payload.firstName} ${payload.lastName}`,
       email: response.visitor?.email ?? payload.email,
-      phoneNumber: response.visitor?.phoneNumber ?? payload.phoneNumber,
-      hostName: response.hostName || payload.hostName,
-      purposeOfVisit: response.purposeOfVisit || payload.purposeOfVisit,
+      phoneNumber: response.visitor?.phoneNumber ?? payload.phone,
+      hostName: response.hostName || hostName,
+      purposeOfVisit: response.purposeOfVisit || payload.purpose,
       status: response.status,
       registeredAt: response.createdAt,
       reviewedAt: response.reviewedAt,
@@ -82,15 +83,19 @@ export function CreateAppointmentModal({
 }: CreateAppointmentModalProps) {
   const [form] = Form.useForm<AppointmentFormValues>();
   const [bookAppointment, { isLoading }] = useBookAppointmentMutation();
-  const { data: employees = [], isLoading: isLoadingEmployees } = useGetEmployeeNamesQuery();
+  const { data: hosts = [], isLoading: isLoadingHosts } = useGetHostsQuery();
   const [requestedDate, setRequestedDate] = useState("");
   const [requestedTime, setRequestedTime] = useState("");
+  const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentTime, setAppointmentTime] = useState("");
   const [scheduleError, setScheduleError] = useState(false);
 
   const handleClose = () => {
     form.resetFields();
     setRequestedDate("");
     setRequestedTime("");
+    setAppointmentDate("");
+    setAppointmentTime("");
     setScheduleError(false);
     onClose();
   };
@@ -101,18 +106,20 @@ export function CreateAppointmentModal({
       return;
     }
 
-    const payload: CreateVisitPayload = {
-      fullName: `${values.firstName.trim()} ${values.lastName.trim()}`.trim(),
+    const payload: BookAppointmentPayload = {
+      firstName: values.firstName.trim(),
+      lastName: values.lastName.trim(),
       email: values.email.trim(),
-      phoneNumber: values.phoneNumber.trim(),
-      hostName: hostName ?? values.hostName,
-      purposeOfVisit: values.purposeOfVisit.trim(),
+      phone: values.phoneNumber.trim(),
+      purpose: values.purposeOfVisit.trim(),
+      date: appointmentDate,
+      time: appointmentTime,
     };
 
     try {
       const response = await bookAppointment(payload).unwrap();
       onCreated({
-        visitor: formatCreatedAppointment(response, payload, 0),
+        visitor: formatCreatedAppointment(response, payload, 0, hostName ?? values.hostName),
         requestedDate,
         requestedTime,
       });
@@ -207,10 +214,20 @@ export function CreateAppointmentModal({
           >
             <Select
               placeholder="Select host"
-              loading={isLoadingEmployees}
-              options={employees.map(({ name }) => ({ label: name, value: name }))}
+              loading={isLoadingHosts}
+              options={hosts
+                .map(({ fullName }) => ({
+                  label: fullName || "Unknown host",
+                  value: fullName || "Unknown host",
+                }))
+                .filter(({ label }) => label && label !== "Unknown host")}
               showSearch
               optionFilterProp="label"
+              filterOption={(input, option) =>
+                String(option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
             />
           </Form.Item>
         )}
@@ -223,6 +240,7 @@ export function CreateAppointmentModal({
               placeholder="Select date"
               onChange={(_date, dateString) => {
                 setRequestedDate(typeof dateString === "string" ? dateString : "");
+                setAppointmentDate(_date?.format("YYYY-MM-DD") ?? "");
                 setScheduleError(false);
               }}
             />
@@ -233,20 +251,15 @@ export function CreateAppointmentModal({
               format="h:mm A"
               use12Hours
               placeholder="Select time"
-              onChange={(_time, timeString) => {
+              onChange={(time, timeString) => {
                 setRequestedTime(timeString ?? "");
+                setAppointmentTime(time?.format("HH:mm") ?? "");
                 setScheduleError(false);
               }}
             />
           </Form.Item>
         </div>
 
-        <Alert
-          className="mb-4"
-          type="info"
-          showIcon
-          message="The current booking endpoint does not accept appointment date or time. These selections are for display only."
-        />
         {scheduleError && (
           <p role="alert" className="-mt-2 mb-3 text-xs text-red-500">
             Select both a date and a time.
@@ -338,13 +351,13 @@ export function AppointmentDetailsDrawer({
               <div>
                 <dt className="text-slate-500">Requested Date</dt>
                 <dd className="mt-1 font-medium">
-                  {appointment.requestedDate || visitor.time}
+                  {appointment.requestedDate || visitor.requestedDate || "—"}
                 </dd>
               </div>
               <div>
                 <dt className="text-slate-500">Requested Time</dt>
                 <dd className="mt-1 font-medium">
-                  {appointment.requestedTime || "Not available from API"}
+                  {appointment.requestedTime || visitor.requestedTime || "—"}
                 </dd>
               </div>
               <div>

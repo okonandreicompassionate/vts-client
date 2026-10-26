@@ -46,6 +46,16 @@ export interface UserProfile {
   avatar?: string;
 }
 
-export type ApiUserProfile = Omit<UserProfile, "role"> & {
-  role: ApiUserRole;
+export type ApiUserProfile = Omit<
+  UserProfile,
+  "role" | "fullName" | "phoneNumber" | "orgSlug"
+> & {
+  role?: ApiUserRole;
+  userRole?: ApiUserRole;
+  fullName?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  phone?: string;
+  orgSlug?: string;
 };

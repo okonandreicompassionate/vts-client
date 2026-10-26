@@ -13,6 +13,7 @@ const rawAdminBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL ?? "",
   credentials: "include",
   fetchFn: csrfFetch,
+  timeout: 30_000,
 });
 
 let refreshPromise: Promise<boolean> | null = null;

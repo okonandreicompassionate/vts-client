@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Drawer } from "antd";
+import { Drawer, Select } from "antd";
 import { TablePaginationFooter } from "../../../components/ui/table-pagination-footer.tsx";
 import DashboardHeader from "../../../components/layout/dashboard-header.tsx";
 import TableComponent from "../../../components/ui/table.tsx";
@@ -9,11 +9,16 @@ import { useVisitorStats } from "@/features/visits/hooks/use-visitor-stats.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { getVisitorColumns } from "./visitor-columns.tsx";
 import VisitorDetails from "./visitor-details.tsx";
-import { statCards, type StatusFilter } from "./visitor-stat-cards.tsx";
+import { statCards } from "./visitor-stat-cards.tsx";
+import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import type { VisitorStatus } from "./visit-status-pill.tsx";
 
 export default function Dashboard() {
+  const { data: currentUser } = useAdminAuthSession();
+  const canReviewAppointments =
+    currentUser?.role === "ADMIN" || currentUser?.role === "FACILITY";
   const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
+  const [statusFilter, setStatusFilter] = useState<VisitorStatus>("Approved");
   const [drawerVisitorId, setDrawerVisitorId] = useState<string>();
 
   const pageSize = 8;
@@ -21,45 +26,57 @@ export default function Dashboard() {
   const { visitorRecords, totalEntries, isLoading } = useVisitorTableData({
     page,
     limit: pageSize,
-    status: statusFilter === "All" ? undefined : toApiVisitStatus(statusFilter),
+    status: toApiVisitStatus(statusFilter),
+    includeStats: canReviewAppointments,
   });
 
-  const summary = useVisitorStats();
+  const summary = useVisitorStats(canReviewAppointments);
   const columns = getVisitorColumns((visitor) => setDrawerVisitorId(visitor.id));
 
-  const handleStatusChange = (filter: StatusFilter) => {
+  const handleStatusChange = (filter: VisitorStatus) => {
     setStatusFilter(filter);
     setPage(1);
   };
 
-  const cardValues = [
+  const allCardValues = [
     summary.total.toLocaleString(),
     summary.signedIn.toLocaleString(),
     summary.signedOff.toLocaleString(),
     summary.pending.toLocaleString(),
     summary.rejected.toLocaleString(),
   ];
+  const visibleCards = canReviewAppointments
+    ? statCards
+    : statCards.filter((card) => card.filter === "All");
+  const cardValues = canReviewAppointments
+    ? allCardValues
+    : [totalEntries.toLocaleString()];
 
   return (
     <>
       <DashboardHeader title="Dashboard" />
 
       <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
-        <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-          {statCards.map((card, index) => {
-            const isActive = statusFilter === card.filter;
+        <div className="mb-3 flex justify-end">
+          <Select
+            aria-label="Filter dashboard visitors by status"
+            value={statusFilter}
+            onChange={handleStatusChange}
+            className="w-full sm:w-52"
+            options={[
+              { label: "Approved", value: "Approved" },
+              { label: "Checked In", value: "Signed In" },
+              { label: "Checked Out", value: "Signed Off" },
+            ]}
+          />
+        </div>
 
+        <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+          {visibleCards.map((card, index) => {
             return (
-              <button
+              <div
                 key={card.label}
-                type="button"
-                onClick={() => handleStatusChange(card.filter)}
-                aria-pressed={isActive}
-                className={`group flex w-full cursor-pointer items-center gap-2 rounded-md border px-2.5 py-2 text-left transition-all duration-150 hover:border-slate-300 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-[0.99] dark:hover:border-slate-700 dark:focus-visible:ring-slate-600 ${
-                  isActive
-                    ? "border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
-                    : "border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-800"
-                } `}
+                className="group flex w-full items-center gap-2 rounded-md border border-slate-100 bg-white px-2.5 py-2 text-left dark:border-slate-800 dark:bg-slate-800"
               >
                 <div
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-transform duration-150 group-hover:scale-105 ${card.iconBg} ${card.iconColor} `}
@@ -76,7 +93,7 @@ export default function Dashboard() {
                     {card.label}
                   </p>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>

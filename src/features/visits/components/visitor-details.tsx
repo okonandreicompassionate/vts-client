@@ -20,7 +20,7 @@ import {
 } from "@/features/visits/api/admins-visit-api-slice.ts";
 
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
-import { formatVisitTime } from "../utils/visits.ts";
+import { formatVisitTime, getVisitActionErrorMessage } from "../utils/visits.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
 
 const { TextArea } = Input;
@@ -107,8 +107,10 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
       await client.refetchQueries({ include: ["Visits"] });
 
       message.success("Visitor checked in successfully.");
-    } catch {
-      message.error("Visitor check-in could not be completed. Please try again.");
+    } catch (error) {
+      message.error(
+        getVisitActionErrorMessage(error, "Visitor check-in could not be completed. Please try again."),
+      );
     }
   };
 
@@ -120,8 +122,10 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
       await client.refetchQueries({ include: ["Visits"] });
 
       message.success("Visitor checked out successfully.");
-    } catch {
-      message.error("Visitor check-out could not be completed. Please try again.");
+    } catch (error) {
+      message.error(
+        getVisitActionErrorMessage(error, "Visitor check-out could not be completed. Please try again."),
+      );
     }
   };
 
@@ -147,31 +151,36 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
       message.success("Visitor approved successfully.");
       closeModal();
-    } catch {
-      message.error("Approval could not be completed. Please try again.");
+    } catch (error) {
+      message.error(
+        getVisitActionErrorMessage(error, "Approval could not be completed. Please try again."),
+      );
     }
   };
 
   const handleReject = () => {
-    openModal(<RejectVisitorModal onConfirm={handleConfirmReject} />);
+    openModal(
+      <RejectVisitorModal
+        initialReason={notes}
+        onConfirm={handleConfirmReject}
+      />,
+    );
   };
 
-  const handleConfirmReject = async () => {
-    if (!visitor?.id) return;
-
-    try {
-      await rejectVisit({
-        id: visitor.id,
-        reason: notes,
-      }).unwrap();
-      await client.refetchQueries({ include: ["Visits"] });
-
-      message.success("Visitor rejected.");
-      setNotes("");
-      closeModal();
-    } catch {
-      message.error("Rejection could not be completed. Please try again.");
+  const handleConfirmReject = async (reason: string) => {
+    if (!visitor?.id) {
+      throw new Error("Visitor record is unavailable.");
     }
+
+    await rejectVisit({
+      id: visitor.id,
+      reason,
+    }).unwrap();
+    await client.refetchQueries({ include: ["Visits"] });
+
+    message.success("Visitor rejected.");
+    setNotes("");
+    closeModal();
   };
 
   const BackButton = (

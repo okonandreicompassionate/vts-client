@@ -2,14 +2,14 @@ import type {
   VisitStats,
   VisitResponse,
   BulkVisitIds,
-  CreateVisitPayload,
+  BookAppointmentPayload,
   CreateVisitResponse,
 } from "../types/api-types";
 import { adminApi } from "@/lib/api/admin/admin-api";
 
 export const adminVisitsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
-    bookAppointment: builder.mutation<CreateVisitResponse, CreateVisitPayload>({
+    bookAppointment: builder.mutation<CreateVisitResponse, BookAppointmentPayload>({
       query: (body) => ({
         url: "/visits/book",
         method: "POST",

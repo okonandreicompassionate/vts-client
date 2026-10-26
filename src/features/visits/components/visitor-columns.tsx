@@ -1,10 +1,11 @@
 import type { ColumnsType } from "antd/es/table";
 import { Button } from "antd";
-import { EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, LoginOutlined, LogoutOutlined } from "@ant-design/icons";
 
 import type { VisitorRow } from "../utils/visits";
 import { VisitorIdentityCell, VisitDateTimeCell } from "./visitor-table-cells";
 import StatusPill from "./visit-status-pill";
+import { VisitorCheckoutTime } from "./visitor-checkout-time";
 
 export function getVisitorColumns(
   onViewVisitor?: (visitor: VisitorRow) => void,
@@ -67,7 +68,8 @@ export function getVisitorColumns(
 }
 
 export function getFacilityVisitorColumns(
-  onViewVisitor?: (visitor: VisitorRow) => void,
+  onVisitorAction?: (visitor: VisitorRow) => void,
+  isActionLoading = false,
 ): ColumnsType<VisitorRow> {
   return [
     {
@@ -84,9 +86,9 @@ export function getFacilityVisitorColumns(
       ),
     },
     {
-      title: "Date",
+      title: "Registered",
       dataIndex: "time",
-      key: "date",
+      key: "registered",
       render: (time: string) => (
         <span className="text-xs text-slate-700 dark:text-slate-200">{time}</span>
       ),
@@ -106,25 +108,65 @@ export function getFacilityVisitorColumns(
       render: (status: VisitorRow["status"]) => <StatusPill status={status} />,
     },
     {
+      title: "Check-In Time",
+      dataIndex: "checkIn",
+      key: "checkIn",
+      render: (time: string) => (
+        <span className="text-xs text-slate-700 dark:text-slate-200">{time}</span>
+      ),
+    },
+    {
+      title: "Check-Out Time",
+      dataIndex: "checkOut",
+      key: "checkOut",
+      render: (_time: string, visitor) => (
+        <span className="text-xs text-slate-700 dark:text-slate-200">
+          <VisitorCheckoutTime visitor={visitor} />
+        </span>
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       align: "center",
       render: (_, visitor) => (
         <Button
-          type="text"
+          type="link"
           size="small"
-          shape="circle"
-          icon={<EyeOutlined />}
-          aria-label={`View ${visitor.name}`}
+          icon={getVisitorActionIcon(visitor.status)}
+          loading={isActionLoading}
+          aria-label={`${getVisitorActionLabel(visitor.status)} ${visitor.name}`}
           onClick={(event) => {
             event.stopPropagation();
-            onViewVisitor?.(visitor);
+            onVisitorAction?.(visitor);
           }}
-          className="text-sky-500! hover:bg-sky-100! dark:bg-sky-500/10! dark:text-sky-400! dark:hover:bg-sky-500/20!"
-        />
+          className="text-sky-500! dark:text-sky-400!"
+        >
+          {getVisitorActionLabel(visitor.status)}
+        </Button>
       ),
     },
   ];
+}
+
+function getVisitorActionLabel(status: VisitorRow["status"]) {
+  switch (status) {
+    case "Pending":
+      return "Review";
+    case "Approved":
+      return "Check In";
+    case "Signed In":
+      return "Check Out";
+    case "Signed Off":
+    case "Rejected":
+      return "View";
+  }
+}
+
+function getVisitorActionIcon(status: VisitorRow["status"]) {
+  if (status === "Approved") return <LoginOutlined />;
+  if (status === "Signed In") return <LogoutOutlined />;
+  return <EyeOutlined />;
 }
 
 export const visitorColumns = getVisitorColumns();

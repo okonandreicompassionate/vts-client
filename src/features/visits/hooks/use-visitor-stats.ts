@@ -1,7 +1,7 @@
 import { useGetVisitStatsQuery } from "../api/admins-visit-api-slice";
 
-export function useVisitorStats() {
-  const { data } = useGetVisitStatsQuery();
+export function useVisitorStats(enabled = true) {
+  const { data } = useGetVisitStatsQuery(undefined, { skip: !enabled });
 
   return {
     total: data?.total ?? 0,

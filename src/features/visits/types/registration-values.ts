@@ -1,5 +1,6 @@
 export type RegistrationValues = {
-  name: string;
+  firstName: string;
+  lastName: string;
   purposeOfVisit: string;
   hostName: string;
   email: string;

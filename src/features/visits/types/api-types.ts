@@ -50,11 +50,30 @@ export interface VerifyIdentityResponse {
 
 export interface CreateVisitPayload {
   visitorId?: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  phoneNumber: string;
-  hostName: string;
-  purposeOfVisit: string;
+  phone: string;
+  purpose: string;
+}
+
+export interface BookAppointmentPayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  purpose: string;
+  date: string;
+  time: string;
+}
+
+export interface HostItem {
+  id?: string;
+  fullName?: string;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  role?: string;
 }
 
 export interface CreateVisitResponse {
@@ -116,6 +135,7 @@ export interface VisitRecord {
   host?: string;
   purposeOfVisit?: string;
   purpose?: string;
+  date?: string;
   status?: string;
   time?: string;
   registeredAt?: string;

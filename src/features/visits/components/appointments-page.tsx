@@ -5,10 +5,11 @@ import {
   CloseCircleOutlined,
   MoreOutlined,
   SearchOutlined,
+  SyncOutlined,
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Input, message, type MenuProps } from "antd";
+import { Button, Dropdown, Input, message, Modal, type MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useState } from "react";
 import { useApolloClient } from "@apollo/client/react";
@@ -17,7 +18,7 @@ import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import DashboardHeader from "@/components/layout/dashboard-header";
 import TableComponent from "@/components/ui/table";
 import { TablePaginationFooter } from "@/components/ui/table-pagination-footer";
-import type { VisitorRow } from "../utils/visits";
+import { getVisitActionErrorMessage, type VisitorRow } from "../utils/visits";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
 import StatusPill from "./visit-status-pill";
 import {
@@ -30,8 +31,6 @@ import {
 } from "./appointment-flows";
 import {
   useApproveVisitMutation,
-  useCheckInVisitMutation,
-  useCheckOutVisitMutation,
   useRejectVisitMutation,
 } from "../api/admins-visit-api-slice";
 
@@ -42,11 +41,15 @@ function SummaryCard({
   value,
   icon,
   tone,
+  selected,
+  onClick,
 }: {
   label: string;
   value: number;
   icon: React.ReactNode;
   tone: "blue" | "green" | "red" | "amber";
+  selected: boolean;
+  onClick: () => void;
 }) {
   const tones = {
     blue: "bg-sky-50 text-sky-600 dark:bg-sky-950/50 dark:text-sky-300",
@@ -56,17 +59,26 @@ function SummaryCard({
   };
 
   return (
-    <div className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-100 bg-white p-3 dark:border-slate-800 dark:bg-slate-800">
+    <button
+      type="button"
+      aria-pressed={selected}
+      onClick={onClick}
+      className={`flex min-w-0 items-center gap-3 rounded-xl border bg-white p-3 text-left transition-colors dark:bg-slate-800 ${
+        selected
+          ? "border-sky-500 ring-1 ring-sky-500"
+          : "border-slate-100 hover:border-sky-300 dark:border-slate-800 dark:hover:border-sky-700"
+      }`}
+    >
       <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${tones[tone]}`}>
         {icon}
       </span>
-      <div className="min-w-0">
-        <p className="truncate text-xs text-slate-500 dark:text-slate-400">{label}</p>
-        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+      <span className="min-w-0">
+        <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{label}</span>
+        <span className="block text-sm font-semibold text-slate-900 dark:text-slate-100">
           {value.toLocaleString()}
-        </p>
-      </div>
-    </div>
+        </span>
+      </span>
+    </button>
   );
 }
 
@@ -74,13 +86,18 @@ export default function AppointmentsPage() {
   const client = useApolloClient();
   const { data: currentUser } = useAdminAuthSession();
   const role = currentUser?.role;
-  const canCreateAppointment = role === "HOST" || role === "FACILITY" || role === "ADMIN";
-  const canReviewAppointments = role === "FACILITY" || role === "ADMIN";
-  const canCheckInVisitors =
-    role === "SECURITY" || role === "FRONTDESK" || role === "FACILITY" || role === "ADMIN";
+  const isHost = role === "HOST";
+  const isFrontDesk = role === "FRONTDESK";
+  const canCreateAppointment =
+    isHost || role === "FACILITY" || role === "ADMIN" || role === "FRONTDESK";
+  const canReviewAppointments = role === "ADMIN" || role === "FACILITY";
   const canManageAppointments = role === "FACILITY" || role === "ADMIN";
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [rejectionAppointment, setRejectionAppointment] = useState<VisitorRow | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [activeAppointmentTab, setActiveAppointmentTab] =
+    useState("ALL");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createdAppointment, setCreatedAppointment] = useState<CreatedAppointment | null>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<CreatedAppointment | null>(null);
@@ -90,45 +107,51 @@ export default function AppointmentsPage() {
   } | null>(null);
   const [appointmentToEdit, setAppointmentToEdit] = useState<VisitorRow | null>(null);
 
-  const { visitorRecords, totalEntries, isLoading, isError } = useVisitorTableData({
+  const {
+    visitorRecords: queriedAppointments,
+    totalEntries,
+    isLoading,
+    isError,
+    errorMessage,
+    refetch,
+    appointmentCounts,
+  } = useVisitorTableData({
     page,
     limit: PAGE_SIZE,
     search,
+    statusGroup: canReviewAppointments || isFrontDesk ? "appointments" : undefined,
+    status: canReviewAppointments
+      ? activeAppointmentTab
+      : isFrontDesk
+        ? activeAppointmentTab === "ALL"
+          ? undefined
+          : activeAppointmentTab
+        : isHost
+          ? undefined
+          : "APPROVED",
   });
-  const { totalEntries: approvedCount } = useVisitorTableData({
-    page: 1,
-    limit: 1,
-    status: "APPROVED",
-  });
-  const { totalEntries: rejectedCount } = useVisitorTableData({
-    page: 1,
-    limit: 1,
-    status: "REJECTED",
-  });
-  const { totalEntries: pendingCount } = useVisitorTableData({
-    page: 1,
-    limit: 1,
-    status: "PENDING",
-  });
-
+  const visitorRecords = isHost
+    ? queriedAppointments.filter(
+        (appointment) =>
+          appointment.host.trim().toLowerCase() === currentUser?.fullName.trim().toLowerCase(),
+      )
+    : queriedAppointments;
   const [approveVisit, { isLoading: isApproving }] = useApproveVisitMutation();
   const [rejectVisit, { isLoading: isRejecting }] = useRejectVisitMutation();
-  const [checkInVisit, { isLoading: isCheckingIn }] = useCheckInVisitMutation();
-  const [checkOutVisit, { isLoading: isCheckingOut }] = useCheckOutVisitMutation();
-  const isUpdating = isApproving || isRejecting || isCheckingIn || isCheckingOut;
+  const isUpdating = isApproving || isRejecting;
 
   const refreshAppointments = async () => {
-    await client.refetchQueries({ include: ["Visits"] });
+    await client.refetchQueries({ include: ["Visits", "AppointmentVisits"] });
   };
 
   const handleUpdate = async (
-    action: "approve" | "reject" | "checkin" | "checkout",
+    action: "approve" | "reject",
     appointment: VisitorRow,
-  ) => {
-    const isReviewAction = action === "approve" || action === "reject";
-    if ((isReviewAction && !canReviewAppointments) || (!isReviewAction && !canCheckInVisitors)) {
+    reason?: string,
+  ): Promise<boolean> => {
+    if (!canReviewAppointments) {
       message.error("Your role does not have permission to perform this appointment action.");
-      return;
+      return false;
     }
 
     try {
@@ -136,37 +159,37 @@ export default function AppointmentsPage() {
         await approveVisit(appointment.id).unwrap();
         message.success("Appointment approved.");
       } else if (action === "reject") {
-        await rejectVisit({ id: appointment.id }).unwrap();
+        await rejectVisit({ id: appointment.id, reason: reason?.trim() ?? "" }).unwrap();
         message.success("Appointment rejected.");
-      } else if (action === "checkin") {
-        await checkInVisit(appointment.id).unwrap();
-        message.success("Visitor checked in.");
-      } else {
-        await checkOutVisit(appointment.id).unwrap();
-        message.success("Visitor checked out.");
       }
 
       await refreshAppointments();
-    } catch {
-      message.error("The appointment could not be updated. Please try again.");
+      return true;
+    } catch (error) {
+      message.error(
+        getVisitActionErrorMessage(error, "The appointment could not be updated. Please try again."),
+      );
+      return false;
     }
   };
 
   const handleMenuAction = (key: string, appointment: VisitorRow) => {
     if (key === "view") {
-      setSelectedAppointment({ visitor: appointment, requestedDate: "", requestedTime: "" });
+      setSelectedAppointment({
+        visitor: appointment,
+        requestedDate: appointment.requestedDate ?? "",
+        requestedTime: appointment.requestedTime ?? "",
+      });
     } else if (key === "edit" && canManageAppointments) {
       setAppointmentToEdit(appointment);
     } else if ((key === "cancel" || key === "reschedule") && canManageAppointments) {
       setActiveAction({ mode: key, appointment });
       setSelectedAppointment(null);
-    } else if (
-      key === "approve" ||
-      key === "reject" ||
-      key === "checkin" ||
-      key === "checkout"
-    ) {
+    } else if (key === "approve") {
       void handleUpdate(key, appointment);
+    } else if (key === "reject") {
+      setRejectionAppointment(appointment);
+      setRejectionReason("");
     }
   };
 
@@ -184,11 +207,12 @@ export default function AppointmentsPage() {
     }
 
     if (canReviewAppointments && appointment.status === "Pending") {
-      items.splice(1, 0, { key: "approve", label: "Approve" }, { key: "reject", label: "Reject" });
-    } else if (canCheckInVisitors && appointment.status === "Approved") {
-      items.splice(1, 0, { key: "checkin", label: "Check In" });
-    } else if (canCheckInVisitors && appointment.status === "Signed In") {
-      items.splice(1, 0, { key: "checkout", label: "Check Out" });
+      items.splice(
+        1,
+        0,
+        { key: "approve", label: "Approve Appointment" },
+        { key: "reject", label: "Reject Appointment", danger: true },
+      );
     }
 
     return {
@@ -275,41 +299,85 @@ export default function AppointmentsPage() {
               Appointment
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              View and manage appointments.
+              {isFrontDesk
+                ? "View appointments across all statuses. Check-ins and check-outs are managed separately."
+                : "Admins and facility staff review pending appointments here. Check-ins and check-outs are managed separately."}
             </p>
           </div>
-          {canCreateAppointment && (
-            <Button
-              type="primary"
-              icon={<CalendarOutlined />}
-              onClick={() => setIsCreateOpen(true)}
-            >
-              Create Appointment
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {(isFrontDesk || canReviewAppointments) && (
+              <Button
+                icon={<SyncOutlined />}
+                loading={isLoading}
+                onClick={() => {
+                  void refetch().catch(() =>
+                    message.error("Appointments could not be refreshed."),
+                  );
+                }}
+              >
+                Refresh
+              </Button>
+            )}
+            {canCreateAppointment && (
+              <Button
+                type="primary"
+                icon={<CalendarOutlined />}
+                onClick={() => setIsCreateOpen(true)}
+              >
+                Create Appointment
+              </Button>
+            )}
+          </div>
         </div>
 
-        <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-          <SummaryCard label="Total" value={totalEntries} icon={<TeamOutlined />} tone="blue" />
-          <SummaryCard
-            label="Approved"
-            value={approvedCount}
-            icon={<CheckCircleOutlined />}
-            tone="green"
-          />
-          <SummaryCard
-            label="Rejected"
-            value={rejectedCount}
-            icon={<CloseCircleOutlined />}
-            tone="red"
-          />
-          <SummaryCard
-            label="Pending"
-            value={pendingCount}
-            icon={<ClockCircleOutlined />}
-            tone="amber"
-          />
-        </section>
+        {(canReviewAppointments || isFrontDesk) && (
+          <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+            <SummaryCard
+              label="Total"
+              value={appointmentCounts?.total ?? 0}
+              icon={<TeamOutlined />}
+              tone="blue"
+              selected={activeAppointmentTab === "ALL"}
+              onClick={() => {
+                setActiveAppointmentTab("ALL");
+                setPage(1);
+              }}
+            />
+            <SummaryCard
+              label="Approved"
+              value={appointmentCounts?.approved ?? 0}
+              icon={<CheckCircleOutlined />}
+              tone="green"
+              selected={activeAppointmentTab === "APPROVED"}
+              onClick={() => {
+                setActiveAppointmentTab("APPROVED");
+                setPage(1);
+              }}
+            />
+            <SummaryCard
+              label="Rejected"
+              value={appointmentCounts?.rejected ?? 0}
+              icon={<CloseCircleOutlined />}
+              tone="red"
+              selected={activeAppointmentTab === "REJECTED"}
+              onClick={() => {
+                setActiveAppointmentTab("REJECTED");
+                setPage(1);
+              }}
+            />
+            <SummaryCard
+              label="Pending"
+              value={appointmentCounts?.pending ?? 0}
+              icon={<ClockCircleOutlined />}
+              tone="amber"
+              selected={activeAppointmentTab === "PENDING"}
+              onClick={() => {
+                setActiveAppointmentTab("PENDING");
+                setPage(1);
+              }}
+            />
+          </section>
+        )}
 
         <section className="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-800">
           <div className="flex flex-col gap-3 border-b border-slate-100 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 dark:border-slate-700">
@@ -326,7 +394,13 @@ export default function AppointmentsPage() {
             />
             <span className="text-xs text-slate-500">
               <UserOutlined className="mr-1" />
-              {totalEntries.toLocaleString()} appointments
+              {isHost
+                ? `${visitorRecords.length.toLocaleString()} of your appointments`
+                : canReviewAppointments
+                  ? `${totalEntries.toLocaleString()} appointments`
+                  : isFrontDesk
+                    ? `${totalEntries.toLocaleString()} appointments`
+                  : `${totalEntries.toLocaleString()} approved appointments`}
             </span>
           </div>
 
@@ -343,8 +417,8 @@ export default function AppointmentsPage() {
               onDoubleClick: () =>
                 setSelectedAppointment({
                   visitor: appointment,
-                  requestedDate: "",
-                  requestedTime: "",
+                  requestedDate: appointment.requestedDate ?? "",
+                  requestedTime: appointment.requestedTime ?? "",
                 }),
             })}
           />
@@ -354,7 +428,7 @@ export default function AppointmentsPage() {
           )}
           {isError && (
             <div role="alert" className="px-4 py-3 text-xs text-rose-600">
-              Appointments could not be loaded. Please refresh and try again.
+              Appointments could not be loaded: {errorMessage ?? "Please refresh and try again."}
             </div>
           )}
 
@@ -410,6 +484,42 @@ export default function AppointmentsPage() {
         appointment={appointmentToEdit}
         onClose={() => setAppointmentToEdit(null)}
       />
+      <Modal
+        title="Reject appointment"
+        open={Boolean(rejectionAppointment)}
+        onCancel={() => {
+          setRejectionAppointment(null);
+          setRejectionReason("");
+        }}
+        onOk={async () => {
+          if (!rejectionAppointment || !rejectionReason.trim()) return;
+          const rejected = await handleUpdate(
+            "reject",
+            rejectionAppointment,
+            rejectionReason,
+          );
+          if (rejected) {
+            setRejectionAppointment(null);
+            setRejectionReason("");
+          }
+        }}
+        okText="Reject appointment"
+        okButtonProps={{ danger: true, disabled: !rejectionReason.trim() }}
+        confirmLoading={isUpdating}
+        destroyOnHidden
+      >
+        <p className="mb-2 text-sm text-slate-600">
+          Provide a reason for rejecting {rejectionAppointment?.name}&apos;s appointment.
+        </p>
+        <Input.TextArea
+          value={rejectionReason}
+          onChange={(event) => setRejectionReason(event.target.value)}
+          placeholder="Enter rejection reason"
+          rows={4}
+          maxLength={500}
+          showCount
+        />
+      </Modal>
     </>
   );
 }
