@@ -2,7 +2,7 @@ export type RegistrationValues = {
   firstName: string;
   lastName: string;
   purposeOfVisit: string;
-  hostName: string;
+  hostId: string;
   email: string;
   phoneNo: string;
 };

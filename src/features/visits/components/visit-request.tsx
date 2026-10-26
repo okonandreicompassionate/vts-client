@@ -15,6 +15,7 @@ import {
   useCreateVisitMutation,
   useGetHostsQuery,
 } from "../api/public-visits-api-slice";
+import type { HostItem } from "../types/api-types";
 import { getVisitActionErrorMessage } from "../utils/visits";
 
 const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
@@ -43,6 +44,10 @@ export default function Registration() {
     isError: isHostsError,
     isLoading: isLoadingHosts,
   } = useGetHostsQuery();
+  const selectableHosts = hosts.filter(
+    (host): host is HostItem & { id: string; fullName: string } =>
+      Boolean(host.id?.trim() && host.fullName?.trim()),
+  );
 
   const purposeOfVisitValue = Form.useWatch("purposeOfVisit", form);
 
@@ -72,6 +77,12 @@ export default function Registration() {
 
   const handleFinish = async (values: RegistrationValues) => {
     const fullName = `${values.firstName.trim()} ${values.lastName.trim()}`.trim();
+    const selectedHost = selectableHosts.find((host) => host.id === values.hostId);
+
+    if (!selectedHost) {
+      message.error("Please select a valid host and try again.");
+      return;
+    }
 
     openModal(
       <RegistrationModal
@@ -91,6 +102,7 @@ export default function Registration() {
               email: values.email,
               phone: values.phoneNo,
               purpose: values.purposeOfVisit,
+              hostId: selectedHost.id,
             }).unwrap();
 
             const createdAt = response?.createdAt ?? new Date().toISOString();
@@ -122,7 +134,7 @@ export default function Registration() {
                 name: fullName,
                 email: values.email,
                 phoneNo: values.phoneNo,
-                hostName: values.hostName,
+                hostName: selectedHost.fullName,
                 purposeOfVisit: values.purposeOfVisit,
                 status,
                 requestId,
@@ -217,7 +229,7 @@ export default function Registration() {
           </p>
 
           <Form.Item
-            name="hostName"
+            name="hostId"
             label="Host Name"
             rules={[{ required: true, message: "Please select a host" }]}
           >
@@ -234,9 +246,9 @@ export default function Registration() {
               size="large"
               className="w-full"
               loading={isLoadingHosts}
-              disabled={isHostsError || hosts.length === 0}
-              options={hosts.map(({ fullName }) => ({
-                value: fullName,
+              disabled={isHostsError || selectableHosts.length === 0}
+              options={selectableHosts.map(({ id, fullName }) => ({
+                value: id,
                 label: fullName,
               }))}
               optionFilterProp="label"
@@ -250,7 +262,9 @@ export default function Registration() {
                   ? "Loading hosts..."
                   : isHostsError
                     ? "Unable to load hosts"
-                    : "No hosts available"
+                      : selectableHosts.length === 0
+                        ? "No hosts with valid IDs available"
+                        : "No hosts available"
               }
             />
           </Form.Item>

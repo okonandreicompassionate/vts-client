@@ -55,6 +55,7 @@ export interface CreateVisitPayload {
   email: string;
   phone: string;
   purpose: string;
+  hostId: string;
 }
 
 export interface BookAppointmentPayload {
