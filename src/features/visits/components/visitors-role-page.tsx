@@ -4,6 +4,7 @@ import { Button, Drawer, Input, message, Modal, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useState } from "react";
 
+import { getVisitActionErrorMessage } from "@/utils/visit-action-error";
 import DashboardHeader from "@/components/layout/dashboard-header";
 import TableComponent from "@/components/ui/table";
 import { TablePaginationFooter } from "@/components/ui/table-pagination-footer";
@@ -14,7 +15,6 @@ import {
 } from "@/features/visits/api/admins-visit-api-slice";
 import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data";
 import {
-  getVisitActionErrorMessage,
   isVisitAlreadyCheckedInError,
   type VisitorRow,
 } from "@/features/visits/utils/visits";

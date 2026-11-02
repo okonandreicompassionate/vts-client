@@ -1,7 +1,7 @@
 import { SettingOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { usePopup } from "@/features/popup/hooks/use-popup";
-import { useGetProfileQuery } from "../api/settings-api-slice.ts";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { useGetProfileQuery } from "@/lib/auth/profile-api";
 import Header from "@/components/layout/dashboard-header.tsx";
 import EditProfileModal from "./modals/edit-profile-modal.tsx";
 import ManageSecurityModal from "./modals/manage-security-modal.tsx";

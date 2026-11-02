@@ -1,7 +1,7 @@
 import { Breadcrumb, Button, Dropdown, type MenuProps } from "antd";
 import { DownOutlined, MenuOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
-import { usePopup } from "@/features/popup/hooks/use-popup";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { Spinner } from "@/components/ui/spinner";
 import { ThemeToggle } from "../ui/theme-toggle";
 import { useLogout } from "@/features/auth/hooks/use-logout";

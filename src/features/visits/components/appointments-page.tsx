@@ -18,7 +18,8 @@ import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import DashboardHeader from "@/components/layout/dashboard-header";
 import TableComponent from "@/components/ui/table";
 import { TablePaginationFooter } from "@/components/ui/table-pagination-footer";
-import { getVisitActionErrorMessage, type VisitorRow } from "../utils/visits";
+import type { VisitorRow } from "../utils/visits";
+import { getVisitActionErrorMessage } from "@/utils/visit-action-error";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
 import StatusPill from "./visit-status-pill";
 import {

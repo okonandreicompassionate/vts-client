@@ -6,7 +6,7 @@ import { visitorApi } from "@/lib/api/visitor/visitor-api";
 import { publicApi } from "@/lib/api/public/public-api";
 
 import authReducer from "@/features/auth/stores/admin-auth-slice";
-import visitorAuthReducer from "@/features/auth/stores/visitor-auth-slice";
+import visitorAuthReducer from "@/features/visitor-portal/stores/visitor-auth-slice";
 
 export const store = configureStore({
   reducer: {

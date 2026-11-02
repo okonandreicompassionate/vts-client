@@ -1,4 +1,4 @@
-import { organizationPath } from "@/features/organizations/utils/organization-path";
+import { organizationPath } from "@/utils/organization-path";
 
 const withRedirect = (path: string, redirectTo?: string | null) =>
   redirectTo ? `${path}?redirectTo=${encodeURIComponent(redirectTo)}` : path;

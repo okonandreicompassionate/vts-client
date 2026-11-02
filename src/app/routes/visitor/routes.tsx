@@ -7,7 +7,7 @@ export const visitorRoutes: RouteObject[] = [
     path: paths.home.path,
     lazy: async () => {
        const { default: Landing } =
-        await import("@/features/visits/components/visitor-landing-page");
+        await import("@/features/visitor-portal/components/visitor-landing-page");
 
       return { Component: Landing };
     },
@@ -25,7 +25,7 @@ export const visitorRoutes: RouteObject[] = [
         path: paths.verify.path,
         lazy: async () => {
           const { default: VerifyIdentity } =
-            await import("@/features/visits/components/verify-identity");
+            await import("@/features/visitor-portal/components/verify-identity");
 
           return { Component: VerifyIdentity };
         },
@@ -38,7 +38,7 @@ export const visitorRoutes: RouteObject[] = [
             path: paths.register.path,
             lazy: async () => {
               const { default: Registration } =
-                await import("@/features/visits/components/visit-request");
+                await import("@/features/visitor-portal/components/visit-request");
 
               return { Component: Registration };
             },
@@ -54,7 +54,7 @@ export const visitorRoutes: RouteObject[] = [
             path: paths.visitorProfile.path,
             lazy: async () => {
               const { default: VisitorProfile } =
-                await import("@/features/visits/components/visitor-profile");
+                await import("@/features/visitor-portal/components/visitor-profile");
 
               return { Component: VisitorProfile };
             },

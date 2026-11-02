@@ -1,7 +1,7 @@
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import CustomModal from "../../../../components/ui/custom-modal";
-import { usePopup } from "@/features/popup/hooks/use-popup";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 type AccessDetail = {
   label: string;

@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppDispatch } from "@/lib/stores/hooks";
 import { adminApi } from "@/lib/api/admin/admin-api";
-import { settingsApi } from "@/features/settings/api/settings-api-slice";
+import { profileApi } from "@/lib/auth/profile-api";
 import { setAuthenticatedUser } from "../stores/admin-auth-slice";
 import type { LoginResponse } from "../types/api-types";
 import { normalizeUserRole } from "@/types/user-role";
@@ -23,7 +23,7 @@ export const useCompleteLogin = () => {
     // Drop anything cached from a previous session or organization.
     dispatch(adminApi.util.resetApiState());
     dispatch(setAuthenticatedUser(authenticatedUser));
-    dispatch(settingsApi.util.upsertQueryData("getProfile", undefined, authenticatedUser));
+    dispatch(profileApi.util.upsertQueryData("getProfile", undefined, authenticatedUser));
 
     navigate(isSafeRedirect(redirectTo) ? redirectTo : getAdminHomeHref(authenticatedUser.role), {
       replace: true,

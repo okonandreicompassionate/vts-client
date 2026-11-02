@@ -22,7 +22,7 @@ import { useAdminsSSE } from "../hooks/use-admins-sse";
 import { adminColumns } from "./admins-columns";
 import { getSelectionColumn } from "@/components/ui/selection-column";
 import DashboardHeader from "@/components/layout/dashboard-header";
-import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
+import { useGetProfileQuery } from "@/lib/auth/profile-api";
 import { adminManagementRoles } from "@/types/user-role";
 
 export default function AdminsPage() {

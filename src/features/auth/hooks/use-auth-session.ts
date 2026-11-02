@@ -4,7 +4,7 @@ import { message } from "antd";
 import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
 import { clearAuth, setAuthenticatedUser } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
-import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
+import { useGetProfileQuery } from "@/lib/auth/profile-api";
 
 export function useAdminAuthSession(enabled = true) {
   const dispatch = useAppDispatch();

@@ -1,7 +1,3 @@
-
-
-import type { ApiUserRole, UserRole } from "@/types/user-role";
-
 export interface UpdateProfilePayload {
   fullName?: string;
   email?: string;
@@ -30,36 +26,3 @@ export interface SettingsResponse {
   maxVisitorsPerDay: number;
   visitorBadgePrefix: string;
 }
-
-export interface UserProfile {
-  id: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  role: UserRole;
-  orgId?: string;
-  orgSlug: string;
-
-  organization?: {
-    name: string;
-    slug: string;
-    visitorBadgePrefix?: string;
-    maxVisitorsPerDay?: number;
-  };
-
-  avatar?: string;
-}
-
-export type ApiUserProfile = Omit<
-  UserProfile,
-  "role" | "fullName" | "phoneNumber" | "orgSlug"
-> & {
-  role?: ApiUserRole;
-  userRole?: ApiUserRole;
-  fullName?: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  phone?: string;
-  orgSlug?: string;
-};

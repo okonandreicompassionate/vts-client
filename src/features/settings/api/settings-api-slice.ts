@@ -1,46 +1,17 @@
 import { adminApi } from "../../../lib/api/admin/admin-api";
 import type {
-  ApiUserProfile,
-  UserProfile,
   SettingsResponse,
   UpdatePasswordPayload,
   UpdateSettingsPayload,
   UpdateProfilePayload,
 } from "../types/api-types";
-import { normalizeUserRole } from "@/types/user-role";
+import type { UserProfile } from "@/types/user-profile";
+import { normalizeProfile } from "@/lib/auth/profile-api";
 
-function normalizeProfile(profile: ApiUserProfile): UserProfile {
-  const role = profile.role ?? profile.userRole;
-  if (!role) {
-    throw new Error("Profile response is missing role information.");
-  }
-
-  const fullName =
-    profile.fullName?.trim() ??
-    `${profile.firstName ?? ""} ${profile.lastName ?? ""}`.trim();
-  const orgSlug = profile.orgSlug ?? profile.organization?.slug;
-
-  if (!orgSlug) {
-    throw new Error("Profile response is missing its organization slug.");
-  }
-
-  return {
-    ...profile,
-    fullName,
-    phoneNumber: profile.phoneNumber ?? profile.phone ?? "",
-    orgSlug,
-    role: normalizeUserRole(role),
-  };
-}
-
+// Reading the signed-in profile lives in lib/auth (profile-api) - it is
+// shared by auth, settings and admins.
 export const settingsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
-
-    getProfile: builder.query<UserProfile, void>({
-      query: () => "/auth/profile",
-      transformResponse: normalizeProfile,
-      providesTags: [{ type: "Settings", id: "PROFILE" }],
-    }),
 
     getSettings: builder.query<SettingsResponse, void>({
       query: () => "/organization/settings",
@@ -82,7 +53,6 @@ export const settingsApi = adminApi.injectEndpoints({
 });
 
 export const {
-  useGetProfileQuery,
   useGetSettingsQuery,
   useUpdateProfileMutation,
   useUpdatePasswordMutation,

@@ -84,11 +84,3 @@ export interface JoinOrganizationWithPasswordResponse {
   };
 }
 
-export interface VisitorMeResponse {
-  visitorId: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string | null;
-  orgId: string;
-  orgSlug: string;
-}

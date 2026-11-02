@@ -31,12 +31,28 @@ src/
 ├── app/              # Application layer (routes, providers, router)
 ├── components/       # Shared UI components
 ├── config/           # Global configurations and env variables
-├── features/         # Feature-based modules (admins, visitors, etc.)
+├── features/         # Feature-based modules (see below)
 ├── hooks/            # Shared React hooks
-├── lib/              # Preconfigured libraries (react-query, auth, etc.)
-├── types/            # Shared TypeScript types
-└── utils/            # Shared utility functions
+├── lib/              # Preconfigured libraries and app-wide plumbing
+│   ├── api/          #   RTK Query APIs: admin/, visitor/, public/ + csrf-fetch
+│   ├── auth/         #   Signed-in profile query (shared by auth, settings, admins)
+│   ├── contexts/     #   ALL React contexts: popup/, theme/
+│   ├── router/       #   Route history helpers
+│   └── stores/       #   Root Redux store + typed hooks
+├── types/            # Shared TypeScript types (user role/profile, shared visit API shapes)
+└── utils/            # Shared utilities (organization paths, host options, API error text)
 ```
+
+Features:
+
+| Feature | Owns |
+|---|---|
+| `auth` | Staff sign-in/sign-up, org picker, admin session slice |
+| `visitor-portal` | Public `/:orgSlug/...` pages: org resolution, email-code verification, visit request, visitor profile, visitor session slice |
+| `visits` | Staff visit management: appointments, check-ins, visitor lists/details, dashboard |
+| `admins`, `employees`, `notifications`, `settings` | Their staff pages and APIs |
+
+Code used by more than one feature goes in `src/types`, `src/utils`, `src/components` or `src/lib`, never in another feature.
 
 ### Feature Structure
 Each feature should be self-contained:
@@ -123,7 +139,8 @@ src/features/auth/
 | Admin API slice | `src/lib/api/admin/admin-api.ts` |
 | Visitor API slice | `src/lib/api/visitor/visitor-api.ts` |
 | Public API slice | `src/lib/api/public/public-api.ts` |
-| Tenant-aware base queries | `src/lib/api/{admin,visitor,public}/*-base-query.ts` |
+| Base queries (admin/visitor use the session; public endpoints take the org slug in their URL) | `src/lib/api/{admin,visitor,public}/*-base-query.ts` |
+| Signed-in profile query | `src/lib/auth/profile-api.ts` |
 | Store setup and inferred types | `src/lib/stores/store.ts` |
 | Typed Redux hooks | `src/lib/stores/hooks.ts` |
 | Feature RTK Query endpoints | `src/features/<feature>/api/*-api-slice.ts` |

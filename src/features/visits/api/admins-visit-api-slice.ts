@@ -1,15 +1,13 @@
 import type {
   VisitStats,
-  VisitResponse,
   BulkVisitIds,
   BookAppointmentPayload,
-  CreateVisitResponse,
-  HostItem,
   VisitListPage,
   VisitListParams,
 } from "../types/api-types";
+import type { CreateVisitResponse, HostItem, VisitResponse } from "@/types/visit-api";
 import { adminApi } from "@/lib/api/admin/admin-api";
-import { toHostOptions } from "../utils/hosts";
+import { toHostOptions } from "@/utils/host-options";
 
 export const adminVisitsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({

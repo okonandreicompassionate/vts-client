@@ -20,7 +20,8 @@ import {
 } from "antd";
 import { useState } from "react";
 
-import type { BookAppointmentPayload, CreateVisitResponse } from "../types/api-types";
+import type { BookAppointmentPayload } from "../types/api-types";
+import type { CreateVisitResponse } from "@/types/visit-api";
 import type { VisitorRow } from "../utils/visits";
 import { toVisitorRow } from "../utils/visits";
 import {

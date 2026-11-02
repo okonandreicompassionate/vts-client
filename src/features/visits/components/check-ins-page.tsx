@@ -9,11 +9,11 @@ import { Button, Drawer, Dropdown, Input, Modal, message, type MenuProps } from 
 import type { ColumnsType } from "antd/es/table";
 import { useState } from "react";
 
+import { getVisitActionErrorMessage } from "@/utils/visit-action-error";
 import DashboardHeader from "@/components/layout/dashboard-header";
 import TableComponent from "@/components/ui/table";
 import { TablePaginationFooter } from "@/components/ui/table-pagination-footer";
 import {
-  getVisitActionErrorMessage,
   isVisitAlreadyCheckedInError,
   toApiVisitStatus,
   type VisitorRow,

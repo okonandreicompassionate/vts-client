@@ -1,4 +1,4 @@
-import { useTheme } from "@/features/theme/hooks/use-theme";
+import { useTheme } from "@/lib/contexts/theme/use-theme";
 import { SunOutlined, MoonOutlined } from "@ant-design/icons";
 import {
   DropdownMenu,

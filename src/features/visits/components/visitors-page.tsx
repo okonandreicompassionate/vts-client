@@ -7,6 +7,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import Header from "../../../components/layout/dashboard-header";
+import { getVisitActionErrorMessage } from "@/utils/visit-action-error";
 import TableComponent from "../../../components/ui/table";
 import { TablePaginationFooter } from "../../../components/ui/table-pagination-footer";
 import type { VisitorRow } from "../utils/visits";
@@ -22,7 +23,6 @@ import {
   useSignoffManyVisitsMutation,
 } from "@/features/visits/api/admins-visit-api-slice";
 import {
-  getVisitActionErrorMessage,
   isVisitAlreadyCheckedInError,
 } from "../utils/visits";
 

@@ -2,8 +2,8 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Input, message } from "antd";
 import { useState } from "react";
 import CustomModal from "@/components/ui/custom-modal";
-import { usePopup } from "@/features/popup/hooks/use-popup";
-import { getVisitActionErrorMessage } from "@/features/visits/utils/visits";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { getVisitActionErrorMessage } from "@/utils/visit-action-error";
 
 type RejectVisitorModalProps = {
   onConfirm?: (reason: string) => void | Promise<void>;

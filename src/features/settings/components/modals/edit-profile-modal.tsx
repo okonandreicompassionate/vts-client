@@ -3,8 +3,9 @@ import Form, { useForm } from "antd/es/form/Form";
 import FormItem from "antd/es/form/FormItem";
 import { useEffect } from "react";
 import CustomModal from "../../../../components/ui/custom-modal";
-import { usePopup } from "@/features/popup/hooks/use-popup";
-import { useGetProfileQuery, useUpdateProfileMutation } from "../../api/settings-api-slice";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { useUpdateProfileMutation } from "../../api/settings-api-slice";
+import { useGetProfileQuery } from "@/lib/auth/profile-api";
 
 function EditProfileModal() {
   const [form] = useForm();

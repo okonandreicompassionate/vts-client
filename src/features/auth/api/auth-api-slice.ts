@@ -1,11 +1,9 @@
 import { adminApi } from "@/lib/api/admin/admin-api";
 import { publicApi } from "@/lib/api/public/public-api";
-import { visitorApi } from "@/lib/api/visitor/visitor-api";
 
 import type {
   JoinOrganizationWithPasswordPayload,
   JoinOrganizationWithPasswordResponse,
-  VisitorMeResponse,
 } from "../types/api-types";
 
 import type {
@@ -67,17 +65,6 @@ export const publicAuthApi = publicApi.injectEndpoints({
   }),
 });
 
-export const visitorAuthApi = visitorApi.injectEndpoints({
-  endpoints: (builder) => ({
-    getVisitorMe: builder.query<VisitorMeResponse, void>({
-      query: () => ({
-        url: "/auth/visitor/me",
-        method: "GET",
-      }),
-    }),
-  }),
-});
-
 export const {
   useLoginMutation,
   useMicrosoftLoginMutation,
@@ -89,4 +76,3 @@ export const {
   useJoinOrganizationWithPasswordMutation,
 } = publicAuthApi;
 
-export const { useGetVisitorMeQuery } = visitorAuthApi;

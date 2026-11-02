@@ -70,38 +70,6 @@ export interface VisitListParams {
   search?: string | null;
 }
 
-export interface RequestVisitorCodePayload {
-  email: string;
-}
-
-export interface VerifyVisitorCodePayload {
-  email: string;
-  code: string;
-}
-
-/** Returning visitors get a session; new visitors get proof of their email to register with. */
-export interface VerifyIdentityResponse {
-  exists: boolean;
-  email: string;
-  visitor: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string | null;
-  } | null;
-}
-
-export interface CreateVisitPayload {
-  visitorId?: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  purpose: string;
-  hostId: string;
-}
-
 export interface BookAppointmentPayload {
   firstName: string;
   lastName: string;
@@ -112,60 +80,8 @@ export interface BookAppointmentPayload {
   time: string;
 }
 
-export interface HostItem {
-  id?: string;
-  fullName?: string;
-  name?: string;
-  firstName?: string;
-  lastName?: string;
-  role?: string;
-}
-
-export interface CreateVisitResponse {
-  id: string;
-  orgId: string;
-  visitorId: string;
-  visitorName: string;
-  hostName: string;
-  purposeOfVisit: string;
-  status: string;
-  checkInTime: string | null;
-  checkOutTime: string | null;
-  reviewedAt: string | null;
-  referenceId: string;
-  createdAt: string;
-  updatedAt: string;
-
-  visitor: {
-    fullName: string;
-    email: string;
-    phoneNumber: string;
-  };
-
-  visitorSocketToken: string;
-}
-
 export interface BulkVisitIds {
   visitIds: string[];
-}
-
-export interface VisitResponse {
-  id: string;
-  visitorId: string;
-  referenceId: string;
-  name?: string;
-  fullName?: string;
-  createdAt: string;
-  email: string;
-  phone: string;
-  phoneNumber?: string;
-  hostName: string;
-  purpose: string;
-  status: "PENDING" | "SIGNED_IN" | "REJECTED" | "SIGNED_OFF" | "APPROVED";
-  checkInTime: string | null;
-  checkOutTime: string | null;
-  registeredAt: string;
-  reviewedAt: string | null;
 }
 
 export interface VisitRecord {

@@ -3,7 +3,7 @@ import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import DeactivateAdminModal from "./modals/deactivate-admin-modal";
 import { useDeactivateAdminMutation } from "../api/admins-api-slice";
-import { usePopup } from "@/features/popup/hooks/use-popup";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 interface DeactivateAdminProps {
   adminId: string;

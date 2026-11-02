@@ -10,7 +10,7 @@ import ApproveAccessModal from "./modals/approve-access-modal.tsx";
 import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
 import { Avatar } from "../../../components/ui/avatar.tsx";
 
-import { usePopup } from "@/features/popup/hooks/use-popup";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 
 import {
   useApproveVisitMutation,
@@ -20,7 +20,8 @@ import {
 } from "@/features/visits/api/admins-visit-api-slice.ts";
 
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
-import { formatVisitTime, getVisitActionErrorMessage } from "../utils/visits.ts";
+import { formatVisitTime } from "../utils/visits.ts";
+import { getVisitActionErrorMessage } from "@/utils/visit-action-error";
 import { Spinner } from "@/components/ui/spinner.tsx";
 
 const { TextArea } = Input;

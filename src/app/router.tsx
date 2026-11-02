@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 import { paths } from "@/config/paths";
-import { OrganizationLayout } from "@/features/organizations";
+import { OrganizationLayout } from "@/features/visitor-portal";
 import { adminRoutes } from "./routes/admin/routes";
 import { visitorRoutes } from "./routes/visitor/routes";
 import { Spinner } from "@/components/ui/spinner";
