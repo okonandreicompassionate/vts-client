@@ -35,9 +35,12 @@ export default function SignupForm({
 
   const handleSubmit = async (values: SignupFormValues) => {
     try {
+      const [firstName = "", ...lastNameParts] = values.fullName.trim().split(/\s+/);
+
       const result = await joinOrganization({
-        fullName: values.fullName.trim(),
-        phoneNumber: values.phoneNumber.trim(),
+        firstName,
+        lastName: lastNameParts.join(" "),
+        phone: values.phoneNumber.trim(),
         password: values.password,
         inviteToken,
       }).unwrap();

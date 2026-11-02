@@ -4,45 +4,55 @@ export type AppRouteArea = "visitor" | "admin";
 
 export interface PreviousRoute {
   pathname: string;
+  /** Only visitor pages carry an organization in the URL. */
   orgSlug: string | null;
   area: AppRouteArea;
 }
 
-const VISITOR_SEGMENTS = new Set([
-  "register",
-  "verify",
-  "profile",
+// First path segments of admin pages. Organizations can't use these as slugs.
+const ADMIN_SEGMENTS = new Set([
+  "login",
+  "signup",
+  "dashboard",
+  "appointments",
+  "check-ins",
+  "visitors",
+  "settings",
+  "employees",
+  "users",
 ]);
 
-export function getOrgSlug(pathname: string): string | null {
-  const [, orgSlug] = pathname.split("/");
-
-  return orgSlug || null;
-}
-
 export function getRouteArea(pathname: string): AppRouteArea {
-  const segments = pathname.split("/").filter(Boolean);
-  const secondSegment = segments[1];
+  const [firstSegment] = pathname.split("/").filter(Boolean);
 
-  if (!secondSegment || VISITOR_SEGMENTS.has(secondSegment)) {
-    return "visitor";
-  }
-
-  return "admin";
+  return firstSegment && ADMIN_SEGMENTS.has(firstSegment) ? "admin" : "visitor";
 }
 
 export function rememberRoute(pathname: string): void {
+  const area = getRouteArea(pathname);
+  const [firstSegment] = pathname.split("/").filter(Boolean);
+
   const route: PreviousRoute = {
     pathname,
-    orgSlug: getOrgSlug(pathname),
-    area: getRouteArea(pathname),
+    orgSlug: area === "visitor" ? (firstSegment ?? null) : null,
+    area,
   };
 
-  sessionStorage.setItem(PREVIOUS_ROUTE_KEY, JSON.stringify(route));
+  try {
+    sessionStorage.setItem(PREVIOUS_ROUTE_KEY, JSON.stringify(route));
+  } catch {
+    // Storage can be unavailable (private mode); history is only a convenience.
+  }
 }
 
 export function getPreviousRoute(): PreviousRoute | null {
-  const stored = sessionStorage.getItem(PREVIOUS_ROUTE_KEY);
+  let stored: string | null;
+
+  try {
+    stored = sessionStorage.getItem(PREVIOUS_ROUTE_KEY);
+  } catch {
+    return null;
+  }
 
   if (!stored) {
     return null;

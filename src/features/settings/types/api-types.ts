@@ -15,6 +15,7 @@ export interface UpdatePasswordPayload {
 
 export interface UpdateSettingsPayload {
   slug?: string;
+  azureTenantId?: string;
   name?: string;
   maxVisitorsPerDay?: number;
   visitorBadgePrefix?: string;
@@ -22,6 +23,9 @@ export interface UpdateSettingsPayload {
 
 export interface SettingsResponse {
   slug: string;
+  authMode: "PASSWORD" | "AZURE_AD";
+  /** Microsoft Entra directory staff must sign in from (Microsoft sign-in orgs only). */
+  azureTenantId: string | null;
   name: string;
   maxVisitorsPerDay: number;
   visitorBadgePrefix: string;

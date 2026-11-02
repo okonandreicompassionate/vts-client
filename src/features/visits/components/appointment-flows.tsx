@@ -23,8 +23,10 @@ import { useState } from "react";
 import type { BookAppointmentPayload, CreateVisitResponse } from "../types/api-types";
 import type { VisitorRow } from "../utils/visits";
 import { toVisitorRow } from "../utils/visits";
-import { useBookAppointmentMutation } from "../api/admins-visit-api-slice";
-import { useGetHostsQuery } from "../api/public-visits-api-slice";
+import {
+  useBookAppointmentMutation,
+  useGetStaffHostsQuery,
+} from "../api/admins-visit-api-slice";
 import { Avatar } from "@/components/ui/avatar";
 import StatusPill from "./visit-status-pill";
 
@@ -83,7 +85,7 @@ export function CreateAppointmentModal({
 }: CreateAppointmentModalProps) {
   const [form] = Form.useForm<AppointmentFormValues>();
   const [bookAppointment, { isLoading }] = useBookAppointmentMutation();
-  const { data: hosts = [], isLoading: isLoadingHosts } = useGetHostsQuery();
+  const { data: hosts = [], isLoading: isLoadingHosts } = useGetStaffHostsQuery();
   const [requestedDate, setRequestedDate] = useState("");
   const [requestedTime, setRequestedTime] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");

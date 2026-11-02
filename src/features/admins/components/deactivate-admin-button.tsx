@@ -3,7 +3,6 @@ import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import DeactivateAdminModal from "./modals/deactivate-admin-modal";
 import { useDeactivateAdminMutation } from "../api/admins-api-slice";
-import { useOrganization } from "@/features/organizations";
 import { usePopup } from "@/features/popup/hooks/use-popup";
 
 interface DeactivateAdminProps {
@@ -20,21 +19,19 @@ function getErrorStatus(error: unknown): number | string | undefined {
 
 export const DeactivateAdmin = ({ adminId }: DeactivateAdminProps) => {
   const navigate = useNavigate();
-  const { orgSlug } = useOrganization();
   const { openModal } = usePopup();
 
   const [deactivateAdmin, { isLoading: isDeactivating }] =
     useDeactivateAdminMutation();
 
   const handleDeactivate = async () => {
-    if (!adminId || !orgSlug) {
+    if (!adminId) {
       message.error("Unable to deactivate this admin.");
       return;
     }
 
     try {
       await deactivateAdmin({
-        orgSlug,
         adminId,
       }).unwrap();
 

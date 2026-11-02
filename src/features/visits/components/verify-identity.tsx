@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -8,55 +9,67 @@ import {
   setVisitorSession,
   setVisitorVerified,
 } from "../../auth/stores/visitor-auth-slice";
-import { useVerifyVisitIdentityMutation } from "../api/public-visits-api-slice";
+import {
+  useRequestVisitorCodeMutation,
+  useVerifyVisitorCodeMutation,
+} from "../api/public-visits-api-slice";
+import { getVisitActionErrorMessage } from "../utils/visits";
+
+type Step = { name: "email" } | { name: "code"; email: string };
 
 export default function VerifyIdentity() {
   const navigate = useNavigate();
   const { orgSlug } = useOrganization();
   const dispatch = useAppDispatch();
+  const [step, setStep] = useState<Step>({ name: "email" });
 
-  const [verifyVisitIdentity, {isLoading: isVerifying}] =
-    useVerifyVisitIdentityMutation();
+  const [requestCode, { isLoading: isRequesting }] = useRequestVisitorCodeMutation();
+  const [verifyCode, { isLoading: isVerifying }] = useVerifyVisitorCodeMutation();
 
-  const handleFinish = async (value: { email: string }) => {
+  const sendCode = async (email: string) => {
     try {
-      const email = value.email.trim().toLowerCase();
+      await requestCode({ orgSlug, email }).unwrap();
+      setStep({ name: "code", email });
+      message.success("Check your email for a 6-digit code.");
+    } catch (error) {
+      message.error(
+        getVisitActionErrorMessage(error, "We couldn't send a code. Please try again."),
+      );
+    }
+  };
 
-      const response = await verifyVisitIdentity({
-        email,
+  const handleFinish = async (values: { email?: string; code?: string }) => {
+    if (step.name === "email") {
+      await sendCode((values.email ?? "").trim().toLowerCase());
+      return;
+    }
+
+    try {
+      const response = await verifyCode({
+        orgSlug,
+        email: step.email,
+        code: (values.code ?? "").trim(),
       }).unwrap();
 
       if (response.exists && response.visitor) {
+        const { visitor } = response;
+
         dispatch(
           setVisitorSession({
-            visitorId: response.visitor.id,
-            fullName: response.visitor.fullName,
-            email: response.visitor.email,
-            phoneNumber: response.visitor.phoneNumber,
+            visitorId: visitor.id,
+            fullName: `${visitor.firstName} ${visitor.lastName}`.trim(),
+            email: visitor.email,
+            phoneNumber: visitor.phone,
           }),
         );
-
-        navigate(paths.register.getHref(orgSlug), {
-          replace: true,
-        });
-
-        return;
+      } else {
+        dispatch(setVisitorVerified({ email: response.email }));
       }
 
-      dispatch(
-        setVisitorVerified({
-          email,
-        }),
-      );
-
-      navigate(paths.register.getHref(orgSlug), {
-        replace: true,
-      });
+      navigate(paths.register.getHref(orgSlug), { replace: true });
     } catch (error) {
-      console.error("Verify identity failed:", error);
-
       message.error(
-        "We couldn't verify your identity. Please try again.",
+        getVisitActionErrorMessage(error, "That code didn't work. Please try again."),
       );
     }
   };
@@ -64,6 +77,7 @@ export default function VerifyIdentity() {
   return (
     <div className="flex w-full justify-center md:min-h-[calc(100dvh-8rem)] md:items-center">
       <Form
+        key={step.name}
         layout="vertical"
         requiredMark={false}
         onFinish={handleFinish}
@@ -85,60 +99,98 @@ export default function VerifyIdentity() {
             </h1>
 
             <p className="mt-2 px-2 text-[13px] leading-snug text-slate-500 md:text-sm dark:text-slate-400">
-              Enter your email address
-              <br />
-              to continue with registration.
+              {step.name === "email" ? (
+                <>
+                  Enter your email address
+                  <br />
+                  and we'll send you a code.
+                </>
+              ) : (
+                <>
+                  Enter the 6-digit code we sent to
+                  <br />
+                  <span className="font-medium text-slate-700 dark:text-slate-200">
+                    {step.email}
+                  </span>
+                </>
+              )}
             </p>
           </div>
 
-          <Form.Item
-            className="mt-5 w-full"
-            name="email"
-            label="Email"
-            rules={[
-              {
-                required: true,
-                message: "Please enter your email",
-              },
-              {
-                validator: (_, value) => {
-                  if (!value) {
-                    return Promise.resolve();
-                  }
+          {step.name === "email" ? (
+            <Form.Item
+              className="mt-5 w-full"
+              name="email"
+              label="Email"
+              rules={[
+                { required: true, message: "Please enter your email" },
+                { type: "email", message: "Enter a valid email address" },
+              ]}
+            >
+              <Input
+                size="large"
+                type="email"
+                autoComplete="email"
+                className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+              />
+            </Form.Item>
+          ) : (
+            <>
+              <Form.Item
+                className="mt-5 w-full"
+                name="code"
+                label="Verification code"
+                rules={[
+                  { required: true, message: "Please enter the code" },
+                  { pattern: /^\d{6}$/, message: "The code is 6 digits" },
+                ]}
+              >
+                <Input
+                  size="large"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  className="rounded-xl text-center tracking-[0.5em] dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                />
+              </Form.Item>
 
-                  const isEmail =
-                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-                  return isEmail
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("Enter a valid email address"),
-                      );
-                },
-              },
-            ]}
-          >
-            <Input
-              size="large"
-              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-            />
-          </Form.Item>
+              <div className="-mt-2 flex w-full justify-between text-xs">
+                <Button
+                  type="link"
+                  size="small"
+                  className="px-0!"
+                  onClick={() => setStep({ name: "email" })}
+                >
+                  Use a different email
+                </Button>
+                <Button
+                  type="link"
+                  size="small"
+                  className="px-0!"
+                  loading={isRequesting}
+                  onClick={() => void sendCode(step.email)}
+                >
+                  Resend code
+                </Button>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="fixed inset-x-0 bottom-0 z-20 sm:pt-0 bg-white px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)] md:static md:border-0 md:bg-transparent md:px-0 md:pb-0 dark:border-slate-700 dark:bg-slate-900 sm:mt-auto">
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              block
-              className="rounded-lg text-[13px] font-medium"
-              icon={<ArrowRightOutlined />}
-              iconPlacement="end"
-              loading={isVerifying}
-            >
-             Verify Identity
-            </Button>
-          </div>
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            block
+            className="rounded-lg text-[13px] font-medium"
+            icon={<ArrowRightOutlined />}
+            iconPlacement="end"
+            loading={step.name === "email" ? isRequesting : isVerifying}
+          >
+            {step.name === "email" ? "Send code" : "Verify"}
+          </Button>
+        </div>
       </Form>
     </div>
   );

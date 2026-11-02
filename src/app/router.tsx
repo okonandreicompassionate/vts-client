@@ -1,5 +1,6 @@
 import {
   createBrowserRouter,
+  Navigate,
   isRouteErrorResponse,
   RouterProvider,
   useRouteError,
@@ -12,6 +13,7 @@ import { visitorRoutes } from "./routes/visitor/routes";
 import { Spinner } from "@/components/ui/spinner";
 import PageError from "@/components/feedback/page-error";
 import { rememberRoute } from "@/lib/router/route-history";
+import { LegacyAdminRedirect } from "./legacy-admin-redirect";
 
 function RouteError() {
   const error = useRouteError();
@@ -31,9 +33,17 @@ const router = createBrowserRouter([
   {
     HydrateFallback: () => <Spinner variant="screen" />,
     errorElement: <RouteError />,
-    element: <OrganizationLayout />,
     children: [
-      ...visitorRoutes,
+      {
+        index: true,
+        element: <Navigate to={paths.admin.login.getHref()} replace />,
+      },
+
+      // Public visitor pages: /:orgSlug/... (static admin paths below take precedence).
+      {
+        element: <OrganizationLayout />,
+        children: visitorRoutes,
+      },
 
       {
         path: paths.admin.login.path,
@@ -55,6 +65,12 @@ const router = createBrowserRouter([
       },
 
       ...adminRoutes,
+
+      // Old `/:orgSlug/<staff page>` links. More specific visitor routes win over this splat.
+      {
+        path: "/:orgSlug/*",
+        element: <LegacyAdminRedirect />,
+      },
     ],
   },
 ]);

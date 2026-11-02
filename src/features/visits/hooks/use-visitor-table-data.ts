@@ -1,18 +1,17 @@
-import { useQuery } from "@apollo/client/react";
 import { useMemo } from "react";
 
-import { useOrganization } from "@/features/organizations";
 import {
-  GET_APPOINTMENT_VISITS,
-  GET_VISITS,
-  type VisitGroupQueryResult,
-  type VisitGroupQueryVariables,
-  type VisitsQueryResult,
-  type VisitsQueryVariables,
-} from "@/features/visits/api/graphql/visits.graphql";
-import { useGetVisitStatsQuery } from "@/features/visits/api/admins-visit-api-slice";
+  useGetVisitStatsQuery,
+  useGetVisitsQuery,
+} from "@/features/visits/api/admins-visit-api-slice";
 import { toVisitorRow } from "../utils/visits";
-import type { VisitRecord } from "../types/api-types";
+import type { VisitListPage, VisitListParams, VisitRecord } from "../types/api-types";
+
+type AppointmentGroupKey = "all" | "pending" | "approved" | "rejected";
+
+type VisitListData =
+  | { visits: VisitListPage }
+  | Partial<Record<AppointmentGroupKey, VisitListPage>>;
 
 interface UseVisitorTableDataParams {
   page: number;
@@ -40,14 +39,7 @@ export function useVisitorTableData({
   enabled = true,
   includeStats = true,
 }: UseVisitorTableDataParams) {
-  const { orgSlug } = useOrganization();
-
-  const groupedQuery = statusGroup
-    ? statusGroup === "appointments"
-      ? GET_APPOINTMENT_VISITS
-      : GET_VISITS
-    : undefined;
-  const query = groupedQuery ?? GET_VISITS;
+  const isAppointments = statusGroup === "appointments";
   const isSignedStatus = status === "SIGNED_IN" || status === "SIGNED_OFF";
   const appointmentStatusKey =
     status === "PENDING"
@@ -63,38 +55,84 @@ export function useVisitorTableData({
       !includeStats ||
       ((!statusGroup || statusGroup === "appointments") && !isSignedStatus),
   });
-  const variables: VisitsQueryVariables | VisitGroupQueryVariables =
-    statusGroup === "appointments"
-      ? {
-          orgId: orgSlug,
-          limit: page * limit,
-          search: search ?? null,
-        }
-      : {
-          orgId: orgSlug,
-          page: isSignedStatus ? 1 : page,
-          limit: isSignedStatus
-            ? Math.max(stats?.total ?? (includeStats ? page * limit : 100), 1)
-            : limit,
-          status:
-            statusGroup === "visitors" ||
-            (statusGroup === "check-ins" && (isSignedStatus || status === "ALL"))
-              ? null
-              : isSignedStatus
-                ? null
-                : (status ?? null),
-          search: search ?? null,
-        };
+  const listParams: VisitListParams = {
+    page: isSignedStatus ? 1 : page,
+    limit: isSignedStatus
+      ? Math.max(stats?.total ?? (includeStats ? page * limit : 100), 1)
+      : limit,
+    status:
+      statusGroup === "visitors" ||
+      (statusGroup === "check-ins" && (isSignedStatus || status === "ALL"))
+        ? null
+        : isSignedStatus
+          ? null
+          : (status ?? null),
+    search: search ?? null,
+  };
 
-  const { data, loading, error, refetch } = useQuery<
-    VisitsQueryResult | VisitGroupQueryResult,
-    VisitsQueryVariables | VisitGroupQueryVariables
-  >(query, {
-    variables,
-    skip: !orgSlug || !enabled,
-    notifyOnNetworkStatusChange: true,
-    pollInterval: statusGroup === "appointments" || statusGroup === "check-ins" ? 30_000 : 0,
+  // The appointments view shows every status tab's count, so it loads each tab's
+  // first `page * limit` rows and pages through them locally.
+  const groupParams = (groupStatus: string | null): VisitListParams => ({
+    page: 1,
+    limit: page * limit,
+    status: groupStatus,
+    search: search ?? null,
   });
+
+  const queryOptions = {
+    pollingInterval: isAppointments || statusGroup === "check-ins" ? 30_000 : 0,
+  };
+  const listQuery = useGetVisitsQuery(listParams, {
+    ...queryOptions,
+    skip: !enabled || isAppointments,
+  });
+  const groupSkip = { ...queryOptions, skip: !enabled || !isAppointments };
+  const allQuery = useGetVisitsQuery(groupParams(null), groupSkip);
+  const pendingQuery = useGetVisitsQuery(groupParams("PENDING"), groupSkip);
+  const approvedQuery = useGetVisitsQuery(groupParams("APPROVED"), groupSkip);
+  const rejectedQuery = useGetVisitsQuery(groupParams("REJECTED"), groupSkip);
+
+  const activeQueries = isAppointments
+    ? [allQuery, pendingQuery, approvedQuery, rejectedQuery]
+    : [listQuery];
+
+  const data = useMemo<VisitListData | undefined>(
+    () =>
+      isAppointments
+        ? allQuery.data && {
+            all: allQuery.data,
+            pending: pendingQuery.data,
+            approved: approvedQuery.data,
+            rejected: rejectedQuery.data,
+          }
+        : listQuery.data && { visits: listQuery.data },
+    [
+      isAppointments,
+      allQuery.data,
+      pendingQuery.data,
+      approvedQuery.data,
+      rejectedQuery.data,
+      listQuery.data,
+    ],
+  );
+
+  const loading = activeQueries.some((query) => query.isFetching);
+  const error = activeQueries.find((query) => query.error)?.error;
+  const errorMessage =
+    error && typeof error === "object" && "data" in error
+      ? ((error.data as { message?: string } | undefined)?.message ?? "Unable to load visits.")
+      : error
+        ? "Unable to load visits."
+        : undefined;
+
+  const refetch = async () => {
+    // Skipped queries can't be refetched.
+    if (!enabled) {
+      return;
+    }
+
+    await Promise.all(activeQueries.map((query) => query.refetch()));
+  };
 
   const { visitorRecords, filteredTotal } = useMemo(() => {
     if (!data) {
@@ -214,8 +252,8 @@ export function useVisitorTableData({
     totalEntries,
     isLoading: loading,
     isError: Boolean(error),
-    errorMessage: error?.message,
-    refetch: () => refetch(),
+    errorMessage,
+    refetch,
     appointmentCounts,
   };
 }

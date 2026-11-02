@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client/react";
+import { useRefetchVisitLists } from "../hooks/use-refetch-visit-lists";
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
@@ -30,7 +30,7 @@ import StatusPill from "./visit-status-pill";
 const PAGE_SIZE = 10;
 
 export default function CheckInsPage() {
-  const client = useApolloClient();
+  const refetchVisitLists = useRefetchVisitLists();
   const { data: currentUser } = useAdminAuthSession();
   const canReviewVisitStatuses =
     currentUser?.role === "ADMIN" || currentUser?.role === "FACILITY";
@@ -62,12 +62,12 @@ export default function CheckInsPage() {
 
     try {
       await checkInVisit(visitorToCheckIn.id).unwrap();
-      await client.refetchQueries({ include: ["Visits"] });
+      await refetchVisitLists();
       message.success(`${visitorToCheckIn.name} checked in successfully.`);
       setVisitorToCheckIn(null);
     } catch (error) {
       if (isVisitAlreadyCheckedInError(error)) {
-        await client.refetchQueries({ include: ["Visits"] });
+        await refetchVisitLists();
         message.info(`${visitorToCheckIn.name} is already checked in. The list has been refreshed.`);
         setVisitorToCheckIn(null);
         return;
@@ -84,7 +84,7 @@ export default function CheckInsPage() {
 
     try {
       await checkOutVisit(visitorToCheckOut.id).unwrap();
-      await client.refetchQueries({ include: ["Visits"] });
+      await refetchVisitLists();
       message.success(`${visitorToCheckOut.name} checked out successfully.`);
       setVisitorToCheckOut(null);
     } catch (error) {

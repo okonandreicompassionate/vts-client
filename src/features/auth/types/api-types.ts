@@ -34,13 +34,39 @@ export interface LoginResponse {
   user: UserProfile;
 }
 
+export interface OrganizationChoice {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+/** Returned instead of a session when the credentials match accounts in several organizations. */
+export interface OrganizationSelectionRequired {
+  requiresOrganizationSelection: true;
+  selectionToken: string;
+  organizations: OrganizationChoice[];
+}
+
+export type SignInResponse = LoginResponse | OrganizationSelectionRequired;
+
+export interface SelectOrganizationPayload {
+  selectionToken: string;
+  orgId: string;
+}
+
+export const requiresOrganizationSelection = (
+  response: SignInResponse,
+): response is OrganizationSelectionRequired =>
+  "requiresOrganizationSelection" in response && response.requiresOrganizationSelection;
+
 export interface RefreshResponse {
   success: boolean;
 }
 
 export interface JoinOrganizationWithPasswordPayload {
-  fullName: string;
-  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
   password: string;
   inviteToken: string;
 }

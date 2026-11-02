@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client/react";
+import { useRefetchVisitLists } from "../hooks/use-refetch-visit-lists";
 import { useState } from "react";
 import { Button, Drawer, Input, Modal, Select, message } from "antd";
 import {
@@ -58,7 +58,7 @@ function downloadVisitorReport(visitors: VisitorRow[], page: number) {
 }
 
 export default function Visitors() {
-  const client = useApolloClient();
+  const refetchVisitLists = useRefetchVisitLists();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("APPROVED");
@@ -118,7 +118,7 @@ export default function Visitors() {
   ) => {
     try {
       await action({ visitIds: selectedRowKeys });
-      await client.refetchQueries({ include: ["Visits"] });
+      await refetchVisitLists();
       message.success(successMessage);
       setSelectedRows([]);
       setIsSelecting(false);
@@ -151,11 +151,11 @@ export default function Visitors() {
         onOk: async () => {
           try {
             await checkInVisit(visitor.id).unwrap();
-            await client.refetchQueries({ include: ["Visits"] });
+            await refetchVisitLists();
             message.success(`${visitor.name} checked in successfully.`);
           } catch (error) {
             if (isVisitAlreadyCheckedInError(error)) {
-              await client.refetchQueries({ include: ["Visits"] });
+              await refetchVisitLists();
               message.info(`${visitor.name} is already checked in. The list has been refreshed.`);
               return;
             }
@@ -178,7 +178,7 @@ export default function Visitors() {
         onOk: async () => {
           try {
             await checkOutVisit(visitor.id).unwrap();
-            await client.refetchQueries({ include: ["Visits"] });
+            await refetchVisitLists();
             message.success(`${visitor.name} checked out successfully.`);
           } catch (error) {
             message.error(

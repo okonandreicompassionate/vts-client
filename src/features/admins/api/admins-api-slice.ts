@@ -26,16 +26,16 @@ export const adminsApi = adminApi.injectEndpoints({
     }),
 
     getAdmins: builder.query<GetAdminsResponse, void>({
-      query: () => "/auth/admins",
+      query: () => "/users/admins",
       providesTags: [{ type: "Admins", id: "LIST" }],
     }),
 
     getAdminById: builder.query<GetAdminByIdResponse, string>({
-      query: (id) => `/auth/admin/${id}`,
+      query: (id) => `/users/admins/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Admins", id }],
     }),
 
-    deactivateAdmin: builder.mutation<void, { orgSlug: string; adminId: string }>({
+    deactivateAdmin: builder.mutation<void, { adminId: string }>({
       query: ({ adminId }) => ({
         url: `/users/admins/${adminId}`,
         method: "DELETE",

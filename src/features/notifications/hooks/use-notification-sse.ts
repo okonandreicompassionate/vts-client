@@ -3,27 +3,17 @@ import { createNotificationSse } from "../api/sse/notification-sse";
 import { useAppDispatch } from "@/lib/stores/hooks";
 import { notificationsApi } from "../api/notifications-api-slice";
 
-import { useOrganization } from "@/features/organizations";
-
 export function useNotificationSse() {
   const dispatch = useAppDispatch();
-  const { orgSlug } = useOrganization();
 
   useEffect(() => {
-    if (!orgSlug) {
-      return;
-    }
-
     const eventSource = createNotificationSse(
-      orgSlug,
       (event) => {
         switch (event.type) {
           case "connected":
-            
             break;
 
           case "visit.pending":
-            
             dispatch(notificationsApi.util.invalidateTags(["Visits"]));
             break;
 
@@ -39,5 +29,5 @@ export function useNotificationSse() {
     return () => {
       eventSource.close();
     };
-  }, [orgSlug, dispatch]);
+  }, [dispatch]);
 }

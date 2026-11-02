@@ -1,4 +1,3 @@
-import { paths } from "@/config/paths";
 
 export type VisitSseEvent = {
   type: string;
@@ -6,11 +5,10 @@ export type VisitSseEvent = {
 };
 
 export function createVisitSse(
-  orgSlug: string,
   onEvent: (event: VisitSseEvent) => void,
   onError?: (error: Event) => void,
 ): EventSource {
-  const path = paths.notification.visitStream.getHref(orgSlug);
+  const path = "/visitor/visits/stream";
   const apiUrl = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
   const url = `${apiUrl}${path}`;
 

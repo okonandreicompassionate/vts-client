@@ -104,13 +104,13 @@ export default function PageError({
     if (variant === "not-found") {
       const previousRoute = getPreviousRoute();
 
-      if (previousRoute?.orgSlug) {
-        const destination =
-          previousRoute.area === "admin"
-            ? paths.admin.login.getHref(previousRoute.orgSlug)
-            : paths.home.getHref(previousRoute.orgSlug);
+      if (previousRoute?.area === "admin") {
+        window.location.assign(paths.admin.login.getHref());
+        return;
+      }
 
-        window.location.assign(destination);
+      if (previousRoute?.orgSlug) {
+        window.location.assign(paths.home.getHref(previousRoute.orgSlug));
         return;
       }
 

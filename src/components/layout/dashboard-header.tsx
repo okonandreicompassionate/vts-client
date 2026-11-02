@@ -13,7 +13,6 @@ import { adminManagementRoles } from "@/types/user-role";
 import { useDashboardShell } from "./dashboard-shell-context";
 import { formatRole } from "@/utils/format-role";
 import { paths } from "@/config/paths";
-import { useOrganization } from "@/features/organizations";
 
 type DashboardHeaderProps = {
   title: string;
@@ -21,7 +20,6 @@ type DashboardHeaderProps = {
 
 const DashboardHeader = ({ title }: DashboardHeaderProps) => {
   const { data: profile, isLoading } = useAdminAuthSession();
-  const { orgSlug } = useOrganization();
   const location = useLocation();
   const shell = useDashboardShell();
   const { openModal } = usePopup();
@@ -50,13 +48,13 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
       ? []
       : [
           {
-            title: <Link to={paths.admin.dashboard.getHref(orgSlug)}>Dashboard</Link>,
+            title: <Link to={paths.admin.dashboard.getHref()}>Dashboard</Link>,
           },
         ]),
     ...(isVisitorDetails
       ? [
           {
-            title: <Link to={paths.admin.visitors.getHref(orgSlug)}>Visitors</Link>,
+            title: <Link to={paths.admin.visitors.getHref()}>Visitors</Link>,
           },
         ]
       : []),

@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client/react";
+import { useRefetchVisitLists } from "../hooks/use-refetch-visit-lists";
 import { ArrowLeftOutlined, CheckOutlined } from "@ant-design/icons";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Alert, Button, Input, message } from "antd";
@@ -64,7 +64,7 @@ interface VisitorDetailsProps {
 }
 
 export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsProps = {}) {
-  const client = useApolloClient();
+  const refetchVisitLists = useRefetchVisitLists();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { openModal, closeModal } = usePopup();
@@ -104,7 +104,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
     try {
       await checkInVisit(visitor.id).unwrap();
-      await client.refetchQueries({ include: ["Visits"] });
+      await refetchVisitLists();
 
       message.success("Visitor checked in successfully.");
     } catch (error) {
@@ -119,7 +119,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
     try {
       await checkOutVisit(visitor.id).unwrap();
-      await client.refetchQueries({ include: ["Visits"] });
+      await refetchVisitLists();
 
       message.success("Visitor checked out successfully.");
     } catch (error) {
@@ -147,7 +147,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
 
     try {
       await approveVisit(visitor.id).unwrap();
-      await client.refetchQueries({ include: ["Visits"] });
+      await refetchVisitLists();
 
       message.success("Visitor approved successfully.");
       closeModal();
@@ -176,7 +176,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
       id: visitor.id,
       reason,
     }).unwrap();
-    await client.refetchQueries({ include: ["Visits"] });
+    await refetchVisitLists();
 
     message.success("Visitor rejected.");
     setNotes("");

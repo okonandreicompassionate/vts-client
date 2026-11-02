@@ -43,7 +43,7 @@ export default function Registration() {
     data: hosts = [],
     isError: isHostsError,
     isLoading: isLoadingHosts,
-  } = useGetHostsQuery();
+  } = useGetHostsQuery(orgSlug);
   const selectableHosts = hosts.filter(
     (host): host is HostItem & { id: string; fullName: string } =>
       Boolean(host.id?.trim() && host.fullName?.trim()),
@@ -96,6 +96,7 @@ export default function Registration() {
 
           try {
             const response = await createVisit({
+              orgSlug,
               visitorId: visitorId ?? undefined,
               firstName: values.firstName.trim(),
               lastName: values.lastName.trim(),
@@ -288,6 +289,8 @@ export default function Registration() {
             <Input
               size="large"
               type="email"
+              // The server only accepts requests for the email the visitor verified.
+              readOnly={Boolean(verifiedEmail)}
               className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
             />
           </Form.Item>

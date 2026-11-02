@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client/react";
+import { useRefetchVisitLists } from "../hooks/use-refetch-visit-lists";
 import { SearchOutlined, SyncOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, message, Modal, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -25,7 +25,7 @@ import { VisitorCheckoutTime } from "./visitor-checkout-time";
 const PAGE_SIZE = 10;
 
 function FrontDeskVisitors() {
-  const client = useApolloClient();
+  const refetchVisitLists = useRefetchVisitLists();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -56,12 +56,12 @@ function FrontDeskVisitors() {
 
     try {
       await checkInVisit(visitorToCheckIn.id).unwrap();
-      await client.refetchQueries({ include: ["Visits"] });
+      await refetchVisitLists();
       message.success(`${visitorToCheckIn.name} checked in successfully.`);
       setVisitorToCheckIn(null);
     } catch (error) {
       if (isVisitAlreadyCheckedInError(error)) {
-        await client.refetchQueries({ include: ["Visits"] });
+        await refetchVisitLists();
         message.info(`${visitorToCheckIn.name} is already checked in. The list has been refreshed.`);
         setVisitorToCheckIn(null);
         return;
@@ -78,7 +78,7 @@ function FrontDeskVisitors() {
 
     try {
       await checkOutVisit(visitorToCheckOut.id).unwrap();
-      await client.refetchQueries({ include: ["Visits"] });
+      await refetchVisitLists();
       message.success(`${visitorToCheckOut.name} checked out successfully.`);
       setVisitorToCheckOut(null);
     } catch (error) {

@@ -4,17 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { adminApi } from "@/lib/api/admin/admin-api";
 import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
-import { useOrganization } from "@/features/organizations";
 import { csrfFetch } from "@/lib/api/csrf-fetch";
 
 export function useLogout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { orgSlug } = useOrganization();
 
   return async () => {
     try {
-      await csrfFetch(`${import.meta.env.VITE_API_URL}/${orgSlug}/auth/logout`, {
+      await csrfFetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -28,7 +26,7 @@ export function useLogout() {
       dispatch(adminApi.util.resetApiState());
 
       // Do NOT clear visitor state/storage here.
-      navigate(paths.admin.login.getHref(orgSlug), {
+      navigate(paths.admin.login.getHref(), {
         replace: true,
       });
     }

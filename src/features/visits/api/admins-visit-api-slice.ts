@@ -4,11 +4,35 @@ import type {
   BulkVisitIds,
   BookAppointmentPayload,
   CreateVisitResponse,
+  HostItem,
+  VisitListPage,
+  VisitListParams,
 } from "../types/api-types";
 import { adminApi } from "@/lib/api/admin/admin-api";
+import { toHostOptions } from "../utils/hosts";
 
 export const adminVisitsApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
+    // Role-scoped visit list - the server decides what each role may see.
+    getVisits: builder.query<VisitListPage, VisitListParams>({
+      query: ({ page, limit, status, search }) => ({
+        url: "/visits",
+        params: {
+          page,
+          limit,
+          ...(status ? { status } : {}),
+          ...(search ? { search } : {}),
+        },
+      }),
+      providesTags: ["Visits"],
+    }),
+
+    // Staff directory for the booking form.
+    getStaffHosts: builder.query<HostItem[], void>({
+      query: () => "/users/hosts",
+      transformResponse: toHostOptions,
+    }),
+
     bookAppointment: builder.mutation<CreateVisitResponse, BookAppointmentPayload>({
       query: (body) => ({
         url: "/visits/book",
@@ -91,6 +115,8 @@ export const adminVisitsApi = adminApi.injectEndpoints({
 });
 
 export const {
+  useGetVisitsQuery,
+  useGetStaffHostsQuery,
   useBookAppointmentMutation,
   useApproveVisitMutation,
   useCheckInVisitMutation,

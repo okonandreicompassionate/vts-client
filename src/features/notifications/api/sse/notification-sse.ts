@@ -1,4 +1,3 @@
-import { paths } from "@/config/paths";
 
 export type NotificationSseEvent = {
   type: string;
@@ -6,11 +5,10 @@ export type NotificationSseEvent = {
 };
 
 export function createNotificationSse(
-  orgSlug: string,
   onEvent: (event: NotificationSseEvent) => void,
   onError?: (error: Event) => void,
 ): EventSource {
-  const path = paths.notification.notificationStream.getHref(orgSlug);
+  const path = "/notifications/stream";
   const url = `${import.meta.env.VITE_API_URL}${path}`;
   const source = new EventSource(url, {
     withCredentials: true,

@@ -2,12 +2,8 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { adminBaseQuery } from "./admin-base-query";
 
-const getCurrentOrgSlug = () => {
-  const [, orgSlug] = window.location.pathname.split("/");
-
-  return orgSlug || "no-tenant";
-};
-
+// The cache is reset on sign-in and sign-out, so entries never outlive the
+// organization they were fetched for.
 export const adminApi = createApi({
   reducerPath: "adminApi",
 
@@ -21,14 +17,6 @@ export const adminApi = createApi({
     "Users",
     "Admins",
   ],
-
-  serializeQueryArgs: ({ endpointName, queryArgs }) => {
-    const orgSlug = getCurrentOrgSlug();
-
-    return `${orgSlug}:${endpointName}:${JSON.stringify(
-      queryArgs ?? null,
-    )}`;
-  },
 
   endpoints: () => ({}),
 });

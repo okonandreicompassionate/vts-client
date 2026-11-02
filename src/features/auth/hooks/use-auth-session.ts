@@ -4,29 +4,27 @@ import { message } from "antd";
 import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
 import { clearAuth, setAuthenticatedUser } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
-import { useOrganization } from "@/features/organizations";
 import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
 
 export function useAdminAuthSession(enabled = true) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { orgSlug } = useOrganization();
   const sessionUser = useAppSelector((state) => state.adminAuth.user);
-  const hasMatchingSession = sessionUser?.orgSlug === orgSlug;
+  const hasSession = Boolean(sessionUser);
 
   const profileQuery = useGetProfileQuery(undefined, {
-    skip: !enabled || hasMatchingSession,
+    skip: !enabled || hasSession,
   });
 
   const { data: profile, isError, error, isLoading } = profileQuery;
 
   useEffect(() => {
-    if (enabled && !hasMatchingSession && profile?.orgSlug === orgSlug) {
+    if (enabled && !hasSession && profile) {
       dispatch(setAuthenticatedUser(profile));
       return;
     }
 
-    if (hasMatchingSession || isLoading || profile) {
+    if (hasSession || isLoading || profile) {
       return;
     }
 
@@ -50,21 +48,11 @@ export function useAdminAuthSession(enabled = true) {
 
     message.info(errorData?.message ?? "Your session has ended. Please log in again.");
 
-    navigate(paths.admin.login.getHref(orgSlug), { replace: true });
-  }, [
-    enabled,
-    hasMatchingSession,
-    profile,
-    isError,
-    error,
-    isLoading,
-    dispatch,
-    navigate,
-    orgSlug,
-  ]);
+    navigate(paths.admin.login.getHref(), { replace: true });
+  }, [enabled, hasSession, profile, isError, error, isLoading, dispatch, navigate]);
 
   return {
     ...profileQuery,
-    data: profileQuery.data ?? (hasMatchingSession ? sessionUser : undefined),
+    data: profileQuery.data ?? sessionUser ?? undefined,
   };
 }

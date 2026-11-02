@@ -43,7 +43,7 @@ export const settingsApi = adminApi.injectEndpoints({
     }),
 
     getSettings: builder.query<SettingsResponse, void>({
-      query: () => "/auth/settings",
+      query: () => "/organization/settings",
       providesTags: [{ type: "Settings", id: "SETTINGS" }],
     }),
 
@@ -67,7 +67,7 @@ export const settingsApi = adminApi.injectEndpoints({
 
     updateSettings: builder.mutation<unknown, UpdateSettingsPayload>({
       query: (body) => ({
-        url: "/auth/settings",
+        url: "/organization/settings",
         method: "PATCH",
         body,
       }),

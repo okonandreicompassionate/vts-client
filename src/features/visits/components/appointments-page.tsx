@@ -12,7 +12,7 @@ import {
 import { Button, Dropdown, Input, message, Modal, type MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useState } from "react";
-import { useApolloClient } from "@apollo/client/react";
+import { useRefetchVisitLists } from "../hooks/use-refetch-visit-lists";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 
 import DashboardHeader from "@/components/layout/dashboard-header";
@@ -83,7 +83,7 @@ function SummaryCard({
 }
 
 export default function AppointmentsPage() {
-  const client = useApolloClient();
+  const refetchVisitLists = useRefetchVisitLists();
   const { data: currentUser } = useAdminAuthSession();
   const role = currentUser?.role;
   const isHost = role === "HOST";
@@ -141,7 +141,7 @@ export default function AppointmentsPage() {
   const isUpdating = isApproving || isRejecting;
 
   const refreshAppointments = async () => {
-    await client.refetchQueries({ include: ["Visits", "AppointmentVisits"] });
+    await refetchVisitLists();
   };
 
   const handleUpdate = async (

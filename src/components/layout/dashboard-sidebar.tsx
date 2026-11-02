@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
-import { useOrganization } from "@/features/organizations";
 import { paths } from "@/config/paths";
 import type { UserRole } from "@/types/user-role";
 
@@ -31,25 +30,24 @@ type SidebarNavItem =
 
 const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: SidebarProps) => {
   const isMobileOpen = mobileOpen;
-  const { orgSlug } = useOrganization();
   const { data: profile } = useAdminAuthSession();
   const appointmentsItem: SidebarNavItem = {
-    to: paths.admin.appointments.getHref(orgSlug),
+    to: paths.admin.appointments.getHref(),
     label: "Appointments",
     icon: CalendarDays,
   };
   const checkInsItem: SidebarNavItem = {
-    to: paths.admin.checkIns.getHref(orgSlug),
+    to: paths.admin.checkIns.getHref(),
     label: "Check-ins",
     icon: ScanLine,
   };
   const visitorsItem: SidebarNavItem = {
-    to: paths.admin.visitors.getHref(orgSlug),
+    to: paths.admin.visitors.getHref(),
     label: "Visitors",
     icon: UserCheck,
   };
   const dashboardItem: SidebarNavItem = {
-    to: paths.admin.dashboard.getHref(orgSlug),
+    to: paths.admin.dashboard.getHref(),
     label: "Dashboard",
     icon: LayoutDashboard,
   };
@@ -58,13 +56,13 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
     appointmentsItem,
     visitorsItem,
     checkInsItem,
-    { to: paths.admin.settings.getHref(orgSlug), label: "Settings", icon: Settings },
+    { to: paths.admin.settings.getHref(), label: "Settings", icon: Settings },
     { label: "Help Center", icon: CircleHelp, disabled: true },
   ];
   const adminNavItems: SidebarNavItem[] = [
     ...facilityNavItems,
-    { to: paths.admin.employees.getHref(orgSlug), label: "Employees", icon: Users },
-    { to: paths.admin.users.getHref(orgSlug), label: "Admins", icon: Users },
+    { to: paths.admin.employees.getHref(), label: "Employees", icon: Users },
+    { to: paths.admin.users.getHref(), label: "Admins", icon: Users },
   ];
   const navItemsByRole: Record<UserRole, SidebarNavItem[]> = {
     FACILITY: adminNavItems,
@@ -162,7 +160,7 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.to === paths.admin.dashboard.getHref(orgSlug)}
+                end={item.to === paths.admin.dashboard.getHref()}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   [

@@ -1,7 +1,8 @@
 import { Form, Input, Button, Checkbox, message } from "antd";
 import { useLoginMutation } from "../api/auth-api-slice";
-import { useCompleteLogin } from "../../auth/hooks/use-complete-login";
+import { useSignInFlow } from "../hooks/use-sign-in-flow";
 import MicrosoftLogin from "./ms-login";
+import OrganizationPicker from "./organization-picker";
 import { emailRules, getPasswordRules } from "../utils/validation";
 
 interface LoginFormValues {
@@ -23,7 +24,8 @@ export default function LoginForm() {
 
   const [adminLogin, { isLoading }] = useLoginMutation();
 
-  const completeLogin = useCompleteLogin();
+  const { selection, isSelecting, handleSignIn, chooseOrganization, cancelSelection } =
+    useSignInFlow();
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
@@ -32,7 +34,7 @@ export default function LoginForm() {
         password: values.password,
       }).unwrap();
 
-      completeLogin(response);
+      handleSignIn(response);
     } catch (error) {
       const loginError = error as LoginError;
 
@@ -53,6 +55,17 @@ export default function LoginForm() {
       message.error(errorMessage);
     }
   };
+
+  if (selection) {
+    return (
+      <OrganizationPicker
+        organizations={selection.organizations}
+        isSelecting={isSelecting}
+        onSelect={(orgId) => void chooseOrganization(orgId)}
+        onCancel={cancelSelection}
+      />
+    );
+  }
 
   return (
     <Form<LoginFormValues>
@@ -104,14 +117,7 @@ export default function LoginForm() {
       </Form.Item>
 
       <div className="pt-1">
-        <MicrosoftLogin />
-      </div>
-
-      <div
-        aria-hidden="true"
-        className="mt-3 flex h-10 items-center justify-center rounded-md border border-slate-200 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300"
-      >
-        Organization Login
+        <MicrosoftLogin onSignIn={handleSignIn} />
       </div>
     </Form>
   );

@@ -1,17 +1,13 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "@/lib/stores/hooks";
-import { useOrganization } from "@/features/organizations";
 import { adminsApi } from "../api/admins-api-slice";
 
 export function useAdminsSSE() {
   const dispatch = useAppDispatch();
-  const { orgSlug } = useOrganization();
 
   useEffect(() => {
-    if (!orgSlug) return;
-
     const eventSource = new EventSource(
-      `${import.meta.env.VITE_API_URL}/${orgSlug}/users/events`,
+      `${import.meta.env.VITE_API_URL}/users/events`,
       { withCredentials: true },
     );
 
@@ -28,5 +24,5 @@ export function useAdminsSSE() {
     return () => {
       eventSource.close();
     };
-  }, [dispatch, orgSlug]);
+  }, [dispatch]);
 }

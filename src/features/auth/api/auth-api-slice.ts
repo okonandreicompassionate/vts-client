@@ -13,11 +13,13 @@ import type {
   MicrosoftLoginPayload,
   LoginResponse,
   RefreshResponse,
+  SelectOrganizationPayload,
+  SignInResponse,
 } from "../types/api-types";
 
 export const authApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
-    Login: builder.mutation<LoginResponse, LoginPayload>({
+    Login: builder.mutation<SignInResponse, LoginPayload>({
       query: (body) => ({
         url: "/auth/login",
         method: "POST",
@@ -25,9 +27,17 @@ export const authApi = adminApi.injectEndpoints({
       }),
     }),
 
-    microsoftLogin: builder.mutation<LoginResponse, MicrosoftLoginPayload>({
+    microsoftLogin: builder.mutation<SignInResponse, MicrosoftLoginPayload>({
       query: (body) => ({
         url: "/auth/microsoft",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    selectOrganization: builder.mutation<LoginResponse, SelectOrganizationPayload>({
+      query: (body) => ({
+        url: "/auth/select-organization",
         method: "POST",
         body,
       }),
@@ -71,6 +81,7 @@ export const visitorAuthApi = visitorApi.injectEndpoints({
 export const {
   useLoginMutation,
   useMicrosoftLoginMutation,
+  useSelectOrganizationMutation,
   useRefreshMutation,
 } = authApi;
 

@@ -37,15 +37,59 @@ export interface VisitStats {
   rejected: number;
 }
 
+export interface VisitListItem {
+  id: string;
+  referenceId: string;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  hostName?: string | null;
+  purpose?: string | null;
+  checkInTime?: string | null;
+  checkOutTime?: string | null;
+  status: string;
+  registeredAt: string;
+}
+
+export interface VisitListPage {
+  data: VisitListItem[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
+export interface VisitListParams {
+  page: number;
+  limit: number;
+  status?: string | null;
+  search?: string | null;
+}
+
+export interface RequestVisitorCodePayload {
+  email: string;
+}
+
+export interface VerifyVisitorCodePayload {
+  email: string;
+  code: string;
+}
+
+/** Returning visitors get a session; new visitors get proof of their email to register with. */
 export interface VerifyIdentityResponse {
   exists: boolean;
+  email: string;
   visitor: {
     id: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    phoneNumber: string;
+    phone: string | null;
   } | null;
-  accessToken: string | null;
 }
 
 export interface CreateVisitPayload {
