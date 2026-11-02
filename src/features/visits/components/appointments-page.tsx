@@ -14,6 +14,7 @@ import type { ColumnsType } from "antd/es/table";
 import { useState } from "react";
 import { useRefetchVisitLists } from "../hooks/use-refetch-visit-lists";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { hasRole, reviewerRoles } from "@/types/user-role";
 
 import DashboardHeader from "@/components/layout/dashboard-header";
 import TableComponent from "@/components/ui/table";
@@ -89,10 +90,9 @@ export default function AppointmentsPage() {
   const role = currentUser?.role;
   const isHost = role === "HOST";
   const isFrontDesk = role === "FRONTDESK";
-  const canCreateAppointment =
-    isHost || role === "FACILITY" || role === "ADMIN" || role === "FRONTDESK";
-  const canReviewAppointments = role === "ADMIN" || role === "FACILITY";
-  const canManageAppointments = role === "FACILITY" || role === "ADMIN";
+  const canCreateAppointment = isHost || role === "FRONTDESK" || hasRole(role, reviewerRoles);
+  const canReviewAppointments = hasRole(role, reviewerRoles);
+  const canManageAppointments = hasRole(role, reviewerRoles);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [rejectionAppointment, setRejectionAppointment] = useState<VisitorRow | null>(null);

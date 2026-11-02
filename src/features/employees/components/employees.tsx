@@ -48,7 +48,7 @@ export default function Employees() {
               className="inline-flex h-6! gap-0.5 rounded-sm! px-2! text-xs! font-medium!"
             >
               <UploadOutlined />
-              <span>Upload Exceel sheet</span>
+              <span>Upload Excel sheet</span>
             </Button>
           </div>
 

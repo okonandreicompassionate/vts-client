@@ -26,7 +26,7 @@ export function useEmployeeTableData({
   employeeRecords:
     data?.items.map((employee) => ({
       id: employee.id,
-      employeeId: employee.employeeId,
+      employeeId: employee.employeeId ?? "",
       fullName: `${employee.firstName} ${employee.lastName}`.trim(),
       role: employee.role,
       department: employee.department,

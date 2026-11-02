@@ -93,7 +93,7 @@ export const adminVisitsApi = adminApi.injectEndpoints({
 
     signoffManyVisits: builder.mutation<void, BulkVisitIds>({
       query: (body) => ({
-        url: "/visits/bulk/signoff",
+        url: "/visits/bulk/checkout",
         method: "PATCH",
         body,
       }),

@@ -6,8 +6,31 @@ import { InboxOutlined, FileExcelOutlined, CloseCircleOutlined } from "@ant-desi
 import CustomModal from "@/components/ui/custom-modal";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { useUploadEmployeeExcelSheetMutation } from "../../api/admin-employees-api-slice";
+import type { EmployeeUploadResponse } from "../../types/api-types";
+import { getVisitActionErrorMessage } from "@/utils/visit-action-error";
 
 const { Dragger } = Upload;
+
+const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+const MAX_ERRORS_SHOWN = 3;
+
+function summarizeImport(result: EmployeeUploadResponse): string {
+  const summary = `Imported: ${result.imported}, updated: ${result.updated}, skipped: ${result.skipped}.`;
+  const errors = result.errors ?? [];
+
+  if (errors.length === 0) {
+    return summary;
+  }
+
+  const shown = errors
+    .slice(0, MAX_ERRORS_SHOWN)
+    .map((error) => `Row ${error.row}: ${error.message}`)
+    .join(" ");
+  const more =
+    errors.length > MAX_ERRORS_SHOWN ? ` (+${errors.length - MAX_ERRORS_SHOWN} more)` : "";
+
+  return `${summary} ${shown}${more}`;
+}
 
 export default function EmployeeExcelUploadModal() {
   const { closeModal } = usePopup();
@@ -28,19 +51,22 @@ export default function EmployeeExcelUploadModal() {
     try {
       const result = await uploadEmployeeExcelSheet(formData).unwrap();
 
-      if (result.skipped > 0) {
-        message.warning(
-          `Import completed. Imported: ${result.imported}, skipped: ${result.skipped}.`,
-        );
+      if (result.skipped > 0 || result.errors?.length) {
+        message.warning({ content: `Import finished with issues. ${summarizeImport(result)}`, duration: 8 });
       } else {
-        message.success(`Employees uploaded successfully. Imported: ${result.imported}.`);
+        message.success(`Employees uploaded successfully. ${summarizeImport(result)}`);
       }
 
       setFile(null);
       closeModal();
     } catch (error) {
       console.error("Employee upload failed:", error);
-      message.error("Unable to upload employees. Please check the file and try again.");
+      message.error(
+        getVisitActionErrorMessage(
+          error,
+          "Unable to upload employees. Please check the file and try again.",
+        ),
+      );
     }
   };
 
@@ -63,16 +89,16 @@ export default function EmployeeExcelUploadModal() {
               <FileExcelOutlined className="mt-0.5 text-[15px] text-sky-500 dark:text-sky-400" />
               <div className="space-y-1">
                 <p className="text-[13px] font-semibold text-slate-800 dark:text-slate-100">
-                  Supported formats: <span className="font-normal text-slate-600 dark:text-slate-300">.xlsx, .xls</span>
+                  Supported formats: <span className="font-normal text-slate-600 dark:text-slate-300">.xlsx (max 2 MB)</span>
                 </p>
                 <p className="text-[13px] text-slate-700 dark:text-slate-300">
-                  <span className="font-semibold">Required:</span> Employee ID, First Name, Last Name
+                  <span className="font-semibold">Required:</span> Employee ID, First Name, Last Name, Email
                 </p>
                 <p className="text-[13px] text-slate-700 dark:text-slate-300">
-                  <span className="font-semibold">Optional:</span> Role, Department
+                  <span className="font-semibold">Optional:</span> Role, Department, Phone
                 </p>
                 <p className="text-[12px] text-slate-500 dark:text-slate-400">
-                  Column order does not matter.
+                  Column order and header case do not matter.
                 </p>
               </div>
             </div>
@@ -80,11 +106,21 @@ export default function EmployeeExcelUploadModal() {
 
           {!file ? (
             <Dragger
-              accept=".xlsx,.xls"
+              accept=".xlsx"
               maxCount={1}
               showUploadList={false}
               disabled={isLoading}
               beforeUpload={(selectedFile) => {
+                if (!selectedFile.name.toLowerCase().endsWith(".xlsx")) {
+                  message.error("Please choose an .xlsx file.");
+                  return Upload.LIST_IGNORE;
+                }
+
+                if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
+                  message.error("The file is larger than 2 MB.");
+                  return Upload.LIST_IGNORE;
+                }
+
                 setFile({
                   uid: selectedFile.uid,
                   name: selectedFile.name,
@@ -102,7 +138,7 @@ export default function EmployeeExcelUploadModal() {
                 Click or drag file to this area
               </p>
               <p className="text-[12px] text-slate-500 dark:text-slate-400">
-                Supports a single .xlsx or .xls file
+                Supports a single .xlsx file
               </p>
             </Dragger>
           ) : (

@@ -100,6 +100,10 @@ export default function AddAdminModal({
             <Select
               options={[
                 {
+                  label: "Super Admin",
+                  value: "SUPERADMIN",
+                },
+                {
                   label: "Facility",
                   value: "FACILITY",
                 },

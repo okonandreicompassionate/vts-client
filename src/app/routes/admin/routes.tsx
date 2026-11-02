@@ -6,6 +6,7 @@ import {
   appointmentRoles,
   checkInRoles,
   dashboardRoles,
+  employeeManagementRoles,
   settingsRoles,
   visitorRoles,
 } from "@/types/user-role";
@@ -92,7 +93,7 @@ export const adminRoutes: RouteObject[] = [
             ],
           },
           {
-            element: <ProtectedRoute requiredRoles={adminManagementRoles} />,
+            element: <ProtectedRoute requiredRoles={employeeManagementRoles} />,
             children: [
               {
                 path: paths.admin.employees.path,
@@ -103,6 +104,11 @@ export const adminRoutes: RouteObject[] = [
                   return { Component: Employees };
                 },
               },
+            ],
+          },
+          {
+            element: <ProtectedRoute requiredRoles={adminManagementRoles} />,
+            children: [
               {
                 path: paths.admin.users.path,
                 lazy: async () => {

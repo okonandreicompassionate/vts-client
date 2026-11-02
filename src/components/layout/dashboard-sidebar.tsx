@@ -59,16 +59,20 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
     { to: paths.admin.settings.getHref(), label: "Settings", icon: Settings },
     { label: "Help Center", icon: CircleHelp, disabled: true },
   ];
-  const adminNavItems: SidebarNavItem[] = [
+  const managerNavItems: SidebarNavItem[] = [
     ...facilityNavItems,
     { to: paths.admin.employees.getHref(), label: "Employees", icon: Users },
+  ];
+  const superAdminNavItems: SidebarNavItem[] = [
+    ...managerNavItems,
     { to: paths.admin.users.getHref(), label: "Admins", icon: Users },
   ];
   const navItemsByRole: Record<UserRole, SidebarNavItem[]> = {
-    FACILITY: adminNavItems,
+    SUPERADMIN: superAdminNavItems,
+    FACILITY: managerNavItems,
     SECURITY: [dashboardItem, appointmentsItem, visitorsItem, checkInsItem],
     FRONTDESK: [dashboardItem, appointmentsItem, visitorsItem, checkInsItem],
-    ADMIN: adminNavItems,
+    ADMIN: managerNavItems,
     HOST: [appointmentsItem],
   };
   const visibleNavItems = profile ? navItemsByRole[profile.role] : [];

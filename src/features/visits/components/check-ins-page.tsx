@@ -21,6 +21,7 @@ import {
 import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data";
 import { filterTabs, type FilterTab } from "@/features/visits/types/visit-tabs";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { adminRoles, hasRole, reviewerRoles } from "@/types/user-role";
 import {
   useCheckInVisitMutation,
   useCheckOutVisitMutation,
@@ -32,9 +33,8 @@ const PAGE_SIZE = 10;
 export default function CheckInsPage() {
   const refetchVisitLists = useRefetchVisitLists();
   const { data: currentUser } = useAdminAuthSession();
-  const canReviewVisitStatuses =
-    currentUser?.role === "ADMIN" || currentUser?.role === "FACILITY";
-  const canReadVisitStats = currentUser?.role === "ADMIN";
+  const canReviewVisitStatuses = hasRole(currentUser?.role, reviewerRoles);
+  const canReadVisitStats = hasRole(currentUser?.role, adminRoles);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<FilterTab>("All");

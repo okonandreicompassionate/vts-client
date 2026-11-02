@@ -11,12 +11,12 @@ import { getVisitorColumns } from "./visitor-columns.tsx";
 import VisitorDetails from "./visitor-details.tsx";
 import { statCards } from "./visitor-stat-cards.tsx";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { hasRole, reviewerRoles } from "@/types/user-role";
 import type { VisitorStatus } from "./visit-status-pill.tsx";
 
 export default function Dashboard() {
   const { data: currentUser } = useAdminAuthSession();
-  const canReviewAppointments =
-    currentUser?.role === "ADMIN" || currentUser?.role === "FACILITY";
+  const canReviewAppointments = hasRole(currentUser?.role, reviewerRoles);
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<VisitorStatus>("Approved");
   const [drawerVisitorId, setDrawerVisitorId] = useState<string>();

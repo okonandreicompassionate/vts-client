@@ -1,4 +1,5 @@
 import { adminApi } from "@/lib/api/admin/admin-api";
+import { toApiRole } from "@/types/user-role";
 
 import type {
   AdminItem,
@@ -19,7 +20,7 @@ export const adminsApi = adminApi.injectEndpoints({
         method: "POST",
         body: {
           email: email.trim().toLowerCase(),
-          role,
+          role: toApiRole(role),
         },
       }),
       invalidatesTags: [{ type: "Admins", id: "LIST" }],
