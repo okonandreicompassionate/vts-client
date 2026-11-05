@@ -19,7 +19,7 @@ export function VisitorIdentityCell({
       <Avatar name={name} size="sm" />
 
       <div className="flex min-w-0 flex-col -space-y-0.5">
-        <span className="truncate text-[13px] font-medium text-slate-800 dark:text-slate-100">
+        <span className="truncate text-[13px] font-medium text-slate-800 dark:text-zinc-100">
           {name}
         </span>
 
@@ -37,7 +37,7 @@ export function VisitDateTimeCell({
 }: VisitDateTimeCellProps) {
   return (
     <div className="flex flex-col">
-      <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
+      <span className="text-xs font-medium text-slate-700 dark:text-zinc-200">
         {time}
       </span>
 

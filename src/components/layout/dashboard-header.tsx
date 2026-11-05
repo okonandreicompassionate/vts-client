@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { Spinner } from "@/components/ui/spinner";
 import { ThemeToggle } from "../ui/theme-toggle";
+import NotificationBell from "@/features/notifications/components/notification-bell";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { Avatar } from "../ui/avatar";
 import EditProfileModal from "@/features/settings/components/modals/edit-profile-modal";
@@ -13,14 +14,13 @@ import { adminManagementRoles } from "@/types/user-role";
 import { useDashboardShell } from "./dashboard-shell-context";
 import { formatRole } from "@/utils/format-role";
 import { paths } from "@/config/paths";
+import { useRouteBreadcrumb } from "@/lib/router/route-handle";
 
-type DashboardHeaderProps = {
-  title: string;
-};
-
-const DashboardHeader = ({ title }: DashboardHeaderProps) => {
+/** The staff top bar, rendered once by the dashboard layout. */
+const DashboardHeader = () => {
   const { data: profile, isLoading } = useAdminAuthSession();
   const location = useLocation();
+  const title = useRouteBreadcrumb();
   const shell = useDashboardShell();
   const { openModal } = usePopup();
   const logout = useLogout();
@@ -41,36 +41,24 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
     profile?.fullName ?? profile?.email ?? "Admin User";
 
   const normalizedRole = formatRole(profile?.role);
-  const routeSegments = location.pathname.split("/").filter(Boolean).slice(1);
-  const isVisitorDetails = routeSegments[0] === "visitors" && routeSegments.length > 1;
-  const breadcrumbItems = [
-    ...(title === "Dashboard"
-      ? []
-      : [
-          {
-            title: <Link to={paths.admin.dashboard.getHref()}>Dashboard</Link>,
-          },
-        ]),
-    ...(isVisitorDetails
-      ? [
-          {
-            title: <Link to={paths.admin.visitors.getHref()}>Visitors</Link>,
-          },
-        ]
-      : []),
-    { title },
-  ];
+  const isDashboard = location.pathname === paths.admin.dashboard.getHref();
+  const breadcrumbItems = isDashboard
+    ? [{ title: "Dashboard" }]
+    : [
+        { title: <Link to={paths.admin.dashboard.getHref()}>Dashboard</Link> },
+        ...(title ? [{ title }] : []),
+      ];
 
   const menuItems: MenuProps["items"] = [
     {
       key: "profile",
       label: (
         <div>
-          <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+          <p className="text-xs font-semibold text-slate-900 dark:text-zinc-100">
             {displayName}
           </p>
 
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+          <p className="text-[11px] text-slate-500 dark:text-zinc-400">
             {normalizedRole}
           </p>
         </div>
@@ -85,7 +73,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
     {
       key: "update-profile",
       label: (
-        <span className="inline-flex items-center gap-1 text-[11.5px] text-slate-700 dark:text-slate-200">
+        <span className="inline-flex items-center gap-1 text-[11.5px] text-slate-700 dark:text-zinc-200">
           <span
             aria-hidden="true"
             className="inline-block h-3.5 w-3.5 shrink-0 bg-current"
@@ -111,7 +99,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
           {
             key: "update-system-settings",
             label: (
-              <span className="inline-flex items-center gap-1 text-[11.5px] text-slate-700 dark:text-slate-200">
+              <span className="inline-flex items-center gap-1 text-[11.5px] text-slate-700 dark:text-zinc-200">
                 <span
                   aria-hidden="true"
                   className="inline-block h-3.5 w-3.5 shrink-0 bg-current"
@@ -137,7 +125,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
     {
       key: "logout",
       label: (
-        <span className="inline-flex items-center gap-0.5 text-[11.5px] text-slate-700 dark:text-slate-200">
+        <span className="inline-flex items-center gap-0.5 text-[11.5px] text-slate-700 dark:text-zinc-200">
           <span
             aria-hidden="true"
             className="inline-block h-3.5 w-3.5 shrink-0 bg-current"
@@ -160,7 +148,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
   ];
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-13 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-1 backdrop-blur dark:border-slate-700 dark:bg-slate-900 md:ps-5 md:pe-2">
+    <header className="z-30 flex min-h-13 shrink-0 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-1 backdrop-blur dark:border-zinc-700 dark:bg-zinc-900 md:ps-5 md:pe-2">
       {/* Left side */}
       <div className="flex min-w-0 items-center">
         <Button
@@ -168,18 +156,19 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
           onClick={() => shell?.setMobileOpen(true)}
           aria-label="Open navigation menu"
           icon={<MenuOutlined />}
-          className="mr-1! flex! h-9! w-9! shrink-0! items-center! justify-center! p-0! text-slate-500! md:hidden! dark:text-slate-400!"
+          className="mr-1! flex! h-9! w-9! shrink-0! items-center! justify-center! p-0! text-slate-500! md:hidden! dark:text-zinc-400!"
         />
 
         <Breadcrumb
           aria-label="Breadcrumb"
           items={breadcrumbItems}
-          className="truncate text-base font-semibold text-slate-800 dark:text-slate-100"
+          className="truncate text-base font-semibold text-slate-800 dark:text-zinc-100"
         />
       </div>
 
       {/* Right side */}
       <div className="flex shrink-0 items-center gap-2">
+        <NotificationBell />
         <ThemeToggle />
 
         {isLoading ? (
@@ -194,7 +183,7 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
           >
             <button
               type="button"
-              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-900"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-900"
               aria-label={`Open account menu for ${displayName}`}
             >
               <Avatar
@@ -203,11 +192,14 @@ const DashboardHeader = ({ title }: DashboardHeaderProps) => {
                 src={profile?.avatar}
               />
 
-              <span className="hidden text-[13px] font-medium sm:block">
-                {displayName}
+              <span className="hidden flex-col text-left leading-tight sm:flex">
+                <span className="text-[13px] font-medium">{displayName}</span>
+                <span className="text-[11px] font-normal text-slate-500 dark:text-zinc-400">
+                  {normalizedRole}
+                </span>
               </span>
 
-              <DownOutlined className="flex items-center text-[10px] text-slate-500 dark:text-slate-400" />
+              <DownOutlined className="flex items-center text-[10px] text-slate-500 dark:text-zinc-400" />
             </button>
           </Dropdown>
         )}

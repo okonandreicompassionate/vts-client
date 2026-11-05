@@ -1,6 +1,6 @@
+import { api } from "@/lib/api/api";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppDispatch } from "@/lib/stores/hooks";
-import { adminApi } from "@/lib/api/admin/admin-api";
 import { profileApi } from "@/lib/auth/profile-api";
 import { setAuthenticatedUser } from "../stores/admin-auth-slice";
 import type { LoginResponse } from "../types/api-types";
@@ -21,7 +21,7 @@ export const useCompleteLogin = () => {
     const redirectTo = searchParams.get("redirectTo");
 
     // Drop anything cached from a previous session or organization.
-    dispatch(adminApi.util.resetApiState());
+    dispatch(api.util.resetApiState());
     dispatch(setAuthenticatedUser(authenticatedUser));
     dispatch(profileApi.util.upsertQueryData("getProfile", undefined, authenticatedUser));
 

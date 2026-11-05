@@ -1,7 +1,6 @@
 import { Alert, Button, Form, Input, message, Select } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { useAppDispatch, useAppSelector } from "@/lib/stores/hooks";
@@ -12,20 +11,84 @@ import { paths } from "../../../config/paths";
 import { useOrganization } from "@/features/visitor-portal";
 import { setVisitorSession } from "@/features/visitor-portal/stores/visitor-auth-slice";
 import {
+  useGetVisitorEntryQuery,
   useCreateVisitMutation,
   useGetHostsQuery,
+  useGetVisitorVerificationStatusQuery,
 } from "../api/public-visits-api-slice";
+import { Spinner } from "@/components/ui/spinner";
+import type { VisitorEntry, AvailableAppointment } from "../types/visitor-entry";
 import type { HostItem } from "@/types/visit-api";
 import { getVisitActionErrorMessage } from "@/utils/visit-action-error";
+import { PurposeOfVisitSelect } from "@/components/ui/purpose-of-visit-select";
+import { useSubmissionKey } from "@/hooks/use-submission-key";
+import {
+  readVisitRequestDraft,
+  saveVisitRequestDraft,
+  clearVisitRequestDraft,
+} from "../utils/visit-request-draft";
 
 const PURPOSE_OF_VISIT_MAX_LENGTH = 60;
 
-function splitFullName(fullName?: string | null) {
-  const [firstName = "", ...lastNameParts] = fullName?.trim().split(/\s+/) ?? [];
-  return { firstName, lastName: lastNameParts.join(" ") };
+export default function Registration() {
+  const { orgSlug } = useOrganization();
+  const [searchParams] = useSearchParams();
+  const appointmentId = searchParams.get("appointment");
+  const navigate = useNavigate();
+  const { data: status } = useGetVisitorVerificationStatusQuery(orgSlug);
+  const email = status?.entryEmail ?? "";
+  const {
+    currentData: entry,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetVisitorEntryQuery(
+    { orgSlug, email },
+    { skip: !email, refetchOnMountOrArgChange: true },
+  );
+  if (!email) return <Navigate to={paths.verify.getHref(orgSlug)} replace />;
+  if (isLoading || (isFetching && !entry)) return <Spinner variant="page" />;
+  if (isError || !entry)
+    return (
+      <div className="space-y-4">
+        <Alert
+          type="error"
+          message="Your visitor details could not be loaded. Please enter your email again."
+        />
+        <Button onClick={() => navigate(paths.verify.getHref(orgSlug))}>Enter email</Button>
+      </div>
+    );
+  const appointment = appointmentId
+    ? entry.appointments.find((item) => item.id === appointmentId)
+    : undefined;
+  if (appointmentId && !appointment)
+    return (
+      <div className="space-y-4">
+        <Alert
+          type="info"
+          message="This appointment is no longer available. Please look up your email to choose another appointment or request a new visit."
+        />
+        <Button onClick={() => navigate(paths.verify.getHref(orgSlug))}>
+          Choose another appointment
+        </Button>
+      </div>
+    );
+  return (
+    <RegistrationForm
+      key={entry.email + ":" + (appointment?.id ?? "new")}
+      entry={entry}
+      appointment={appointment}
+    />
+  );
 }
 
-export default function Registration() {
+function RegistrationForm({
+  entry,
+  appointment,
+}: {
+  entry: VisitorEntry;
+  appointment?: AvailableAppointment;
+}) {
   const { orgSlug } = useOrganization();
   const [form] = Form.useForm<RegistrationValues>();
   const { openModal, closeModal } = usePopup();
@@ -33,11 +96,11 @@ export default function Registration() {
 
   const dispatch = useAppDispatch();
 
-  const { visitorId, verifiedName, verifiedEmail, verifiedPhoneNumber } = useAppSelector(
-    (state) => state.visitorAuth,
-  );
+  const { visitorId } = useAppSelector((state) => state.visitorAuth);
 
   const [createVisit] = useCreateVisitMutation();
+  const submission = useSubmissionKey(`visitor:${orgSlug}`);
+  const { refetch: refetchVerification } = useGetVisitorVerificationStatusQuery(orgSlug);
 
   const {
     data: hosts = [],
@@ -49,35 +112,34 @@ export default function Registration() {
       Boolean(host.id?.trim() && host.fullName?.trim()),
   );
 
-  const purposeOfVisitValue = Form.useWatch("purposeOfVisit", form);
-
-  const purposeOfVisitLength = purposeOfVisitValue?.length ?? 0;
-
-  useEffect(() => {
-    form.setFieldsValue({
-      ...splitFullName(verifiedName),
-      email: verifiedEmail ?? undefined,
-      phoneNo: verifiedPhoneNumber ?? undefined,
+  if (appointment?.hostId && !selectableHosts.some((host) => host.id === appointment.hostId))
+    selectableHosts.push({
+      id: appointment.hostId,
+      fullName: appointment.hostName || "Assigned host",
     });
-  }, [verifiedName, verifiedEmail, verifiedPhoneNumber, form]);
-
-  const normalizeVisitStatus = (status?: string) => {
-    const normalized = status?.toLowerCase().replace(/[_-]/g, " ").trim();
-
-    if (normalized === "approved" || normalized === "signed in") {
-      return "approved";
-    }
-
-    if (normalized === "rejected" || normalized === "declined") {
-      return "rejected";
-    }
-
-    return "pending";
+  const draft = readVisitRequestDraft(orgSlug);
+  const initialValues = {
+    firstName: entry.visitor?.firstName ?? "",
+    lastName: entry.visitor?.lastName ?? "",
+    phoneNo: entry.visitor?.phone ?? "",
+    ...(!appointment && draft.email === entry.email ? draft : {}),
+    ...(appointment
+      ? {
+          firstName: appointment.firstName,
+          lastName: appointment.lastName,
+          phoneNo: appointment.contactPhone ?? entry.visitor?.phone ?? "",
+          purposeOfVisit: appointment.purpose,
+          hostId: appointment.hostId ?? undefined,
+        }
+      : {}),
+    email: entry.email,
   };
 
   const handleFinish = async (values: RegistrationValues) => {
     const fullName = `${values.firstName.trim()} ${values.lastName.trim()}`.trim();
-    const selectedHost = selectableHosts.find((host) => host.id === values.hostId);
+    const selectedHost = appointment
+      ? { id: appointment.hostId ?? "", fullName: appointment.hostName ?? "Unassigned host" }
+      : selectableHosts.find((host) => host.id === values.hostId);
 
     if (!selectedHost) {
       message.error("Please select a valid host and try again.");
@@ -86,33 +148,33 @@ export default function Registration() {
 
     openModal(
       <RegistrationModal
+        existingAppointment={Boolean(appointment)}
         onSubmit={async () => {
           openModal(
             <RegistrationSuccessModal
+              existingAppointment={Boolean(appointment)}
               loading
               onOk={() => navigate(paths.visitorProfile.getHref(orgSlug))}
             />,
           );
 
           try {
-            const response = await createVisit({
+            const payload = {
               orgSlug,
+              appointmentId: appointment?.id,
               visitorId: visitorId ?? undefined,
               firstName: values.firstName.trim(),
               lastName: values.lastName.trim(),
               email: values.email,
               phone: values.phoneNo,
               purpose: values.purposeOfVisit,
-              hostId: selectedHost.id,
+              hostId: selectedHost.id || undefined,
+            };
+            const response = await createVisit({
+              ...payload,
+              idempotencyKey: submission.getKey(payload),
             }).unwrap();
-
-            const createdAt = response?.createdAt ?? new Date().toISOString();
-
-            const status = normalizeVisitStatus(response?.status);
-
-            const visitId = response?.id ?? response?.referenceId;
-
-            const requestId = response?.referenceId ?? response?.id;
+            submission.complete();
 
             const resolvedVisitorId = response?.visitorId ?? visitorId;
 
@@ -123,38 +185,48 @@ export default function Registration() {
                   fullName,
                   email: values.email,
                   phoneNumber: values.phoneNo,
+                  emailVerified: response.emailVerified === true,
+                  sessionVisitId: response.emailVerified ? undefined : response.id,
                 }),
               );
             }
 
-            localStorage.setItem(
-              "visitorRegistration",
-              JSON.stringify({
-                id: visitId,
-                visitorId: resolvedVisitorId,
-                name: fullName,
-                email: values.email,
-                phoneNo: values.phoneNo,
-                hostName: selectedHost.fullName,
-                purposeOfVisit: values.purposeOfVisit,
-                status,
-                requestId,
-                createdAt,
-              }),
-            );
+            // Older versions kept the visitor's contact details here; shared
+            // devices (gate tablets) shouldn't. The server is the source of truth.
+            try {
+              localStorage.removeItem("visitorRegistration");
+            } catch {
+              // Storage unavailable: nothing was stored either.
+            }
 
+            clearVisitRequestDraft(orgSlug);
             form.resetFields();
 
             openModal(
               <RegistrationSuccessModal
+                existingAppointment={Boolean(appointment)}
                 loading={false}
-                onOk={() => navigate(paths.visitorProfile.getHref(orgSlug))}
+                onOk={() => navigate(paths.visitorProfile.getHref(orgSlug, response.id))}
               />,
             );
           } catch (error) {
             console.error("Registration failed:", error);
 
             closeModal();
+
+            if (
+              error &&
+              typeof error === "object" &&
+              "data" in error &&
+              error.data &&
+              typeof error.data === "object" &&
+              "code" in error.data &&
+              error.data.code === "EMAIL_VERIFICATION_REQUIRED"
+            ) {
+              saveVisitRequestDraft(orgSlug, values);
+              void refetchVerification();
+              navigate(paths.verify.getHref(orgSlug));
+            }
 
             message.error(
               getVisitActionErrorMessage(
@@ -169,30 +241,47 @@ export default function Registration() {
   };
 
   return (
-    <div className="flex w-full flex-col items-center md:justify-center dark:bg-slate-900">
-      <div className="flex w-full flex-1 flex-col md:max-w-lg md:flex-none md:overflow-y-auto">
-        <header className="flex min-h-12 items-center justify-between border-b border-slate-200 ps-5 py-1 md:mt-0 dark:border-slate-700">
-          <h1 className="text-md leading-normal font-bold whitespace-nowrap text-slate-900 dark:text-slate-100">
-            Request a Visit
-          </h1>
-        </header>
+    <div className="flex w-full flex-col items-center md:justify-center dark:bg-zinc-900">
+     {!appointment && (
+        <p className="mb-6 w-full border-b border-slate-400 text-lg font-semibold text-slate-700 md:text-xl dark:text-zinc-200">
+          Check in Details
+        </p>
+      )}
 
+     
+      <div className="flex w-full flex-col md:max-w-lg">
         <Form
           form={form}
+          initialValues={initialValues}
+          onValuesChange={(_changed, values: RegistrationValues) =>
+            saveVisitRequestDraft(orgSlug, values)
+          }
           layout="vertical"
-          requiredMark={false}
           onFinish={handleFinish}
-          className="flex flex-col px-5 pt-6 pb-28 md:flex-none md:pb-0 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/20"
+          className="flex flex-col md:flex-none dark:border-zinc-700 dark:bg-zinc-900"
         >
+          <Form.Item
+            name="email"
+            label="Email Address"
+            rules={[
+              { required: true, message: "Please enter your email address" },
+              { type: "email", message: "Please enter a valid email address" },
+            ]}
+          >
+            <Input
+              type="email"
+              autoComplete="email"
+              placeholder="Enter your email address"
+              readOnly
+            />
+          </Form.Item>
+
           <Form.Item
             name="firstName"
             label="First Name"
             rules={[{ required: true, whitespace: true, message: "Please enter your first name" }]}
           >
-            <Input
-              size="large"
-              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-            />
+            <Input readOnly={Boolean(appointment)} />
           </Form.Item>
 
           <Form.Item
@@ -200,39 +289,31 @@ export default function Registration() {
             label="Last Name"
             rules={[{ required: true, whitespace: true, message: "Please enter your last name" }]}
           >
-            <Input
-              size="large"
-              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-            />
+            <Input />
           </Form.Item>
 
           <Form.Item
             name="purposeOfVisit"
             label="Purpose of Visit"
             rules={[
-              { required: true, whitespace: true, message: "Please select a purpose" },
+              { required: true, whitespace: true, message: "Please select or enter a purpose" },
               {
-                max: PURPOSE_OF_VISIT_MAX_LENGTH,
+                max: appointment ? undefined : PURPOSE_OF_VISIT_MAX_LENGTH,
                 message: `Purpose of visit can't exceed ${PURPOSE_OF_VISIT_MAX_LENGTH} characters`,
               },
             ]}
           >
-            <Input
-              size="large"
-              maxLength={PURPOSE_OF_VISIT_MAX_LENGTH}
-              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-            />
+            {appointment ? (
+              <Input readOnly />
+            ) : (
+              <PurposeOfVisitSelect maxLength={PURPOSE_OF_VISIT_MAX_LENGTH} />
+            )}
           </Form.Item>
-
-          <p className="-mt-2 mb-2 text-xs text-slate-400 dark:text-slate-500">
-            Keep it brief, e.g. "Job interview" ({purposeOfVisitLength}/
-            {PURPOSE_OF_VISIT_MAX_LENGTH})
-          </p>
 
           <Form.Item
             name="hostId"
             label="Host Name"
-            rules={[{ required: true, message: "Please select a host" }]}
+            rules={appointment ? [] : [{ required: true, message: "Please select a host" }]}
           >
             <Select
               showSearch
@@ -244,10 +325,9 @@ export default function Registration() {
                     ? "Hosts could not be loaded"
                     : "Select a host"
               }
-              size="large"
               className="w-full"
               loading={isLoadingHosts}
-              disabled={isHostsError || selectableHosts.length === 0}
+              disabled={Boolean(appointment) || isHostsError || selectableHosts.length === 0}
               options={selectableHosts.map(({ id, fullName }) => ({
                 value: id,
                 label: fullName,
@@ -263,9 +343,9 @@ export default function Registration() {
                   ? "Loading hosts..."
                   : isHostsError
                     ? "Unable to load hosts"
-                      : selectableHosts.length === 0
-                        ? "No hosts with valid IDs available"
-                        : "No hosts available"
+                    : selectableHosts.length === 0
+                      ? "No hosts with valid IDs available"
+                      : "No hosts available"
               }
             />
           </Form.Item>
@@ -279,51 +359,42 @@ export default function Registration() {
           )}
 
           <Form.Item
-            name="email"
-            label="Email Address"
-            rules={[
-              { required: true, message: "Please enter your email address" },
-              { type: "email", message: "Please enter a valid email address" },
-            ]}
-          >
-            <Input
-              size="large"
-              type="email"
-              // The server only accepts requests for the email the visitor verified.
-              readOnly={Boolean(verifiedEmail)}
-              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-            />
-          </Form.Item>
-
-          <Form.Item
             name="phoneNo"
             label="Phone Number"
             rules={[
               { required: true, message: "Please enter your phone number" },
-              { pattern: /^[0-9+\-\s]{7,15}$/, message: "Please enter a valid phone number" },
+              {
+                pattern: appointment?.contactPhone ? undefined : /^[0-9+\-\s]{7,15}$/,
+                message: "Please enter a valid phone number",
+              },
             ]}
           >
-            <Input
-              size="large"
-              inputMode="tel"
-              className="rounded-xl dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
-            />
+            <Input inputMode="tel" readOnly={Boolean(appointment?.contactPhone)} />
           </Form.Item>
 
-          <div className="fixed inset-x-0 bottom-0 z-20 bg-white px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)] md:static md:border-0 md:bg-transparent md:px-0 md:pt-6 md:pb-0 dark:border-slate-700 dark:bg-slate-900">
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              block
-              className="rounded-lg text-[13px] font-medium"
-              icon={<ArrowRightOutlined />}
-              iconPlacement="end"
-            >
-              Submit Request
-            </Button>
-          </div>
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            icon={<ArrowRightOutlined />}
+            iconPlacement="end"
+            className="mt-4"
+          >
+            {appointment ? "Continue with this appointment" : "Submit Request"}
+          </Button>
+
+     
         </Form>
+        <div className="w-full flex items-center justify-center mt-3">
+                <Button
+        type="link"
+        className="mb-3 self-start px-0! place-self-center w-fukl"
+        onClick={() => navigate(paths.verify.getHref(orgSlug))}
+      >
+        Use a different email or appointment
+      </Button>
+        </div>
+       
       </div>
     </div>
   );

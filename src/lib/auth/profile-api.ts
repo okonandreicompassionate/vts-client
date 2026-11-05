@@ -1,4 +1,4 @@
-import { adminApi } from "@/lib/api/admin/admin-api";
+import { api } from "@/lib/api/api";
 import type { ApiUserProfile, UserProfile } from "@/types/user-profile";
 import { normalizeUserRole } from "@/types/user-role";
 
@@ -30,7 +30,7 @@ export function normalizeProfile(profile: ApiUserProfile): UserProfile {
  * The signed-in staff member. Shared by auth (session checks), settings and
  * admins, so it lives outside any one feature.
  */
-export const profileApi = adminApi.injectEndpoints({
+export const profileApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getProfile: builder.query<UserProfile, void>({
       query: () => "/auth/profile",

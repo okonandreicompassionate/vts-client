@@ -1,55 +1,19 @@
+import { MoonOutlined, SunOutlined } from "@ant-design/icons";
+import { Switch } from "antd";
 import { useTheme } from "@/lib/contexts/theme/use-theme";
-import { SunOutlined, MoonOutlined } from "@ant-design/icons";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "./dropdown-menu";
 
+/** On = dark, off = light. Until it is first used, the theme follows the system setting. */
 export function ThemeToggle() {
-  const { theme, setTheme, isDark } = useTheme();
-
-  const getIcon = () => {
-    if (theme === "dark") return <MoonOutlined className="text-base" />;
-    if (theme === "light") return <SunOutlined className="text-base" />;
-    return isDark ? (
-      <MoonOutlined className="text-base" />
-    ) : (
-      <SunOutlined className="text-base" />
-    );
-  };
+  const { setTheme, isDark } = useTheme();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          type="button"
-          aria-label="Toggle theme"
-          className="icon-button flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-slate-600 outline-none hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
-        >
-          {getIcon()}
-        </button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent>
-        <DropdownMenuRadioGroup
-          value={theme}
-          onValueChange={(value) =>
-            setTheme(value as "light" | "dark" | "system")
-          }
-        >
-          <DropdownMenuRadioItem value="light">
-            <SunOutlined />
-            Light
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="dark">
-            <MoonOutlined />
-            Dark
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Switch
+      checked={isDark}
+      onChange={(checked) => setTheme(checked ? "dark" : "light")}
+      checkedChildren={<MoonOutlined />}
+      unCheckedChildren={<SunOutlined />}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+    />
   );
 }

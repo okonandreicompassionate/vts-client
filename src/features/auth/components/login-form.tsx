@@ -1,4 +1,6 @@
 import { Form, Input, Button, Checkbox, message } from "antd";
+import { Link } from "react-router-dom";
+import { paths } from "@/config/paths";
 import { useLoginMutation } from "../api/auth-api-slice";
 import { useSignInFlow } from "../hooks/use-sign-in-flow";
 import MicrosoftLogin from "./ms-login";
@@ -8,6 +10,7 @@ import { emailRules, getPasswordRules } from "../utils/validation";
 interface LoginFormValues {
   email: string;
   password: string;
+  rememberMe: boolean;
 }
 
 type LoginError = {
@@ -23,6 +26,7 @@ export default function LoginForm() {
   const [form] = Form.useForm<LoginFormValues>();
 
   const [adminLogin, { isLoading }] = useLoginMutation();
+  const rememberMe = Form.useWatch("rememberMe", form) ?? true;
 
   const { selection, isSelecting, handleSignIn, chooseOrganization, cancelSelection } =
     useSignInFlow();
@@ -32,10 +36,12 @@ export default function LoginForm() {
       const response = await adminLogin({
         email: values.email.trim(),
         password: values.password,
+        rememberMe: values.rememberMe,
       }).unwrap();
 
-      handleSignIn(response);
+      handleSignIn(response, values.rememberMe);
     } catch (error) {
+      console.log("Login error:", error);
       const loginError = error as LoginError;
 
       const backendMessage = loginError.data?.message;
@@ -71,36 +77,36 @@ export default function LoginForm() {
     <Form<LoginFormValues>
       form={form}
       layout="vertical"
-      requiredMark={false}
       onFinish={handleSubmit}
-      className="[&_.ant-form-item]:mb-4"
+      initialValues={{ rememberMe: true }}
     >
-      <Form.Item name="email" rules={emailRules}>
+      <Form.Item label="Email Address" name="email" rules={emailRules}>
         <Input
           type="email"
-          aria-label="Email address"
-          placeholder="Email address"
-          size="middle"
+          placeholder="you@company.com"
           autoComplete="email"
-          className="h-9! rounded-md! border-slate-200! bg-white! px-3! text-sm! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-500!"
         />
       </Form.Item>
 
-      <Form.Item name="password" rules={getPasswordRules({ required: true })}>
+      <Form.Item label="Password" name="password" rules={getPasswordRules({ required: true })}>
         <Input.Password
-          aria-label="Password"
-          placeholder="Password"
-          size="middle"
+          placeholder="••••••••••"
           autoComplete="current-password"
-          className="h-10! rounded-md! border-slate-200! bg-white! px-3! text-sm! placeholder:text-slate-400! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:placeholder:text-slate-500!"
         />
       </Form.Item>
 
       <div className="-mt-1 mb-4 flex items-center justify-between text-xs">
-        <Checkbox className="text-xs! text-slate-600! dark:text-slate-300!">
-          Remember me
-        </Checkbox>
-        <span className="font-medium text-sky-500">Forgot password?</span>
+        <Form.Item name="rememberMe" valuePropName="checked" noStyle>
+          <Checkbox className="text-xs! text-slate-600! dark:text-zinc-300!">
+            Remember me
+          </Checkbox>
+        </Form.Item>
+        <Link
+          to={paths.admin.forgotPassword.getHref()}
+          className="font-medium text-sky-500 hover:text-sky-600"
+        >
+          Forgot password?
+        </Link>
       </div>
 
       <Form.Item className="mb-3! pt-1">
@@ -108,16 +114,17 @@ export default function LoginForm() {
           type="primary"
           htmlType="submit"
           block
-          size="middle"
           loading={isLoading}
-          className="h-10! rounded-md! border-0! bg-sky-500! text-sm! font-semibold! shadow-none! hover:bg-sky-600!"
         >
           Sign in
         </Button>
       </Form.Item>
 
       <div className="pt-1">
-        <MicrosoftLogin onSignIn={handleSignIn} />
+        <MicrosoftLogin
+          rememberMe={rememberMe}
+          onSignIn={(response) => handleSignIn(response, rememberMe)}
+        />
       </div>
     </Form>
   );

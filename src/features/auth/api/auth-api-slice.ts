@@ -1,5 +1,4 @@
-import { adminApi } from "@/lib/api/admin/admin-api";
-import { publicApi } from "@/lib/api/public/public-api";
+import { api } from "@/lib/api/api";
 
 import type {
   JoinOrganizationWithPasswordPayload,
@@ -15,7 +14,7 @@ import type {
   SignInResponse,
 } from "../types/api-types";
 
-export const authApi = adminApi.injectEndpoints({
+export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
     Login: builder.mutation<SignInResponse, LoginPayload>({
       query: (body) => ({
@@ -50,7 +49,7 @@ export const authApi = adminApi.injectEndpoints({
   }),
 });
 
-export const publicAuthApi = publicApi.injectEndpoints({
+export const publicAuthApi = api.injectEndpoints({
   endpoints: (builder) => ({
     joinOrganizationWithPassword: builder.mutation<
       JoinOrganizationWithPasswordResponse,
@@ -61,6 +60,15 @@ export const publicAuthApi = publicApi.injectEndpoints({
         method: "POST",
         body,
       }),
+    }),
+
+    // Always answers with the same message, whether or not the email has an account.
+    forgotPassword: builder.mutation<{ message: string }, { email: string }>({
+      query: (body) => ({ url: "/auth/forgot-password", method: "POST", body }),
+    }),
+
+    resetPassword: builder.mutation<{ message: string }, { token: string; password: string }>({
+      query: (body) => ({ url: "/auth/reset-password", method: "POST", body }),
     }),
   }),
 });
@@ -74,5 +82,7 @@ export const {
 
 export const {
   useJoinOrganizationWithPasswordMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = publicAuthApi;
 

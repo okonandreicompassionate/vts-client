@@ -1,8 +1,8 @@
-import { publicApi } from "@/lib/api/public/public-api";
+import { api } from "@/lib/api/api";
 import { publicOrganizationApiPath } from "@/utils/organization-path";
 import type { PublicOrganization } from "../types/organization";
 
-export const organizationsApi = publicApi.injectEndpoints({
+export const organizationsApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getPublicOrganization: builder.query<PublicOrganization, string>({
       query: (orgSlug) => publicOrganizationApiPath(orgSlug),

@@ -8,22 +8,25 @@ interface AuthFooterProps {
 export default function AuthFooter({ mode, onSwitchMode }: AuthFooterProps) {
   const isLogin = mode === "login";
 
+  // if (isLogin) {
+  //   return (
+  //     <div className="mt-4 text-center">
+  //       <p className="text-xs text-slate-600 dark:text-zinc-300">
+  //         New Organization? <span className="font-medium text-sky-500">Register here</span>
+  //       </p>
+  //       <p className="mt-3 text-[11px] text-slate-400 dark:text-zinc-500">
+  //         Need help? Contact your system administrator.
+  //       </p>
+  //     </div>
+  //   );
+  // }
   if (isLogin) {
-    return (
-      <div className="mt-4 text-center">
-        <p className="text-xs text-slate-600 dark:text-slate-300">
-          New Organization? <span className="font-medium text-sky-500">Register here</span>
-        </p>
-        <p className="mt-3 text-[11px] text-slate-400 dark:text-slate-500">
-          Need help? Contact your system administrator.
-        </p>
-      </div>
-    );
+    return 
   }
 
   return (
     <div className="text-center">
-      <span className="text-[13px] text-slate-500 dark:text-slate-400">
+      <span className="text-[13px] text-slate-500 dark:text-zinc-400">
         Already have an account?{" "}
         <Button
           type="link"

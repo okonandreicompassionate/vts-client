@@ -1,15 +1,19 @@
-import { adminApi } from "@/lib/api/admin/admin-api";
+import { api } from "@/lib/api/api";
 import type { EmployeeListResponse, EmployeeUploadResponse } from "../types/api-types";
 
-export const adminEmployeesApiSlice = adminApi.injectEndpoints({
+export const adminEmployeesApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getEmployees: builder.query<EmployeeListResponse, { page: number; limit: number }>({
-      query: ({ page, limit }) => ({
+    getEmployees: builder.query<
+      EmployeeListResponse,
+      { page: number; limit: number; search?: string }
+    >({
+      query: ({ page, limit, search }) => ({
         url: "/employees",
         method: "GET",
         params: {
           page,
           limit,
+          ...(search ? { search } : {}),
         },
       }),
       providesTags: ["Employees"],

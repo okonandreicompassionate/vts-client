@@ -13,8 +13,16 @@ import { switchOrganizationPath } from "@/utils/organization-path";
 export function OrganizationLayout() {
   const { orgSlug = "" } = useParams<{ orgSlug: string }>();
   const location = useLocation();
-  const { data: organization, error, isLoading } = useGetPublicOrganizationQuery(orgSlug, {
+  const {
+    data: organization,
+    error,
+    isLoading,
+  } = useGetPublicOrganizationQuery(orgSlug, {
     skip: !orgSlug,
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+    pollingInterval: 15000,
   });
 
   if (isLoading) {

@@ -11,7 +11,9 @@ export const paths = {
   },
   register: {
     path: "/:orgSlug/register",
-    getHref: (orgSlug: string) => organizationPath(orgSlug, "/register"),
+    getHref: (orgSlug: string, appointmentId?: string) =>
+      organizationPath(orgSlug, "/register") +
+      (appointmentId ? `?appointment=${encodeURIComponent(appointmentId)}` : ""),
   },
   verify: {
     path: "/:orgSlug/verify",
@@ -19,7 +21,13 @@ export const paths = {
   },
   visitorProfile: {
     path: "/:orgSlug/profile",
-    getHref: (orgSlug: string) => organizationPath(orgSlug, "/profile"),
+    getHref: (orgSlug: string, visitId?: string) =>
+      organizationPath(orgSlug, "/profile") +
+      (visitId ? `?visit=${encodeURIComponent(visitId)}` : ""),
+  },
+  visitorAppointments: {
+    path: "/:orgSlug/my-appointments",
+    getHref: (orgSlug: string) => organizationPath(orgSlug, "/my-appointments"),
   },
 
   // Admin side - the organization comes from the signed-in session, not the URL.
@@ -31,6 +39,14 @@ export const paths = {
     signup: {
       path: "/signup",
       getHref: () => "/signup",
+    },
+    forgotPassword: {
+      path: "/forgot-password",
+      getHref: () => "/forgot-password",
+    },
+    resetPassword: {
+      path: "/reset-password",
+      getHref: () => "/reset-password",
     },
     dashboard: {
       path: "/dashboard",

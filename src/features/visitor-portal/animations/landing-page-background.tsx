@@ -47,7 +47,7 @@ export function LandingPageBackground() {
         className="pointer-events-none absolute inset-0 hidden dark:block"
         style={{
           zIndex: 0,
-          background: "radial-gradient(120% 90% at 50% 12%, #1e293b 0%, #0f172a 55%, #0f172a 100%)",
+          background: "radial-gradient(120% 90% at 50% 12%, #27272a 0%, #18181b 55%, #18181b 100%)",
         }}
       />
 

@@ -1,7 +1,9 @@
+/** Field names match the server's UpdateProfileDto. */
 export interface UpdateProfilePayload {
-  fullName?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
-  phoneNumber?: string;
+  phone?: string;
 }
 
 export interface UpdatePasswordPayload {
@@ -10,6 +12,7 @@ export interface UpdatePasswordPayload {
 }
 
 export interface UpdateSettingsPayload {
+  requireVisitorEmailVerification?: boolean;
   slug?: string;
   azureTenantId?: string;
   name?: string;
@@ -18,6 +21,7 @@ export interface UpdateSettingsPayload {
 }
 
 export interface SettingsResponse {
+  requireVisitorEmailVerification: boolean;
   slug: string;
   authMode: "PASSWORD" | "AZURE_AD";
   /** Microsoft Entra directory staff must sign in from (Microsoft sign-in orgs only). */

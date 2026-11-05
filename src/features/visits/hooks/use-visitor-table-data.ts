@@ -4,10 +4,47 @@ import {
   useGetVisitStatsQuery,
   useGetVisitsQuery,
 } from "@/features/visits/api/admins-visit-api-slice";
-import { toVisitorRow } from "../utils/visits";
+import { toVisitorRow, type VisitorRow } from "../utils/visits";
 import type { VisitListPage, VisitListParams, VisitRecord } from "../types/api-types";
 
 type AppointmentGroupKey = "all" | "pending" | "approved" | "rejected";
+
+export type VisitStatusGroup = "appointments" | "check-ins" | "visitors";
+
+const isSignedStatus = (status?: string) => status === "SIGNED_IN" || status === "SIGNED_OFF";
+const APPOINTMENT_STATUSES = ["PENDING", "APPROVED", "REJECTED"];
+
+/** The status sent to the server for a view, or null when the view filters by status here. */
+export function getVisitListStatus(status?: string, statusGroup?: VisitStatusGroup): string | null {
+  if (statusGroup === "appointments") {
+    return status && APPOINTMENT_STATUSES.includes(status) ? status : null;
+  }
+  if (statusGroup === "visitors" || isSignedStatus(status)) return null;
+  if (statusGroup === "check-ins" && status === "ALL") return null;
+
+  return status ?? null;
+}
+
+/** Signed in/off are worked out from check-in times, so some views filter by status here. */
+export function needsClientStatusFilter(status?: string, statusGroup?: VisitStatusGroup): boolean {
+  if (statusGroup === "appointments") return false;
+  if (statusGroup === "check-ins" && !isSignedStatus(status) && Boolean(status)) return false;
+
+  return statusGroup === "visitors" || statusGroup === "check-ins" || isSignedStatus(status);
+}
+
+export function matchesVisitorStatus(visit: VisitorRow, status?: string): boolean {
+  if (status === "SIGNED_IN") return visit.status === "Signed In";
+  if (status === "SIGNED_OFF") return visit.status === "Signed Off";
+  if (status === "APPROVED") return visit.status === "Approved";
+  if (status === "PENDING") return visit.status === "Pending";
+  if (status === "REJECTED") return visit.status === "Rejected";
+  if (status === "ALL") return true;
+
+  return (
+    visit.status === "Approved" || visit.status === "Signed In" || visit.status === "Signed Off"
+  );
+}
 
 type VisitListData =
   | { visits: VisitListPage }
@@ -40,7 +77,7 @@ export function useVisitorTableData({
   includeStats = true,
 }: UseVisitorTableDataParams) {
   const isAppointments = statusGroup === "appointments";
-  const isSignedStatus = status === "SIGNED_IN" || status === "SIGNED_OFF";
+  const isSigned = isSignedStatus(status);
   const appointmentStatusKey =
     status === "PENDING"
       ? "pending"
@@ -53,31 +90,24 @@ export function useVisitorTableData({
     skip:
       !enabled ||
       !includeStats ||
-      ((!statusGroup || statusGroup === "appointments") && !isSignedStatus),
+      ((!statusGroup || statusGroup === "appointments") && !isSigned),
   });
   const listParams: VisitListParams = {
-    page: isSignedStatus ? 1 : page,
-    limit: isSignedStatus
+    page: isSigned ? 1 : page,
+    limit: isSigned
       ? Math.max(stats?.total ?? (includeStats ? page * limit : 100), 1)
       : limit,
-    status:
-      statusGroup === "visitors" ||
-      (statusGroup === "check-ins" && (isSignedStatus || status === "ALL"))
-        ? null
-        : isSignedStatus
-          ? null
-          : (status ?? null),
+    status: getVisitListStatus(status, statusGroup),
     search: search ?? null,
   };
 
-  // The appointments view shows every status tab's count, so it loads each tab's
-  // first `page * limit` rows and pages through them locally.
-  const groupParams = (groupStatus: string | null): VisitListParams => ({
-    page: 1,
-    limit: page * limit,
-    status: groupStatus,
-    search: search ?? null,
-  });
+  // The appointments view shows every status tab's count. Only the tab on screen
+  // loads a real page; the others load a single row just to read their totals.
+  const activeGroupStatus = appointmentStatusKey ? (status ?? null) : null;
+  const groupParams = (groupStatus: string | null): VisitListParams =>
+    groupStatus === activeGroupStatus
+      ? { page, limit, status: groupStatus, search: search ?? null }
+      : { page: 1, limit: 1, status: groupStatus, search: search ?? null };
 
   const queryOptions = {
     pollingInterval: isAppointments || statusGroup === "check-ins" ? 30_000 : 0,
@@ -144,28 +174,8 @@ export function useVisitorTableData({
         toVisitorRow(visit as VisitRecord, index),
       );
 
-      if (
-        statusGroup === "check-ins" &&
-        !isSignedStatus &&
-        (status === "ALL" || Boolean(status))
-      ) {
-        return { visitorRecords: rows, filteredTotal: data.visits.meta.total };
-      }
-
-      if (statusGroup === "visitors" || statusGroup === "check-ins" || isSignedStatus) {
-        const filteredRows = rows.filter((visit) => {
-          if (status === "SIGNED_IN") return visit.status === "Signed In";
-          if (status === "SIGNED_OFF") return visit.status === "Signed Off";
-          if (status === "APPROVED") return visit.status === "Approved";
-          if (status === "PENDING") return visit.status === "Pending";
-          if (status === "REJECTED") return visit.status === "Rejected";
-          if (status === "ALL") return true;
-          return (
-            visit.status === "Approved" ||
-            visit.status === "Signed In" ||
-            visit.status === "Signed Off"
-          );
-        });
+      if (needsClientStatusFilter(status, statusGroup)) {
+        const filteredRows = rows.filter((visit) => matchesVisitorStatus(visit, status));
 
         return {
           visitorRecords: filteredRows.slice((page - 1) * limit, page * limit),
@@ -176,27 +186,17 @@ export function useVisitorTableData({
       return { visitorRecords: rows, filteredTotal: data.visits.meta.total };
     }
 
-    if (statusGroup === "appointments" && appointmentStatusKey) {
-      const records = (
-        data[appointmentStatusKey]?.data.map((visit, index) =>
-          toVisitorRow(visit as VisitRecord, index),
-        ) ?? []
-      );
-      return {
-        visitorRecords: records.slice((page - 1) * limit, page * limit),
-        filteredTotal: data[appointmentStatusKey]?.meta.total ?? records.length,
-      };
-    }
-
-    const records = (data.all?.data ?? []).map((visit, index) =>
+    // The tab on screen was fetched page by page, so its rows are already this page.
+    const activeGroup = data[appointmentStatusKey ?? "all"];
+    const records = (activeGroup?.data ?? []).map((visit, index) =>
       toVisitorRow(visit as VisitRecord, index),
     );
 
     return {
-      visitorRecords: records.slice((page - 1) * limit, page * limit),
-      filteredTotal: data.all?.meta.total ?? records.length,
+      visitorRecords: records,
+      filteredTotal: activeGroup?.meta.total ?? records.length,
     };
-  }, [appointmentStatusKey, data, isSignedStatus, limit, page, status, statusGroup]);
+  }, [appointmentStatusKey, data, limit, page, status, statusGroup]);
 
   const appointmentCounts: AppointmentCounts | undefined =
     statusGroup === "appointments" && data && !("visits" in data)
@@ -216,14 +216,7 @@ export function useVisitorTableData({
           : status === "ALL"
           ? stats?.total ?? data.visits.meta.total
           : status === "APPROVED"
-          ? Math.max(
-              0,
-              (stats?.total ?? 0) -
-                (stats?.pending ?? 0) -
-                (stats?.rejected ?? 0) -
-                (stats?.signedIn ?? 0) -
-                (stats?.signedOff ?? 0),
-            )
+          ? stats?.approved ?? 0
           : status === "SIGNED_IN"
             ? stats?.signedIn ?? 0
             : status === "SIGNED_OFF"

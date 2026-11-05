@@ -5,10 +5,14 @@ import type { ApiUserRole } from "@/types/user-role";
 export interface LoginPayload {
   email: string;
   password: string;
+  /** "Remember me". When false the session ends with the browser. */
+  rememberMe?: boolean;
 }
 
 export interface MicrosoftLoginPayload {
   accessToken: string;
+  /** "Remember me". When false the session ends with the browser. */
+  rememberMe?: boolean;
 }
 
 export interface UserProfile {
@@ -52,6 +56,8 @@ export type SignInResponse = LoginResponse | OrganizationSelectionRequired;
 export interface SelectOrganizationPayload {
   selectionToken: string;
   orgId: string;
+  /** "Remember me". When false the session ends with the browser. */
+  rememberMe?: boolean;
 }
 
 export const requiresOrganizationSelection = (

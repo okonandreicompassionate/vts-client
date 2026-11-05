@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface VisitorAuthState {
   visitorId: string | null;
+  sessionVisitId: string | null;
 
   verifiedName: string | null;
   verifiedEmail: string | null;
@@ -13,6 +14,7 @@ export interface VisitorAuthState {
 
 const initialState: VisitorAuthState = {
   visitorId: null,
+  sessionVisitId: null,
 
   verifiedName: null,
   verifiedEmail: null,
@@ -35,21 +37,21 @@ const visitorAuthSlice = createSlice({
         fullName?: string | null;
         email?: string | null;
         phoneNumber?: string | null;
+        emailVerified?: boolean;
+        sessionVisitId?: string;
       }>,
     ) => {
       state.visitorId = action.payload.visitorId;
+      state.sessionVisitId = action.payload.sessionVisitId ?? null;
 
-      state.verifiedName =
-        action.payload.fullName ?? null;
+      state.verifiedName = action.payload.fullName ?? null;
 
-      state.verifiedEmail =
-        action.payload.email ?? null;
+      state.verifiedEmail = action.payload.email ?? null;
 
-      state.verifiedPhoneNumber =
-        action.payload.phoneNumber ?? null;
+      state.verifiedPhoneNumber = action.payload.phoneNumber ?? null;
 
       state.isAuthenticated = true;
-      state.isVerified = true;
+      state.isVerified = action.payload.emailVerified ?? true;
     },
 
     setVisitorVerified: (
@@ -59,6 +61,7 @@ const visitorAuthSlice = createSlice({
       }>,
     ) => {
       state.visitorId = null;
+      state.sessionVisitId = null;
 
       state.verifiedName = null;
       state.verifiedEmail = action.payload.email;
@@ -70,6 +73,7 @@ const visitorAuthSlice = createSlice({
 
     clearVisitorAuth: (state) => {
       state.visitorId = null;
+      state.sessionVisitId = null;
 
       state.verifiedName = null;
       state.verifiedEmail = null;
@@ -81,10 +85,6 @@ const visitorAuthSlice = createSlice({
   },
 });
 
-export const {
-  setVisitorSession,
-  setVisitorVerified,
-  clearVisitorAuth,
-} = visitorAuthSlice.actions;
+export const { setVisitorSession, setVisitorVerified, clearVisitorAuth } = visitorAuthSlice.actions;
 
 export default visitorAuthSlice.reducer;

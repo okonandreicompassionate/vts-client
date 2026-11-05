@@ -4,8 +4,16 @@ export interface EmployeeApiItem {
   firstName: string;
   lastName: string;
   email: string | null;
+  phone: string | null;
+  workPhone: string | null;
   role: string | null;
   department: string | null;
+  /** Login role; USER is a plain host. */
+  userRole: string;
+  /** Visits this employee hosted that the visitor checked in for. */
+  visitorCount: number;
+  /** Check-in time of the most recent of those visits. */
+  lastVisitAt: string | null;
 }
 
 export interface EmployeeListResponse {

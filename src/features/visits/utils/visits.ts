@@ -1,14 +1,20 @@
-import type { VisitRecord } from "../types/api-types";
+import { VISIT_TIME_ZONE } from "@/utils/visit-time";
+import type { HostDecision, VisitRecord, VisitSource } from "../types/api-types";
 import type { VisitorStatus } from "../components/visit-status-pill";
 
 export interface VisitorRow {
   id: string;
+  referenceId?: string;
   name: string;
   email: string;
   phone: string;
   host: string;
+  hostId?: string | null;
   purpose: string;
   status: VisitorStatus;
+  source?: VisitSource;
+  hostDecision: HostDecision | null;
+  hostNote: string | null;
 
   time: string;
   requestedDate?: string;
@@ -48,10 +54,7 @@ export function toVisitorStatus(
   checkInTime?: string | null,
   checkOutTime?: string | null,
 ): VisitorStatus {
-  const normalized = status
-    ?.toLowerCase()
-    .replace(/[_-]/g, " ")
-    .trim();
+  const normalized = status?.toLowerCase().replace(/[_-]/g, " ").trim();
 
   if (
     normalized === "signed off" ||
@@ -63,11 +66,16 @@ export function toVisitorStatus(
     return "Signed Off";
   }
 
-  if (
-    normalized === "rejected" ||
-    normalized === "declined"
-  ) {
+  if (normalized === "rejected" || normalized === "declined") {
     return "Rejected";
+  }
+
+  if (normalized === "cancelled" || normalized === "canceled") {
+    return "Cancelled";
+  }
+
+  if (normalized === "rescheduled") {
+    return "Rescheduled";
   }
 
   if (
@@ -92,6 +100,8 @@ export function toApiVisitStatus(status: VisitorStatus) {
   if (status === "Signed In") return "SIGNED_IN";
   if (status === "Signed Off") return "SIGNED_OFF";
   if (status === "Rejected") return "REJECTED";
+  if (status === "Cancelled") return "CANCELLED";
+  if (status === "Rescheduled") return "RESCHEDULED";
   return "PENDING";
 }
 
@@ -107,12 +117,14 @@ export function formatVisitTime(value?: string | null) {
   }
 
   const datePart = new Intl.DateTimeFormat(undefined, {
+    timeZone: VISIT_TIME_ZONE,
     month: "short",
     day: "numeric",
     year: "numeric",
   }).format(date);
 
   const timePart = new Intl.DateTimeFormat(undefined, {
+    timeZone: VISIT_TIME_ZONE,
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
@@ -134,12 +146,14 @@ function formatVisitDateTime(value?: string | null) {
 
   return {
     date: new Intl.DateTimeFormat(undefined, {
+      timeZone: VISIT_TIME_ZONE,
       month: "short",
       day: "numeric",
       year: "numeric",
     }).format(date),
 
     time: new Intl.DateTimeFormat(undefined, {
+      timeZone: VISIT_TIME_ZONE,
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
@@ -152,11 +166,12 @@ function formatAppointmentDate(value?: string | null) {
     return undefined;
   }
 
-  const date = new Date(`${value.slice(0, 10)}T00:00:00`);
+  const date = new Date(`${value.slice(0, 10)}T00:00:00+01:00`);
 
   return Number.isNaN(date.getTime())
     ? value
     : new Intl.DateTimeFormat(undefined, {
+        timeZone: VISIT_TIME_ZONE,
         month: "short",
         day: "numeric",
         year: "numeric",
@@ -179,20 +194,19 @@ function formatAppointmentTime(value?: string | null) {
     return value;
   }
 
-  const date = new Date();
-  date.setHours(hours, minutes, 0, 0);
+  const date = new Date(
+    `2000-01-01T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00+01:00`,
+  );
 
   return new Intl.DateTimeFormat(undefined, {
+    timeZone: VISIT_TIME_ZONE,
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
   }).format(date);
 }
 
-export function toVisitorRow(
-  visit: VisitRecord,
-  index: number,
-): VisitorRow {
+export function toVisitorRow(visit: VisitRecord, index: number): VisitorRow {
   const registeredAt = visit.registeredAt ?? visit.createdAt ?? "";
   const reviewedAt = visit.reviewedAt ?? null;
   const checkInTime = visit.checkInTime ?? null;
@@ -201,58 +215,49 @@ export function toVisitorRow(
   const id =
     visit.id ??
     visit.referenceId ??
-    (visit.email && registeredAt
-      ? `${visit.email}-${registeredAt}`
-      : visit.email) ??
+    (visit.email && registeredAt ? `${visit.email}-${registeredAt}` : visit.email) ??
     `visit-${index}`;
 
   const status = toVisitorStatus(visit.status, checkInTime, checkOutTime);
 
-  const resolvedCheckIn =
-    visit.checkIn ?? checkInTime;
+  const resolvedCheckIn = visit.checkIn ?? checkInTime;
 
-  const resolvedCheckOut =
-    visit.checkOut ?? checkOutTime;
+  const resolvedCheckOut = visit.checkOut ?? checkOutTime;
 
-  const visitDateTime = formatVisitDateTime(
-    checkInTime ?? registeredAt,
-  );
+  const visitDateTime = formatVisitDateTime(checkInTime ?? registeredAt);
 
-  const checkInDateTime =
-    formatVisitDateTime(resolvedCheckIn);
+  const checkInDateTime = formatVisitDateTime(resolvedCheckIn);
 
   return {
     id,
+    referenceId: visit.referenceId,
 
-    name:
-      visit.fullName ??
-      visit.name ??
-      "Unknown visitor",
+    name: visit.fullName ?? visit.name ?? "Unknown visitor",
 
-    email:
-      visit.email ??
-      "N/A",
+    email: visit.email ?? "N/A",
 
-    phone:
-      visit.phone ??
-      visit.phoneNumber ??
-      "N/A",
+    phone: visit.phone ?? visit.phoneNumber ?? "N/A",
 
-    host:
-      visit.hostName ??
-      visit.host ??
-      "Unassigned",
+    host: visit.hostName ?? visit.host ?? "Unassigned",
 
-    purpose:
-      visit.purposeOfVisit ??
-      visit.purpose ??
-      "N/A",
+    hostId: visit.hostId ?? null,
+
+    source: visit.source,
+
+    hostDecision: visit.hostDecision ?? null,
+
+    hostNote: visit.hostNote ?? null,
+
+    purpose: visit.purposeOfVisit ?? visit.purpose ?? "N/A",
 
     status,
 
     time: formatVisitTime(registeredAt),
-    requestedDate: formatAppointmentDate(visit.date),
-    requestedTime: formatAppointmentTime(visit.time),
+    // Older responses send date/time separately; the staff list sends scheduledAt.
+    requestedDate:
+      formatAppointmentDate(visit.date) ?? formatVisitDateTime(visit.scheduledAt)?.date,
+    requestedTime:
+      formatAppointmentTime(visit.time) ?? formatVisitDateTime(visit.scheduledAt)?.time,
 
     visitDate: visitDateTime?.date,
 
@@ -262,45 +267,28 @@ export function toVisitorRow(
 
     reviewedAt,
 
-
     checkOutTime,
 
-    checkIn: resolvedCheckIn
-      ? formatVisitTime(resolvedCheckIn)
-      : "Pending",
+    checkIn: resolvedCheckIn ? formatVisitTime(resolvedCheckIn) : "Pending",
 
     checkInDate: checkInDateTime?.date,
 
-    checkInTime:
-      checkInDateTime?.time ?? "Pending",
+    checkInTime: checkInDateTime?.time ?? "Pending",
 
-    checkOut: resolvedCheckOut
-      ? formatVisitTime(resolvedCheckOut)
-      : "Pending",
-
+    checkOut: resolvedCheckOut ? formatVisitTime(resolvedCheckOut) : "Pending",
   };
 }
 
-export function getVisitorSummary(
-  records: VisitorRow[],
-) {
+export function getVisitorSummary(records: VisitorRow[]) {
   return {
     total: records.length,
 
-    signedIn: records.filter(
-      (visitor) => visitor.status === "Signed In",
-    ).length,
+    signedIn: records.filter((visitor) => visitor.status === "Signed In").length,
 
-    signedOff: records.filter(
-      (visitor) => visitor.status === "Signed Off",
-    ).length,
+    signedOff: records.filter((visitor) => visitor.status === "Signed Off").length,
 
-    pending: records.filter(
-      (visitor) => visitor.status === "Pending",
-    ).length,
+    pending: records.filter((visitor) => visitor.status === "Pending").length,
 
-    rejected: records.filter(
-      (visitor) => visitor.status === "Rejected",
-    ).length,
+    rejected: records.filter((visitor) => visitor.status === "Rejected").length,
   };
 }

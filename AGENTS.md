@@ -34,7 +34,7 @@ src/
 ├── features/         # Feature-based modules (see below)
 ├── hooks/            # Shared React hooks
 ├── lib/              # Preconfigured libraries and app-wide plumbing
-│   ├── api/          #   RTK Query APIs: admin/, visitor/, public/ + csrf-fetch
+│   ├── api/          #   The single RTK Query API (api.ts), its base query + csrf-fetch
 │   ├── auth/         #   Signed-in profile query (shared by auth, settings, admins)
 │   ├── contexts/     #   ALL React contexts: popup/, theme/
 │   ├── router/       #   Route history helpers
@@ -85,6 +85,56 @@ src/features/auth/
 - **Unidirectional flow** - Code flows: shared → features → app
 - **Colocation** - Keep related code as close as possible to where it's used
 
+## Staff Page Layout
+
+Every staff page uses the shared components in `src/components/page` (`@/components/page`), in
+this order:
+
+1. **`PageShell`:** top bar, page title, optional description, and action buttons on the right
+   (Refresh, Generate Report, then the page's primary action). Reports come from
+   `useGenerateReport` (`@/hooks/use-generate-report`), or `useVisitReport` for visit lists, and
+   include every row matching the page's filters, not just the page on screen.
+2. **`FilterBar`:** search box plus filter controls passed as children.
+3. **`StatCards`:** headline counts. Pass `activeKey` + `onSelect` when the cards filter the
+   table; the active (or first) card is filled with the brand colour.
+4. **`DataTableCard`:** the table, with `loading` / `error` / `empty` states and `pagination`
+   (page-size changer included). It has no buttons; page actions go in the `PageShell` header.
+
+Rules:
+
+- Skip a section a page doesn't need, but keep the order.
+- Don't build ad-hoc headers, loaders or pagination footers.
+- Reset to page 1 when the search, filters or page size change.
+- `src/features/employees/components/employees.tsx` is the reference example.
+
+Visitor-facing pages (`features/visitor-portal`) keep their own mobile-first layout.
+
+## Modals, Drawers and Confirmations
+
+All popups go through the popup context, `usePopup()` from `@/lib/contexts/popup/use-popup`:
+
+```tsx
+const { openModal, openDrawer, confirm } = usePopup();
+
+openModal(<AddAdminModal />);                       // built on <CustomModal>
+openDrawer(<AdminDetailsDrawer adminId={id} />);    // built on <CustomDrawer>
+confirm({ title: "Deactivate admin?", danger: true, onConfirm: () => deactivate(id) });
+```
+
+- **Build popups on the shared components:** `CustomModal` (`.Header` / `.Body` / `.Footer`)
+  and `CustomDrawer` (`title`, `extra`, `footer`) in `src/components/ui`. Don't render antd
+  `<Modal>` / `<Drawer>` inline or call `Modal.confirm`, which ignores the app theme.
+- **Popups are self-contained.** The element you pass is rendered once with the props given at
+  open time, and it does not re-render with the page's state. So a popup owns its own form
+  state, mutation hooks and loading flags, takes only data as props, and closes itself with
+  `closeModal()` / `closeDrawer()`. Lists refresh through RTK Query tag invalidation.
+- **`confirm()` handles waiting and errors:** it shows a spinner while `onConfirm` runs, closes
+  when it resolves, and stays open if it throws. Show your error message, then rethrow.
+- **One modal slot and one drawer slot:** a modal can open on top of a drawer. After an action
+  that makes a drawer's content stale, close the drawer.
+- **Router hooks work:** the provider is rendered inside the router (`PopupOutlet` in
+  `src/app/router.tsx`), so popups can use `useNavigate` and other router hooks.
+
 ## Component Guidelines
 
 ### Best Practices
@@ -127,8 +177,8 @@ src/features/auth/
 - Keep server state in **RTK Query**. Do not duplicate API data in hand-written Redux slices.
 - Keep client state in slices only when it is shared across the app. The current slices are
   `adminAuth` and `visitorAuth`; theme and modal state use React context providers.
-- The app intentionally uses three RTK Query API slices, separated by access context:
-  `adminApi`, `visitorApi`, and `publicApi`.
+- The app uses **one** RTK Query API, `api` (`src/lib/api/api.ts`), for staff, visitor and
+  public calls alike. Don't create another `createApi`.
 - Infer `RootState` and `AppDispatch` from the configured store. Use the typed hooks from
   `src/lib/stores/hooks.ts` when dispatching or selecting Redux state.
 
@@ -136,10 +186,8 @@ src/features/auth/
 
 | Concern | Location |
 |---|---|
-| Admin API slice | `src/lib/api/admin/admin-api.ts` |
-| Visitor API slice | `src/lib/api/visitor/visitor-api.ts` |
-| Public API slice | `src/lib/api/public/public-api.ts` |
-| Base queries (admin/visitor use the session; public endpoints take the org slug in their URL) | `src/lib/api/{admin,visitor,public}/*-base-query.ts` |
+| The API (`createApi`, tag types) | `src/lib/api/api.ts` |
+| Base query (cookies, CSRF, staff session refresh) | `src/lib/api/base-query.ts` |
 | Signed-in profile query | `src/lib/auth/profile-api.ts` |
 | Store setup and inferred types | `src/lib/stores/store.ts` |
 | Typed Redux hooks | `src/lib/stores/hooks.ts` |
@@ -150,38 +198,43 @@ src/features/auth/
 
 ### API Slices
 
-Each access context owns one `createApi` slice with its own `reducerPath`, base query, and
-tag types. Feature API files extend the appropriate slice with `injectEndpoints`:
+Feature API files add endpoints to the single `api` with `injectEndpoints`:
 
 ```ts
-import { adminApi } from "@/lib/api/admin/admin-api";
+import { api } from "@/lib/api/api";
 
-export const usersApi = adminApi.injectEndpoints({
+export const adminsApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAdmins: builder.query<GetAdminsResponse, void>({
-      query: () => "/auth/admins",
-      providesTags: [{ type: "Users", id: "LIST" }],
+      query: () => "/users/admins",
+      providesTags: [{ type: "Admins", id: "LIST" }],
     }),
   }),
 });
 ```
 
-Use `adminApi` for authenticated admin operations, `visitorApi` for authenticated visitor
-operations, and `publicApi` for unauthenticated visitor-facing operations. Keep endpoint
-definitions, request/response types, generated hooks, and cache tags in the owning feature.
+- **Who is calling is decided by the session cookie,** not by which API you use. Staff, visitor
+  and public endpoints all live on `api`.
+- **Endpoint names are global:** every endpoint shares one namespace, so names must be unique
+  across features (e.g. `getVisit` for staff, `getVisitorVisit` for visitors).
+- **URLs:** public visitor endpoints put the organization in the URL with
+  `publicOrganizationApiPath(orgSlug, …)` → `/v/:orgSlug/…`. Visitor-session endpoints live
+  under `/visitor/…`. The base query never tries a staff session refresh for those two.
+- Keep endpoint definitions, request/response types, generated hooks and cache tags in the
+  owning feature.
 
 ### Store & Typed Hooks
 
-Register all three API reducers and middlewares in `src/lib/stores/store.ts`, along with the
+Register the API reducer and middleware in `src/lib/stores/store.ts`, along with the
 `adminAuth` and `visitorAuth` reducers. Call `setupListeners(store.dispatch)` for RTK Query
 focus/reconnect behavior. The store exports `RootState` and `AppDispatch`; the hooks module
 exports `useAppDispatch` and `useAppSelector`.
 
 ### Cache Tags
 
-Declare tag types on the owning API slice. Queries use `providesTags` and mutations use
+Declare tag types in `src/lib/api/api.ts`. Queries use `providesTags` and mutations use
 `invalidatesTags`; collection tags use `id: "LIST"`, while individual records use their
-record ID. This keeps mutations scoped to the relevant API cache.
+record ID.
 
 ### Forms and Context
 

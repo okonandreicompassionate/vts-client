@@ -10,9 +10,39 @@ export type StatusMeta = {
 };
 
 export const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
+  "checked-in": {
+    subtitle: "You are checked in.",
+    description: "Your visit is in progress. Please check out with reception when you leave.",
+    reason: "",
+    label: "On site",
+    pillClasses: "border border-emerald-500 bg-transparent text-emerald-500",
+  },
+  "checked-out": {
+    subtitle: "Your visit is complete.",
+    description: "You have checked out. Thank you for visiting.",
+    reason: "",
+    label: "Checked out",
+    pillClasses: "border border-slate-400 bg-transparent text-slate-500 dark:text-zinc-400",
+  },
+  cancelled: {
+    subtitle: "This appointment was cancelled.",
+    description: "This appointment is no longer active. You can request another visit.",
+    reason: "",
+    label: "Cancelled",
+    pillClasses: "border border-slate-400 bg-transparent text-slate-500 dark:text-zinc-400",
+    actionLabel: "Request another visit",
+  },
+  rescheduled: {
+    subtitle: "This appointment was rescheduled.",
+    description: "Select the replacement appointment from My appointments for its current details.",
+    reason: "",
+    label: "Rescheduled",
+    pillClasses: "border border-slate-400 bg-transparent text-slate-500 dark:text-zinc-400",
+  },
   pending: {
     subtitle: "Your request is now in review.",
-    description: "",
+    description:
+      "Find your details below. You will be notified once your request has been reviewed.",
     reason: "",
     label: "Pending",
     pillClasses: "border border-[#F5A623] bg-transparent text-[#F5A623]",

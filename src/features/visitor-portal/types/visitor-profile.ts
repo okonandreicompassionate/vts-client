@@ -1,4 +1,5 @@
-export type VisitorProfileStatus = "pending" | "approved" | "rejected";
+export type VisitorProfileStatus =
+  "pending" | "approved" | "rejected" | "checked-in" | "checked-out" | "cancelled" | "rescheduled";
 
 export type VisitorRegistration = {
   id?: string;
@@ -11,6 +12,7 @@ export type VisitorRegistration = {
   status?: VisitorProfileStatus;
   requestId?: string;
   createdAt?: string;
+  scheduledAt?: string | null;
   badgeNumber?: string;
   reason?: string;
   visitorToken?: string;

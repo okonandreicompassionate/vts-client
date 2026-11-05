@@ -16,9 +16,13 @@ import { useCompleteLogin } from "./use-complete-login";
 export function useSignInFlow() {
   const completeLogin = useCompleteLogin();
   const [selection, setSelection] = useState<OrganizationSelectionRequired | null>(null);
+  // Carried from the login form to the organization step.
+  const [rememberMe, setRememberMe] = useState(true);
   const [selectOrganization, { isLoading: isSelecting }] = useSelectOrganizationMutation();
 
-  const handleSignIn = (response: SignInResponse) => {
+  const handleSignIn = (response: SignInResponse, remember = true) => {
+    setRememberMe(remember);
+
     if (requiresOrganizationSelection(response)) {
       setSelection(response);
       return;
@@ -34,7 +38,11 @@ export function useSignInFlow() {
 
     try {
       completeLogin(
-        await selectOrganization({ selectionToken: selection.selectionToken, orgId }).unwrap(),
+        await selectOrganization({
+          selectionToken: selection.selectionToken,
+          orgId,
+          rememberMe,
+        }).unwrap(),
       );
     } catch {
       setSelection(null);

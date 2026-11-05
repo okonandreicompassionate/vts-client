@@ -1,27 +1,19 @@
-import { useRefetchVisitLists } from "../hooks/use-refetch-visit-lists";
 import { ArrowLeftOutlined, CheckOutlined } from "@ant-design/icons";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { Alert, Button, Input, message } from "antd";
-import { useState } from "react";
+import { Alert, Button, Input } from "antd";
+import { useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import DashboardHeader from "../../../components/layout/dashboard-header.tsx";
-import ApproveAccessModal from "./modals/approve-access-modal.tsx";
-import RejectVisitorModal from "./modals/reject-visitor-modal.tsx";
+import { PageShell } from "@/components/page";
+import RejectAppointmentModal from "./modals/reject-appointment-modal";
 import { Avatar } from "../../../components/ui/avatar.tsx";
 
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 
-import {
-  useApproveVisitMutation,
-  useRejectVisitMutation,
-  useCheckInVisitMutation,
-  useCheckOutVisitMutation,
-} from "@/features/visits/api/admins-visit-api-slice.ts";
+import { useVisitorCheckActions } from "../hooks/use-visitor-check-actions";
 
 import { useVisitorDetails } from "../hooks/use-visitor-details.ts";
 import { formatVisitTime } from "../utils/visits.ts";
-import { getVisitActionErrorMessage } from "@/utils/visit-action-error";
 import { Spinner } from "@/components/ui/spinner.tsx";
 
 const { TextArea } = Input;
@@ -65,20 +57,20 @@ interface VisitorDetailsProps {
 }
 
 export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsProps = {}) {
-  const refetchVisitLists = useRefetchVisitLists();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { openModal, closeModal } = usePopup();
+  const { openModal } = usePopup();
 
   const [notes, setNotes] = useState("");
 
-  const [checkInVisit, { isLoading: isCheckingIn }] = useCheckInVisitMutation();
-
-  const [checkOutVisit, { isLoading: isCheckingOut }] = useCheckOutVisitMutation();
-
-  const [approveVisit, { isLoading: isApproving }] = useApproveVisitMutation();
-
-  const [rejectVisit, { isLoading: isRejecting }] = useRejectVisitMutation();
+  const {
+    confirmApprove,
+    confirmCheckIn,
+    confirmCheckOut,
+    isApproving,
+    isCheckingIn,
+    isCheckingOut,
+  } = useVisitorCheckActions();
 
   const detailId = visitorId ?? id;
   const isDrawer = Boolean(visitorId);
@@ -94,315 +86,205 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
       "bg-orange-50 text-orange-400 border border-orange-200 dark:bg-orange-950/40 dark:text-orange-400 dark:border-orange-800",
 
     "Signed Off":
-      "bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600",
+      "bg-slate-100 text-slate-500 border border-slate-200 dark:bg-zinc-700 dark:text-zinc-300 dark:border-zinc-600",
 
     Rejected:
       "bg-rose-50 text-rose-500 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800",
   };
 
-  const handleCheckIn = async () => {
-    if (!visitor?.id) return;
-
-    try {
-      await checkInVisit(visitor.id).unwrap();
-      await refetchVisitLists();
-
-      message.success("Visitor checked in successfully.");
-    } catch (error) {
-      message.error(
-        getVisitActionErrorMessage(error, "Visitor check-in could not be completed. Please try again."),
-      );
-    }
+  // Both ask for confirmation first, like everywhere else.
+  const handleCheckIn = () => {
+    if (visitor) confirmCheckIn(visitor);
   };
 
-  const handleCheckOut = async () => {
-    if (!visitor?.id) return;
-
-    try {
-      await checkOutVisit(visitor.id).unwrap();
-      await refetchVisitLists();
-
-      message.success("Visitor checked out successfully.");
-    } catch (error) {
-      message.error(
-        getVisitActionErrorMessage(error, "Visitor check-out could not be completed. Please try again."),
-      );
-    }
+  const handleCheckOut = () => {
+    if (visitor) confirmCheckOut(visitor);
   };
 
+  // The same approve confirmation and reject modal as every other list.
   const handleApprove = () => {
-    if (!visitor) return;
-
-    openModal(
-      <ApproveAccessModal
-        visitorName={visitor.name}
-        purpose={visitor.purpose}
-        hostName={visitor.host}
-        onConfirm={handleConfirmApprove}
-      />,
-    );
-  };
-
-  const handleConfirmApprove = async () => {
-    if (!visitor?.id) return;
-
-    try {
-      await approveVisit(visitor.id).unwrap();
-      await refetchVisitLists();
-
-      message.success("Visitor approved successfully.");
-      closeModal();
-    } catch (error) {
-      message.error(
-        getVisitActionErrorMessage(error, "Approval could not be completed. Please try again."),
-      );
-    }
+    if (visitor) confirmApprove(visitor);
   };
 
   const handleReject = () => {
+    if (!visitor) return;
+
     openModal(
-      <RejectVisitorModal
+      <RejectAppointmentModal
+        appointment={visitor}
         initialReason={notes}
-        onConfirm={handleConfirmReject}
+        onRejected={() => setNotes("")}
       />,
     );
-  };
-
-  const handleConfirmReject = async (reason: string) => {
-    if (!visitor?.id) {
-      throw new Error("Visitor record is unavailable.");
-    }
-
-    await rejectVisit({
-      id: visitor.id,
-      reason,
-    }).unwrap();
-    await refetchVisitLists();
-
-    message.success("Visitor rejected.");
-    setNotes("");
-    closeModal();
   };
 
   const BackButton = (
     <Button
       type="link"
       icon={<ArrowLeftOutlined className="text-xs" />}
-      className="mb-1px-0! font-medium text-sky-500!"
+      className="mb-1 px-0! font-medium text-sky-500!"
       onClick={onClose ?? (() => navigate(-1))}
     >
       Back to List
     </Button>
   );
 
-  if (!detailId) {
-    return (
-      <>
-        {!isDrawer && <DashboardHeader title="Visitor Details" />}
-
-        <main className={isDrawer ? "p-4" : "flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3"}>
-          <Alert type="error" showIcon title="No visitor ID was provided." />
-        </main>
-      </>
+  // Drawer: bare padded content. Full page: the shared page layout with Back as the action.
+  const renderFrame = (
+    content: ReactNode,
+    { title = "Visitor details", centered = false }: { title?: string; centered?: boolean } = {},
+  ) =>
+    isDrawer ? (
+      <main className={centered ? "flex min-h-60 items-center justify-center p-4" : "p-4"}>
+        {content}
+      </main>
+    ) : (
+      <PageShell title={title} actions={BackButton}>
+        {content}
+      </PageShell>
     );
+
+  if (!detailId) {
+    return renderFrame(<Alert type="error" showIcon title="No visitor ID was provided." />);
   }
 
   if (isLoading) {
-    return (
-      <>
-        {!isDrawer && <DashboardHeader title="Visitor Details" />}
-
-        <main
-          className={
-            isDrawer
-              ? "flex min-h-60 items-center justify-center p-4"
-              : "flex flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3"
-          }
-        >
-          <Spinner variant="page" label="Loading visitor..." />
-        </main>
-      </>
-    );
+    return renderFrame(<Spinner variant="page" label="Loading visitor..." />, { centered: true });
   }
 
   if (isError) {
     const status = getErrorStatus(error);
 
     if (status === 404) {
-      return (
-        <>
-          {!isDrawer && <DashboardHeader title="Visitor Details" />}
-
-          <main className={isDrawer ? "p-4" : "flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3"}>
-            {!isDrawer && BackButton}
-
-            <Alert
-              type="warning"
-              showIcon
-              title="Visitor not found"
-              description="This visitor may have been removed, or the link is incorrect."
-            />
-          </main>
-        </>
+      return renderFrame(
+        <Alert
+          type="warning"
+          showIcon
+          title="Visitor not found"
+          description="This visitor may have been removed, or the link is incorrect."
+        />,
       );
     }
 
     if (status === 401 || status === 403) {
-      return (
-        <>
-          {!isDrawer && <DashboardHeader title="Visitor Details" />}
-
-          <main className={isDrawer ? "p-4" : "flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3"}>
-            <Alert
-              type="error"
-              showIcon
-              title="You're not authorized to view this visitor."
-              description="Please sign in again or contact an administrator."
-            />
-          </main>
-        </>
+      return renderFrame(
+        <Alert
+          type="error"
+          showIcon
+          title="You're not authorized to view this visitor."
+          description="Please sign in again or contact an administrator."
+        />,
       );
     }
 
-    return (
-      <>
-        {!isDrawer && <DashboardHeader title="Visitor Details" />}
-
-        <main className={isDrawer ? "p-4" : "flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3"}>
-          {!isDrawer && BackButton}
-
-          <Alert
-            type="error"
-            showIcon
-            title="Something went wrong loading this visitor."
-            description="Please try again."
-            action={
-              <Button size="small" onClick={() => window.location.reload()}>
-                Retry
-              </Button>
-            }
-          />
-        </main>
-      </>
+    return renderFrame(
+      <Alert
+        type="error"
+        showIcon
+        title="Something went wrong loading this visitor."
+        description="Please try again."
+        action={
+          <Button size="small" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        }
+      />,
     );
   }
 
   if (!visitor) {
-    return (
-      <>
-        {!isDrawer && <DashboardHeader title="Visitor Details" />}
-
-        <main className={isDrawer ? "p-4" : "flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3"}>
-          {!isDrawer && BackButton}
-
-          <Alert type="warning" showIcon title="Visitor not found" />
-        </main>
-      </>
-    );
+    return renderFrame(<Alert type="warning" showIcon title="Visitor not found" />);
   }
 
   const isRejected = visitor.status === "Rejected";
- const isApproved = visitor.status === "Approved";
- const isCheckedIn = visitor.status === "Signed In";
+  const isApproved = visitor.status === "Approved";
+  const isCheckedIn = visitor.status === "Signed In";
 
- const timeline: TimelineStep[] = isRejected
-  ? [
-      {
-        key: "1",
-        title: "Registration received",
-        time: visitor.time,
-        status: "done-blue",
-      },
-      {
-        key: "2",
-        title: "Visit rejected",
-        time: formatVisitTime(visitor.reviewedAt),
-        status: "done-orange",
-      },
-    ]
-  : [
-      {
-        key: "1",
-        title: "Registration received",
-        time: visitor.time,
-        status: "done-blue",
-      },
-      {
-        key: "2",
-        title:
-          visitor.status === "Pending"
-            ? "Awaiting approval"
-            : "Approved for entry",
-        time:
-          visitor.status === "Pending"
-            ? "Pending review"
-            : isApproved
-              ? formatVisitTime(visitor.reviewedAt)
-              : visitor.checkIn,
-        status:
-          isApproved || isCheckedIn || visitor.status === "Signed Off"
-            ? "done-green"
-            : "done-orange",
-      },
-      {
-        key: "3",
-        title:
-          visitor.status === "Signed Off"
-            ? "Signed out"
-            : isCheckedIn
-              ? "Currently signed in"
-              : isApproved
-                ? "Awaiting visitor check-in"
-                : "Pending confirmation",
-        time:
-          visitor.status === "Signed Off"
-            ? visitor.checkOut
-            : isCheckedIn
-              ? visitor.checkIn
-              : "Pending",
-        status:
-          visitor.status === "Signed Off" || isCheckedIn
-            ? "done-green"
-            : "done-orange",
-      },
-    ];
-
-  const detailRows: { label: string; value: string }[] = [
-  { label: "Full Name", value: visitor.name },
-  { label: "Email Address", value: visitor.email },
-  { label: "Phone Number", value: visitor.phone },
-  { label: "Host Name", value: visitor.host },
-  { label: "Purpose of Visit", value: visitor.purpose },
-  ...(isRejected
-    ? []
+  const timeline: TimelineStep[] = isRejected
+    ? [
+        {
+          key: "1",
+          title: "Registration received",
+          time: visitor.time,
+          status: "done-blue",
+        },
+        {
+          key: "2",
+          title: "Visit rejected",
+          time: formatVisitTime(visitor.reviewedAt),
+          status: "done-orange",
+        },
+      ]
     : [
         {
-          label: "Signed-In Time",
-          value: visitor.checkIn,
+          key: "1",
+          title: "Registration received",
+          time: visitor.time,
+          status: "done-blue",
         },
         {
-          label: "Signed-Out Time",
-          value:
+          key: "2",
+          title: visitor.status === "Pending" ? "Awaiting approval" : "Approved for entry",
+          time:
+            visitor.status === "Pending"
+              ? "Pending review"
+              : isApproved
+                ? formatVisitTime(visitor.reviewedAt)
+                : visitor.checkIn,
+          status:
+            isApproved || isCheckedIn || visitor.status === "Signed Off"
+              ? "done-green"
+              : "done-orange",
+        },
+        {
+          key: "3",
+          title:
+            visitor.status === "Signed Off"
+              ? "Signed out"
+              : isCheckedIn
+                ? "Currently signed in"
+                : isApproved
+                  ? "Awaiting visitor check-in"
+                  : "Pending confirmation",
+          time:
             visitor.status === "Signed Off"
               ? visitor.checkOut
-              : "Pending",
+              : isCheckedIn
+                ? visitor.checkIn
+                : "Pending",
+          status: visitor.status === "Signed Off" || isCheckedIn ? "done-green" : "done-orange",
         },
-      ]),
-];
+      ];
 
+  const detailRows: { label: string; value: string }[] = [
+    { label: "Full Name", value: visitor.name },
+    { label: "Email Address", value: visitor.email },
+    { label: "Phone Number", value: visitor.phone },
+    { label: "Host Name", value: visitor.host },
+    { label: "Purpose of Visit", value: visitor.purpose },
+    ...(isRejected
+      ? []
+      : [
+          {
+            label: "Signed-In Time",
+            value: visitor.checkIn,
+          },
+          {
+            label: "Signed-Out Time",
+            value: visitor.status === "Signed Off" ? visitor.checkOut : "Pending",
+          },
+        ]),
+  ];
+
+  // In a drawer the visit's actions are in the drawer's header menu (VisitorDetailsDrawer).
   if (isDrawer) {
-    const showCheckIn = isApproved;
-    const showCheckOut = isCheckedIn;
-    const showReview = visitor.status === "Pending";
-    const hasFooterActions = showCheckIn || showCheckOut || showReview;
-
     return (
-      <div className="flex h-full min-h-0 flex-col bg-white dark:bg-slate-800">
+      <div className="flex h-full min-h-0 flex-col bg-white dark:bg-zinc-800">
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="flex flex-col items-center border-b border-slate-100 px-4 pt-4 pb-3 text-center dark:border-slate-700">
+          <div className="flex flex-col items-center border-b border-slate-100 px-4 pt-4 pb-3 text-center dark:border-zinc-700">
             <Avatar name={visitor.name} size="sm" />
 
-            <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-slate-100">
+            <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-zinc-100">
               {visitor.name}
             </h3>
 
@@ -414,27 +296,27 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
           </div>
 
           <div className="px-4 py-3">
-            <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-slate-700">
+            <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-zinc-700">
               {detailRows.map((row, idx) => (
                 <div
                   key={row.label}
                   className={`flex items-start gap-3 px-3 py-2 ${
                     idx !== detailRows.length - 1
-                      ? "border-b border-slate-100 dark:border-slate-700"
+                      ? "border-b border-slate-100 dark:border-zinc-700"
                       : ""
                   }`}
                 >
-                  <span className="w-28 shrink-0 text-[10px] text-slate-500 dark:text-slate-400">
+                  <span className="w-28 shrink-0 text-[10px] text-slate-500 dark:text-zinc-400">
                     {row.label}
                   </span>
-                  <span className="min-w-0 flex-1 text-xs wrap-break-word text-slate-800 dark:text-slate-100">
+                  <span className="min-w-0 flex-1 text-xs wrap-break-word text-slate-800 dark:text-zinc-100">
                     {row.value}
                   </span>
                 </div>
               ))}
             </div>
 
-            <h4 className="mt-4 mb-2 text-xs font-bold text-slate-900 dark:text-slate-100">
+            <h4 className="mt-4 mb-2 text-xs font-bold text-slate-900 dark:text-zinc-100">
               Visit Timeline
             </h4>
 
@@ -449,34 +331,130 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
                     </span>
 
                     {idx !== timeline.length - 1 && (
-                      <span className="w-px flex-1 bg-slate-100 dark:bg-slate-700" />
+                      <span className="w-px flex-1 bg-slate-100 dark:bg-zinc-700" />
                     )}
                   </div>
 
                   <div className={idx !== timeline.length - 1 ? "pb-3" : ""}>
-                    <p className="text-[11px] leading-tight font-semibold text-slate-900 dark:text-slate-100">
+                    <p className="text-[11px] leading-tight font-semibold text-slate-900 dark:text-zinc-100">
                       {step.title}
                     </p>
-                    <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    <p className="mt-0.5 text-[11px] text-slate-500 dark:text-zinc-400">
                       {step.time}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-            {showReview && (
-              <div className="mt-3 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-900">
-                <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
+  // ---------- Full page layout ----------
+  return (
+    <PageShell title={visitor.name} actions={BackButton}>
+      <div className="w-full xl:flex xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">
+        <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:gap-6 xl:h-full xl:w-full xl:gap-8 2xl:gap-10">
+          <div className="w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 py-6 sm:px-6 md:px-8 md:py-8 lg:flex-1 xl:h-full xl:px-10 xl:py-8 2xl:px-12 2xl:py-10 dark:border-zinc-700 dark:bg-zinc-800">
+            <div className="mb-6 flex flex-col items-center text-center">
+              <div className="mb-2.5">
+                <Avatar name={visitor.name} size="md" />
+              </div>
+
+              <h3 className="text-md font-bold text-slate-800 xl:text-lg dark:text-zinc-100">
+                {visitor.name}
+              </h3>
+
+              <span
+                className={`mt-1 inline-flex items-center rounded-full px-3 py-0.5 text-xs ${statusStyles[visitor.status]}`}
+              >
+                {visitor.status}
+              </span>
+            </div>
+
+            <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-zinc-700">
+              {detailRows.map((row, idx) => (
+                <div
+                  key={row.label}
+                  className={`grid min-w-0 grid-cols-1 gap-1 px-4 py-2.5 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-center sm:gap-x-5 sm:ps-6 sm:pe-5 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-x-6 md:ps-8 md:pe-6 xl:grid-cols-[13rem_minmax(0,1fr)] xl:gap-x-8 xl:py-3 xl:ps-10 xl:pe-8 ${
+                    idx !== detailRows.length - 1
+                      ? "border-b border-slate-100 dark:border-zinc-700"
+                      : ""
+                  }`}
+                >
+                  <span className="text-xs text-slate-400">{row.label}</span>
+
+                  <span className="min-w-0 text-xs wrap-break-word text-slate-700 dark:text-zinc-200">
+                    {row.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {isApproved ? (
+              <Button
+                color="green"
+                variant="solid"
+                loading={isCheckingIn}
+                className="mt-6 w-full sm:w-auto"
+                onClick={handleCheckIn}
+              >
+                Check In Visitor
+              </Button>
+            ) : isCheckedIn ? (
+              <Button
+                danger
+                type="primary"
+                loading={isCheckingOut}
+                className="mt-6 w-full sm:w-auto"
+                onClick={handleCheckOut}
+              >
+                Check Out Visitor
+              </Button>
+            ) : null}
+          </div>
+
+          <div className="w-full min-w-0 rounded-lg border border-slate-200 bg-white px-4 py-4 sm:px-6 sm:py-6 lg:w-84 lg:shrink-0 xl:w-[24rem] xl:px-7 xl:py-6 2xl:w-104 dark:border-zinc-700 dark:bg-zinc-800">
+            <h3 className="mb-2.5 text-sm font-bold text-slate-800 dark:text-zinc-100">
+              Visit Timeline
+            </h3>
+
+            <div>
+              {timeline.map((step, idx) => (
+                <div key={step.key} className="flex gap-2">
+                  <div className="flex flex-col items-center">
+                    <TimelineDot status={step.status} />
+
+                    {idx !== timeline.length - 1 && (
+                      <span className="w-px flex-1 bg-slate-100 dark:bg-zinc-700" />
+                    )}
+                  </div>
+
+                  <div className={idx !== timeline.length - 1 ? "pb-4" : ""}>
+                    <p className="text-xs leading-tight font-semibold text-slate-800 dark:text-zinc-100">
+                      {step.title}
+                    </p>
+
+                    <p className="mt-0.5 text-xs text-slate-400">{step.time}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {visitor.status === "Pending" ? (
+              <div className="mt-3 rounded-lg border border-slate-100 bg-slate-50 p-4 dark:border-zinc-700 dark:bg-zinc-900">
+                <h4 className="text-xs font-bold text-slate-800 dark:text-zinc-100">
                   Review and Approve
                 </h4>
 
-                <p className="mt-1 mb-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                <p className="mb-2 text-xs leading-relaxed text-slate-400">
                   Verify the visitor information before granting access and optionally add internal
                   notes.
                 </p>
 
-                <label className="mb-1.5 block text-[11px] font-semibold text-slate-800 dark:text-slate-100">
+                <label className="mb-2 block text-xs font-semibold text-slate-700 dark:text-zinc-200">
                   Notes (Optional)
                 </label>
 
@@ -484,224 +462,36 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Enter notes here.."
-                  rows={3}
-                  className="rounded-lg text-xs"
+                  rows={4}
+                  className="mb-3 rounded-lg"
                 />
-              </div>
-            )}
-          </div>
-        </div>
 
-        {/* Sticky footer actions — always reachable regardless of content height */}
-        {hasFooterActions && (
-          <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-2.5 dark:border-slate-700 dark:bg-slate-800">
-            {showCheckIn && (
-              <Button
-                type="primary"
-                shape="round"
-                loading={isCheckingIn}
-                block
-                size="middle"
-                className="rounded-sm! bg-emerald-500! font-semibold"
-                onClick={handleCheckIn}
-              >
-                Check In Visitor
-              </Button>
-            )}
-
-            {showCheckOut && (
-              <Button
-                danger
-                type="primary"
-                shape="round"
-                loading={isCheckingOut}
-                block
-                size="middle"
-                className="rounded-sm! bg-[#EF4444]! font-semibold"
-                onClick={handleCheckOut}
-              >
-                Check Out Visitor
-              </Button>
-            )}
-
-            {showReview && (
-              <div className="flex gap-1.5">
-                <Button
-                  danger
-                  loading={isRejecting}
-                  disabled={isApproving || isRejecting}
-                  onClick={handleReject}
-                  block
-                  className="font-medium"
-                >
-                  Reject
-                </Button>
-
-                <Button
-                  type="primary"
-                  loading={isApproving}
-                  disabled={isApproving || isRejecting}
-                  onClick={handleApprove}
-                  block
-                  className="bg-emerald-500! font-semibold hover:bg-emerald-600!"
-                >
-                  Approve
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  // ---------- Full page layout (unchanged) ----------
-  return (
-    <>
-      <DashboardHeader title="Visitor Details" />
-
-      <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
-        {BackButton}
-
-        <div className="w-full xl:flex xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">
-          <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:gap-6 xl:h-full xl:w-full xl:gap-8 2xl:gap-10">
-            <div className="w-full min-w-0 rounded-xl border border-slate-100 bg-white px-4 py-6 shadow-sm shadow-slate-100 sm:px-6 md:px-8 md:py-8 lg:flex-1 xl:h-full xl:px-10 xl:py-8 2xl:px-12 2xl:py-10 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-              <div className="mb-6 flex flex-col items-center text-center">
-                <div className="mb-2.5">
-                  <Avatar name={visitor.name} size="md" />
-                </div>
-
-                <h3 className="text-md font-bold text-slate-800 xl:text-lg dark:text-slate-100">
-                  {visitor.name}
-                </h3>
-
-                <span
-                  className={`mt-1 inline-flex items-center rounded-full px-3 py-0.5 text-xs ${statusStyles[visitor.status]}`}
-                >
-                  {visitor.status}
-                </span>
-              </div>
-
-              <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-slate-700">
-                {detailRows.map((row, idx) => (
-                  <div
-                    key={row.label}
-                    className={`grid min-w-0 grid-cols-1 gap-1 px-4 py-2.5 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-center sm:gap-x-5 sm:ps-6 sm:pe-5 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-x-6 md:ps-8 md:pe-6 xl:grid-cols-[13rem_minmax(0,1fr)] xl:gap-x-8 xl:py-3 xl:ps-10 xl:pe-8 ${
-                      idx !== detailRows.length - 1
-                        ? "border-b border-slate-100 dark:border-slate-700"
-                        : ""
-                    }`}
+                <div className="flex gap-1.5 sm:flex-row sm:gap-2.5">
+                  <Button
+                    danger
+                    disabled={isApproving}
+                    onClick={handleReject}
+                    className="w-full sm:w-auto"
                   >
-                    <span className="text-xs text-slate-400">{row.label}</span>
+                    Reject
+                  </Button>
 
-                    <span className="min-w-0 text-xs wrap-break-word text-slate-700 dark:text-slate-200">
-                      {row.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {isApproved ? (
-                <Button
-                  type="primary"
-                  shape="round"
-                  loading={isCheckingIn}
-                  className="mt-6 h-7! w-full rounded-sm! bg-emerald-500! px-5! font-semibold sm:w-auto"
-                  onClick={handleCheckIn}
-                >
-                  Check In Visitor
-                </Button>
-              ) : isCheckedIn ? (
-                <Button
-                  danger
-                  type="primary"
-                  shape="round"
-                  loading={isCheckingOut}
-                  className="mt-6 h-7! w-full rounded-sm! bg-[#EF4444]! px-5! font-semibold sm:w-auto"
-                  onClick={handleCheckOut}
-                >
-                  Check Out Visitor
-                </Button>
-              ) : null}
-            </div>
-
-            <div className="w-full min-w-0 rounded-lg border border-slate-100 bg-white px-4 py-4 shadow-sm shadow-slate-100 sm:px-6 sm:py-6 lg:w-84 lg:shrink-0 xl:w-[24rem] xl:px-7 xl:py-6 2xl:w-104 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-              <h3 className="mb-2.5 text-sm font-bold text-slate-800 dark:text-slate-100">
-                Visit Timeline
-              </h3>
-
-              <div>
-                {timeline.map((step, idx) => (
-                  <div key={step.key} className="flex gap-2">
-                    <div className="flex flex-col items-center">
-                      <TimelineDot status={step.status} />
-
-                      {idx !== timeline.length - 1 && (
-                        <span className="w-px flex-1 bg-slate-100 dark:bg-slate-700" />
-                      )}
-                    </div>
-
-                    <div className={idx !== timeline.length - 1 ? "pb-4" : ""}>
-                      <p className="text-xs leading-tight font-semibold text-slate-800 dark:text-slate-100">
-                        {step.title}
-                      </p>
-
-                      <p className="mt-0.5 text-xs text-slate-400">{step.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {visitor.status === "Pending" ? (
-                <div className="mt-3 rounded-lg border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900">
-                  <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                    Review and Approve
-                  </h4>
-
-                  <p className="mb-2 text-xs leading-relaxed text-slate-400">
-                    Verify the visitor information before granting access and optionally add
-                    internal notes.
-                  </p>
-
-                  <label className="mb-2 block text-xs font-semibold text-slate-700 dark:text-slate-200">
-                    Notes (Optional)
-                  </label>
-
-                  <TextArea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Enter notes here.."
-                    rows={4}
-                    className="mb-3 rounded-lg"
-                  />
-
-                  <div className="flex gap-1.5 sm:flex-row sm:gap-2.5">
-                    <Button
-                      danger
-                      loading={isRejecting}
-                      disabled={isApproving || isRejecting}
-                      onClick={handleReject}
-                      className="h-9! w-full px-4 font-medium sm:w-auto"
-                    >
-                      Reject
-                    </Button>
-
-                    <Button
-                      type="primary"
-                      loading={isApproving}
-                      disabled={isApproving || isRejecting}
-                      onClick={handleApprove}
-                      className="h-9! w-full bg-emerald-500! px-2 font-semibold hover:bg-emerald-600! sm:w-auto"
-                    >
-                      Approve Access
-                    </Button>
-                  </div>
+                  <Button
+                    color="green"
+                    variant="solid"
+                    loading={isApproving}
+                    disabled={isApproving}
+                    onClick={handleApprove}
+                    className="w-full sm:w-auto"
+                  >
+                    Approve Access
+                  </Button>
                 </div>
-              ) : null}
-            </div>
+              </div>
+            ) : null}
           </div>
         </div>
-      </main>
-    </>
+      </div>
+    </PageShell>
   );
 }

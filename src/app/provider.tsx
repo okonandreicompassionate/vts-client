@@ -6,7 +6,6 @@ import type { ReactNode } from "react";
 import { Provider } from "react-redux";
 import { useMemo } from "react";
 import { getThemeConfig } from "./theme";
-import { PopupProvider } from "@/lib/contexts/popup/popup-provider";
 import { msalConfig } from "../features/auth/api/msal-client";
 import { store } from "../lib/stores/store";
 import { ThemeProvider } from "@/lib/contexts/theme/theme-provider";
@@ -20,9 +19,14 @@ function AppProviderContent({ children }: { children: ReactNode }) {
 
   return (
     <StyleProvider layer>
-      <ConfigProvider theme={theme}>
+      {/* scrollToFirstError: a field that fails off-screen (e.g. in a scrolled modal) is brought into view. */}
+      <ConfigProvider
+        theme={theme}
+        componentSize="small"
+        form={{ requiredMark: false, scrollToFirstError: true }}
+      >
         <Provider store={store}>
-          <PopupProvider>{children}</PopupProvider>
+          {children}
         </Provider>
       </ConfigProvider>
     </StyleProvider>

@@ -1,3 +1,10 @@
+import type { CreateVisitResponse } from "@/types/visit-api";
+
+export type PublicCreateVisitResponse = Pick<
+  CreateVisitResponse,
+  "id" | "orgId" | "visitorId" | "referenceId" | "status" | "createdAt"
+> & { emailVerified: boolean };
+
 export interface RequestVisitorCodePayload {
   email: string;
 }
@@ -21,11 +28,13 @@ export interface VerifyIdentityResponse {
 }
 
 export interface CreateVisitPayload {
+  appointmentId?: string;
+  idempotencyKey: string;
   visitorId?: string;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
   purpose: string;
-  hostId: string;
+  hostId?: string;
 }

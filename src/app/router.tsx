@@ -13,6 +13,7 @@ import { visitorRoutes } from "./routes/visitor/routes";
 import { Spinner } from "@/components/ui/spinner";
 import PageError from "@/components/feedback/page-error";
 import { rememberRoute } from "@/lib/router/route-history";
+import { PopupOutlet } from "@/lib/contexts/popup/popup-provider";
 import { LegacyAdminRedirect } from "./legacy-admin-redirect";
 
 function RouteError() {
@@ -33,6 +34,8 @@ const router = createBrowserRouter([
   {
     HydrateFallback: () => <Spinner variant="screen" />,
     errorElement: <RouteError />,
+    // Popups render inside the router so modal/drawer content can use router hooks.
+    element: <PopupOutlet />,
     children: [
       {
         index: true,
@@ -61,6 +64,24 @@ const router = createBrowserRouter([
           const { default: AuthPage } = await import("@/features/auth/components/auth-page");
 
           return { Component: AuthPage };
+        },
+      },
+
+      {
+        path: paths.admin.forgotPassword.path,
+        lazy: async () => {
+          const { ForgotPasswordPage } = await import("@/features/auth/components/password-reset-pages");
+
+          return { Component: ForgotPasswordPage };
+        },
+      },
+
+      {
+        path: paths.admin.resetPassword.path,
+        lazy: async () => {
+          const { ResetPasswordPage } = await import("@/features/auth/components/password-reset-pages");
+
+          return { Component: ResetPasswordPage };
         },
       },
 

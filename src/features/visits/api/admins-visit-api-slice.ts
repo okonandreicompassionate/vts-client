@@ -1,15 +1,18 @@
+import { api } from "@/lib/api/api";
 import type {
   VisitStats,
+  ApiVisitStats,
   BulkVisitIds,
   BookAppointmentPayload,
   VisitListPage,
   VisitListParams,
+  DashboardData,
+  DashboardParams,
 } from "../types/api-types";
 import type { CreateVisitResponse, HostItem, VisitResponse } from "@/types/visit-api";
-import { adminApi } from "@/lib/api/admin/admin-api";
 import { toHostOptions } from "@/utils/host-options";
 
-export const adminVisitsApi = adminApi.injectEndpoints({
+export const adminVisitsApi = api.injectEndpoints({
   endpoints: (builder) => ({
     // Role-scoped visit list - the server decides what each role may see.
     getVisits: builder.query<VisitListPage, VisitListParams>({
@@ -22,6 +25,12 @@ export const adminVisitsApi = adminApi.injectEndpoints({
           ...(search ? { search } : {}),
         },
       }),
+      providesTags: ["Visits"],
+    }),
+
+    // Today's numbers and lists for the caller's role, plus 30-day trends for admins.
+    getDashboard: builder.query<DashboardData, DashboardParams>({
+      query: (params) => ({ url: "/visits/dashboard", params }),
       providesTags: ["Visits"],
     }),
 
@@ -64,11 +73,64 @@ export const adminVisitsApi = adminApi.injectEndpoints({
       invalidatesTags: ["Visits"],
     }),
 
+    // The visit's host answers; a reviewer still makes the final call.
+    hostDecideVisit: builder.mutation<
+      void,
+      { id: string; decision: "APPROVED" | "REJECTED"; note?: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/visits/${id}/host-decision`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Visits", "Notifications"],
+    }),
+
     rejectVisit: builder.mutation<void, { id: string; reason?: string }>({
       query: ({ id, reason }) => ({
         url: `/visits/${id}/reject`,
         method: "PATCH",
         body: { reason },
+      }),
+      invalidatesTags: ["Visits"],
+    }),
+
+    // Replaces the visit with a new one at the new time (the old one is kept as history).
+    rescheduleVisit: builder.mutation<unknown, { id: string; date: string; time: string }>({
+      query: ({ id, ...body }) => ({
+        url: `/visits/${id}/reschedule`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Visits"],
+    }),
+
+    // Before the visitor arrives; the host or an admin.
+    cancelVisit: builder.mutation<unknown, { id: string; reason?: string }>({
+      query: ({ id, reason }) => ({
+        url: `/visits/${id}/cancel`,
+        method: "PATCH",
+        body: reason ? { reason } : {},
+      }),
+      invalidatesTags: ["Visits"],
+    }),
+
+    // Before the visitor arrives; the host or an admin. Only admins may change the host.
+    updateVisit: builder.mutation<
+      { id: string },
+      {
+        id: string;
+        firstName?: string;
+        lastName?: string;
+        phone?: string;
+        purpose?: string;
+        hostId?: string;
+      }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/visits/${id}`,
+        method: "PATCH",
+        body,
       }),
       invalidatesTags: ["Visits"],
     }),
@@ -102,6 +164,11 @@ export const adminVisitsApi = adminApi.injectEndpoints({
 
     getVisitStats: builder.query<VisitStats, void>({
       query: () => "/visits/stats",
+      transformResponse: ({ checkedIn, checkedOut, ...counts }: ApiVisitStats): VisitStats => ({
+        ...counts,
+        signedIn: checkedIn,
+        signedOff: checkedOut,
+      }),
       providesTags: ["Visits"],
     }),
 
@@ -114,12 +181,17 @@ export const adminVisitsApi = adminApi.injectEndpoints({
 
 export const {
   useGetVisitsQuery,
+  useGetDashboardQuery,
+  useRescheduleVisitMutation,
+  useCancelVisitMutation,
+  useUpdateVisitMutation,
   useGetStaffHostsQuery,
   useBookAppointmentMutation,
   useApproveVisitMutation,
   useCheckInVisitMutation,
   useCheckOutVisitMutation,
   useRejectVisitMutation,
+  useHostDecideVisitMutation,
 
   useApproveManyVisitsMutation,
   useRejectManyVisitsMutation,

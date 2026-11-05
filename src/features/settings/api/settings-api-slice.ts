@@ -1,4 +1,4 @@
-import { adminApi } from "../../../lib/api/admin/admin-api";
+import { api } from "@/lib/api/api";
 import type {
   SettingsResponse,
   UpdatePasswordPayload,
@@ -10,9 +10,8 @@ import { normalizeProfile } from "@/lib/auth/profile-api";
 
 // Reading the signed-in profile lives in lib/auth (profile-api) - it is
 // shared by auth, settings and admins.
-export const settingsApi = adminApi.injectEndpoints({
+export const settingsApi = api.injectEndpoints({
   endpoints: (builder) => ({
-
     getSettings: builder.query<SettingsResponse, void>({
       query: () => "/organization/settings",
       providesTags: [{ type: "Settings", id: "SETTINGS" }],
@@ -45,10 +44,9 @@ export const settingsApi = adminApi.injectEndpoints({
       invalidatesTags: [
         { type: "Settings", id: "PROFILE" },
         { type: "Settings", id: "SETTINGS" },
+        "Organization",
       ],
     }),
-
-   
   }),
 });
 

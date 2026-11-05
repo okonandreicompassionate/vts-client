@@ -6,9 +6,11 @@ import type { SignInResponse } from "../types/api-types";
 
 interface MicrosoftLoginProps {
   onSignIn: (response: SignInResponse) => void;
+  /** "Remember me" from the login form. */
+  rememberMe?: boolean;
 }
 
-export default function MicrosoftLogin({ onSignIn }: MicrosoftLoginProps) {
+export default function MicrosoftLogin({ onSignIn, rememberMe = true }: MicrosoftLoginProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [microsoftLogin, { isLoading }] = useMicrosoftLoginMutation();
   const msal = useMsalAuth();
@@ -21,6 +23,7 @@ export default function MicrosoftLogin({ onSignIn }: MicrosoftLoginProps) {
 
       const response = await microsoftLogin({
         accessToken: msalResult.accessToken,
+        rememberMe,
       }).unwrap();
 
       onSignIn(response);
@@ -35,11 +38,9 @@ export default function MicrosoftLogin({ onSignIn }: MicrosoftLoginProps) {
   return (
     <Button
       block
-      size="middle"
       icon={<img src="/microsoft.png" alt="" className="h-4 w-4" />}
       loading={isPopupOpen || isLoading}
       onClick={handleClick}
-      className="h-10! rounded-md! border-slate-200! text-sm! font-semibold! hover:border-slate-300! hover:bg-slate-50! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:hover:border-slate-500! dark:hover:bg-slate-700!"
     >
       Sign in with Microsoft
     </Button>

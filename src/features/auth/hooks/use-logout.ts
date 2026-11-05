@@ -1,7 +1,7 @@
+import { api } from "@/lib/api/api";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { adminApi } from "@/lib/api/admin/admin-api";
 import { clearAuth } from "../stores/admin-auth-slice";
 import { paths } from "@/config/paths";
 import { csrfFetch } from "@/lib/api/csrf-fetch";
@@ -23,7 +23,7 @@ export function useLogout() {
       dispatch(clearAuth());
 
       // Clear cached admin API data.
-      dispatch(adminApi.util.resetApiState());
+      dispatch(api.util.resetApiState());
 
       // Do NOT clear visitor state/storage here.
       navigate(paths.admin.login.getHref(), {
