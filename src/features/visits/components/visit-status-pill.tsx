@@ -6,7 +6,9 @@ export type VisitorStatus =
   | "Rejected"
   | "Cancelled"
   /** Replaced by a visit at a new time; the new visit carries on. */
-  | "Rescheduled";
+  | "Rescheduled"
+  /** Its day ended while still pending or approved (nightly job). */
+  | "Expired";
 
 const statusStyles: Record<VisitorStatus, string> = {
   Approved: "bg-sky-50 text-sky-600 dark:bg-sky-400/10 dark:text-sky-300",
@@ -16,6 +18,7 @@ const statusStyles: Record<VisitorStatus, string> = {
   Rejected: "bg-rose-50 text-rose-500 dark:bg-rose-400/10 dark:text-rose-300",
   Cancelled: "bg-slate-100 text-slate-500 line-through dark:bg-zinc-700 dark:text-zinc-400",
   Rescheduled: "bg-violet-50 text-violet-500 dark:bg-violet-400/10 dark:text-violet-300",
+  Expired: "bg-slate-100 text-slate-400 dark:bg-zinc-700 dark:text-zinc-400",
 };
 
 function StatusPill({ status }: { status: VisitorStatus }) {

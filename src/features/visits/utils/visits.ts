@@ -78,6 +78,10 @@ export function toVisitorStatus(
     return "Rescheduled";
   }
 
+  if (normalized === "expired") {
+    return "Expired";
+  }
+
   if (
     normalized === "signed in" ||
     normalized === "sign in" ||
@@ -102,6 +106,7 @@ export function toApiVisitStatus(status: VisitorStatus) {
   if (status === "Rejected") return "REJECTED";
   if (status === "Cancelled") return "CANCELLED";
   if (status === "Rescheduled") return "RESCHEDULED";
+  if (status === "Expired") return "EXPIRED";
   return "PENDING";
 }
 

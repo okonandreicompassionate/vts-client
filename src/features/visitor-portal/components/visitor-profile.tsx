@@ -133,7 +133,7 @@ export default function VisitorProfile() {
   const createdTime = formatTime(registration?.scheduledAt ?? registration?.createdAt);
 
   const actionPath =
-    status === "rejected" || status === "cancelled"
+    status === "rejected" || status === "cancelled" || status === "expired"
       ? paths.register.getHref(orgSlug)
       : paths.home.getHref(orgSlug);
 

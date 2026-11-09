@@ -7,6 +7,7 @@ const GATE_TYPES: NotificationType[] = [
   "VISIT_READY_FOR_CHECKIN",
   "VISIT_CHECKED_IN",
   "VISIT_CHECKED_OUT",
+  "VISIT_OVERSTAYED",
 ];
 
 /** The page a notification opens for this role. */

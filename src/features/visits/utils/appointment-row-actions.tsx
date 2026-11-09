@@ -12,7 +12,7 @@ import type { VisitorRow } from "./visits";
 
 // Match the server (appointment-visibility.ts).
 const EDITABLE: VisitorRow["status"][] = ["Pending", "Approved"];
-const RESCHEDULABLE: VisitorRow["status"][] = ["Pending", "Approved", "Rejected"];
+const RESCHEDULABLE: VisitorRow["status"][] = ["Pending", "Approved", "Rejected", "Expired"];
 
 interface AppointmentActionHandlers {
   /** Reviewers approve or reject pending appointments. */

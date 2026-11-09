@@ -32,7 +32,7 @@ export default function Visitors() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<StatusKey>("APPROVED");
+  const [statusFilter, setStatusFilter] = useState<StatusKey>("ALL");
   const { openDrawer } = usePopup();
   const { generateVisitReport, isGeneratingReport } = useVisitReport("visitors");
 

@@ -32,6 +32,14 @@ export const statusMeta: Record<VisitorProfileStatus, StatusMeta> = {
     pillClasses: "border border-slate-400 bg-transparent text-slate-500 dark:text-zinc-400",
     actionLabel: "Request another visit",
   },
+  expired: {
+    subtitle: "This visit request has expired.",
+    description: "The day of this visit has passed. You can request a new visit.",
+    reason: "",
+    label: "Expired",
+    pillClasses: "border border-slate-400 bg-transparent text-slate-500 dark:text-zinc-400",
+    actionLabel: "Request another visit",
+  },
   rescheduled: {
     subtitle: "This appointment was rescheduled.",
     description: "Select the replacement appointment from My appointments for its current details.",

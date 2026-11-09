@@ -31,7 +31,10 @@ const timeCell = (value?: string | null) => (
  */
 export const visitorColumns = {
   /** Name, with the email or (at the gate) the phone underneath. */
-  visitor: (detail: "email" | "phone" = "email", showReference = true): VisitorColumn => ({
+  visitor: (
+    detail: "email" | "phone" | null = "email",
+    showReference = true,
+  ): VisitorColumn => ({
     title: "Visitor",
     dataIndex: "name",
     key: "visitor",
@@ -40,7 +43,9 @@ export const visitorColumns = {
         <span className="truncate text-xs font-medium text-slate-800 dark:text-zinc-100">
           {visitor.name}
         </span>
-        <span className="truncate text-[11px] text-slate-400">{visitor[detail]}</span>
+        {detail && (
+          <span className="truncate text-[11px] text-slate-400">{visitor[detail]}</span>
+        )}
         {showReference && visitor.referenceId && (
           <span className="truncate text-[11px] text-slate-500 dark:text-zinc-400">
             {visitor.referenceId}
@@ -54,6 +59,20 @@ export const visitorColumns = {
     title: "Visit ID",
     dataIndex: "referenceId",
     key: "visit-id",
+    render: textCell,
+  }),
+
+  visitorId: (): VisitorColumn => ({
+    title: "Visitor ID",
+    dataIndex: "referenceId",
+    key: "visitor-id",
+    render: textCell,
+  }),
+
+  phoneNumber: (): VisitorColumn => ({
+    title: "Phone Number",
+    dataIndex: "phone",
+    key: "phone-number",
     render: textCell,
   }),
 

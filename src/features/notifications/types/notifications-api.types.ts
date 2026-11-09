@@ -19,6 +19,8 @@ export type NotificationType =
   | "VISIT_CHECKED_IN"
   | "VISIT_CHECKED_OUT"
   | "VISIT_CANCELLED"
+  | "VISIT_EXPIRED"
+  | "VISIT_OVERSTAYED"
   | "SYSTEM";
 
 export type NotificationActionType = "INFO" | "ACTION_REQUIRED" | "SUCCESS" | "WARNING";

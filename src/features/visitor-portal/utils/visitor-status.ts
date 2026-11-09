@@ -18,6 +18,8 @@ export function normalizeVisitorStatus(status?: string | null): VisitorProfileSt
       return "cancelled";
     case "rescheduled":
       return "rescheduled";
+    case "expired":
+      return "expired";
     default:
       return "pending";
   }

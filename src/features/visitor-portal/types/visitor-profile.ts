@@ -1,5 +1,12 @@
 export type VisitorProfileStatus =
-  "pending" | "approved" | "rejected" | "checked-in" | "checked-out" | "cancelled" | "rescheduled";
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "checked-in"
+  | "checked-out"
+  | "cancelled"
+  | "rescheduled"
+  | "expired";
 
 export type VisitorRegistration = {
   id?: string;

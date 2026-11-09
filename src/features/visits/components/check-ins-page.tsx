@@ -84,7 +84,7 @@ export default function CheckInsPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<GateTab>("Approved");
+  const [activeTab, setActiveTab] = useState<GateTab>("All");
   const { openDrawer } = usePopup();
   const { confirmCheckIn, confirmCheckOut, isCheckingIn, isCheckingOut } = useVisitorCheckActions();
 
@@ -107,9 +107,11 @@ export default function CheckInsPage() {
 
   const showsAllStages = !canReviewVisitStatuses || activeTab === "All";
 
-  // Purpose is in the drawer; at the gate the phone number is what staff need.
+  // Purpose is in the drawer; keep visitor ID and phone easy to scan at the gate.
   const columns: ColumnsType<VisitorRow> = [
-    visitorColumns.visitor("phone"),
+    visitorColumns.visitor(null, false),
+    visitorColumns.visitorId(),
+    visitorColumns.phoneNumber(),
     visitorColumns.host(),
     ...statusColumns({
       // "Total", and the card-less view non-reviewers get, mix every gate stage.
