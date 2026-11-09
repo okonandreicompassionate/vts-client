@@ -1,10 +1,6 @@
 import { Table } from "antd";
 
-import type {
-  ColumnsType,
-  TablePaginationConfig,
-  TableProps,
-} from "antd/es/table";
+import type { ColumnsType, TablePaginationConfig, TableProps } from "antd/es/table";
 
 type TableComponentProps<T extends object> = {
   columns: ColumnsType<T>;
@@ -40,14 +36,8 @@ function TableComponent<T extends object>({
           key: "__serial",
           width: 54,
           align: "center" as const,
-          render: (
-            _value: unknown,
-            _record: T,
-            index: number,
-          ) => (
-            <span className="text-sm text-slate-500 dark:text-slate-400">
-              {startIndex + index}
-            </span>
+          render: (_value: unknown, _record: T, index: number) => (
+            <span className="text-sm text-slate-500 dark:text-zinc-400">{startIndex + index}</span>
           ),
         },
         ...columns,
@@ -64,6 +54,10 @@ function TableComponent<T extends object>({
       className={className}
       rowSelection={rowSelection}
       onRow={onRow}
+      // Columns keep their natural width and the table scrolls sideways when it
+      // doesn't fit, instead of squeezing every cell on narrow screens.
+      scroll={{ x: "max-content" }}
+      tableLayout="auto"
     />
   );
 }

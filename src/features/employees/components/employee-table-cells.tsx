@@ -14,11 +14,11 @@ export function EmployeeIdentityCell({
       <Avatar name={name} size="sm" />
 
       <div className="flex min-w-0 gap-0.5 flex-col leading-none">
-        <span className="truncate text-[12px] text-slate-800 dark:text-slate-100">
+        <span className="truncate text-[12px] text-slate-800 dark:text-zinc-100">
           {name}
         </span>
 
-        <span className="mt-0.5 truncate text-[10px] text-slate-500 dark:text-slate-400">
+        <span className="mt-0.5 truncate text-[10px] text-slate-500 dark:text-zinc-400">
           {employeeId}
         </span>
       </div>

@@ -1,289 +1,206 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-import { Button, Drawer, Modal, message } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { Button, Select } from "antd";
+import { FileTextOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { useGetAdminsQuery } from "@/features/admins/api/admins-api-slice";
 
-import TableComponent from "@/components/ui/table";
-
-import {
-  useBulkDeactivateAdminsMutation,
-  useGetAdminsQuery,
-} from "@/features/admins/api/admins-api-slice";
-
-import { Spinner } from "@/components/ui/spinner";
-
-import type { AdminItem } from "@/features/admins/types/api-types";
 import type { Admin } from "../types/types";
 
 import AddAdminModal from "./modals/add-admin-modal";
-import AdminDetails from "./admin-details";
+import AdminDetailsDrawer from "./admin-details-drawer";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
 
-import { useAdminsSSE } from "../hooks/use-admins-sse";
 import { adminColumns } from "./admins-columns";
-import { getSelectionColumn } from "@/components/ui/selection-column";
-import DashboardHeader from "@/components/layout/dashboard-header";
-import { useGetProfileQuery } from "@/features/settings/api/settings-api-slice";
+import { DataTableCard, FilterBar, PageShell, StatCards, RefreshButton } from "@/components/page";
+import { useGetProfileQuery } from "@/lib/auth/profile-api";
 import { adminManagementRoles } from "@/types/user-role";
+import { useGenerateReport } from "@/hooks/use-generate-report";
+import { formatRole } from "@/utils/format-role";
+
+type RoleFilter = "ALL" | "SUPERADMIN" | "ADMIN";
 
 export default function AdminsPage() {
-  const [isInviteModalOpen, setInviteModalOpen] = useState(false);
+  const { openModal, openDrawer } = usePopup();
+  const { generateReport, isGeneratingReport } = useGenerateReport();
 
-  const [isSelecting, setIsSelecting] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<Admin[]>([]);
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>("ALL");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
-  const [selectedAdminId, setSelectedAdminId] = useState<string | null>(null);
   const { data: profile } = useGetProfileQuery();
   const canManageAdmins = profile ? adminManagementRoles.includes(profile.role) : false;
 
-  useAdminsSSE();
 
-  const { data: admins = [], isLoading, isError, refetch } = useGetAdminsQuery();
+  const { data: admins = [], isLoading, isFetching, isError, refetch } = useGetAdminsQuery();
 
-  const [deactivateAdmins, { isLoading: isDeactivating }] = useBulkDeactivateAdminsMutation();
+  const adminList: Admin[] = useMemo(
+    () =>
+      admins.map((admin) => ({
+        id: admin.id,
+        name: admin.fullName || admin.email,
+        email: admin.email,
+        role: admin.role,
+        phoneNumber: admin.phoneNumber,
+      })),
+    [admins],
+  );
 
-  const adminList: Admin[] = admins.map((admin: AdminItem) => ({
-    id: admin.id,
-    name: admin.fullName || admin.email,
-    email: admin.email,
-    role: admin.role,
-    phoneNumber: admin.phoneNumber,
-  }));
+  // The admin list is small and loaded in full, so search, filters and paging happen here.
+  const filteredAdmins = useMemo(() => {
+    const term = search.trim().toLowerCase();
 
-  const selectedRowKeys = selectedRows.map((row) => row.id);
-
-  const allSelected = adminList.length > 0 && selectedRows.length === adminList.length;
-
-  const handleToggleSelection = (record: Admin) => {
-    setSelectedRows((current) =>
-      current.some((row) => row.id === record.id)
-        ? current.filter((row) => row.id !== record.id)
-        : [...current, record],
+    return adminList.filter(
+      (admin) =>
+        (roleFilter === "ALL" || admin.role === roleFilter) &&
+        (!term ||
+          admin.name.toLowerCase().includes(term) ||
+          admin.email.toLowerCase().includes(term) ||
+          admin.phoneNumber.includes(term)),
     );
-  };
+  }, [adminList, roleFilter, search]);
 
-  const handleToggleSelectAll = () => {
-    setSelectedRows(allSelected ? [] : adminList);
-  };
-
-  const handleStartSelecting = () => {
-    setIsSelecting(true);
-  };
-
-  const handleCancelSelecting = () => {
-    setSelectedRows([]);
-    setIsSelecting(false);
-  };
-
-  const handleDeactivateSelected = () => {
-    const count = selectedRows.length;
-
-    Modal.confirm({
-      title: `Deactivate ${count} ${count === 1 ? "admin" : "admins"}?`,
-      content: "This action cannot be undone. Selected admins will lose access immediately.",
-      okText: "Deactivate",
-      okButtonProps: {
-        danger: true,
-      },
-      onOk: async () => {
-        try {
-          await deactivateAdmins({ ids: selectedRowKeys }).unwrap();
-
-          message.success(count === 1 ? "Admin deactivated" : "Admins deactivated");
-
-          setSelectedRows([]);
-          setIsSelecting(false);
-        } catch {
-          message.error("Failed to deactivate selected admins");
-        }
-      },
-    });
-  };
-
-  const columns: ColumnsType<Admin> = isSelecting
-    ? [
-        getSelectionColumn<Admin>({
-          selectedRowKeys,
-          onToggle: handleToggleSelection,
-          checkboxClassName: "admins-table-checkbox",
-        }),
-        ...adminColumns,
-      ]
-    : adminColumns;
+  const pageRows = filteredAdmins.slice((page - 1) * pageSize, page * pageSize);
 
   const handleRowClick = (record: Admin) => {
-    if (isSelecting) {
-      handleToggleSelection(record);
-      return;
-    }
-
-    setSelectedAdminId(record.id);
+    openDrawer(<AdminDetailsDrawer adminId={record.id} />);
   };
 
-  const handleCloseDetails = () => {
-    setSelectedAdminId(null);
-  };
+  const resetToFirstPage = () => setPage(1);
+
+  // Every admin is already loaded, so the report uses the filtered list as is.
+  const generateAdminReport = () =>
+    generateReport({
+      name: "admins",
+      columns: [
+        { header: "Name", value: (row) => row.name },
+        { header: "Email", value: (row) => row.email },
+        { header: "Phone", value: (row) => row.phoneNumber },
+        { header: "Role", value: (row) => formatRole(row.role) },
+      ],
+      loadRows: () => filteredAdmins,
+    });
+
+  const superAdminCount = adminList.filter((admin) => admin.role === "SUPERADMIN").length;
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <DashboardHeader title="Admins" />
+    <PageShell
+      fill
+      title="Admins"
+      description="People who can manage this organization's visitor system."
+      actions={
+        <>
+          <RefreshButton loading={isFetching} onClick={() => void refetch()} />
 
-      <div className="flex min-h-12.5 items-center justify-between border-b border-slate-200 px-3 py-1 sm:py-2 dark:border-slate-800">
-        <div className="flex min-w-0 items-center gap-2.5">
-          {!isLoading && !isError && canManageAdmins && !isSelecting && (
-            <>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
-                {adminList.length} {adminList.length === 1 ? "admin" : "admins"}
-              </span>
-
-              <button
-                type="button"
-                onClick={handleStartSelecting}
-                className="flex h-6! cursor-pointer items-center justify-center rounded-sm bg-sky-500 px-2 text-xs leading-none font-medium text-white transition-colors hover:bg-sky-600 active:bg-sky-700"
-              >
-                Select
-              </button>
-            </>
-          )}
-
-          {canManageAdmins && isSelecting && (
-            <div className="flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-1.5 dark:border-slate-700 dark:bg-slate-800/60">
-              <span className="flex h-7 items-center px-1 text-xs leading-none font-medium text-slate-700 dark:text-slate-200">
-                {selectedRows.length} selected
-              </span>
-
-              <span className="h-4 w-px shrink-0 bg-slate-300 dark:bg-slate-600" />
-
-              <button
-                type="button"
-                onClick={handleToggleSelectAll}
-                className="flex h-7 cursor-pointer items-center justify-center rounded px-1.5 text-xs leading-none font-medium text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
-              >
-                {allSelected ? "Clear all" : "Select all"}
-              </button>
-
-              <button
-                type="button"
-                onClick={handleCancelSelecting}
-                className="flex h-7 cursor-pointer items-center justify-center rounded px-1.5 text-xs leading-none font-medium text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
-              >
-                Cancel
-              </button>
-
-              <button
-                type="button"
-                disabled={selectedRows.length === 0 || isDeactivating}
-                onClick={handleDeactivateSelected}
-                className="flex h-7 cursor-pointer items-center justify-center rounded px-1.5 text-xs leading-none font-medium text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:text-red-300"
-              >
-                {isDeactivating ? "Deactivating…" : "Deactivate"}
-              </button>
-            </div>
-          )}
-
-          {isError && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-red-500">Unable to load admins</span>
-
-              <button
-                type="button"
-                onClick={() => refetch()}
-                className="text-xs font-medium text-sky-600 hover:underline dark:text-sky-400"
-              >
-                Retry
-              </button>
-            </div>
-          )}
-        </div>
-
-        {canManageAdmins && !isSelecting && (
           <Button
-            size="small"
-            type="primary"
-            className="flex h-7 gap-1 rounded-sm! text-xs"
-            onClick={() => setInviteModalOpen(true)}
-            icon={<img src="/add-admins.svg" alt="" className="inline-flex h-3 w-3 items-center" />}
+            icon={<FileTextOutlined />}
+            loading={isGeneratingReport}
+            onClick={() => void generateAdminReport()}
           >
-            <span className="text-xs">Invite Admin</span>
+            Generate Report
           </Button>
-        )}
-      </div>
 
-      <div className="relative min-h-0 px-3 py-3">
-        {!isLoading && !isError && adminList.length === 0 ? (
-          <div className="flex h-56 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-slate-200 text-center dark:border-slate-800">
-            <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
-              No admins yet
-            </span>
-
-            <span className="max-w-55 text-xs text-slate-400 dark:text-slate-500">
-              Invite your first admin to get started.
-            </span>
-
-            {canManageAdmins && (
-              <Button
-                size="small"
-                className="h-6!"
-                type="primary"
-                onClick={() => setInviteModalOpen(true)}
-              >
-                Invite Admin
-              </Button>
-            )}
-          </div>
-        ) : (
-          <TableComponent<Admin>
-            columns={columns}
-            dataSource={adminList}
-            rowKey="id"
-            showSerialNumber
-            serialNumberTitle="SN"
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record),
-
-              onKeyDown: (e: React.KeyboardEvent) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleRowClick(record);
-                }
-              },
-
-              tabIndex: 0,
-              role: "button",
-
-              style: {
-                cursor: "pointer",
-              },
-            })}
-          />
-        )}
-
-        {isLoading && (
-          <Spinner
-            variant="inline"
-            overlay
-            className="bg-white/150 backdrop-blur-[1px] dark:bg-slate-900/70"
-          />
-        )}
-      </div>
-
-      <AddAdminModal open={isInviteModalOpen} onCancel={() => setInviteModalOpen(false)} />
-
-      {/* Admin Details Drawer */}
-      <Drawer
-        title="Admin Details"
-        placement="right"
-        width={420}
-        open={Boolean(selectedAdminId)}
-        onClose={handleCloseDetails}
-        destroyOnHidden
-        styles={{
-          body: {
-            padding: 0,
+          {canManageAdmins && (
+            <Button
+              type="primary"
+              onClick={() => openModal(<AddAdminModal />)}
+              icon={
+                <img src="/add-admins.svg" alt="" className="inline-flex h-3 w-3 items-center" />
+              }
+            >
+              Invite Admin
+            </Button>
+          )}
+        </>
+      }
+    >
+      <FilterBar
+        search={{
+          value: search,
+          onChange: (value) => {
+            setSearch(value);
+            resetToFirstPage();
           },
+          placeholder: "Search by name, email or phone",
         }}
       >
-        {selectedAdminId && <AdminDetails adminId={selectedAdminId} onClose={handleCloseDetails} />}
-      </Drawer>
-    </div>
+        <Select<RoleFilter>
+          aria-label="Filter admins by role"
+          value={roleFilter}
+          onChange={(value) => {
+            setRoleFilter(value);
+            resetToFirstPage();
+          }}
+          options={[
+            { label: "All roles", value: "ALL" },
+            { label: "Super Admins", value: "SUPERADMIN" },
+            { label: "Admins", value: "ADMIN" },
+          ]}
+        />
+      </FilterBar>
+
+      <StatCards<RoleFilter>
+        activeKey={roleFilter}
+        onSelect={(key) => {
+          setRoleFilter(key);
+          resetToFirstPage();
+        }}
+        items={[
+          {
+            key: "ALL",
+            label: "All admins",
+            value: adminList.length,
+            icon: <TeamOutlined />,
+            tone: "sky",
+          },
+          {
+            key: "SUPERADMIN",
+            label: "Super Admins",
+            value: superAdminCount,
+            icon: <UserOutlined />,
+            tone: "violet",
+          },
+          {
+            key: "ADMIN",
+            label: "Admins",
+            value: adminList.length - superAdminCount,
+            icon: <UserOutlined />,
+            tone: "emerald",
+          },
+        ]}
+      />
+
+      <DataTableCard<Admin>
+        columns={adminColumns}
+        dataSource={pageRows}
+        rowKey="id"
+        loading={isLoading}
+        error={
+          isError ? { message: "Unable to load admins.", onRetry: () => void refetch() } : null
+        }
+        empty={
+          <>
+            <p className="text-sm font-medium text-slate-600 dark:text-zinc-300">
+              {adminList.length === 0 ? "No admins yet" : "No admins match your filters"}
+            </p>
+            {adminList.length === 0 && (
+              <p className="max-w-55 text-xs text-slate-400 dark:text-zinc-500">
+                Invite your first admin to get started.
+              </p>
+            )}
+          </>
+        }
+        pagination={{
+          page,
+          pageSize,
+          total: filteredAdmins.length,
+          onChange: (nextPage, nextPageSize) => {
+            setPage(nextPageSize === pageSize ? nextPage : 1);
+            setPageSize(nextPageSize);
+          },
+        }}
+        onRowClick={handleRowClick}
+      />
+    </PageShell>
   );
 }

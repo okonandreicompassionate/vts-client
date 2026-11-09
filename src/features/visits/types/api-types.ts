@@ -31,34 +31,60 @@ export interface VisitListResponse {
 
 export interface VisitStats {
   total: number;
-  signedIn: number;
-  signedOff: number;
   pending: number;
+  approved: number;
   rejected: number;
+  /** Checked in (the client calls this "Signed In"). */
+  signedIn: number;
+  /** Checked out (the client calls this "Signed Off"). */
+  signedOff: number;
 }
 
-export interface VerifyIdentityResponse {
-  exists: boolean;
-  visitor: {
-    id: string;
-    fullName: string;
-    email: string;
-    phoneNumber: string;
-  } | null;
-  accessToken: string | null;
+/** GET /visits/stats as the server sends it. */
+export interface ApiVisitStats {
+  total: number;
+  pending: number;
+  approved: number;
+  rejected: number;
+  checkedIn: number;
+  checkedOut: number;
 }
 
-export interface CreateVisitPayload {
-  visitorId?: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  purpose: string;
-  hostId: string;
+export interface VisitListItem {
+  id: string;
+  referenceId: string;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  hostName?: string | null;
+  purpose?: string | null;
+  checkInTime?: string | null;
+  checkOutTime?: string | null;
+  status: string;
+  registeredAt: string;
+}
+
+export interface VisitListPage {
+  data: VisitListItem[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
+export interface VisitListParams {
+  page: number;
+  limit: number;
+  status?: string | null;
+  search?: string | null;
 }
 
 export interface BookAppointmentPayload {
+  idempotencyKey?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -66,66 +92,26 @@ export interface BookAppointmentPayload {
   purpose: string;
   date: string;
   time: string;
-}
-
-export interface HostItem {
-  id?: string;
-  fullName?: string;
-  name?: string;
-  firstName?: string;
-  lastName?: string;
-  role?: string;
-}
-
-export interface CreateVisitResponse {
-  id: string;
-  orgId: string;
-  visitorId: string;
-  visitorName: string;
-  hostName: string;
-  purposeOfVisit: string;
-  status: string;
-  checkInTime: string | null;
-  checkOutTime: string | null;
-  reviewedAt: string | null;
-  referenceId: string;
-  createdAt: string;
-  updatedAt: string;
-
-  visitor: {
-    fullName: string;
-    email: string;
-    phoneNumber: string;
-  };
-
-  visitorSocketToken: string;
+  /** Staff booking for someone else; hosts always book for themselves. */
+  hostId?: string;
 }
 
 export interface BulkVisitIds {
   visitIds: string[];
 }
 
-export interface VisitResponse {
-  id: string;
-  visitorId: string;
-  referenceId: string;
-  name?: string;
-  fullName?: string;
-  createdAt: string;
-  email: string;
-  phone: string;
-  phoneNumber?: string;
-  hostName: string;
-  purpose: string;
-  status: "PENDING" | "SIGNED_IN" | "REJECTED" | "SIGNED_OFF" | "APPROVED";
-  checkInTime: string | null;
-  checkOutTime: string | null;
-  registeredAt: string;
-  reviewedAt: string | null;
-}
+/** Advisory: a reviewer's approve/reject is final. null when no host decision is needed. */
+export type HostDecision = "PENDING" | "APPROVED" | "REJECTED";
+/** WALK_IN: the visitor's own request. STAFF_BOOKING: booked by staff. */
+export type VisitSource = "WALK_IN" | "STAFF_BOOKING";
 
 export interface VisitRecord {
   id?: string;
+  hostId?: string | null;
+  source?: VisitSource;
+  hostDecision?: HostDecision | null;
+  hostNote?: string | null;
+  scheduledAt?: string | null;
   referenceId?: string;
   fullName?: string;
   name?: string;
@@ -147,4 +133,52 @@ export interface VisitRecord {
   checkOutTime?: string | null;
   createdAt?: string;
   updatedAt?: string;
+}
+
+/** A visit as listed on the dashboard. */
+export interface DashboardVisit {
+  id: string;
+  referenceId: string;
+  name: string;
+  phone: string | null;
+  hostName: string | null;
+  purpose: string;
+  status: string;
+  scheduledAt: string | null;
+  checkInTime: string | null;
+  registeredAt: string;
+}
+
+export interface DashboardSummary {
+  expected: number;
+  onSite: number;
+  overstayed: number;
+  checkedOutToday: number;
+  /** null when the caller can't review visits. */
+  awaitingApproval: number | null;
+  oldestPendingAt: string | null;
+}
+
+export interface DashboardTrends {
+  days: number;
+  checkInsByDay: { date: string; count: number }[];
+  checkInsByHour: { hour: number; count: number }[];
+  visitsByPurpose: { purpose: string; count: number }[];
+  topHosts: { hostName: string; count: number }[];
+}
+
+export interface DashboardData {
+  summary: DashboardSummary;
+  arrivingToday: DashboardVisit[];
+  onSite: (DashboardVisit & { overstayed: boolean })[];
+  /** null when the caller can't review visits. */
+  needsApproval: DashboardVisit[] | null;
+  /** Admins only. */
+  trends: DashboardTrends | null;
+}
+
+export interface DashboardParams {
+  /** Local midnight today (ISO). */
+  dayStart: string;
+  timeZone: string;
 }

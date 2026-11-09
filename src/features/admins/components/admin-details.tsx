@@ -4,7 +4,6 @@ import { Alert, Button } from "antd";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import DashboardHeader from "@/components/layout/dashboard-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetAdminByIdQuery } from "@/features/admins/api/admins-api-slice";
@@ -71,7 +70,7 @@ export default function AdminDetails({
     <Button
       type="link"
       icon={<ArrowLeftOutlined className="text-xs" />}
-      className="mb-1px-0! font-medium text-sky-500!"
+      className="mb-1 px-0! font-medium text-sky-500!"
       onClick={onClose ?? (() => navigate(-1))}
     >
       Back to List
@@ -81,8 +80,6 @@ export default function AdminDetails({
   if (!detailId) {
     return (
       <>
-        {!isDrawer && <DashboardHeader title="Admin Details" />}
-
         <main className={isDrawer ? "p-4" : "flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3"}>
           <Alert
             type="error"
@@ -97,8 +94,6 @@ export default function AdminDetails({
   if (isLoading) {
     return (
       <>
-        {!isDrawer && <DashboardHeader title="Admin Details" />}
-
         <main
           className={
             isDrawer
@@ -121,8 +116,6 @@ export default function AdminDetails({
     if (status === 400) {
       return (
         <>
-          {!isDrawer && <DashboardHeader title="Admin Details" />}
-
           <main
             className={
               isDrawer
@@ -146,8 +139,6 @@ export default function AdminDetails({
     if (status === 403) {
       return (
         <>
-          {!isDrawer && <DashboardHeader title="Admin Details" />}
-
           <main
             className={
               isDrawer
@@ -171,8 +162,6 @@ export default function AdminDetails({
     if (status === 404) {
       return (
         <>
-          {!isDrawer && <DashboardHeader title="Admin Details" />}
-
           <main
             className={
               isDrawer
@@ -195,8 +184,6 @@ export default function AdminDetails({
 
     return (
       <>
-        {!isDrawer && <DashboardHeader title="Admin Details" />}
-
         <main
           className={
             isDrawer
@@ -228,8 +215,6 @@ export default function AdminDetails({
   if (!admin) {
     return (
       <>
-        {!isDrawer && <DashboardHeader title="Admin Details" />}
-
         <main
           className={
             isDrawer
@@ -250,23 +235,24 @@ export default function AdminDetails({
   }
 
   const roleBadge =
-    admin.role === "ADMIN"
+    admin.role === "ADMIN" || admin.role === "SUPERADMIN"
       ? "border border-violet-200 bg-violet-50 text-violet-600 dark:border-violet-800 dark:bg-violet-950/40 dark:text-violet-400"
       : "border border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400";
 
 
+  // In a drawer, Deactivate is in the drawer's header menu (AdminDetailsDrawer).
   if (isDrawer) {
     return (
-      <div className="flex h-full min-h-0 flex-col bg-white dark:bg-slate-800">
+      <div className="flex h-full min-h-0 flex-col bg-white dark:bg-zinc-800">
         <div className="min-h-0 flex-1 overflow-y-auto">
           {/* Identity */}
-          <div className="flex flex-col items-center border-b border-slate-100 px-4 pt-5 pb-4 text-center dark:border-slate-700">
+          <div className="flex flex-col items-center border-b border-slate-100 px-4 pt-5 pb-4 text-center dark:border-zinc-700">
             <Avatar
               name={admin.fullName || admin.email}
               size="md"
             />
 
-            <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-slate-100">
+            <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-zinc-100">
               {admin.fullName || admin.email}
             </h3>
 
@@ -279,21 +265,21 @@ export default function AdminDetails({
 
           {/* Details */}
           <div className="px-4 py-4">
-            <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-slate-700">
+            <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-zinc-700">
               {detailRows.map((row, idx) => (
                 <div
                   key={row.label}
                   className={`flex items-start gap-3 px-3 py-2.5 ${
                     idx !== detailRows.length - 1
-                      ? "border-b border-slate-100 dark:border-slate-700"
+                      ? "border-b border-slate-100 dark:border-zinc-700"
                       : ""
                   }`}
                 >
-                  <span className="w-28 shrink-0 text-[10px] text-slate-500 dark:text-slate-400">
+                  <span className="w-28 shrink-0 text-[10px] text-slate-500 dark:text-zinc-400">
                     {row.label}
                   </span>
 
-                  <span className="min-w-0 flex-1 text-xs wrap-break-word text-slate-800 dark:text-slate-100">
+                  <span className="min-w-0 flex-1 text-xs wrap-break-word text-slate-800 dark:text-zinc-100">
                     {row.value}
                   </span>
                 </div>
@@ -301,7 +287,7 @@ export default function AdminDetails({
             </div>
 
             {/* Admin Access */}
-            <h4 className="mt-5 mb-2 text-xs font-bold text-slate-900 dark:text-slate-100">
+            <h4 className="mt-5 mb-2 text-xs font-bold text-slate-900 dark:text-zinc-100">
               Admin Access
             </h4>
 
@@ -312,15 +298,15 @@ export default function AdminDetails({
                     <CheckOutlined />
                   </span>
 
-                  <span className="w-px flex-1 bg-slate-100 dark:bg-slate-700" />
+                  <span className="w-px flex-1 bg-slate-100 dark:bg-zinc-700" />
                 </div>
 
                 <div className="pb-2">
-                  <p className="text-[11px] leading-tight font-semibold text-slate-900 dark:text-slate-100">
+                  <p className="text-[11px] leading-tight font-semibold text-slate-900 dark:text-zinc-100">
                     Role level
                   </p>
 
-                  <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                  <p className="mt-0.5 text-[11px] text-slate-500 dark:text-zinc-400">
                     {formatRole(admin.role)}
                   </p>
                 </div>
@@ -334,30 +320,17 @@ export default function AdminDetails({
                 </div>
 
                 <div>
-                  <p className="text-[11px] leading-tight font-semibold text-slate-900 dark:text-slate-100">
+                  <p className="text-[11px] leading-tight font-semibold text-slate-900 dark:text-zinc-100">
                     Primary contact
                   </p>
 
-                  <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                  <p className="mt-0.5 text-[11px] text-slate-500 dark:text-zinc-400">
                     {admin.email}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Danger Zone */}
-            <div className="mt-5 border-t border-slate-100 pt-4 dark:border-slate-700">
-              <p className="text-[12px] font-semibold text-red-600 dark:text-red-400">
-                Danger Zone
-              </p>
-
-              <p className="mt-1 mb-3 text-[11px] leading-relaxed text-slate-400">
-                Deactivate this administrator and revoke their administrative
-                access to this organization.
-              </p>
-
-              <DeactivateAdmin adminId={admin.id} />
-            </div>
           </div>
         </div>
       </div>
@@ -366,21 +339,19 @@ export default function AdminDetails({
 
   return (
     <>
-      <DashboardHeader title="Admin Details" />
-
       <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
         {BackButton}
 
         <div className="w-full xl:flex xl:min-h-[calc(100vh-3.25rem)] xl:justify-center">
           <div className="flex min-w-0 flex-col gap-4 lg:flex-row xl:h-full xl:w-full xl:gap-8 2xl:gap-10">
-            <div className="w-full min-w-0 rounded-xl border border-slate-100 bg-white px-4 py-6 shadow-sm shadow-slate-100 sm:px-6 md:px-8 md:py-8 lg:flex-1 xl:h-full xl:px-10 xl:py-8 2xl:px-12 2xl:py-10 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
+            <div className="w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 py-6 sm:px-6 md:px-8 md:py-8 lg:flex-1 xl:h-full xl:px-10 xl:py-8 2xl:px-12 2xl:py-10 dark:border-zinc-700 dark:bg-zinc-800">
               <div className="mb-6 flex flex-col items-center text-center">
                 <Avatar
                   name={admin.fullName || admin.email}
                   size="md"
                 />
 
-                <h3 className="mt-2 text-md font-bold text-slate-800 xl:text-lg dark:text-slate-100">
+                <h3 className="mt-2 text-md font-bold text-slate-800 xl:text-lg dark:text-zinc-100">
                   {admin.fullName || admin.email}
                 </h3>
 
@@ -391,13 +362,13 @@ export default function AdminDetails({
                 </span>
               </div>
 
-              <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-slate-700">
+              <div className="overflow-hidden rounded-lg border border-slate-100 dark:border-zinc-700">
                 {detailRows.map((row, idx) => (
                   <div
                     key={row.label}
                     className={`flex min-w-0 flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-center sm:px-5 xl:gap-0 xl:px-6 xl:py-3 xl:ps-10 ${
                       idx !== detailRows.length - 1
-                        ? "border-b border-slate-100 dark:border-slate-700"
+                        ? "border-b border-slate-100 dark:border-zinc-700"
                         : ""
                     }`}
                   >
@@ -405,7 +376,7 @@ export default function AdminDetails({
                       {row.label}
                     </span>
 
-                    <span className="min-w-0 text-xs wrap-break-word text-slate-700 dark:text-slate-200">
+                    <span className="min-w-0 text-xs wrap-break-word text-slate-700 dark:text-zinc-200">
                       {row.value}
                     </span>
                   </div>
@@ -413,8 +384,8 @@ export default function AdminDetails({
               </div>
             </div>
 
-            <div className="w-full min-w-0 rounded-lg border border-slate-100 bg-white px-4 pt-3 shadow-sm shadow-slate-100 sm:px-6 sm:pt-6 lg:w-80 lg:shrink-0 xl:w-96 xl:px-6 xl:pt-6 2xl:w-104 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-              <h3 className="mb-2.5 text-sm font-bold text-slate-800 dark:text-slate-100">
+            <div className="w-full min-w-0 rounded-lg border border-slate-200 bg-white px-4 pt-3 sm:px-6 sm:pt-6 lg:w-80 lg:shrink-0 xl:w-96 xl:px-6 xl:pt-6 2xl:w-104 dark:border-zinc-700 dark:bg-zinc-800">
+              <h3 className="mb-2.5 text-sm font-bold text-slate-800 dark:text-zinc-100">
                 Admin Access
               </h3>
 
@@ -427,7 +398,7 @@ export default function AdminDetails({
                   </div>
 
                   <div>
-                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+                    <p className="text-xs font-semibold text-slate-800 dark:text-zinc-100">
                       Role level
                     </p>
 
@@ -445,7 +416,7 @@ export default function AdminDetails({
                   </div>
 
                   <div>
-                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+                    <p className="text-xs font-semibold text-slate-800 dark:text-zinc-100">
                       Primary contact
                     </p>
 
@@ -456,7 +427,7 @@ export default function AdminDetails({
                 </div>
               </div>
 
-              <div className="mt-5 border-t border-slate-100 pt-5 dark:border-slate-700">
+              <div className="mt-5 border-t border-slate-100 pt-5 dark:border-zinc-700">
                 <p className="text-[13px] font-semibold text-red-600 dark:text-red-400">
                   Danger Zone
                 </p>

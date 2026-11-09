@@ -1,14 +1,19 @@
-import { organizationPath } from "@/features/organizations";
+import { organizationPath } from "@/utils/organization-path";
+
+const withRedirect = (path: string, redirectTo?: string | null) =>
+  redirectTo ? `${path}?redirectTo=${encodeURIComponent(redirectTo)}` : path;
 
 export const paths = {
-  // Visitor side
+  // Visitor side - reached from an organization's public link, so it keeps the slug.
   home: {
     path: "/:orgSlug",
     getHref: (orgSlug: string) => organizationPath(orgSlug, "/"),
   },
   register: {
     path: "/:orgSlug/register",
-    getHref: (orgSlug: string) => organizationPath(orgSlug, "/register"),
+    getHref: (orgSlug: string, appointmentId?: string) =>
+      organizationPath(orgSlug, "/register") +
+      (appointmentId ? `?appointment=${encodeURIComponent(appointmentId)}` : ""),
   },
   verify: {
     path: "/:orgSlug/verify",
@@ -16,64 +21,64 @@ export const paths = {
   },
   visitorProfile: {
     path: "/:orgSlug/profile",
-    getHref: (orgSlug: string) => organizationPath(orgSlug, "/profile"),
+    getHref: (orgSlug: string, visitId?: string) =>
+      organizationPath(orgSlug, "/profile") +
+      (visitId ? `?visit=${encodeURIComponent(visitId)}` : ""),
+  },
+  visitorAppointments: {
+    path: "/:orgSlug/my-appointments",
+    getHref: (orgSlug: string) => organizationPath(orgSlug, "/my-appointments"),
   },
 
-  // Admin side
+  // Admin side - the organization comes from the signed-in session, not the URL.
   admin: {
     login: {
-      path: "/:orgSlug/login",
-      getHref: (orgSlug: string, redirectTo?: string | null) =>
-        `${organizationPath(orgSlug, "/login")}${
-          redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
-        }`,
+      path: "/login",
+      getHref: (redirectTo?: string | null) => withRedirect("/login", redirectTo),
     },
     signup: {
-      path: "/:orgSlug/signup",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/signup"),
+      path: "/signup",
+      getHref: () => "/signup",
+    },
+    forgotPassword: {
+      path: "/forgot-password",
+      getHref: () => "/forgot-password",
+    },
+    resetPassword: {
+      path: "/reset-password",
+      getHref: () => "/reset-password",
     },
     dashboard: {
-      path: "/:orgSlug/dashboard",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/dashboard"),
+      path: "/dashboard",
+      getHref: () => "/dashboard",
     },
     appointments: {
-      path: "/:orgSlug/appointments",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/appointments"),
+      path: "/appointments",
+      getHref: () => "/appointments",
     },
     checkIns: {
-      path: "/:orgSlug/check-ins",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/check-ins"),
+      path: "/check-ins",
+      getHref: () => "/check-ins",
     },
     visitors: {
-      path: "/:orgSlug/visitors",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/visitors"),
+      path: "/visitors",
+      getHref: () => "/visitors",
     },
     visitorDetails: {
-      path: "/:orgSlug/visitors/:id",
-      getHref: (orgSlug: string, id?: string) =>
-        id ? organizationPath(orgSlug, `/visitors/${id}`) : organizationPath(orgSlug, "/visitors"),
+      path: "/visitors/:id",
+      getHref: (id?: string) => (id ? `/visitors/${id}` : "/visitors"),
     },
     settings: {
-      path: "/:orgSlug/settings",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/settings"),
+      path: "/settings",
+      getHref: () => "/settings",
     },
     employees: {
-      path: "/:orgSlug/employees",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/employees"),
+      path: "/employees",
+      getHref: () => "/employees",
     },
     users: {
-      path: "/:orgSlug/users",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/users"),
-    },
-  },
-  notification: {
-    notificationStream: {
-      path: "/:orgSlug/notifications/stream",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/notifications/stream"),
-    },
-    visitStream: {
-      path: "/:orgSlug/visits/stream",
-      getHref: (orgSlug: string) => organizationPath(orgSlug, "/visits/stream"),
+      path: "/users",
+      getHref: () => "/users",
     },
   },
 } as const;

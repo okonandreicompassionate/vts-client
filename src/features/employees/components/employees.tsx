@@ -1,85 +1,130 @@
 import { Button } from "antd";
+import { FileTextOutlined, UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import DashboardHeader from "@/components/layout/dashboard-header";
-import { Spinner } from "@/components/ui/spinner";
-import TableComponent from "@/components/ui/table";
-import { TablePaginationFooter } from "@/components/ui/table-pagination-footer";
-import { usePopup } from "@/features/popup/hooks/use-popup";
-import { getEmployeeColumns } from "./employee-columns";
+
+import { DataTableCard, FilterBar, PageShell, RefreshButton } from "@/components/page";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { fetchAllPages, useGenerateReport } from "@/hooks/use-generate-report";
+import { useAppDispatch } from "@/lib/stores/hooks";
+import { adminEmployeesApiSlice } from "../api/admin-employees-api-slice";
+import { formatLastVisit, getEmployeeColumns } from "./employee-columns";
 import EmployeeExcelUploadModal from "../components/modals/employee-excel-upload-modal";
 import type { EmployeeRow } from "../types/types";
-import { useEmployeeTableData } from "../hooks/use-employee-data";
-import { UploadOutlined } from "@ant-design/icons";
+import { toEmployeeRow, useEmployeeTableData } from "../hooks/use-employee-data";
 
 export default function Employees() {
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const [search, setSearch] = useState("");
 
   const { openModal } = usePopup();
+  const dispatch = useAppDispatch();
+  const { generateReport, isGeneratingReport } = useGenerateReport();
 
-  const pageSize = 10;
-
-  const { employeeRecords, totalEntries, isLoading } = useEmployeeTableData({
-    page,
-    limit: pageSize,
-  });
-
-  const handleOpenUploadModal = () => {
-    openModal(<EmployeeExcelUploadModal />);
-  };
+  const { employeeRecords, totalEntries, isLoading, isFetching, isError, refetch } =
+    useEmployeeTableData({ page, limit: pageSize, search });
 
   const columns = getEmployeeColumns(employeeRecords);
 
+  const generateEmployeeReport = () =>
+    generateReport({
+      name: "employees",
+      columns: [
+        { header: "Employee ID", value: (row) => row.employeeId },
+        { header: "Name", value: (row) => row.fullName },
+        { header: "Email", value: (row) => row.email },
+        { header: "Phone", value: (row) => row.phone },
+        { header: "Role", value: (row) => row.role },
+        { header: "Department", value: (row) => row.department },
+        { header: "Access", value: (row) => row.access },
+        { header: "Visitors hosted", value: (row) => row.visitorCount },
+        { header: "Last visit", value: (row) => formatLastVisit(row.lastVisitAt) },
+      ],
+      loadRows: () =>
+        fetchAllPages(async (page, limit) => {
+          const result = await dispatch(
+            adminEmployeesApiSlice.endpoints.getEmployees.initiate(
+              { page, limit, search: search.trim() || undefined },
+              { subscribe: false, forceRefetch: true },
+            ),
+          ).unwrap();
+
+          return {
+            rows: result.items.map(toEmployeeRow),
+            hasNextPage: page * limit < result.total,
+          };
+        }),
+    });
+
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <DashboardHeader title="Employees" />
+    <PageShell
+      fill
+      title="Employees"
+      description="Staff that visitors can choose as their host."
+      actions={
+        <>
+          <RefreshButton loading={isFetching} onClick={() => void refetch()} />
+          <Button
+            icon={<FileTextOutlined />}
+            loading={isGeneratingReport}
+            onClick={() => void generateEmployeeReport()}
+          >
+            Generate Report
+          </Button>
+          <Button
+            type="primary"
+            icon={<UploadOutlined />}
+            onClick={() => openModal(<EmployeeExcelUploadModal />)}
+          >
+            Upload Excel sheet
+          </Button>
+        </>
+      }
+    >
+      <FilterBar
+        search={{
+          value: search,
+          onChange: (value) => {
+            setSearch(value);
+            setPage(1);
+          },
+          placeholder: "Search by name, email or Employee ID",
+        }}
+      />
 
-      <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
-        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm shadow-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:shadow-none">
-          <div className="flex items-center justify-between py-2 pe-2 overflow-x-auto">
-            <div className="shrink-0 px-3">
-              <h2 className="sm:text-sm text-xs font-semibold text-slate-800 dark:text-slate-100">
-                Manage employees available for visits
-              </h2>
-            </div>
-
-            <Button
-              type="primary"
-              onClick={handleOpenUploadModal}
-              className="inline-flex h-6! gap-0.5 rounded-sm! px-2! text-xs! font-medium!"
-            >
-              <UploadOutlined />
-              <span>Upload Exceel sheet</span>
-            </Button>
-          </div>
-
-          <div className="relative min-h-0 flex-1 overflow-auto">
-            {isLoading && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 backdrop-blur-[1px] dark:bg-slate-800/70">
-                <Spinner variant="inline" overlay />
-              </div>
+      <DataTableCard<EmployeeRow>
+        columns={columns}
+        dataSource={employeeRecords}
+        rowKey="id"
+        className="employee-table"
+        loading={isLoading}
+        error={
+          isError
+            ? { message: "Employees could not be loaded.", onRetry: () => void refetch() }
+            : null
+        }
+        empty={
+          <>
+            <p className="text-sm font-medium text-slate-700 dark:text-zinc-200">
+              {search ? "No employees match your search" : "No employees yet"}
+            </p>
+            {!search && (
+              <p className="text-xs text-slate-500 dark:text-zinc-400">
+                Upload your staff spreadsheet to add hosts.
+              </p>
             )}
-
-            <TableComponent<EmployeeRow>
-              columns={columns}
-              dataSource={employeeRecords}
-              rowKey="id"
-              className="employee-table"
-              size="small"
-              showSerialNumber
-              startIndex={(page - 1) * pageSize + 1}
-            />
-          </div>
-
-          {!isLoading && (
-            <TablePaginationFooter
-              page={page}
-              pageSize={pageSize}
-              totalEntries={totalEntries}
-              onPageChange={setPage}
-            />
-          )}
-        </section>
-      </main>
-    </div>
+          </>
+        }
+        pagination={{
+          page,
+          pageSize,
+          total: totalEntries,
+          onChange: (nextPage, nextPageSize) => {
+            setPage(nextPageSize === pageSize ? nextPage : 1);
+            setPageSize(nextPageSize);
+          },
+        }}
+      />
+    </PageShell>
   );
 }

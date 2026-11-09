@@ -1,8 +1,7 @@
 import { Alert, Button } from "antd";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { paths } from "../config/paths";
-import { useOrganization } from "@/features/organizations";
 import { Spinner } from "@/components/ui/spinner";
 import type { UserRole } from "@/types/user-role";
 import { useAppSelector } from "@/lib/stores/hooks";
@@ -15,30 +14,27 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ requiredAuth = "admin", requiredRoles }: ProtectedRouteProps) {
-  const { orgSlug } = useOrganization();
+  const location = useLocation();
   const { data: user, error, isError, isLoading, isFetching, refetch } =
     useAdminAuthSession(requiredAuth === "admin");
   const sessionUser = useAppSelector((state) => state.adminAuth.user);
-  const hasMatchingSession = sessionUser?.orgSlug === orgSlug;
+  const loginHref = paths.admin.login.getHref(location.pathname);
 
   if (requiredAuth === "admin") {
-    if ((isLoading || isFetching) && !hasMatchingSession) {
+    if ((isLoading || isFetching) && !sessionUser) {
       return <Spinner variant="screen" />;
     }
 
-    const authenticatedUser = hasMatchingSession ? sessionUser : user;
+    const authenticatedUser = sessionUser ?? user;
 
     const status =
       error && typeof error === "object" && "status" in error ? error.status : undefined;
 
-    if (isError && !hasMatchingSession && status === 401) {
-      return <Navigate to={paths.admin.login.getHref(orgSlug)} replace />;
+    if (isError && !sessionUser && status === 401) {
+      return <Navigate to={loginHref} replace />;
     }
 
-    if (
-      !hasMatchingSession &&
-      (!authenticatedUser || isError || authenticatedUser.orgSlug !== orgSlug)
-    ) {
+    if (!sessionUser && (!authenticatedUser || isError)) {
       const errorData =
         error && typeof error === "object" && "data" in error
           ? error.data
@@ -53,11 +49,9 @@ export function ProtectedRoute({ requiredAuth = "admin", requiredRoles }: Protec
           ? responseMessage
           : status === "TIMEOUT_ERROR"
             ? "The server took too long to respond. Check your connection and try again."
-          : authenticatedUser && authenticatedUser.orgSlug !== orgSlug
-            ? "The account profile belongs to a different organization."
-        : status
-            ? `The server returned ${status}.`
-            : "The server did not return an account profile.";
+            : status
+              ? `The server returned ${status}.`
+              : "The server did not return an account profile.";
 
       return (
         <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-6">
@@ -75,11 +69,11 @@ export function ProtectedRoute({ requiredAuth = "admin", requiredRoles }: Protec
     }
 
     if (!authenticatedUser) {
-      return <Navigate to={paths.admin.login.getHref(orgSlug)} replace />;
+      return <Navigate to={loginHref} replace />;
     }
 
     if (requiredRoles && !requiredRoles.includes(authenticatedUser.role)) {
-      return <Navigate to={getAdminHomeHref(authenticatedUser.role, orgSlug)} replace />;
+      return <Navigate to={getAdminHomeHref(authenticatedUser.role)} replace />;
     }
   }
 

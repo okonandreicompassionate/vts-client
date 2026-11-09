@@ -5,10 +5,14 @@ import type { ApiUserRole } from "@/types/user-role";
 export interface LoginPayload {
   email: string;
   password: string;
+  /** "Remember me". When false the session ends with the browser. */
+  rememberMe?: boolean;
 }
 
 export interface MicrosoftLoginPayload {
   accessToken: string;
+  /** "Remember me". When false the session ends with the browser. */
+  rememberMe?: boolean;
 }
 
 export interface UserProfile {
@@ -34,13 +38,41 @@ export interface LoginResponse {
   user: UserProfile;
 }
 
+export interface OrganizationChoice {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+/** Returned instead of a session when the credentials match accounts in several organizations. */
+export interface OrganizationSelectionRequired {
+  requiresOrganizationSelection: true;
+  selectionToken: string;
+  organizations: OrganizationChoice[];
+}
+
+export type SignInResponse = LoginResponse | OrganizationSelectionRequired;
+
+export interface SelectOrganizationPayload {
+  selectionToken: string;
+  orgId: string;
+  /** "Remember me". When false the session ends with the browser. */
+  rememberMe?: boolean;
+}
+
+export const requiresOrganizationSelection = (
+  response: SignInResponse,
+): response is OrganizationSelectionRequired =>
+  "requiresOrganizationSelection" in response && response.requiresOrganizationSelection;
+
 export interface RefreshResponse {
   success: boolean;
 }
 
 export interface JoinOrganizationWithPasswordPayload {
-  fullName: string;
-  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
   password: string;
   inviteToken: string;
 }
@@ -58,11 +90,3 @@ export interface JoinOrganizationWithPasswordResponse {
   };
 }
 
-export interface VisitorMeResponse {
-  visitorId: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string | null;
-  orgId: string;
-  orgSlug: string;
-}

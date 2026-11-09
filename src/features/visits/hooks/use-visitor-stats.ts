@@ -8,6 +8,7 @@ export function useVisitorStats(enabled = true) {
     signedIn: data?.signedIn ?? 0,
     signedOff: data?.signedOff ?? 0,
     pending: data?.pending ?? 0,
+    approved: data?.approved ?? 0,
     rejected: data?.rejected ?? 0,
   };
 }

@@ -1,7 +1,13 @@
 import { theme as antdTheme } from "antd";
 
+// Same stack as --font-sans in index.css.
+const APP_FONT_FAMILY =
+  '"Raleway Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif';
+
 const globalFontSize = 12;
 const globalFormFieldHeight = 40;
+// size="small": table toolbars, row actions and other compact spots.
+const globalCompactControlHeight = 32;
 
 const globalTypographyTokens = {
   fontSize: globalFontSize,
@@ -17,8 +23,47 @@ const globalTypographyTokens = {
 
 const globalFormFieldHeightTokens = {
   controlHeight: globalFormFieldHeight,
-  controlHeightSM: globalFormFieldHeight,
+  controlHeightSM: globalCompactControlHeight,
   controlHeightLG: globalFormFieldHeight,
+};
+
+const globalFieldRadius = 8;
+
+/** One look for every text field, select, picker and number input. */
+const getFieldTokens = (isDark: boolean) => ({
+  ...globalFormFieldHeightTokens,
+  borderRadius: globalFieldRadius,
+  colorBgContainer: isDark ? "#27272a" : "#ffffff",
+  colorText: isDark ? "#e4e4e7" : "#1f2937",
+  colorTextPlaceholder: isDark ? "#8b8b94" : "#9ca3af",
+  colorBorder: isDark ? "#3f3f46" : "#d1d5db",
+  colorBgContainerDisabled: isDark ? "#18181b" : "#f3f4f6",
+  colorTextDisabled: isDark ? "#71717a" : "#9ca3af",
+});
+
+const getFieldComponents = (isDark: boolean) => {
+  const fieldTokens = getFieldTokens(isDark);
+
+  return {
+    Input: fieldTokens,
+    InputNumber: fieldTokens,
+    Select: fieldTokens,
+    DatePicker: fieldTokens,
+    Form: {
+      labelFontSize: globalFontSize,
+      labelHeight: 20,
+      labelColor: isDark ? "#d4d4d8" : "#374151",
+      verticalLabelPadding: "0 0 2px",
+      itemMarginBottom: 4,
+    },
+  };
+};
+
+/** No shadows anywhere: borders separate surfaces (see the overlay rules in index.css). */
+const noShadowTokens = {
+  boxShadow: "none",
+  boxShadowSecondary: "none",
+  boxShadowTertiary: "none",
 };
 
 const globalButtonTokens = {
@@ -28,6 +73,9 @@ const globalButtonTokens = {
   paddingBlock: 0,
   paddingBlockSM: 0,
   paddingBlockLG: 0,
+  defaultShadow: "none",
+  primaryShadow: "none",
+  dangerShadow: "none",
 };
 
 export const getThemeConfig = (isDark: boolean) => {
@@ -35,12 +83,13 @@ export const getThemeConfig = (isDark: boolean) => {
     token: {
       ...globalTypographyTokens,
       ...globalFormFieldHeightTokens,
+      ...noShadowTokens,
       colorPrimary: "#0ea5e9",
       colorInfo: "#0ea5e9",
       colorPrimaryHover: "#0284c7",
       colorPrimaryActive: "#0369a1",
       borderRadius: 12,
-      fontFamily: "'Raleway Variable', sans-serif",
+      fontFamily: APP_FONT_FAMILY,
       colorBgBase: "#ffffff",
       colorTextBase: "#1f2937",
       colorBorder: "#e5e7eb",
@@ -53,41 +102,7 @@ export const getThemeConfig = (isDark: boolean) => {
     },
 
     components: {
-      Input: {
-        ...globalFormFieldHeightTokens,
-        borderRadius: 0,
-        controlBg: "#ffffff",
-        colorText: "#1f2937",
-        colorTextPlaceholder: "#9ca3af",
-        colorBorder: "#d1d5db",
-        colorBgContainerDisabled: "#f3f4f6",
-        colorTextDisabled: "#9ca3af",
-        colorBgContainer: "#ffffff",
-      },
-
-      Form: {
-        labelFontSize: globalFontSize,
-        verticalLabelPadding: "0 0 4px",
-        itemMarginBottom: 10,
-        labelColor: "#374151",
-      },
-
-      Select: {
-        ...globalFormFieldHeightTokens,
-        controlBg: "#ffffff",
-        colorText: "#1f2937",
-        colorTextPlaceholder: "#9ca3af",
-        colorBorder: "#d1d5db",
-        colorBgContainer: "#ffffff",
-      },
-
-      TextArea: {
-        controlBg: "#ffffff",
-        colorText: "#1f2937",
-        colorTextPlaceholder: "#9ca3af",
-        colorBorder: "#d1d5db",
-        colorBgContainer: "#ffffff",
-      },
+      ...getFieldComponents(false),
 
       Button: {
         ...globalFormFieldHeightTokens,
@@ -152,122 +167,92 @@ export const getThemeConfig = (isDark: boolean) => {
     token: {
       ...globalTypographyTokens,
       ...globalFormFieldHeightTokens,
+      ...noShadowTokens,
       colorPrimary: "#0ea5e9",
       colorInfo: "#0ea5e9",
       colorPrimaryHover: "#0284c7",
       colorPrimaryActive: "#0369a1",
       borderRadius: 12,
-      fontFamily: "'Raleway Variable', sans-serif",
-      colorBgBase: "#0f172a",
-      colorTextBase: "#e2e8f0",
-      colorBorder: "#334155",
-      colorBgContainer: "#1e293b",
-      colorBgElevated: "#1e293b",
-      colorBgLayout: "#0f172a",
-      colorBgBlur: "#0f172aaa",
+      fontFamily: APP_FONT_FAMILY,
+      colorBgBase: "#18181b",
+      colorTextBase: "#e4e4e7",
+      colorBorder: "#3f3f46",
+      colorBgContainer: "#27272a",
+      colorBgElevated: "#27272a",
+      colorBgLayout: "#18181b",
+      colorBgBlur: "#18181baa",
     },
 
     components: {
-      Input: {
-        ...globalFormFieldHeightTokens,
-        borderRadius: 0,
-        controlBg: "#1e293b",
-        colorText: "#e2e8f0",
-        colorTextPlaceholder: "#78829e",
-        colorBorder: "#334155",
-        colorBgContainerDisabled: "#0f172a",
-        colorTextDisabled: "#64748b",
-      },
-
-      Form: {
-        labelFontSize: globalFontSize,
-        verticalLabelPadding: "0 0 4px",
-        itemMarginBottom: 16,
-        labelColor: "#cbd5e1",
-      },
-
-      Select: {
-        ...globalFormFieldHeightTokens,
-        controlBg: "#1e293b",
-        colorText: "#e2e8f0",
-        colorTextPlaceholder: "#78829e",
-        colorBorder: "#334155",
-      },
-
-      TextArea: {
-        controlBg: "#1e293b",
-        colorText: "#e2e8f0",
-        colorTextPlaceholder: "#78829e",
-        colorBorder: "#334155",
-      },
+      ...getFieldComponents(true),
 
       Button: {
         ...globalFormFieldHeightTokens,
         ...globalButtonTokens,
 
-        colorBgBase: "#1e293b",
+        colorBgBase: "#27272a",
 
-        defaultBg: "#1e293b",
-        defaultColor: "#e2e8f0",
-        defaultBorderColor: "#475569",
+        defaultBg: "#27272a",
+        defaultColor: "#e4e4e7",
+        defaultBorderColor: "#52525b",
 
-        defaultHoverBg: "#334155",
-        defaultHoverColor: "#f8fafc",
-        defaultHoverBorderColor: "#64748b",
+        defaultHoverBg: "#3f3f46",
+        defaultHoverColor: "#fafafa",
+        defaultHoverBorderColor: "#71717a",
 
-        defaultActiveBg: "#334155",
-        defaultActiveColor: "#f8fafc",
-        defaultActiveBorderColor: "#64748b",
+        defaultActiveBg: "#3f3f46",
+        defaultActiveColor: "#fafafa",
+        defaultActiveBorderColor: "#71717a",
 
         primaryBg: "#0ea5e9",
-        primaryColor: "#f8fafc",
+        primaryColor: "#fafafa",
         primaryBorderColor: "#0ea5e9",
 
         primaryHoverBg: "#0284c7",
-        primaryHoverColor: "#f8fafc",
+        primaryHoverColor: "#fafafa",
         primaryHoverBorderColor: "#0284c7",
 
         primaryActiveBg: "#0369a1",
-        primaryActiveColor: "#f8fafc",
+        primaryActiveColor: "#fafafa",
         primaryActiveBorderColor: "#0369a1",
 
         primaryShadow: "none",
       },
 
       Card: {
-        colorBgContainer: "#1e293b",
-        colorBorderSecondary: "#334155",
+        colorBgContainer: "#27272a",
+        colorBorderSecondary: "#3f3f46",
       },
 
       Modal: {
-        contentBg: "#1e293b",
-        headerBg: "#1e293b",
-        titleColor: "#e2e8f0",
+        contentBg: "#27272a",
+        headerBg: "#27272a",
+        titleColor: "#e4e4e7",
       },
 
       Checkbox: {
-        colorBgContainer: "#1e293b",
-        colorBorder: "#475569",
+        colorBgContainer: "#27272a",
+        colorBorder: "#52525b",
       },
 
       Table: {
-        headerBg: "#0f172a",
-        headerColor: "#cbd5e1",
-        colorBgContainer: "#1e293b",
-        rowHoverBg: "#334155",
-        borderColor: "#334155",
+        headerBg: "#18181b",
+        headerColor: "#d4d4d8",
+        colorBgContainer: "#27272a",
+        rowHoverBg: "#3f3f46",
+        borderColor: "#3f3f46",
       },
 
       Layout: {
-        colorBgHeader: "#1e293b",
-        colorBgBody: "#0f172a",
-        colorBgTrigger: "#334155",
-        bodyBg: "#0f172a",
-        headerBg: "#1e293b",
+        colorBgHeader: "#27272a",
+        colorBgBody: "#18181b",
+        colorBgTrigger: "#3f3f46",
+        bodyBg: "#18181b",
+        headerBg: "#27272a",
         headerHeight: 64,
         headerPadding: "0 24px",
-        headerColor: "#e2e8f0",
-        footerBg: "#1e293b",
+        headerColor: "#e4e4e7",
+        footerBg: "#27272a",
         footerPadding: "24px 50px",
       },
     },

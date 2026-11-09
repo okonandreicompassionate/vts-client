@@ -1,11 +1,9 @@
-
-
-import type { ApiUserRole, UserRole } from "@/types/user-role";
-
+/** Field names match the server's UpdateProfileDto. */
 export interface UpdateProfilePayload {
-  fullName?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
-  phoneNumber?: string;
+  phone?: string;
 }
 
 export interface UpdatePasswordPayload {
@@ -14,48 +12,21 @@ export interface UpdatePasswordPayload {
 }
 
 export interface UpdateSettingsPayload {
+  requireVisitorEmailVerification?: boolean;
   slug?: string;
+  azureTenantId?: string;
   name?: string;
   maxVisitorsPerDay?: number;
   visitorBadgePrefix?: string;
 }
 
 export interface SettingsResponse {
+  requireVisitorEmailVerification: boolean;
   slug: string;
+  authMode: "PASSWORD" | "AZURE_AD";
+  /** Microsoft Entra directory staff must sign in from (Microsoft sign-in orgs only). */
+  azureTenantId: string | null;
   name: string;
   maxVisitorsPerDay: number;
   visitorBadgePrefix: string;
 }
-
-export interface UserProfile {
-  id: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  role: UserRole;
-  orgId?: string;
-  orgSlug: string;
-
-  organization?: {
-    name: string;
-    slug: string;
-    visitorBadgePrefix?: string;
-    maxVisitorsPerDay?: number;
-  };
-
-  avatar?: string;
-}
-
-export type ApiUserProfile = Omit<
-  UserProfile,
-  "role" | "fullName" | "phoneNumber" | "orgSlug"
-> & {
-  role?: ApiUserRole;
-  userRole?: ApiUserRole;
-  fullName?: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  phone?: string;
-  orgSlug?: string;
-};

@@ -10,13 +10,12 @@ const isCsrfFailure = async (response: Response): Promise<boolean> => {
     return false;
   }
 
-  const body = (await response.clone().json().catch(() => null)) as
-    | { code?: unknown; message?: unknown }
-    | null;
+  const body = (await response
+    .clone()
+    .json()
+    .catch(() => null)) as { code?: unknown; message?: unknown } | null;
 
-  return (
-    body?.code === "EBADCSRFTOKEN" || body?.message === "invalid csrf token"
-  );
+  return body?.code === "EBADCSRFTOKEN" || body?.message === "invalid csrf token";
 };
 
 const fetchCsrfToken = async (): Promise<string> => {
@@ -57,9 +56,7 @@ export const csrfFetch = async (
   init: RequestInit = {},
 ): Promise<Response> => {
   const requestInput = input instanceof Request ? input : undefined;
-  const method = (init.method ?? requestInput?.method ?? "GET")
-    .toString()
-    .toUpperCase();
+  const method = (init.method ?? requestInput?.method ?? "GET").toString().toUpperCase();
   const isMutatingRequest = !nonMutatingMethods.has(method);
   const headers = new Headers(requestInput?.headers);
 

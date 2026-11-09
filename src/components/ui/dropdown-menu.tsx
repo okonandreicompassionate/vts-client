@@ -58,7 +58,7 @@ export const DropdownMenuContent = forwardRef<
       ref={ref}
       align="end"
       sideOffset={6}
-      className={`z-50 min-w-28 rounded-md border border-slate-200 bg-white p-1 shadow-lg outline-none dark:border-slate-700 dark:bg-slate-800 ${className ?? ""}`}
+      className={`z-50 min-w-28 rounded-md border border-slate-200 bg-white p-1  outline-none dark:border-zinc-700 dark:bg-zinc-800 ${className ?? ""}`}
       {...props}
     />
   </DropdownMenuPrimitive.Portal>
@@ -78,7 +78,7 @@ export const DropdownMenuRadioItem = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
-    className={`relative flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-xs text-slate-700 outline-none data-highlighted:bg-slate-100 dark:text-slate-200 dark:data-highlighted:bg-slate-700 ${className ?? ""}`}
+    className={`relative flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-xs text-slate-700 outline-none data-highlighted:bg-slate-100 dark:text-zinc-200 dark:data-highlighted:bg-zinc-700 ${className ?? ""}`}
     {...props}
   >
     <DropdownMenuPrimitive.ItemIndicator className="absolute left-1 text-sky-500">

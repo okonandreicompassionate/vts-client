@@ -2,13 +2,18 @@ import { useState } from "react";
 import { Button, message } from "antd";
 import { useMicrosoftLoginMutation } from "../api/auth-api-slice";
 import { useMsalAuth } from "../api/msal-client";
-import { useCompleteLogin } from "../hooks/use-complete-login";
+import type { SignInResponse } from "../types/api-types";
 
-export default function MicrosoftLogin() {
+interface MicrosoftLoginProps {
+  onSignIn: (response: SignInResponse) => void;
+  /** "Remember me" from the login form. */
+  rememberMe?: boolean;
+}
+
+export default function MicrosoftLogin({ onSignIn, rememberMe = true }: MicrosoftLoginProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [microsoftLogin, { isLoading }] = useMicrosoftLoginMutation();
   const msal = useMsalAuth();
-  const completeLogin = useCompleteLogin();
 
   const handleClick = async () => {
     try {
@@ -18,9 +23,10 @@ export default function MicrosoftLogin() {
 
       const response = await microsoftLogin({
         accessToken: msalResult.accessToken,
+        rememberMe,
       }).unwrap();
 
-      completeLogin(response);
+      onSignIn(response);
     } catch (error) {
       console.error(error);
       message.error("Unable to login with Microsoft, please try again");
@@ -32,11 +38,9 @@ export default function MicrosoftLogin() {
   return (
     <Button
       block
-      size="middle"
       icon={<img src="/microsoft.png" alt="" className="h-4 w-4" />}
       loading={isPopupOpen || isLoading}
       onClick={handleClick}
-      className="h-10! rounded-md! border-slate-200! text-sm! font-semibold! hover:border-slate-300! hover:bg-slate-50! dark:border-slate-600! dark:bg-slate-800! dark:text-slate-100! dark:hover:border-slate-500! dark:hover:bg-slate-700!"
     >
       Sign in with Microsoft
     </Button>

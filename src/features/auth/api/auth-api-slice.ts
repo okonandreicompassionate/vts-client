@@ -1,11 +1,8 @@
-import { adminApi } from "@/lib/api/admin/admin-api";
-import { publicApi } from "@/lib/api/public/public-api";
-import { visitorApi } from "@/lib/api/visitor/visitor-api";
+import { api } from "@/lib/api/api";
 
 import type {
   JoinOrganizationWithPasswordPayload,
   JoinOrganizationWithPasswordResponse,
-  VisitorMeResponse,
 } from "../types/api-types";
 
 import type {
@@ -13,11 +10,13 @@ import type {
   MicrosoftLoginPayload,
   LoginResponse,
   RefreshResponse,
+  SelectOrganizationPayload,
+  SignInResponse,
 } from "../types/api-types";
 
-export const authApi = adminApi.injectEndpoints({
+export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    Login: builder.mutation<LoginResponse, LoginPayload>({
+    Login: builder.mutation<SignInResponse, LoginPayload>({
       query: (body) => ({
         url: "/auth/login",
         method: "POST",
@@ -25,9 +24,17 @@ export const authApi = adminApi.injectEndpoints({
       }),
     }),
 
-    microsoftLogin: builder.mutation<LoginResponse, MicrosoftLoginPayload>({
+    microsoftLogin: builder.mutation<SignInResponse, MicrosoftLoginPayload>({
       query: (body) => ({
         url: "/auth/microsoft",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    selectOrganization: builder.mutation<LoginResponse, SelectOrganizationPayload>({
+      query: (body) => ({
+        url: "/auth/select-organization",
         method: "POST",
         body,
       }),
@@ -42,7 +49,7 @@ export const authApi = adminApi.injectEndpoints({
   }),
 });
 
-export const publicAuthApi = publicApi.injectEndpoints({
+export const publicAuthApi = api.injectEndpoints({
   endpoints: (builder) => ({
     joinOrganizationWithPassword: builder.mutation<
       JoinOrganizationWithPasswordResponse,
@@ -54,16 +61,14 @@ export const publicAuthApi = publicApi.injectEndpoints({
         body,
       }),
     }),
-  }),
-});
 
-export const visitorAuthApi = visitorApi.injectEndpoints({
-  endpoints: (builder) => ({
-    getVisitorMe: builder.query<VisitorMeResponse, void>({
-      query: () => ({
-        url: "/auth/visitor/me",
-        method: "GET",
-      }),
+    // Always answers with the same message, whether or not the email has an account.
+    forgotPassword: builder.mutation<{ message: string }, { email: string }>({
+      query: (body) => ({ url: "/auth/forgot-password", method: "POST", body }),
+    }),
+
+    resetPassword: builder.mutation<{ message: string }, { token: string; password: string }>({
+      query: (body) => ({ url: "/auth/reset-password", method: "POST", body }),
     }),
   }),
 });
@@ -71,11 +76,13 @@ export const visitorAuthApi = visitorApi.injectEndpoints({
 export const {
   useLoginMutation,
   useMicrosoftLoginMutation,
+  useSelectOrganizationMutation,
   useRefreshMutation,
 } = authApi;
 
 export const {
   useJoinOrganizationWithPasswordMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = publicAuthApi;
 
-export const { useGetVisitorMeQuery } = visitorAuthApi;

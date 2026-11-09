@@ -1,17 +1,20 @@
 import {
   createBrowserRouter,
+  Navigate,
   isRouteErrorResponse,
   RouterProvider,
   useRouteError,
 } from "react-router-dom";
 
 import { paths } from "@/config/paths";
-import { OrganizationLayout } from "@/features/organizations";
+import { OrganizationLayout } from "@/features/visitor-portal";
 import { adminRoutes } from "./routes/admin/routes";
 import { visitorRoutes } from "./routes/visitor/routes";
 import { Spinner } from "@/components/ui/spinner";
 import PageError from "@/components/feedback/page-error";
 import { rememberRoute } from "@/lib/router/route-history";
+import { PopupOutlet } from "@/lib/contexts/popup/popup-provider";
+import { LegacyAdminRedirect } from "./legacy-admin-redirect";
 
 function RouteError() {
   const error = useRouteError();
@@ -31,9 +34,19 @@ const router = createBrowserRouter([
   {
     HydrateFallback: () => <Spinner variant="screen" />,
     errorElement: <RouteError />,
-    element: <OrganizationLayout />,
+    // Popups render inside the router so modal/drawer content can use router hooks.
+    element: <PopupOutlet />,
     children: [
-      ...visitorRoutes,
+      {
+        index: true,
+        element: <Navigate to={paths.admin.login.getHref()} replace />,
+      },
+
+      // Public visitor pages: /:orgSlug/... (static admin paths below take precedence).
+      {
+        element: <OrganizationLayout />,
+        children: visitorRoutes,
+      },
 
       {
         path: paths.admin.login.path,
@@ -54,7 +67,31 @@ const router = createBrowserRouter([
         },
       },
 
+      {
+        path: paths.admin.forgotPassword.path,
+        lazy: async () => {
+          const { ForgotPasswordPage } = await import("@/features/auth/components/password-reset-pages");
+
+          return { Component: ForgotPasswordPage };
+        },
+      },
+
+      {
+        path: paths.admin.resetPassword.path,
+        lazy: async () => {
+          const { ResetPasswordPage } = await import("@/features/auth/components/password-reset-pages");
+
+          return { Component: ResetPasswordPage };
+        },
+      },
+
       ...adminRoutes,
+
+      // Old `/:orgSlug/<staff page>` links. More specific visitor routes win over this splat.
+      {
+        path: "/:orgSlug/*",
+        element: <LegacyAdminRedirect />,
+      },
     ],
   },
 ]);

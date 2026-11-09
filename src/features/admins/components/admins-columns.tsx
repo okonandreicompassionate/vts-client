@@ -17,7 +17,7 @@ export const adminColumns: ColumnsType<Admin> = [
     dataIndex: "email",
     key: "email",
     render: (email: string) => (
-      <span className="text-[12px] text-slate-700 dark:text-slate-300">
+      <span className="text-[12px] text-slate-700 dark:text-zinc-300">
         {email}
       </span>
     ),
@@ -27,7 +27,7 @@ export const adminColumns: ColumnsType<Admin> = [
     dataIndex: "role",
     key: "role",
     render: (role: AdminRole) => (
-      <span className="text-[12px] text-slate-700 dark:text-slate-300">
+      <span className="text-[12px] text-slate-700 dark:text-zinc-300">
         {formatRole(role)}
       </span>
     ),

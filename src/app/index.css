@@ -3,8 +3,15 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-* {
-  font-family: "Raleway Variable", sans-serif;
+/*
+ * Raleway (variable, all weights) is the app font, loaded by
+ * @fontsource-variable/raleway in main.tsx. Setting Tailwind's sans font makes
+ * it the page default (Tailwind's base styles apply it to <html>, and form
+ * controls inherit it); antd gets the same stack from theme.ts.
+ */
+@theme {
+  --font-sans:
+    "Raleway Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 html,
@@ -18,14 +25,14 @@ body,
 .dark,
 .dark body,
 .dark #root {
-  background: #0f172a;
-  color: #e2e8f0;
+  background: #18181b;
+  color: #e4e4e7;
 }
 
 .dark .ant-btn,
 .dark .ant-btn-default,
 .dark .ant-btn-primary {
-  border-color: #475569 !important;
+  border-color: #52525b !important;
   box-shadow: none !important;
   outline: none !important;
 }
@@ -36,7 +43,7 @@ body,
 .dark .ant-btn-default:focus-visible,
 .dark .ant-btn-primary:hover,
 .dark .ant-btn-primary:focus-visible {
-  border-color: #64748b !important;
+  border-color: #71717a !important;
   box-shadow: none !important;
   outline: none !important;
 }
@@ -55,7 +62,7 @@ body,
 .dark .ant-dropdown-menu,
 .dark .ant-popover-inner,
 .dark .ant-tooltip-inner {
-  background: #1e293b !important;
+  background: #27272a !important;
 }
 
 @media (max-width: 768px) {
@@ -147,6 +154,10 @@ body,
   padding-bottom: 0 !important;
 }
 
+.ant-form-item-label > label {
+  font-weight: 600;
+}
+
 .ant-input-textarea textarea {
   min-height: 80px !important;
   padding: 7px 10px !important;
@@ -220,4 +231,92 @@ td.ant-table-cell {
   cursor: default !important;
   background: transparent !important;
   background-color: transparent !important;
+}
+
+/*
+ * No shadows: antd's floating surfaces (theme.ts turns their shadow tokens
+ * off) get a 1px border instead, slate-200 in light mode and zinc-700 in dark.
+ */
+.ant-modal .ant-modal-content,
+.ant-dropdown .ant-dropdown-menu,
+.ant-select-dropdown,
+.ant-picker-dropdown .ant-picker-panel-container,
+.ant-popover .ant-popover-inner,
+.ant-message .ant-message-notice-content,
+.ant-notification .ant-notification-notice {
+  border: 1px solid #e2e8f0;
+  box-shadow: none;
+}
+
+.ant-drawer .ant-drawer-content-wrapper {
+  box-shadow: none;
+}
+
+.ant-drawer-right > .ant-drawer-content-wrapper {
+  border-left: 1px solid #e2e8f0;
+}
+
+.dark .ant-modal .ant-modal-content,
+.dark .ant-dropdown .ant-dropdown-menu,
+.dark .ant-select-dropdown,
+.dark .ant-picker-dropdown .ant-picker-panel-container,
+.dark .ant-popover .ant-popover-inner,
+.dark .ant-message .ant-message-notice-content,
+.dark .ant-notification .ant-notification-notice {
+  border-color: #3f3f46;
+}
+
+.dark .ant-drawer-right > .ant-drawer-content-wrapper {
+  border-left-color: #3f3f46;
+}
+
+/* Page header actions are icon-only on phones. The label stays for screen readers. */
+@media (max-width: 639.98px) {
+  .page-actions .ant-btn:not(.ant-btn-icon-only) {
+    width: 32px;
+    padding-inline: 0;
+    gap: 0;
+  }
+
+  .page-actions .ant-btn > span:not(.ant-btn-icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/*
+ * Gate QR poster (components/visitor-qr). While its modal is open the poster is
+ * also rendered at the end of <body>; printing then shows only that, on one A4 page.
+ */
+.visitor-qr-print {
+  display: none;
+}
+
+@page visitor-qr {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  body:has(> .visitor-qr-print) > *:not(.visitor-qr-print) {
+    display: none !important;
+  }
+
+  body:has(> .visitor-qr-print) {
+    margin: 0;
+    background: #ffffff;
+  }
+
+  .visitor-qr-print {
+    display: block;
+    page: visitor-qr;
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+    break-inside: avoid;
+  }
 }

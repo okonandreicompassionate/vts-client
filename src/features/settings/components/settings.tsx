@@ -1,38 +1,32 @@
-import { SettingOutlined } from "@ant-design/icons";
+import { QrcodeOutlined, SettingOutlined } from "@ant-design/icons";
+import VisitorQrModal from "@/components/visitor-qr/visitor-qr-modal";
 import { Button } from "antd";
-import { usePopup } from "@/features/popup/hooks/use-popup";
-import { useGetProfileQuery } from "../api/settings-api-slice.ts";
-import Header from "@/components/layout/dashboard-header.tsx";
+import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { useGetProfileQuery } from "@/lib/auth/profile-api";
+import { PageShell } from "@/components/page";
 import EditProfileModal from "./modals/edit-profile-modal.tsx";
 import ManageSecurityModal from "./modals/manage-security-modal.tsx";
 import NotificationPreferencesModal from "@/features/notifications/components/notifications-preferences-modal.tsx";
 import SystemSettingsModal from "./modals/system-settings-modal.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
-import { adminManagementRoles } from "@/types/user-role";
 
 export default function AdminSettings() {
   const { openModal } = usePopup();
   const { data: profile, isLoading: isLoadingProfile } = useGetProfileQuery();
 
-  const canManageSystemSettings = profile
-    ? adminManagementRoles.includes(profile.role)
-    : false;
+  const canManageSystemSettings = profile?.role === "SUPERADMIN";
 
   if (isLoadingProfile) {
     return (
-      <div>
-        <Header title="Settings" />
-
-        <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
-          <Spinner variant="page" />
-        </main>
-      </div>
+      <PageShell title="Settings">
+        <Spinner variant="page" />
+      </PageShell>
     );
   }
 
   const systemDescription = (
     <>
-      <span>Set company name, badge prefix and visitor limits</span>
+      <span>Set company details, visitor limits and email verification</span>
     </>
   );
 
@@ -64,6 +58,15 @@ export default function AdminSettings() {
       iconColor: "text-orange-400",
       modal: <NotificationPreferencesModal />,
     },
+    {
+      key: "visitor-qr",
+      title: "Visitor QR Code",
+      description: "Print the gate poster visitors scan to register",
+      icon: <QrcodeOutlined />,
+      iconBg: "bg-sky-50",
+      iconColor: "text-sky-500",
+      modal: <VisitorQrModal />,
+    },
     ...(canManageSystemSettings
       ? [
           {
@@ -80,35 +83,31 @@ export default function AdminSettings() {
   ];
 
   return (
-    <div>
-      <Header title="Settings" />
-
-      <main className="flex-1 px-2 pt-1 pb-3 sm:px-2 md:px-2 md:py-3">
-        <div className="w-full max-w-4xl space-y-3 sm:space-y-4 md:max-w-full">
-          {settingsItems.map((item) => (
-            <Button
-              key={item.key}
-              type="default"
-              onClick={() => openModal(item.modal)}
-              className="flex! h-auto! w-full! items-center! justify-center! rounded-xl! border-slate-100! bg-white! px-4! py-3! text-left! shadow-sm shadow-slate-100 hover:border-slate-200! sm:gap-4 sm:px-6! lg:justify-start! lg:text-left! dark:border-slate-700! dark:bg-slate-800! dark:shadow-none dark:hover:border-slate-600!"
+    <PageShell title="Settings" description="Your profile, security and notification preferences.">
+      <div className="w-full max-w-4xl space-y-3 sm:space-y-4 md:max-w-full">
+        {settingsItems.map((item) => (
+          <Button
+            key={item.key}
+            type="default"
+            onClick={() => openModal(item.modal)}
+            className="flex! h-auto! w-full! items-center! justify-center! rounded-xl! border-slate-200! bg-white! px-4! py-3! text-left! hover:border-slate-200! sm:gap-4 sm:px-6! lg:justify-start! lg:text-left! dark:border-zinc-700! dark:bg-zinc-800! dark:hover:border-zinc-600!"
+          >
+            <span
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${item.iconBg} ${item.iconColor}`}
             >
-              <span
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${item.iconBg} ${item.iconColor}`}
-              >
-                {item.icon}
+              {item.icon}
+            </span>
+            <span className="flex-1 whitespace-normal">
+              <span className="block text-[13px] font-bold text-slate-800 dark:text-zinc-100">
+                {item.title}
               </span>
-              <span className="flex-1 whitespace-normal">
-                <span className="block text-[13px] font-bold text-slate-800 dark:text-slate-100">
-                  {item.title}
-                </span>
-                <span className="mt-0.5 block text-xs font-normal text-slate-400 dark:text-slate-400">
-                  {item.description}
-                </span>
+              <span className="mt-0.5 block text-xs font-normal text-slate-400 dark:text-zinc-400">
+                {item.description}
               </span>
-            </Button>
-          ))}
-        </div>
-      </main>
-    </div>
+            </span>
+          </Button>
+        ))}
+      </div>
+    </PageShell>
   );
 }

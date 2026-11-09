@@ -1,23 +1,37 @@
-export interface EmployeeRow {
+export interface EmployeeApiItem {
   id: string;
-  employeeId: string;
+  employeeId: string | null;
   firstName: string;
   lastName: string;
+  email: string | null;
+  phone: string | null;
+  workPhone: string | null;
   role: string | null;
   department: string | null;
+  /** Login role; USER is a plain host. */
+  userRole: string;
+  /** Visits this employee hosted that the visitor checked in for. */
+  visitorCount: number;
+  /** Check-in time of the most recent of those visits. */
+  lastVisitAt: string | null;
 }
 
 export interface EmployeeListResponse {
-  items: EmployeeRow[];
+  items: EmployeeApiItem[];
   total: number;
-  response: string;
+  page: number;
+  limit: number;
+}
+
+export interface EmployeeImportRowError {
+  /** Spreadsheet row number (1-based, header is row 1). */
+  row: number;
+  message: string;
 }
 
 export interface EmployeeUploadResponse {
   imported: number;
+  updated: number;
   skipped: number;
-  errors?: Array<{
-    row: number;
-    message: string;
-  }>;
+  errors: EmployeeImportRowError[];
 }

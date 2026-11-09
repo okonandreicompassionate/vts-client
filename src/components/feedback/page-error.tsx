@@ -104,13 +104,13 @@ export default function PageError({
     if (variant === "not-found") {
       const previousRoute = getPreviousRoute();
 
-      if (previousRoute?.orgSlug) {
-        const destination =
-          previousRoute.area === "admin"
-            ? paths.admin.login.getHref(previousRoute.orgSlug)
-            : paths.home.getHref(previousRoute.orgSlug);
+      if (previousRoute?.area === "admin") {
+        window.location.assign(paths.admin.login.getHref());
+        return;
+      }
 
-        window.location.assign(destination);
+      if (previousRoute?.orgSlug) {
+        window.location.assign(paths.home.getHref(previousRoute.orgSlug));
         return;
       }
 
@@ -123,16 +123,16 @@ export default function PageError({
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6">
-      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-zinc-100">
         {copy.heading}
       </h1>
 
-      <p className="max-w-md text-center text-slate-500 dark:text-slate-400">
+      <p className="max-w-md text-center text-slate-500 dark:text-zinc-400">
         {description}
       </p>
 
       {variant === "unexpected" && !isDev && (
-        <p className="text-xs text-slate-400 dark:text-slate-500">
+        <p className="text-xs text-slate-400 dark:text-zinc-500">
           Reference: {errorId}
         </p>
       )}
@@ -141,16 +141,14 @@ export default function PageError({
         variant === "unexpected" &&
         error instanceof Error &&
         error.stack && (
-          <pre className="max-w-lg overflow-auto rounded bg-slate-100 p-3 text-left text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+          <pre className="max-w-lg overflow-auto rounded bg-slate-100 p-3 text-left text-xs text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
             {error.stack}
           </pre>
         )}
 
       <Button
         type="primary"
-        size="large"
         onClick={handleAction}
-        className="h-6.5!"
       >
         {copy.actionLabel}
       </Button>

@@ -32,11 +32,11 @@ export const TooltipContent = forwardRef<
       ref={ref}
       side="right"
       sideOffset={8}
-      className={`z-50 rounded-md bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-lg dark:bg-slate-100 dark:text-slate-900 ${className ?? ""}`}
+      className={`z-50 rounded-md bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-white dark:bg-zinc-100 dark:text-zinc-900 ${className ?? ""}`}
       {...props}
     >
       {children}
-      <TooltipPrimitive.Arrow className="fill-slate-900 dark:fill-slate-100" />
+      <TooltipPrimitive.Arrow className="fill-slate-900 dark:fill-zinc-100" />
     </TooltipPrimitive.Content>
   </TooltipPrimitive.Portal>
 ));
