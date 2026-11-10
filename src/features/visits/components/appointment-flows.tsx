@@ -82,10 +82,13 @@ function formatCreatedAppointment(
 /** Opened with `openModal(<CreateAppointmentModal … />)`. On success it shows `AppointmentCreatedModal`. */
 export function CreateAppointmentModal({
   hostName,
+  canChooseHost,
   canManage,
 }: {
-  /** Fixed host for HOST and FRONTDESK; otherwise a host is picked. */
+  /** Fixed to the signed-in user for non-admin and non-facility creators. */
   hostName?: string;
+  /** Only admins and facility staff may assign another host. */
+  canChooseHost: boolean;
   /** Whether the follow-up details drawer offers edit/reschedule/cancel. */
   canManage: boolean;
 }) {
@@ -94,7 +97,9 @@ export function CreateAppointmentModal({
   const [form] = Form.useForm<AppointmentFormValues>();
   const [bookAppointment, { isLoading }] = useBookAppointmentMutation();
   const submission = useSubmissionKey("staff-booking");
-  const { data: hosts = [], isLoading: isLoadingHosts } = useGetStaffHostsQuery();
+  const { data: hosts = [], isLoading: isLoadingHosts } = useGetStaffHostsQuery(undefined, {
+    skip: !canChooseHost,
+  });
   const [requestedDate, setRequestedDate] = useState("");
   const [requestedTime, setRequestedTime] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
@@ -118,8 +123,9 @@ export function CreateAppointmentModal({
       // Without this the server books the visit for whoever is signed in.
       ...(values.hostId ? { hostId: values.hostId } : {}),
     };
-    const selectedHostName =
-      hostName ?? hosts.find((host) => host.id === values.hostId)?.fullName ?? "";
+    const selectedHostName = canChooseHost
+      ? (hosts.find((host) => host.id === values.hostId)?.fullName ?? "")
+      : (hostName ?? "");
 
     try {
       const response = await bookAppointment({
@@ -206,11 +212,7 @@ export function CreateAppointmentModal({
             <Input type="tel" placeholder="Enter mobile number" autoComplete="tel" />
           </Form.Item>
 
-          {hostName ? (
-            <Form.Item label="Host">
-              <Input value={hostName} readOnly />
-            </Form.Item>
-          ) : (
+          {canChooseHost ? (
             <Form.Item
               label="Host"
               name="hostId"
@@ -230,6 +232,10 @@ export function CreateAppointmentModal({
                     .includes(input.toLowerCase())
                 }
               />
+            </Form.Item>
+          ) : (
+            <Form.Item label="Host">
+              <Input value={hostName ?? ""} readOnly />
             </Form.Item>
           )}
 

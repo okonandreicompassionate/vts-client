@@ -10,7 +10,7 @@ export default function LeftLayout() {
         <div className="absolute -bottom-32 left-1/4 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
       </div>
 
-      <div className="auth-branding-scale relative my-auto flex w-full flex-col items-center text-center">
+      <div className="relative my-auto flex w-full flex-col items-center text-center">
         <img src="/logo.svg" alt="GuestX" className="mb-12 h-auto w-48 object-contain" />
 
         <div className="w-full max-w-[430px] overflow-hidden rounded-xl border border-slate-200 dark:border-zinc-700">

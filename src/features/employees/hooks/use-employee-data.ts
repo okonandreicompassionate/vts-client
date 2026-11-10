@@ -11,7 +11,7 @@ export const toEmployeeRow = (employee: EmployeeListResponse["items"][number]): 
   phone: employee.workPhone ?? employee.phone,
   role: employee.role,
   department: employee.department,
-  access: employee.userRole === "USER" ? "Host" : formatRole(employee.userRole),
+  access: formatRole(employee.userRole),
   visitorCount: employee.visitorCount,
   lastVisitAt: employee.lastVisitAt,
 });

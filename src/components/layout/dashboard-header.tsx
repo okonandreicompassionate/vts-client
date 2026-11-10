@@ -37,8 +37,8 @@ const DashboardHeader = () => {
     openModal(<SystemSettingsModal />);
   };
 
-  const displayName =
-    profile?.fullName ?? profile?.email ?? "Admin User";
+  const displayName = profile?.fullName ?? profile?.email ?? "Admin User";
+  const accountLabel = profile?.email ?? displayName;
 
   const normalizedRole = formatRole(profile?.role);
   const isDashboard = location.pathname === paths.admin.dashboard.getHref();
@@ -54,13 +54,9 @@ const DashboardHeader = () => {
       key: "profile",
       label: (
         <div>
-          <p className="text-xs font-semibold text-slate-900 dark:text-zinc-100">
-            {displayName}
-          </p>
+          <p className="text-xs font-semibold text-slate-900 dark:text-zinc-100">{displayName}</p>
 
-          <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-            {normalizedRole}
-          </p>
+          <p className="text-[11px] text-slate-500 dark:text-zinc-400">{normalizedRole}</p>
         </div>
       ),
       disabled: true,
@@ -148,7 +144,7 @@ const DashboardHeader = () => {
   ];
 
   return (
-    <header className="z-30 flex min-h-13 shrink-0 items-center justify-between border-b border-slate-100 bg-white/95 ps-2 pe-1 backdrop-blur dark:border-zinc-700 dark:bg-zinc-900 md:ps-5 md:pe-2">
+    <header className="z-30 flex min-h-13 shrink-0 items-center justify-between border-b border-slate-200/80 bg-white/95 ps-2 pe-2 backdrop-blur md:ps-5 md:pe-4 dark:border-zinc-700 dark:bg-zinc-900">
       {/* Left side */}
       <div className="flex min-w-0 items-center">
         <Button
@@ -167,39 +163,40 @@ const DashboardHeader = () => {
       </div>
 
       {/* Right side */}
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2.5">
         <NotificationBell />
-        <ThemeToggle />
+        <div className="flex h-8 items-center border-e border-slate-200 pe-2.5 sm:pe-3 dark:border-zinc-700">
+          <ThemeToggle />
+        </div>
 
         {isLoading ? (
           <div className="flex h-8 w-8 items-center justify-center">
             <Spinner variant="inline" />
           </div>
         ) : (
-          <Dropdown
-            menu={{ items: menuItems }}
-            placement="bottomRight"
-            trigger={["click"]}
-          >
+          <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={["click"]}>
             <button
               type="button"
-              className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-1 text-sm font-medium text-slate-800 transition hover:bg-slate-50 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-900"
+              className="group inline-flex max-w-[min(55vw,19rem)] cursor-pointer items-center gap-2 rounded-full py-1 ps-1 pe-1.5 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 sm:max-w-[22rem] sm:gap-2.5 sm:pe-2 dark:text-zinc-100 dark:hover:bg-zinc-800"
               aria-label={`Open account menu for ${displayName}`}
             >
               <Avatar
                 name={displayName}
-                size="sm"
+                size="md"
                 src={profile?.avatar}
+                className="ring-2 ring-white dark:ring-zinc-800"
               />
 
-              <span className="hidden flex-col text-left leading-tight sm:flex">
-                <span className="text-[13px] font-medium">{displayName}</span>
-                <span className="text-[11px] font-normal text-slate-500 dark:text-zinc-400">
+              <span className="flex min-w-0 flex-col text-left leading-tight">
+                <span className="max-w-[min(38vw,15rem)] truncate text-xs font-semibold text-slate-800 sm:max-w-[17rem] dark:text-zinc-100">
+                  {accountLabel}
+                </span>
+                <span className="mt-0.5 text-[10px] font-medium text-slate-500 dark:text-zinc-400">
                   {normalizedRole}
                 </span>
               </span>
 
-              <DownOutlined className="flex items-center text-[10px] text-slate-500 dark:text-zinc-400" />
+              <DownOutlined className="ms-0.5 flex shrink-0 items-center text-[9px] text-slate-400 transition-transform group-aria-expanded:rotate-180 dark:text-zinc-500" />
             </button>
           </Dropdown>
         )}

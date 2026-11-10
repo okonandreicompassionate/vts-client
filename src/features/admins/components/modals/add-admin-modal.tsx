@@ -89,7 +89,7 @@ export default function AddAdminModal() {
                   value: "ADMIN",
                 },
                 {
-                  label: "Host",
+                  label: "User",
                   value: "HOST",
                 },
               ]}

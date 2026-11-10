@@ -10,7 +10,7 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="auth-layout relative grid min-h-dvh w-full grid-cols-1 bg-white md:grid-cols-2 dark:bg-zinc-950">
+    <div className="relative grid min-h-dvh w-full grid-cols-1 bg-white md:grid-cols-2 dark:bg-zinc-950">
       <div className="hidden min-h-dvh min-w-0 md:block">
         <LeftLayout />
       </div>
@@ -18,7 +18,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       <main className="flex min-h-dvh w-full min-w-0 flex-col items-center justify-center px-5 py-6 lg:px-12">
         <Header />
 
-        <div className="auth-form-scale w-full max-w-md">{children}</div>
+        <div className="w-full max-w-md">{children}</div>
       </main>
 
       <div className="fixed top-4 right-4 z-10">

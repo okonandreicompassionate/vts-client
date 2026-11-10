@@ -13,6 +13,12 @@
   --font-sans: "Raleway Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+@media (min-width: 768px) {
+  html {
+    font-size: 80%;
+  }
+}
+
 html,
 body,
 #root {
@@ -27,14 +33,6 @@ body,
 .dark #root {
   background: #18181b;
   color: #e4e4e7;
-}
-
-@media (min-width: 1024px) {
-  .auth-layout .auth-form-scale,
-  .auth-layout .auth-branding-scale {
-    transform: scale(0.8);
-    transform-origin: center;
-  }
 }
 
 .dark .ant-btn,

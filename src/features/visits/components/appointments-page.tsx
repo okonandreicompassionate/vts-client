@@ -48,6 +48,7 @@ export default function AppointmentsPage() {
   const isHost = role === "HOST";
   const isFrontDesk = role === "FRONTDESK";
   const canCreateAppointment = isHost || role === "FRONTDESK" || hasRole(role, reviewerRoles);
+  const canChooseAppointmentHost = hasRole(role, adminRoles) || role === "FACILITY";
   const canReviewAppointments = hasRole(role, reviewerRoles);
   // Matches the server: a visit's host, or an admin, may edit, reschedule or cancel it.
   const canManageAppointments = hasRole(role, adminRoles) || role === "HOST";
@@ -59,8 +60,7 @@ export default function AppointmentsPage() {
 
   const tableFilters = {
     search,
-    statusGroup:
-      canReviewAppointments || isFrontDesk || isHost ? ("appointments" as const) : undefined,
+    statusGroup: canReviewAppointments || isFrontDesk ? ("appointments" as const) : undefined,
     status: canReviewAppointments
       ? activeAppointmentTab
       : isFrontDesk
@@ -68,7 +68,7 @@ export default function AppointmentsPage() {
           ? undefined
           : activeAppointmentTab
         : isHost
-          ? activeAppointmentTab
+          ? undefined
           : "APPROVED",
   };
 
@@ -192,7 +192,7 @@ export default function AppointmentsPage() {
   );
 
   // A status card filters the table to one status; the pill would repeat it on every row.
-  const hasStatusTabs = canReviewAppointments || isFrontDesk || isHost;
+  const hasStatusTabs = canReviewAppointments || isFrontDesk;
   const columns: ColumnsType<VisitorRow> = [
     visitorColumns.visitId(),
     visitorColumns.visitor("email", false),
@@ -291,7 +291,10 @@ export default function AppointmentsPage() {
               onClick={() =>
                 openModal(
                   <CreateAppointmentModal
-                    hostName={isHost || isFrontDesk ? currentUser?.fullName : undefined}
+                    hostName={
+                      canChooseAppointmentHost ? undefined : (currentUser?.fullName ?? "You")
+                    }
+                    canChooseHost={canChooseAppointmentHost}
                     canManage={canManageAppointments}
                   />,
                 )
