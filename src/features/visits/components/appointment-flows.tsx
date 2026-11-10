@@ -4,7 +4,7 @@ import {
   ClockCircleOutlined,
   DeleteOutlined,
   EditOutlined,
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { Checkbox, DatePicker, Form, Input, Select, TimePicker, message } from "antd";
 import { useState, type ReactNode } from "react";
@@ -84,7 +84,7 @@ export function CreateAppointmentModal({
   hostName,
   canManage,
 }: {
-  /** Fixed host (hosts book for themselves); otherwise a host is picked. */
+  /** Fixed host for HOST and FRONTDESK; otherwise a host is picked. */
   hostName?: string;
   /** Whether the follow-up details drawer offers edit/reschedule/cancel. */
   canManage: boolean;
@@ -159,11 +159,7 @@ export function CreateAppointmentModal({
       />
 
       <CustomModal.Body>
-        <Form<AppointmentFormValues>
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-        >
+        <Form<AppointmentFormValues> form={form} layout="vertical" onFinish={handleSubmit}>
           <div className="grid grid-cols-1 gap-x-3 sm:grid-cols-2">
             <Form.Item
               label="First Name"

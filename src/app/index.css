@@ -10,14 +10,14 @@
  * controls inherit it); antd gets the same stack from theme.ts.
  */
 @theme {
-  --font-sans:
-    "Raleway Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Raleway Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 html,
 body,
 #root {
   min-height: 100%;
+  overflow-x: clip;
   background: #ffffff;
   color: #1f2937;
 }
@@ -27,6 +27,14 @@ body,
 .dark #root {
   background: #18181b;
   color: #e4e4e7;
+}
+
+@media (min-width: 1024px) {
+  .auth-layout .auth-form-scale,
+  .auth-layout .auth-branding-scale {
+    transform: scale(0.8);
+    transform-origin: center;
+  }
 }
 
 .dark .ant-btn,

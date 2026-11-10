@@ -11,10 +11,7 @@ export default function LandingPage() {
   const { orgSlug } = useOrganization();
 
   return (
-    <div
-      className="relative isolate flex min-h-screen w-full items-center justify-center overflow-hidden bg-white px-4 py-10 dark:bg-zinc-900"
-      style={{ position: "relative", isolation: "isolate" }}
-    >
+    <div className="relative isolate flex min-h-dvh w-full items-center justify-center overflow-hidden bg-white px-4 py-10 dark:bg-zinc-900">
       <LandingPageBackground />
 
       <div className="absolute top-4 right-4 z-10">

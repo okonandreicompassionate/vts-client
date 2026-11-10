@@ -11,6 +11,7 @@ import type {
 } from "../types/api-types";
 import type { CreateVisitResponse, HostItem, VisitResponse } from "@/types/visit-api";
 import { toHostOptions } from "@/utils/host-options";
+import { isSameHostName } from "../utils/visits";
 
 export const adminVisitsApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -25,6 +26,47 @@ export const adminVisitsApi = api.injectEndpoints({
           ...(search ? { search } : {}),
         },
       }),
+      providesTags: ["Visits"],
+    }),
+
+    getAppointmentsForHost: builder.query<VisitListPage, string>({
+      async queryFn(hostName, _queryApi, _extraOptions, baseQuery) {
+        const visits: VisitListPage["data"] = [];
+        let page = 1;
+        let hasNextPage = true;
+
+        while (hasNextPage) {
+          const result = await baseQuery({
+            url: "/visits",
+            params: { page, limit: 100 },
+          });
+
+          if (result.error) {
+            return { error: result.error };
+          }
+
+          const visitPage = result.data as VisitListPage;
+          visits.push(
+            ...visitPage.data.filter((visit) => isSameHostName(visit.hostName, hostName)),
+          );
+          hasNextPage = visitPage.meta.hasNextPage;
+          page = visitPage.meta.page + 1;
+        }
+
+        return {
+          data: {
+            data: visits,
+            meta: {
+              page: 1,
+              limit: visits.length,
+              total: visits.length,
+              totalPages: 1,
+              hasNextPage: false,
+              hasPreviousPage: false,
+            },
+          },
+        };
+      },
       providesTags: ["Visits"],
     }),
 
@@ -181,6 +223,7 @@ export const adminVisitsApi = api.injectEndpoints({
 
 export const {
   useGetVisitsQuery,
+  useGetAppointmentsForHostQuery,
   useGetDashboardQuery,
   useRescheduleVisitMutation,
   useCancelVisitMutation,

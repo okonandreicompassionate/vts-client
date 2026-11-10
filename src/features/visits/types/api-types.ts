@@ -92,7 +92,7 @@ export interface BookAppointmentPayload {
   purpose: string;
   date: string;
   time: string;
-  /** Staff booking for someone else; hosts always book for themselves. */
+  /** Staff booking for someone else; HOST and FRONTDESK book for themselves. */
   hostId?: string;
 }
 
@@ -115,13 +115,13 @@ export interface VisitRecord {
   referenceId?: string;
   fullName?: string;
   name?: string;
-  email?: string;
-  phone?: string;
-  phoneNumber?: string;
-  hostName?: string;
-  host?: string;
-  purposeOfVisit?: string;
-  purpose?: string;
+  email?: string | null;
+  phone?: string | null;
+  phoneNumber?: string | null;
+  hostName?: string | null;
+  host?: string | null;
+  purposeOfVisit?: string | null;
+  purpose?: string | null;
   date?: string;
   status?: string;
   time?: string;

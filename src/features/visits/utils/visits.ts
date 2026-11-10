@@ -32,6 +32,10 @@ export interface VisitorRow {
   checkOut: string;
 }
 
+export function isSameHostName(assignedHost: string | null | undefined, hostName: string): boolean {
+  return assignedHost?.trim().toLowerCase() === hostName.trim().toLowerCase();
+}
+
 export function isVisitAlreadyCheckedInError(error: unknown): boolean {
   if (!error || typeof error !== "object" || !("status" in error) || error.status !== 409) {
     return false;

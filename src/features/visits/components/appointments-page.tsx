@@ -6,14 +6,15 @@ import {
   FileTextOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import { Button, message } from "antd";
+import { Button, message, Select } from "antd";
 import { RowActions } from "@/components/ui/row-actions";
 import { getAppointmentActions } from "../utils/appointment-row-actions";
 import type { ColumnsType } from "antd/es/table";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { adminRoles, hasRole, reviewerRoles } from "@/types/user-role";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
+import { useGetAppointmentsForHostQuery } from "../api/admins-visit-api-slice";
 
 import {
   DataTableCard,
@@ -23,7 +24,7 @@ import {
   type StatCardItem,
   RefreshButton,
 } from "@/components/page";
-import type { VisitorRow } from "../utils/visits";
+import { isSameHostName, toVisitorRow, type VisitorRow } from "../utils/visits";
 import { useVisitorTableData } from "../hooks/use-visitor-table-data";
 import { useVisitReport } from "../hooks/use-visit-report";
 import { statusColumns, visitorColumns } from "./visitor-columns";
@@ -38,6 +39,7 @@ import HostDecisionModal from "./modals/host-decision-modal";
 import { useVisitorCheckActions } from "../hooks/use-visitor-check-actions";
 
 type AppointmentTab = "ALL" | "APPROVED" | "REJECTED" | "PENDING";
+type AppointmentScope = "ALL" | "MINE";
 
 export default function AppointmentsPage() {
   const { openModal, openDrawer } = usePopup();
@@ -53,10 +55,12 @@ export default function AppointmentsPage() {
   const [pageSize, setPageSize] = useState(20);
   const [search, setSearch] = useState("");
   const [activeAppointmentTab, setActiveAppointmentTab] = useState<AppointmentTab>("ALL");
+  const [appointmentScope, setAppointmentScope] = useState<AppointmentScope>("ALL");
 
   const tableFilters = {
     search,
-    statusGroup: canReviewAppointments || isFrontDesk ? ("appointments" as const) : undefined,
+    statusGroup:
+      canReviewAppointments || isFrontDesk || isHost ? ("appointments" as const) : undefined,
     status: canReviewAppointments
       ? activeAppointmentTab
       : isFrontDesk
@@ -64,7 +68,7 @@ export default function AppointmentsPage() {
           ? undefined
           : activeAppointmentTab
         : isHost
-          ? undefined
+          ? activeAppointmentTab
           : "APPROVED",
   };
 
@@ -81,9 +85,69 @@ export default function AppointmentsPage() {
     page,
     limit: pageSize,
     ...tableFilters,
+    enabled: !(isFrontDesk && appointmentScope === "MINE"),
+  });
+  const myAppointmentsQuery = useGetAppointmentsForHostQuery(currentUser?.fullName ?? "", {
+    skip: !isFrontDesk || appointmentScope !== "MINE" || !currentUser?.fullName,
   });
   const { generateVisitReport, isGeneratingReport } = useVisitReport("appointments");
   const { confirmApprove, isApproving } = useVisitorCheckActions();
+
+  const matchingMyAppointments = useMemo(
+    () =>
+      (myAppointmentsQuery.data?.data ?? [])
+        .map((visit, index) => toVisitorRow(visit, index))
+        .filter((appointment) => {
+          const matchesSearch = [
+            appointment.name,
+            appointment.referenceId,
+            appointment.phone,
+            appointment.email,
+          ].some((value) => value?.toLowerCase().includes(search.trim().toLowerCase()));
+
+          return matchesSearch;
+        }),
+    [myAppointmentsQuery.data, search],
+  );
+  const myAppointments = matchingMyAppointments.filter(
+    (appointment) =>
+      activeAppointmentTab === "ALL" ||
+      appointment.status.toUpperCase().replaceAll(" ", "_") === activeAppointmentTab,
+  );
+  const personalAppointmentCounts = {
+    total: matchingMyAppointments.length,
+    pending: matchingMyAppointments.filter((appointment) => appointment.status === "Pending")
+      .length,
+    approved: matchingMyAppointments.filter((appointment) => appointment.status === "Approved")
+      .length,
+    rejected: matchingMyAppointments.filter((appointment) => appointment.status === "Rejected")
+      .length,
+  };
+  const showingMyAppointments = isFrontDesk && appointmentScope === "MINE";
+  const displayedAppointments = showingMyAppointments
+    ? myAppointments.slice((page - 1) * pageSize, page * pageSize)
+    : visitorRecords;
+  const displayedCounts = showingMyAppointments ? personalAppointmentCounts : appointmentCounts;
+  const tableLoading = showingMyAppointments ? myAppointmentsQuery.isFetching : isLoading;
+  const personalError = myAppointmentsQuery.error;
+  const tableError = showingMyAppointments
+    ? personalError
+      ? typeof personalError === "object" && "data" in personalError
+        ? ((personalError.data as { message?: string } | undefined)?.message ??
+          "Please refresh and try again.")
+        : "Please refresh and try again."
+      : undefined
+    : isError
+      ? (errorMessage ?? "Please refresh and try again.")
+      : undefined;
+  const refreshAppointments = async () => {
+    if (showingMyAppointments) {
+      await myAppointmentsQuery.refetch();
+      return;
+    }
+
+    await refetch();
+  };
 
   const openDetails = (appointment: VisitorRow) =>
     openDrawer(
@@ -128,7 +192,7 @@ export default function AppointmentsPage() {
   );
 
   // A status card filters the table to one status; the pill would repeat it on every row.
-  const hasStatusTabs = canReviewAppointments || isFrontDesk;
+  const hasStatusTabs = canReviewAppointments || isFrontDesk || isHost;
   const columns: ColumnsType<VisitorRow> = [
     visitorColumns.visitId(),
     visitorColumns.visitor("email", false),
@@ -148,28 +212,28 @@ export default function AppointmentsPage() {
     {
       key: "ALL",
       label: "Total",
-      value: appointmentCounts?.total ?? 0,
+      value: displayedCounts?.total ?? 0,
       icon: <TeamOutlined />,
       tone: "sky",
     },
     {
       key: "APPROVED",
       label: "Approved",
-      value: appointmentCounts?.approved ?? 0,
+      value: displayedCounts?.approved ?? 0,
       icon: <CheckCircleOutlined />,
       tone: "emerald",
     },
     {
       key: "REJECTED",
       label: "Rejected",
-      value: appointmentCounts?.rejected ?? 0,
+      value: displayedCounts?.rejected ?? 0,
       icon: <CloseCircleOutlined />,
       tone: "rose",
     },
     {
       key: "PENDING",
       label: "Pending",
-      value: appointmentCounts?.pending ?? 0,
+      value: displayedCounts?.pending ?? 0,
       icon: <ClockCircleOutlined />,
       tone: "amber",
     },
@@ -178,6 +242,10 @@ export default function AppointmentsPage() {
   const generateAppointmentReport = () =>
     generateVisitReport({
       ...tableFilters,
+      filter:
+        showingMyAppointments && currentUser?.fullName
+          ? (row) => isSameHostName(row.host, currentUser.fullName)
+          : undefined,
       columns: [
         { header: "ID", value: (row) => row.id },
         { header: "Visitor", value: (row) => row.name },
@@ -199,11 +267,13 @@ export default function AppointmentsPage() {
       description="Review and manage visit requests."
       actions={
         <>
-          {(isFrontDesk || canReviewAppointments) && (
+          {(isFrontDesk || canReviewAppointments || isHost) && (
             <RefreshButton
-              loading={isLoading}
+              loading={tableLoading}
               onClick={() => {
-                void refetch().catch(() => message.error("Appointments could not be refreshed."));
+                void refreshAppointments().catch(() =>
+                  message.error("Appointments could not be refreshed."),
+                );
               }}
             />
           )}
@@ -221,7 +291,7 @@ export default function AppointmentsPage() {
               onClick={() =>
                 openModal(
                   <CreateAppointmentModal
-                    hostName={role === "HOST" ? currentUser?.fullName : undefined}
+                    hostName={isHost || isFrontDesk ? currentUser?.fullName : undefined}
                     canManage={canManageAppointments}
                   />,
                 )
@@ -242,7 +312,22 @@ export default function AppointmentsPage() {
           },
           placeholder: "Search by name, reference or phone",
         }}
-      />
+      >
+        {isFrontDesk && (
+          <Select<AppointmentScope>
+            aria-label="Appointment scope"
+            value={appointmentScope}
+            options={[
+              { label: "All appointments", value: "ALL" },
+              { label: "My appointments", value: "MINE" },
+            ]}
+            onChange={(scope) => {
+              setAppointmentScope(scope);
+              setPage(1);
+            }}
+          />
+        )}
+      </FilterBar>
 
       {hasStatusTabs && (
         <StatCards<AppointmentTab>
@@ -257,28 +342,32 @@ export default function AppointmentsPage() {
 
       <DataTableCard<VisitorRow>
         columns={columns}
-        dataSource={visitorRecords}
+        dataSource={displayedAppointments}
         rowKey="id"
         className="appointment-table"
-        loading={isLoading}
+        loading={tableLoading}
         error={
-          isError
+          tableError
             ? {
-                message: `Appointments could not be loaded: ${errorMessage ?? "Please refresh and try again."}`,
-                onRetry: () => void refetch(),
+                message: `Appointments could not be loaded: ${tableError}`,
+                onRetry: () => void refreshAppointments(),
               }
             : null
         }
         empty={
           <p className="text-sm text-slate-500 dark:text-zinc-400">
-            {search ? "No appointments match your search." : "No appointments yet."}
+            {search
+              ? "No appointments match your search."
+              : showingMyAppointments
+                ? "No appointments are assigned to you yet."
+                : "No appointments yet."}
           </p>
         }
         onRowClick={openDetails}
         pagination={{
           page,
           pageSize,
-          total: totalEntries,
+          total: showingMyAppointments ? myAppointments.length : totalEntries,
           onChange: (nextPage, nextPageSize) => {
             setPage(nextPageSize === pageSize ? nextPage : 1);
             setPageSize(nextPageSize);
