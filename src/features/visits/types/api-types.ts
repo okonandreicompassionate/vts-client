@@ -56,6 +56,7 @@ export interface VisitListItem {
   name: string;
   phone?: string | null;
   email?: string | null;
+  hostId?: string | null;
   hostName?: string | null;
   purpose?: string | null;
   checkInTime?: string | null;

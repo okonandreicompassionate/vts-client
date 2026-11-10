@@ -29,8 +29,8 @@ export const adminVisitsApi = api.injectEndpoints({
       providesTags: ["Visits"],
     }),
 
-    getAppointmentsForHost: builder.query<VisitListPage, string>({
-      async queryFn(hostName, _queryApi, _extraOptions, baseQuery) {
+    getPersonalAppointments: builder.query<VisitListPage, { userId: string; userName: string }>({
+      async queryFn({ userId, userName }, _queryApi, _extraOptions, baseQuery) {
         const visits: VisitListPage["data"] = [];
         let page = 1;
         let hasNextPage = true;
@@ -47,7 +47,9 @@ export const adminVisitsApi = api.injectEndpoints({
 
           const visitPage = result.data as VisitListPage;
           visits.push(
-            ...visitPage.data.filter((visit) => isSameHostName(visit.hostName, hostName)),
+            ...visitPage.data.filter((visit) =>
+              visit.hostId ? visit.hostId === userId : isSameHostName(visit.hostName, userName),
+            ),
           );
           hasNextPage = visitPage.meta.hasNextPage;
           page = visitPage.meta.page + 1;
@@ -223,7 +225,7 @@ export const adminVisitsApi = api.injectEndpoints({
 
 export const {
   useGetVisitsQuery,
-  useGetAppointmentsForHostQuery,
+  useGetPersonalAppointmentsQuery,
   useGetDashboardQuery,
   useRescheduleVisitMutation,
   useCancelVisitMutation,

@@ -12,6 +12,7 @@ export interface StatCardItem<K extends string = string> {
 
 interface StatCardsProps<K extends string> {
   items: StatCardItem<K>[];
+  layout?: "default" | "four";
   /** The highlighted card. Defaults to the first one. */
   activeKey?: K;
   /** Makes the cards clickable, e.g. to filter the table below. */
@@ -30,11 +31,20 @@ const toneClasses: Record<StatTone, string> = {
 const MOBILE_MAX_CARDS = 3;
 
 /** A row of headline numbers; the active card is filled with the brand colour. */
-export function StatCards<K extends string>({ items, activeKey, onSelect }: StatCardsProps<K>) {
+export function StatCards<K extends string>({
+  items,
+  layout = "default",
+  activeKey,
+  onSelect,
+}: StatCardsProps<K>) {
   const highlighted = activeKey ?? items[0]?.key;
+  const gridClassName =
+    layout === "four"
+      ? "grid grid-cols-2 gap-2 lg:grid-cols-4"
+      : "grid grid-cols-3 gap-2 xl:grid-cols-[repeat(auto-fit,minmax(160px,1fr))]";
 
   return (
-    <div className="grid grid-cols-3 gap-2 xl:grid-cols-[repeat(auto-fit,minmax(160px,1fr))]">
+    <div className={gridClassName}>
       {items.map((item, index) => {
         const isActive = item.key === highlighted;
         const content = (
@@ -67,7 +77,7 @@ export function StatCards<K extends string>({ items, activeKey, onSelect }: Stat
         );
 
         // Phones show at most one row of three.
-        const className = `${index >= MOBILE_MAX_CARDS ? "max-sm:hidden" : ""} flex min-w-0 items-center justify-between gap-3 rounded-xl border p-2 text-left sm:p-3 transition-colors ${
+        const className = `${layout === "default" && index >= MOBILE_MAX_CARDS ? "max-sm:hidden" : ""} flex min-w-0 items-center justify-between gap-3 rounded-xl border p-2 text-left sm:p-3 transition-colors ${
           isActive
             ? "border-sky-500 bg-sky-500"
             : "border-slate-200 bg-white dark:border-zinc-700 dark:bg-zinc-800"

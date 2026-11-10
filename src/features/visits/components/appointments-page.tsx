@@ -6,7 +6,7 @@ import {
   FileTextOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import { Button, message, Select } from "antd";
+import { Button, message, Tabs } from "antd";
 import { RowActions } from "@/components/ui/row-actions";
 import { getAppointmentActions } from "../utils/appointment-row-actions";
 import type { ColumnsType } from "antd/es/table";
@@ -14,7 +14,7 @@ import { useMemo, useState } from "react";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { adminRoles, hasRole, reviewerRoles } from "@/types/user-role";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
-import { useGetAppointmentsForHostQuery } from "../api/admins-visit-api-slice";
+import { useGetPersonalAppointmentsQuery } from "../api/admins-visit-api-slice";
 
 import {
   DataTableCard,
@@ -47,6 +47,7 @@ export default function AppointmentsPage() {
   const role = currentUser?.role;
   const isHost = role === "HOST";
   const isFrontDesk = role === "FRONTDESK";
+  const canChooseAppointmentScope = isFrontDesk || hasRole(role, adminRoles);
   const canCreateAppointment = isHost || role === "FRONTDESK" || hasRole(role, reviewerRoles);
   const canChooseAppointmentHost = hasRole(role, adminRoles) || role === "FACILITY";
   const canReviewAppointments = hasRole(role, reviewerRoles);
@@ -57,18 +58,24 @@ export default function AppointmentsPage() {
   const [search, setSearch] = useState("");
   const [activeAppointmentTab, setActiveAppointmentTab] = useState<AppointmentTab>("ALL");
   const [appointmentScope, setAppointmentScope] = useState<AppointmentScope>("ALL");
+  const showingMyAppointments = canChooseAppointmentScope && appointmentScope === "MINE";
 
   const tableFilters = {
     search,
-    statusGroup: canReviewAppointments || isFrontDesk ? ("appointments" as const) : undefined,
+    statusGroup:
+      canReviewAppointments || isFrontDesk || isHost ? ("appointments" as const) : undefined,
     status: canReviewAppointments
       ? activeAppointmentTab
       : isFrontDesk
-        ? activeAppointmentTab === "ALL"
-          ? undefined
-          : activeAppointmentTab
+        ? showingMyAppointments
+          ? activeAppointmentTab === "ALL"
+            ? undefined
+            : activeAppointmentTab
+          : "APPROVED"
         : isHost
-          ? undefined
+          ? activeAppointmentTab === "ALL"
+            ? undefined
+            : activeAppointmentTab
           : "APPROVED",
   };
 
@@ -85,11 +92,14 @@ export default function AppointmentsPage() {
     page,
     limit: pageSize,
     ...tableFilters,
-    enabled: !(isFrontDesk && appointmentScope === "MINE"),
+    enabled: !showingMyAppointments,
   });
-  const myAppointmentsQuery = useGetAppointmentsForHostQuery(currentUser?.fullName ?? "", {
-    skip: !isFrontDesk || appointmentScope !== "MINE" || !currentUser?.fullName,
-  });
+  const myAppointmentsQuery = useGetPersonalAppointmentsQuery(
+    { userId: currentUser?.id ?? "", userName: currentUser?.fullName ?? "" },
+    {
+      skip: !showingMyAppointments || !currentUser?.id || !currentUser.fullName,
+    },
+  );
   const { generateVisitReport, isGeneratingReport } = useVisitReport("appointments");
   const { confirmApprove, isApproving } = useVisitorCheckActions();
 
@@ -123,7 +133,6 @@ export default function AppointmentsPage() {
     rejected: matchingMyAppointments.filter((appointment) => appointment.status === "Rejected")
       .length,
   };
-  const showingMyAppointments = isFrontDesk && appointmentScope === "MINE";
   const displayedAppointments = showingMyAppointments
     ? myAppointments.slice((page - 1) * pageSize, page * pageSize)
     : visitorRecords;
@@ -192,7 +201,7 @@ export default function AppointmentsPage() {
   );
 
   // A status card filters the table to one status; the pill would repeat it on every row.
-  const hasStatusTabs = canReviewAppointments || isFrontDesk;
+  const hasStatusTabs = canReviewAppointments || isHost || (isFrontDesk && showingMyAppointments);
   const columns: ColumnsType<VisitorRow> = [
     visitorColumns.visitId(),
     visitorColumns.visitor("email", false),
@@ -243,8 +252,11 @@ export default function AppointmentsPage() {
     generateVisitReport({
       ...tableFilters,
       filter:
-        showingMyAppointments && currentUser?.fullName
-          ? (row) => isSameHostName(row.host, currentUser.fullName)
+        showingMyAppointments && currentUser?.id && currentUser.fullName
+          ? (row) =>
+              row.hostId
+                ? row.hostId === currentUser.id
+                : isSameHostName(row.host, currentUser.fullName)
           : undefined,
       columns: [
         { header: "ID", value: (row) => row.id },
@@ -259,6 +271,68 @@ export default function AppointmentsPage() {
         { header: "Requested time", value: (row) => row.requestedTime },
       ],
     });
+
+  const renderAppointmentContent = () => (
+    <>
+      <FilterBar
+        search={{
+          value: search,
+          onChange: (value) => {
+            setSearch(value);
+            setPage(1);
+          },
+          placeholder: "Search by name, reference or phone",
+        }}
+      />
+
+      {hasStatusTabs && (
+        <StatCards<AppointmentTab>
+          items={statItems}
+          layout="four"
+          activeKey={activeAppointmentTab}
+          onSelect={(tab) => {
+            setActiveAppointmentTab(tab);
+            setPage(1);
+          }}
+        />
+      )}
+
+      <DataTableCard<VisitorRow>
+        columns={columns}
+        dataSource={displayedAppointments}
+        rowKey="id"
+        className="appointment-table"
+        loading={tableLoading}
+        error={
+          tableError
+            ? {
+                message: `Appointments could not be loaded: ${tableError}`,
+                onRetry: () => void refreshAppointments(),
+              }
+            : null
+        }
+        empty={
+          <p className="text-sm text-slate-500 dark:text-zinc-400">
+            {search
+              ? "No appointments match your search."
+              : showingMyAppointments
+                ? "No appointments are assigned to you yet."
+                : "No appointments yet."}
+          </p>
+        }
+        onRowClick={openDetails}
+        pagination={{
+          page,
+          pageSize,
+          total: showingMyAppointments ? myAppointments.length : totalEntries,
+          onChange: (nextPage, nextPageSize) => {
+            setPage(nextPageSize === pageSize ? nextPage : 1);
+            setPageSize(nextPageSize);
+          },
+        }}
+      />
+    </>
+  );
 
   return (
     <PageShell
@@ -306,77 +380,23 @@ export default function AppointmentsPage() {
         </>
       }
     >
-      <FilterBar
-        search={{
-          value: search,
-          onChange: (value) => {
-            setSearch(value);
-            setPage(1);
-          },
-          placeholder: "Search by name, reference or phone",
-        }}
-      >
-        {isFrontDesk && (
-          <Select<AppointmentScope>
-            aria-label="Appointment scope"
-            value={appointmentScope}
-            options={[
-              { label: "All appointments", value: "ALL" },
-              { label: "My appointments", value: "MINE" },
-            ]}
-            onChange={(scope) => {
-              setAppointmentScope(scope);
+      {canChooseAppointmentScope ? (
+        <Tabs
+          activeKey={appointmentScope}
+          onChange={(key) => {
+            if (key === "ALL" || key === "MINE") {
+              setAppointmentScope(key);
               setPage(1);
-            }}
-          />
-        )}
-      </FilterBar>
-
-      {hasStatusTabs && (
-        <StatCards<AppointmentTab>
-          items={statItems}
-          activeKey={activeAppointmentTab}
-          onSelect={(tab) => {
-            setActiveAppointmentTab(tab);
-            setPage(1);
+            }
           }}
+          items={[
+            { key: "ALL", label: "All appointments", children: renderAppointmentContent() },
+            { key: "MINE", label: "My appointments", children: renderAppointmentContent() },
+          ]}
         />
+      ) : (
+        renderAppointmentContent()
       )}
-
-      <DataTableCard<VisitorRow>
-        columns={columns}
-        dataSource={displayedAppointments}
-        rowKey="id"
-        className="appointment-table"
-        loading={tableLoading}
-        error={
-          tableError
-            ? {
-                message: `Appointments could not be loaded: ${tableError}`,
-                onRetry: () => void refreshAppointments(),
-              }
-            : null
-        }
-        empty={
-          <p className="text-sm text-slate-500 dark:text-zinc-400">
-            {search
-              ? "No appointments match your search."
-              : showingMyAppointments
-                ? "No appointments are assigned to you yet."
-                : "No appointments yet."}
-          </p>
-        }
-        onRowClick={openDetails}
-        pagination={{
-          page,
-          pageSize,
-          total: showingMyAppointments ? myAppointments.length : totalEntries,
-          onChange: (nextPage, nextPageSize) => {
-            setPage(nextPageSize === pageSize ? nextPage : 1);
-            setPageSize(nextPageSize);
-          },
-        }}
-      />
     </PageShell>
   );
 }

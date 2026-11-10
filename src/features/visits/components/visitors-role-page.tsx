@@ -16,7 +16,7 @@ import Visitors from "./visitors-page";
 import { statusColumns, visitorColumns } from "./visitor-columns";
 import { useVisitReport } from "../hooks/use-visit-report";
 
-function FrontDeskVisitors() {
+function FrontDeskVisitors({ isFrontDesk }: { isFrontDesk: boolean }) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [search, setSearch] = useState("");
@@ -24,7 +24,11 @@ function FrontDeskVisitors() {
   const { openDrawer } = usePopup();
   const { confirmCheckIn, confirmCheckOut, isCheckingIn, isCheckingOut } = useVisitorCheckActions();
 
-  const tableFilters = { search, status: statusFilter, statusGroup: "check-ins" as const };
+  const tableFilters = {
+    search,
+    status: isFrontDesk && statusFilter === "ALL" ? "APPROVED" : statusFilter,
+    statusGroup: "check-ins" as const,
+  };
   const { generateVisitReport, isGeneratingReport } = useVisitReport("visitors");
 
   const { visitorRecords, totalEntries, isLoading, isError, errorMessage, refetch } =
@@ -121,11 +125,15 @@ function FrontDeskVisitors() {
           }}
           options={[
             { label: "All Statuses", value: "ALL" },
-            { label: "Pending", value: "PENDING" },
+            ...(!isFrontDesk
+              ? [
+                  { label: "Pending", value: "PENDING" },
+                  { label: "Rejected", value: "REJECTED" },
+                ]
+              : []),
             { label: "Approved", value: "APPROVED" },
             { label: "Checked In", value: "SIGNED_IN" },
             { label: "Checked Out", value: "SIGNED_OFF" },
-            { label: "Rejected", value: "REJECTED" },
           ]}
         />
       </FilterBar>
@@ -163,9 +171,9 @@ function FrontDeskVisitors() {
 export default function VisitorsRolePage() {
   const { data: profile } = useAdminAuthSession();
 
-  return profile?.role === "FRONTDESK" || profile?.role === "SECURITY" ? (
-    <FrontDeskVisitors />
-  ) : (
-    <Visitors />
-  );
+  if (profile?.role === "FRONTDESK" || profile?.role === "SECURITY") {
+    return <FrontDeskVisitors isFrontDesk={profile.role === "FRONTDESK"} />;
+  }
+
+  return <Visitors />;
 }
