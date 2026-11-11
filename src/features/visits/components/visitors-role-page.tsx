@@ -30,7 +30,7 @@ function FrontDeskVisitors({ isFrontDesk }: { isFrontDesk: boolean }) {
 
   const tableFilters = {
     search,
-    status: isFrontDesk && statusFilter === "ALL" ? "APPROVED" : statusFilter,
+    status: statusFilter,
     statusGroup: "check-ins" as const,
   };
   const { generateVisitReport, isGeneratingReport } = useVisitReport("visitors");
