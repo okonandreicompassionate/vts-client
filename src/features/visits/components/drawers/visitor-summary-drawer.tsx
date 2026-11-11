@@ -21,6 +21,8 @@ export type VisitorSummaryField = keyof typeof FIELDS;
 interface VisitorSummaryDrawerProps {
   visitor: VisitorRow;
   fields?: VisitorSummaryField[];
+  /** Show "Check In Visitor" for approved visitors. */
+  allowCheckIn?: boolean;
   /** Show "Check Out Visitor" for visitors who are signed in. */
   allowCheckOut?: boolean;
 }
@@ -32,6 +34,7 @@ interface VisitorSummaryDrawerProps {
 export default function VisitorSummaryDrawer({
   visitor,
   fields = ["phone", "host", "purpose", "status", "checkIn"],
+  allowCheckIn = false,
   allowCheckOut = false,
 }: VisitorSummaryDrawerProps) {
   const { closeDrawer } = usePopup();
@@ -41,11 +44,25 @@ export default function VisitorSummaryDrawer({
   const actionOptions = { onDone: closeDrawer };
 
   const primary: RowAction[] = [
-    ...(visitor.status === "Approved"
-      ? [{ key: "check-in", label: "Check In", icon: <LoginOutlined />, onSelect: () => confirmCheckIn(visitor, actionOptions) }]
+    ...(allowCheckIn && visitor.status === "Approved"
+      ? [
+          {
+            key: "check-in",
+            label: "Check In",
+            icon: <LoginOutlined />,
+            onSelect: () => confirmCheckIn(visitor, actionOptions),
+          },
+        ]
       : []),
     ...(allowCheckOut && visitor.status === "Signed In"
-      ? [{ key: "check-out", label: "Check Out", icon: <LogoutOutlined />, onSelect: () => confirmCheckOut(visitor, actionOptions) }]
+      ? [
+          {
+            key: "check-out",
+            label: "Check Out",
+            icon: <LogoutOutlined />,
+            onSelect: () => confirmCheckOut(visitor, actionOptions),
+          },
+        ]
       : []),
   ];
 
@@ -77,7 +94,6 @@ export default function VisitorSummaryDrawer({
             })}
           </dl>
         </div>
-
       </div>
     </CustomDrawer>
   );

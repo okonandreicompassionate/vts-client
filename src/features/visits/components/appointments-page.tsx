@@ -273,7 +273,7 @@ export default function AppointmentsPage() {
     });
 
   const renderAppointmentContent = () => (
-    <>
+    <div className="flex flex-col gap-5">
       <FilterBar
         search={{
           value: search,
@@ -331,7 +331,7 @@ export default function AppointmentsPage() {
           },
         }}
       />
-    </>
+    </div>
   );
 
   return (

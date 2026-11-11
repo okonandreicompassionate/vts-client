@@ -178,6 +178,125 @@ td.ant-table-cell {
   padding-bottom: 4px !important;
 }
 
+.data-table-scroll,
+.data-table-card .ant-table-body,
+.data-table-card .ant-table-content {
+  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-width: thin;
+}
+
+.data-table-scroll::-webkit-scrollbar,
+.data-table-card .ant-table-body::-webkit-scrollbar,
+.data-table-card .ant-table-content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.data-table-scroll::-webkit-scrollbar-track,
+.data-table-card .ant-table-body::-webkit-scrollbar-track,
+.data-table-card .ant-table-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.data-table-scroll::-webkit-scrollbar-thumb,
+.data-table-card .ant-table-body::-webkit-scrollbar-thumb,
+.data-table-card .ant-table-content::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #cbd5e1;
+  background-clip: padding-box;
+}
+
+.data-table-scroll::-webkit-scrollbar-button,
+.data-table-card .ant-table-body::-webkit-scrollbar-button,
+.data-table-card .ant-table-content::-webkit-scrollbar-button {
+  display: none;
+}
+
+.data-table-card .ant-table-thead > tr > th {
+  padding: 11px 12px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.data-table-card .ant-table-tbody > tr > td {
+  padding: 8px 12px;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  transition: background-color 140ms ease;
+}
+
+.data-table-card .ant-table-tbody > tr:hover > td {
+  background: #f0f9ff !important;
+}
+
+.data-table-card .ant-table-tbody > tr:focus-visible > td {
+  background: #f0f9ff;
+}
+
+.data-table-card .ant-table-tbody > tr:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: -2px;
+}
+
+.data-table-card .table-row-action:not(.ant-btn-primary) {
+  min-width: 30px;
+  height: 30px;
+  color: #64748b;
+}
+
+.data-table-card .table-row-action:not(.ant-btn-primary):hover {
+  color: #0284c7 !important;
+  background: #f0f9ff !important;
+}
+
+.data-table-card .table-row-action:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+.data-table-pagination .ant-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 4px;
+}
+
+.dark .data-table-scroll,
+.dark .data-table-card .ant-table-body,
+.dark .data-table-card .ant-table-content {
+  scrollbar-color: #52525b transparent;
+}
+
+.dark .data-table-scroll::-webkit-scrollbar-thumb,
+.dark .data-table-card .ant-table-body::-webkit-scrollbar-thumb,
+.dark .data-table-card .ant-table-content::-webkit-scrollbar-thumb {
+  background: #52525b;
+  background-clip: padding-box;
+}
+
+.dark .data-table-card .ant-table-thead > tr > th {
+  background: #27272a;
+  color: #d4d4d8;
+}
+
+.dark .data-table-card .ant-table-tbody > tr:hover > td,
+.dark .data-table-card .ant-table-tbody > tr:focus-visible > td {
+  background: #27272a !important;
+}
+
+.dark .data-table-card .table-row-action:not(.ant-btn-primary) {
+  color: #a1a1aa;
+}
+
+.dark .data-table-card .table-row-action:not(.ant-btn-primary):hover {
+  color: #7dd3fc !important;
+  background: #27272a !important;
+}
+
 .employee-autocomplete-option {
   padding: 5px 7px !important;
   min-height: auto !important;

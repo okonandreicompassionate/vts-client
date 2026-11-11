@@ -21,7 +21,7 @@ import { paths } from "@/config/paths";
 import { VISIT_TIME_ZONE, visitDateKey } from "@/utils/visit-time";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
-import { hasRole, type UserRole } from "@/types/user-role";
+import { checkInRoles, checkOutRoles, hasRole } from "@/types/user-role";
 import { useGetDashboardQuery } from "../api/admins-visit-api-slice";
 import { useVisitorCheckActions } from "../hooks/use-visitor-check-actions";
 import type { DashboardVisit, VisitRecord } from "../types/api-types";
@@ -33,8 +33,6 @@ import RejectAppointmentModal from "./modals/reject-appointment-modal";
 
 type CardKey = "approval" | "arriving" | "onSite" | "overstayed" | "checkedOut";
 
-// Matches the server: only these roles may check visitors in and out.
-const GATE_ROLES: UserRole[] = ["SUPERADMIN", "ADMIN", "SECURITY", "FRONTDESK"];
 const PANEL_ID: Record<Exclude<CardKey, "checkedOut">, string> = {
   approval: "dashboard-approval",
   arriving: "dashboard-arriving",
@@ -133,7 +131,8 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { data: currentUser } = useAdminAuthSession();
   const role = currentUser?.role;
-  const canCheckInOut = hasRole(role, GATE_ROLES);
+  const canCheckIn = hasRole(role, checkInRoles);
+  const canCheckOut = hasRole(role, checkOutRoles);
   // Front desk only sees visitors once they're inside, so arrivals would always be empty.
   const seesArrivals = role !== "FRONTDESK";
 
@@ -269,7 +268,7 @@ export default function Dashboard() {
                 onSelect: () => openModal(<RejectAppointmentModal appointment={toRow(visit)} />),
               },
             ]
-          : visit.status === "APPROVED" && canCheckInOut
+          : visit.status === "APPROVED" && canCheckIn
             ? [
                 {
                   key: "check-in",
@@ -279,7 +278,7 @@ export default function Dashboard() {
                   onSelect: () => confirmCheckIn(toRow(visit)),
                 },
               ]
-            : visit.status === "CHECKED_IN" && canCheckInOut
+            : visit.status === "CHECKED_IN" && canCheckOut
               ? [
                   {
                     key: "check-out",

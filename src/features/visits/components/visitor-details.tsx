@@ -5,6 +5,8 @@ import { useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { PageShell } from "@/components/page";
+import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { checkInRoles, checkOutRoles, hasRole } from "@/types/user-role";
 import RejectAppointmentModal from "./modals/reject-appointment-modal";
 import { Avatar } from "../../../components/ui/avatar.tsx";
 
@@ -60,6 +62,9 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { openModal } = usePopup();
+  const { data: currentUser } = useAdminAuthSession();
+  const canCheckIn = hasRole(currentUser?.role, checkInRoles);
+  const canCheckOut = hasRole(currentUser?.role, checkOutRoles);
 
   const [notes, setNotes] = useState("");
 
@@ -393,7 +398,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
               ))}
             </div>
 
-            {isApproved ? (
+            {isApproved && canCheckIn ? (
               <Button
                 color="green"
                 variant="solid"
@@ -403,7 +408,7 @@ export default function VisitorDetails({ visitorId, onClose }: VisitorDetailsPro
               >
                 Check In Visitor
               </Button>
-            ) : isCheckedIn ? (
+            ) : isCheckedIn && canCheckOut ? (
               <Button
                 danger
                 type="primary"

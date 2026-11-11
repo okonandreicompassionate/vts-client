@@ -48,9 +48,28 @@ export const appointmentRoles: UserRole[] = [
   "FRONTDESK",
   "HOST",
 ];
-export const checkInRoles: UserRole[] = ["SUPERADMIN", "ADMIN", "FACILITY", "SECURITY", "FRONTDESK"];
-export const visitorRoles: UserRole[] = ["SUPERADMIN", "ADMIN", "FACILITY", "SECURITY", "FRONTDESK"];
-export const dashboardRoles: UserRole[] = ["SUPERADMIN", "ADMIN", "FACILITY", "SECURITY", "FRONTDESK"];
+export const checkInRoles: UserRole[] = [
+  "SUPERADMIN",
+  "ADMIN",
+  "FACILITY",
+  "SECURITY",
+  "FRONTDESK",
+];
+export const checkOutRoles: UserRole[] = ["SUPERADMIN", "ADMIN", "FACILITY", "FRONTDESK"];
+export const visitorRoles: UserRole[] = [
+  "SUPERADMIN",
+  "ADMIN",
+  "FACILITY",
+  "SECURITY",
+  "FRONTDESK",
+];
+export const dashboardRoles: UserRole[] = [
+  "SUPERADMIN",
+  "ADMIN",
+  "FACILITY",
+  "SECURITY",
+  "FRONTDESK",
+];
 export const settingsRoles: UserRole[] = ["SUPERADMIN", "ADMIN", "FACILITY"];
 /** Server: approve/reject visits. */
 export const reviewerRoles: UserRole[] = ["SUPERADMIN", "ADMIN", "FACILITY"];

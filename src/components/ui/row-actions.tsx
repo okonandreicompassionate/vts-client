@@ -36,7 +36,12 @@ const toMenuItem = (action: RowAction) => ({
  * The one actions menu for table rows. Clicks don't reach the row, so rows can
  * still open a drawer on click.
  */
-export function RowActions({ label, primary = [], secondary = [], disabled = false }: RowActionsProps) {
+export function RowActions({
+  label,
+  primary = [],
+  secondary = [],
+  disabled = false,
+}: RowActionsProps) {
   const needsAction = primary.some((action) => !action.disabled);
   const actions = [...primary, ...secondary];
 
@@ -50,7 +55,10 @@ export function RowActions({ label, primary = [], secondary = [], disabled = fal
 
   return (
     // Keep clicks and key presses from triggering the row's own handlers.
-    <span onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
+    <span
+      onClick={(event) => event.stopPropagation()}
+      onKeyDown={(event) => event.stopPropagation()}
+    >
       <Dropdown
         trigger={["click"]}
         placement="bottomRight"
@@ -68,6 +76,7 @@ export function RowActions({ label, primary = [], secondary = [], disabled = fal
           size="small"
           type={needsAction ? "primary" : "text"}
           icon={<EllipsisOutlined />}
+          className="table-row-action"
           aria-label={needsAction ? `Actions for ${label}, action needed` : `Actions for ${label}`}
           title={needsAction ? "Action needed" : "Actions"}
         />

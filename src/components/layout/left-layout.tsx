@@ -2,9 +2,12 @@ import leftLayoutImage from "/login-image.png";
 
 export default function LeftLayout() {
   return (
-    <aside className="relative hidden h-full min-h-0 w-full min-w-0 flex-col overflow-y-auto bg-linear-to-br from-blue-100 via-orange-100 to-green-100 px-8 py-8 md:flex md:px-10 lg:px-16 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+    <aside className="relative hidden h-full min-h-0 w-full min-w-0 flex-col overflow-x-clip overflow-y-auto bg-linear-to-br from-blue-100 via-orange-100 to-green-100 px-8 py-8 md:flex md:px-10 lg:px-16 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
       {/* Dark mode: soft brand glows stand in for the pastel gradient. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 hidden dark:block">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 hidden overflow-hidden dark:block"
+      >
         <div className="absolute -top-32 -left-24 h-96 w-96 rounded-full bg-sky-500/15 blur-3xl" />
         <div className="absolute top-1/3 -right-32 h-80 w-80 rounded-full bg-orange-500/10 blur-3xl" />
         <div className="absolute -bottom-32 left-1/4 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />

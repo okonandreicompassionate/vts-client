@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { DataTableCard, FilterBar, PageShell, RefreshButton } from "@/components/page";
 import { useAdminAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { checkInRoles, checkOutRoles, hasRole } from "@/types/user-role";
 import { useVisitorTableData } from "@/features/visits/hooks/use-visitor-table-data";
 import type { VisitorRow } from "@/features/visits/utils/visits";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
@@ -23,6 +24,9 @@ function FrontDeskVisitors({ isFrontDesk }: { isFrontDesk: boolean }) {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const { openDrawer } = usePopup();
   const { confirmCheckIn, confirmCheckOut, isCheckingIn, isCheckingOut } = useVisitorCheckActions();
+  const { data: currentUser } = useAdminAuthSession();
+  const canCheckIn = hasRole(currentUser?.role, checkInRoles);
+  const canCheckOut = hasRole(currentUser?.role, checkOutRoles);
 
   const tableFilters = {
     search,
@@ -44,6 +48,8 @@ function FrontDeskVisitors({ isFrontDesk }: { isFrontDesk: boolean }) {
       <VisitorSummaryDrawer
         visitor={visitor}
         fields={["phone", "host", "purpose", "status", "visitDate", "checkIn", "checkOut"]}
+        allowCheckIn={canCheckIn}
+        allowCheckOut={canCheckOut}
       />,
     );
 
@@ -75,8 +81,8 @@ function FrontDeskVisitors({ isFrontDesk }: { isFrontDesk: boolean }) {
         label={visitor.name}
         {...getVisitorRowActions(visitor, {
           onView: openVisitor,
-          onCheckIn: (row) => confirmCheckIn(row),
-          onCheckOut: handleCheckOut,
+          onCheckIn: canCheckIn ? (row) => confirmCheckIn(row) : undefined,
+          onCheckOut: canCheckOut ? handleCheckOut : undefined,
           busy: isCheckingIn || isCheckingOut,
         })}
       />

@@ -53,8 +53,8 @@ export function DataTableCard<T extends object>({
   const startIndex = pagination ? (pagination.page - 1) * pagination.pageSize + 1 : 1;
 
   return (
-    <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-      <div className="relative min-h-[12rem] flex-1 overflow-auto">
+    <section className="data-table-card flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+      <div className="data-table-scroll relative min-h-[12rem] min-w-0 flex-1 overflow-auto overscroll-contain">
         {loading && (
           <Spinner variant="inline" overlay className="bg-white/70 dark:bg-zinc-800/70" />
         )}
@@ -108,7 +108,7 @@ export function DataTableCard<T extends object>({
       </div>
 
       {pagination && (
-        <div className="flex justify-end border-t border-slate-100 px-3 py-2 dark:border-zinc-700">
+        <div className="data-table-pagination flex min-h-14 flex-wrap items-center justify-end gap-x-3 gap-y-1 border-t border-slate-100 px-3 py-2 sm:px-4 dark:border-zinc-700">
           <Pagination
             size="small"
             current={pagination.page}
