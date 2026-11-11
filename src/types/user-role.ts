@@ -53,9 +53,8 @@ export const checkInRoles: UserRole[] = [
   "ADMIN",
   "FACILITY",
   "SECURITY",
-  "FRONTDESK",
 ];
-export const checkOutRoles: UserRole[] = ["SUPERADMIN", "ADMIN", "FACILITY", "FRONTDESK"];
+export const checkOutRoles: UserRole[] = ["SUPERADMIN", "ADMIN", "FACILITY", "SECURITY"];
 export const visitorRoles: UserRole[] = [
   "SUPERADMIN",
   "ADMIN",

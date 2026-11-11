@@ -69,7 +69,7 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
     SUPERADMIN: superAdminNavItems,
     FACILITY: managerNavItems,
     SECURITY: [dashboardItem, appointmentsItem, visitorsItem, checkInsItem],
-    FRONTDESK: [dashboardItem, appointmentsItem, visitorsItem, checkInsItem],
+    FRONTDESK: [dashboardItem, appointmentsItem, visitorsItem],
     ADMIN: managerNavItems,
     HOST: [appointmentsItem],
   };
