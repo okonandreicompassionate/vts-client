@@ -34,6 +34,7 @@ function TableComponent<T extends object>({
         {
           title: serialNumberTitle,
           key: "__serial",
+          className: "__serial",
           width: 54,
           align: "center" as const,
           render: (_value: unknown, _record: T, index: number) => (

@@ -411,6 +411,41 @@ td.ant-table-cell {
     clip-path: inset(50%);
     white-space: nowrap;
   }
+
+  .data-table-card {
+    flex: none;
+    height: min(28rem, calc(100dvh - 13rem));
+  }
+
+  .data-table-card .data-table-scroll {
+    min-height: 10rem;
+  }
+
+  .data-table-card .ant-table-thead > tr > th,
+  .data-table-card .ant-table-tbody > tr > td {
+    padding-inline: 8px;
+    font-size: 11px;
+  }
+
+  .data-table-card .__serial {
+    display: none;
+  }
+
+  .data-table-pagination {
+    justify-content: center;
+  }
+
+  .data-table-pagination .ant-pagination {
+    justify-content: center;
+  }
+
+  .data-table-pagination .ant-pagination-options {
+    display: none;
+  }
+
+  .ant-breadcrumb {
+    max-width: 34vw;
+  }
 }
 
 /*

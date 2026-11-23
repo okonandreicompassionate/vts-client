@@ -163,9 +163,9 @@ const DashboardHeader = () => {
       </div>
 
       {/* Right side */}
-      <div className="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2.5">
+      <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2.5">
         <NotificationBell />
-        <div className="flex h-8 items-center border-e border-slate-200 pe-2.5 sm:pe-3 dark:border-zinc-700">
+        <div className="hidden h-8 items-center border-e border-slate-200 pe-2.5 sm:flex sm:pe-3 dark:border-zinc-700">
           <ThemeToggle />
         </div>
 
@@ -177,7 +177,7 @@ const DashboardHeader = () => {
           <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={["click"]}>
             <button
               type="button"
-              className="group inline-flex max-w-[min(55vw,19rem)] cursor-pointer items-center gap-2 rounded-full py-1 ps-1 pe-1.5 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 sm:max-w-[22rem] sm:gap-2.5 sm:pe-2 dark:text-zinc-100 dark:hover:bg-zinc-800"
+              className="group inline-flex max-w-[min(55vw,19rem)] cursor-pointer items-center gap-1 rounded-full p-1 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 sm:max-w-[22rem] sm:gap-2.5 sm:pe-2 dark:text-zinc-100 dark:hover:bg-zinc-800"
               aria-label={`Open account menu for ${displayName}`}
             >
               <Avatar
@@ -187,7 +187,7 @@ const DashboardHeader = () => {
                 className="ring-2 ring-white dark:ring-zinc-800"
               />
 
-              <span className="flex min-w-0 flex-col text-left leading-tight">
+              <span className="hidden min-w-0 flex-col text-left leading-tight sm:flex">
                 <span className="max-w-[min(38vw,15rem)] truncate text-xs font-semibold text-slate-800 sm:max-w-[17rem] dark:text-zinc-100">
                   {accountLabel}
                 </span>
@@ -196,7 +196,7 @@ const DashboardHeader = () => {
                 </span>
               </span>
 
-              <DownOutlined className="ms-0.5 flex shrink-0 items-center text-[9px] text-slate-400 transition-transform group-aria-expanded:rotate-180 dark:text-zinc-500" />
+              <DownOutlined className="ms-0.5 hidden shrink-0 items-center text-[9px] text-slate-400 transition-transform group-aria-expanded:rotate-180 sm:flex dark:text-zinc-500" />
             </button>
           </Dropdown>
         )}

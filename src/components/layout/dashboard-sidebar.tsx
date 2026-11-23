@@ -121,7 +121,7 @@ const Sidebar = ({ collapsed, mobileOpen, setCollapsed, setMobileOpen }: Sidebar
           />
         </div>
 
-        <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain p-2.5 pt-12">
+        <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain p-2.5 pt-4 md:pt-12">
           {visibleNavItems.map((item) => {
             const { label, icon: Icon } = item;
             const className =

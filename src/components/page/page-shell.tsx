@@ -20,12 +20,12 @@ interface PageShellProps {
 export function PageShell({ title, description, actions, fill = false, children }: PageShellProps) {
   return (
     <div
-      className={`flex min-w-0 flex-1 flex-col gap-3 px-3 py-4 md:px-6 ${fill ? "lg:min-h-0" : ""}`}
+      className={`flex min-w-0 flex-1 flex-col gap-2 px-3 py-3 md:gap-3 md:px-6 md:py-4 ${fill ? "lg:min-h-0" : ""}`}
     >
       {/* Title and actions share one row at every width; the title truncates first. */}
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-24 flex-1">
-          <h1 className="truncate text-lg font-bold text-slate-900 dark:text-zinc-100">{title}</h1>
+          <h1 className="truncate text-base font-bold text-slate-900 sm:text-lg dark:text-zinc-100">{title}</h1>
           {description && (
             <p className="mt-0.5 hidden text-xs text-slate-500 sm:block dark:text-zinc-400">
               {description}

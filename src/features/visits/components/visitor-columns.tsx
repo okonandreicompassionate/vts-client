@@ -66,6 +66,7 @@ export const visitorColumns = {
     title: "Visitor ID",
     dataIndex: "referenceId",
     key: "visitor-id",
+    responsive: ["sm"],
     render: textCell,
   }),
 
@@ -73,6 +74,7 @@ export const visitorColumns = {
     title: "Phone Number",
     dataIndex: "phone",
     key: "phone-number",
+    responsive: ["md"],
     render: textCell,
   }),
 
@@ -80,6 +82,7 @@ export const visitorColumns = {
     title: "Host",
     dataIndex: "host",
     key: "host",
+    responsive: ["md"],
     render: textCell,
   }),
 
@@ -87,6 +90,7 @@ export const visitorColumns = {
     title: "Purpose",
     dataIndex: "purpose",
     key: "purpose",
+    responsive: ["md"],
     render: textCell,
   }),
 
@@ -94,6 +98,7 @@ export const visitorColumns = {
   visitDate: (): VisitorColumn => ({
     title: "Visit Date",
     key: "visit-date",
+    responsive: ["md"],
     render: (_value, visitor) => (
       <VisitDateTimeCell
         time={visitor.requestedTime ?? visitor.visitTime}
@@ -106,6 +111,7 @@ export const visitorColumns = {
     title: "Status",
     dataIndex: "status",
     key: "status",
+    responsive: ["md"],
     render: (status: VisitorRow["status"], visitor) => (
       <div className="flex flex-col items-start gap-0.5">
         <StatusPill status={status} />
@@ -118,6 +124,7 @@ export const visitorColumns = {
     title: "Check-In",
     dataIndex: "checkIn",
     key: "check-in",
+    responsive: ["md"],
     render: timeCell,
   }),
 
@@ -125,6 +132,7 @@ export const visitorColumns = {
     title: "Check-Out",
     dataIndex: "checkOut",
     key: "check-out",
+    responsive: ["md"],
     render: timeCell,
   }),
 
