@@ -1,5 +1,5 @@
-import { Breadcrumb, Button, Dropdown, type MenuProps } from "antd";
-import { DownOutlined, MenuOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Dropdown, message, type MenuProps } from "antd";
+import { CopyOutlined, DownOutlined, MenuOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import { usePopup } from "@/lib/contexts/popup/use-popup";
 import { Spinner } from "@/components/ui/spinner";
@@ -35,6 +35,22 @@ const DashboardHeader = () => {
 
   const handleUpdateSystemSettings = () => {
     openModal(<SystemSettingsModal />);
+  };
+
+  const handleCopyVisitorLink = async () => {
+    const orgSlug = profile?.orgSlug;
+    if (!orgSlug) {
+      message.error("The visitor link is not available.");
+      return;
+    }
+
+    const url = `${window.location.origin}${paths.home.getHref(orgSlug)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      message.success("Visitor link copied.");
+    } catch {
+      message.error("The visitor link could not be copied.");
+    }
   };
 
   const displayName = profile?.fullName ?? profile?.email ?? "Admin User";
@@ -164,6 +180,16 @@ const DashboardHeader = () => {
 
       {/* Right side */}
       <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2.5">
+        <Button
+          type="text"
+          icon={<CopyOutlined />}
+          onClick={() => void handleCopyVisitorLink()}
+          disabled={!profile}
+          className="px-2! text-slate-600! sm:px-3! dark:text-zinc-300!"
+          title="Copy visitor self-registration link"
+        >
+          <span className="hidden md:inline">Visitor link</span>
+        </Button>
         <NotificationBell />
         <div className="hidden h-8 items-center border-e border-slate-200 pe-2.5 sm:flex sm:pe-3 dark:border-zinc-700">
           <ThemeToggle />

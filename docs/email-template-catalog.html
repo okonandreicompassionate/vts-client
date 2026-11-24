@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>GuestX Email Templates</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--page:#eef1f5;--text:#14293d;--label:#8593a3;
+font-family:Inter,"Segoe UI",system-ui,Arial,Helvetica,sans-serif;color:var(--text)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#0c1620;--text:#e7edf3;--label:#7b8ea1}}
+:root[data-theme="dark"]{--page:#0c1620;--text:#e7edf3;--label:#7b8ea1}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--text)}
+.catalog{max-width:700px;margin:0 auto;padding:48px 16px 80px}
+.catalog-header{text-align:center;margin-bottom:40px}
+.catalog-header p{margin:0 0 8px;color:var(--label);font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.catalog-header h1{margin:0;font-size:28px;font-weight:600;letter-spacing:-.02em}
+.template{margin-bottom:44px}
+.template-name{margin:0 0 12px 6px;color:var(--label);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.mail-preview{overflow:hidden;border-radius:20px;background:#fff;box-shadow:0 1px 3px rgba(20,41,61,.08),0 18px 40px -18px rgba(20,41,61,.28)}
+.email{max-width:640px;margin:0 auto;text-align:center;color:#14293d}
+.top{position:relative;overflow:hidden;padding:22px 30px 58px;background:linear-gradient(135deg,#0f2a43 0%,#17405f 100%)}
+.top:after{content:"";position:absolute;right:-60px;top:-100px;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 36px rgba(255,255,255,.04)}
+.logo{
+  position:relative;
+  z-index:1;
+  width:168px;
+  height:44px;
+  margin:0 auto;
+  background:url("../public/logo.svg") center / contain no-repeat;
+  font-size:0;
+}
+.logo .guest,.logo .x{display:none}
+.body{position:relative;z-index:2;padding:0 48px 40px;margin-top:-30px}
+.icon{display:grid;width:80px;height:80px;margin:0 auto;border:5px solid #fff;border-radius:50%;background:#e3f1f9;color:#1f7fb0;place-items:center;box-shadow:0 8px 20px -6px rgba(20,41,61,.3)}
+.icon svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
+.icon.success{background:#e4f3ec;color:#2f8f6b}.icon.warning{background:#fbf0dc;color:#b7791f}.icon.danger{background:#f9e6e7;color:#b4474f}
+.pill{display:inline-block;margin-top:20px;padding:5px 12px;border-radius:6px;background:#e3f1f9;color:#1f6f9a;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.pill.success{background:#e4f3ec;color:#2f8f6b}.pill.warning{background:#fbf0dc;color:#9a6416}.pill.danger{background:#f9e6e7;color:#b4474f}
+h2{margin:14px 0 10px;font-size:28px;line-height:1.2;font-weight:600;letter-spacing:-.02em;color:#14293d}
+.message{max-width:450px;margin:0 auto;color:#5d7083;font-size:16px;line-height:1.65}
+.message strong{color:#14293d;font-weight:600}
+.details{width:100%;margin-top:30px;border-collapse:collapse;border-top:1px solid #e6ebf0;text-align:left;table-layout:fixed}
+.details td{padding:14px 4px;font-size:15px;border-bottom:1px solid #e6ebf0}
+.details td:first-child{width:38%;color:#8593a3;font-size:13px}
+.details td:last-child{text-align:right;font-weight:600;color:#14293d}
+.action{display:inline-block;margin-top:30px;padding:14px 28px;border-radius:10px;background:#0f2a43;color:#fff;font-size:15px;font-weight:600;text-decoration:none}
+.foot{padding:20px 30px 26px;background:#f7f9fb;border-top:1px solid #e6ebf0;color:#93a1b0;font-size:12px;line-height:1.6}
+.top h2{position:relative;z-index:1;max-width:480px;margin:18px auto 0;color:#fff;font-size:26px}.pill+.message{margin-top:16px}
+.foot b,.foot i{display:none}
+.foot:before{content:"";display:inline-block;width:72px;height:19px;margin-right:6px;vertical-align:middle;background:url("../public/logo.svg") left center / contain no-repeat}
+@media (max-width:600px){.top{padding:18px 16px 54px}.top h2{font-size:22px}.body{padding:0 20px 32px}.logo{font-size:30px}h2{font-size:24px}.message{font-size:15px}.details td{font-size:14px}}
+</style>
+
+
+</head>
+<body>
+<main class="catalog">
+<header class="catalog-header"><p>GuestX Design System</p><h1>Production Email Templates</h1></header>
+
+<article class="template"><div class="template-name">VISIT_PENDING</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>Your visit request is pending</h2></div>
+<div class="body">
+<div class="icon" aria-label="Pending"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v3M19 3v3M3 9h18M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="M8 13h3M8 17h7"/></svg></div>
+<span class="pill">Pending</span>
+<p class="message">Hello {{recipientName}}, your request has been received and is waiting for review.</p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Host</td><td>{{hostName}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+</table></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">VISIT_HOST_APPROVAL_REQUIRED</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>A visitor needs your approval</h2></div>
+<div class="body">
+<div class="icon warning" aria-label="Action required"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 9v5M12 17.5v.5"/></svg></div>
+<span class="pill warning">Action required</span>
+<p class="message">Hello {{hostName}}, review this visit request and choose whether to approve or decline it.</p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Visit date</td><td>{{visitDate}}</td></tr>
+<tr><td>Purpose</td><td>{{purpose}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+</table>
+<a class="action" href="{{reviewUrl}}">Review request →</a></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">VISIT_APPROVED / VISIT_HOST_APPROVED</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>Your visit is approved</h2></div>
+<div class="body">
+<div class="icon success" aria-label="Approved"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16.5 9"/></svg></div>
+<span class="pill success">Approved</span>
+<p class="message">Hello {{visitorName}}, your visitor request has been approved. Please present this profile page at reception when you arrive.</p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Host</td><td>{{hostName}}</td></tr>
+<tr><td>Visit date</td><td>{{visitDate}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+</table>
+<a class="action" href="{{visitUrl}}">View visit →</a></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">VISIT_REJECTED / VISIT_HOST_REJECTED</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>Your visit was not approved</h2></div>
+<div class="body">
+<div class="icon danger" aria-label="Rejected"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg></div>
+<span class="pill danger">Declined</span>
+<p class="message">Hello {{recipientName}}, this visit was declined. <strong>{{reason}}</strong> Contact your host for clarification or submit a new request.</p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Host</td><td>{{hostName}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+<tr><td>Status</td><td>Declined</td></tr>
+</table>
+<a class="action" href="{{requestUrl}}">Submit another request →</a></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">VISIT_READY_FOR_CHECKIN</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>You are ready for check-in</h2></div>
+<div class="body">
+<div class="icon" aria-label="Ready for check-in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M14 7l5 5-5 5"/></svg></div>
+<span class="pill">Ready</span>
+<p class="message">Hello {{visitorName}}, your approved visit is ready. Please proceed to reception at <strong>{{organizationName}}</strong>.</p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Host</td><td>{{hostName}}</td></tr>
+<tr><td>Visit date</td><td>{{visitDate}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+</table>
+<a class="action" href="{{visitUrl}}">View visit details →</a></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">VISIT_CHECKED_IN</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>Your visitor has checked in</h2></div>
+<div class="body">
+<div class="icon success" aria-label="Checked in"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></div>
+<span class="pill success">Checked in</span>
+<p class="message">Hello {{hostName}}, your visitor has checked in at <strong>{{organizationName}}</strong>.</p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Host</td><td>{{hostName}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+<tr><td>Purpose</td><td>{{purpose}}</td></tr>
+<tr><td>Checked in</td><td>{{checkedInAt}}</td></tr>
+</table></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">VISIT_CHECKED_OUT</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>Visit completed</h2></div>
+<div class="body">
+<div class="icon success" aria-label="Checked out"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16.5 9"/></svg></div>
+<span class="pill success">Completed</span>
+<p class="message">Hello {{recipientName}}, the visit for <strong>{{visitorName}}</strong> has been completed. Thank you for using GuestX.</p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Host</td><td>{{hostName}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+<tr><td>Checked out</td><td>{{checkedOutAt}}</td></tr>
+</table></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">VISIT_CANCELLED</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>This appointment was cancelled</h2></div>
+<div class="body">
+<div class="icon danger" aria-label="Cancelled"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg></div>
+<span class="pill danger">Cancelled</span>
+<p class="message">Hello {{recipientName}}, this appointment is no longer active. <strong>{{reason}}</strong></p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Host</td><td>{{hostName}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+<tr><td>Status</td><td>Cancelled</td></tr>
+</table>
+<a class="action" href="{{requestUrl}}">Request another visit →</a></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">VISIT_EXPIRED</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>This visit request has expired</h2></div>
+<div class="body">
+<div class="icon warning" aria-label="Expired"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></div>
+<span class="pill warning">Expired</span>
+<p class="message">Hello {{recipientName}}, the scheduled date for this visit has passed. You can submit a new visit request.</p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Scheduled date</td><td>{{visitDate}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+<tr><td>Status</td><td>Expired</td></tr>
+</table>
+<a class="action" href="{{requestUrl}}">Request another visit →</a></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">VISIT_OVERSTAYED</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>A visitor may have overstayed</h2></div>
+<div class="body">
+<div class="icon warning" aria-label="Overstay warning"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 9v5M12 17.5v.5"/></svg></div>
+<span class="pill warning">Overstay</span>
+<p class="message">Hello {{hostName}}, <strong>{{visitorName}}</strong> is still marked as checked in. Please review or complete the visit.</p>
+<table class="details" role="presentation">
+<tr><td>Visitor name</td><td>{{visitorName}}</td></tr>
+<tr><td>Host</td><td>{{hostName}}</td></tr>
+<tr><td>Reference ID</td><td>{{referenceId}}</td></tr>
+<tr><td>Checked in</td><td>{{checkedInAt}}</td></tr>
+</table>
+<a class="action" href="{{visitUrl}}">Review active visit →</a></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+
+<article class="template"><div class="template-name">SYSTEM</div><section class="mail-preview"><div class="email">
+<div class="top"><div class="logo" role="img" aria-label="GuestX"></div>
+<h2>{{systemTitle}}</h2></div>
+<div class="body">
+<div class="icon" aria-label="System notification"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></div>
+<span class="pill">System notice</span>
+<p class="message">Hello {{recipientName}}, <strong>{{systemMessage}}</strong></p>
+<table class="details" role="presentation">
+<tr><td>Notification</td><td>{{systemTitle}}</td></tr>
+<tr><td>Date</td><td>{{notificationDate}}</td></tr>
+<tr><td>Status</td><td>{{systemStatus}}</td></tr>
+</table></div>
+<div class="foot">Sent by <b>guest</b><i>X</i> · Visitor management made simple</div>
+</div></section></article>
+</main>
+</body>
+</html>

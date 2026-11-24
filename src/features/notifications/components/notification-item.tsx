@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle2, Info, UserRoundCheck } from "lucide-react";
 
 import type { AppNotification, NotificationActionType } from "../types/notifications-api.types";
+import NotificationCard from "./notification-card";
 
 const tones: Record<NotificationActionType, { icon: typeof Info; className: string }> = {
   ACTION_REQUIRED: {
@@ -22,6 +23,29 @@ const tones: Record<NotificationActionType, { icon: typeof Info; className: stri
 };
 
 const relativeTime = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
+const notificationPresentations: Partial<
+  Record<
+    NotificationActionType,
+    { eyebrow: string; accentClassName: string }
+  >
+> = {
+  ACTION_REQUIRED: {
+    eyebrow: "Action required",
+    accentClassName: "from-amber-400 via-amber-500 to-orange-400",
+  },
+  SUCCESS: {
+    eyebrow: "Visit update",
+    accentClassName: "from-emerald-400 via-sky-500 to-blue-500",
+  },
+  WARNING: {
+    eyebrow: "Attention",
+    accentClassName: "from-rose-400 via-orange-400 to-amber-400",
+  },
+  INFO: {
+    eyebrow: "GuestX update",
+    accentClassName: "from-sky-400 via-sky-500 to-orange-400",
+  },
+};
 
 function timeAgo(value: string) {
   const minutes = Math.round((new Date(value).getTime() - Date.now()) / 60_000);
@@ -40,36 +64,80 @@ export default function NotificationItem({
 }) {
   const tone = tones[notification.actionType];
   const Icon = tone.icon;
+  const presentation = notificationPresentations[notification.actionType] ?? notificationPresentations.INFO!;
+  const hasVisitDetails =
+    notification.type !== "SYSTEM" &&
+    Boolean(
+      notification.metadata?.visitorName ||
+        notification.metadata?.hostName ||
+        notification.metadata?.referenceId,
+    );
+
+  if (hasVisitDetails) {
+    const visitorName = notification.metadata?.visitorName;
+    const hostName = notification.metadata?.hostName;
+    const referenceId = notification.metadata?.referenceId;
+
+    return (
+      <button
+        type="button"
+        onClick={() => onOpen(notification)}
+        className="w-full cursor-pointer p-2 text-left"
+      >
+        <NotificationCard
+          icon={<Icon size={16} aria-hidden="true" />}
+          eyebrow={presentation.eyebrow}
+          title={notification.title || "Visitor checked in"}
+          read={notification.read}
+          toneClassName={tone.className}
+          accentClassName={presentation.accentClassName}
+        >
+          <p className="mt-1 text-xs leading-5 text-slate-600 dark:text-zinc-300">
+            {notification.message}
+          </p>
+          {(visitorName || hostName || referenceId) && (
+            <dl className="mt-3 divide-y divide-slate-200/80 overflow-hidden rounded-lg border border-slate-200/80 bg-white/80 text-xs dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-900/60">
+              {visitorName && (
+                <div className="grid grid-cols-[88px_1fr] gap-2 px-3 py-2">
+                  <dt className="text-slate-500 dark:text-zinc-400">Visitor</dt>
+                  <dd className="font-semibold text-slate-900 dark:text-zinc-100">{visitorName}</dd>
+                </div>
+              )}
+              {hostName && (
+                <div className="grid grid-cols-[88px_1fr] gap-2 px-3 py-2">
+                  <dt className="text-slate-500 dark:text-zinc-400">Host</dt>
+                  <dd className="font-semibold text-slate-900 dark:text-zinc-100">{hostName}</dd>
+                </div>
+              )}
+              {referenceId && (
+                <div className="grid grid-cols-[88px_1fr] gap-2 px-3 py-2">
+                  <dt className="text-slate-500 dark:text-zinc-400">Reference</dt>
+                  <dd className="font-semibold text-slate-900 dark:text-zinc-100">{referenceId}</dd>
+                </div>
+              )}
+            </dl>
+          )}
+          <p className="mt-2 text-[10px] text-slate-400 dark:text-zinc-500">{timeAgo(notification.createdAt)}</p>
+        </NotificationCard>
+      </button>
+    );
+  }
 
   return (
-    <button
-      type="button"
-      onClick={() => onOpen(notification)}
-      className={`flex w-full cursor-pointer gap-3 px-4 py-3 text-left transition hover:bg-slate-50 dark:hover:bg-zinc-800 ${
-        notification.read ? "" : "bg-emerald-50/40 dark:bg-emerald-400/5"
-      }`}
-    >
-      <span
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${tone.className}`}
+    <button type="button" onClick={() => onOpen(notification)} className="w-full cursor-pointer p-2 text-left">
+      <NotificationCard
+        icon={<Icon size={16} aria-hidden="true" />}
+        eyebrow={presentation.eyebrow}
+        title={notification.title}
+        read={notification.read}
+        toneClassName={tone.className}
+        accentClassName={presentation.accentClassName}
       >
-        <Icon size={15} aria-hidden="true" />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="flex items-start justify-between gap-2">
-          <span className="text-xs font-semibold text-slate-900 dark:text-zinc-100">
-            {notification.title}
-          </span>
-          {!notification.read && (
-            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-500" aria-label="Unread" />
-          )}
-        </span>
-        <span className="mt-0.5 block text-xs text-slate-600 dark:text-zinc-300">
+        <p className="mt-1 text-xs leading-5 text-slate-600 dark:text-zinc-300">
           {notification.message}
-        </span>
-        <span className="mt-1 block text-[11px] text-slate-400 dark:text-zinc-500">
-          {timeAgo(notification.createdAt)}
-        </span>
-      </span>
+        </p>
+        <p className="mt-2 text-[10px] text-slate-400 dark:text-zinc-500">{timeAgo(notification.createdAt)}</p>
+      </NotificationCard>
     </button>
   );
 }
